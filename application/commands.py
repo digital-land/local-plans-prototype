@@ -12,28 +12,31 @@ from application.models import PlanningAuthority, LocalPlan, PlanDocument
 def create_other_data(pa, row):
 
     plan = row['local-plan'].strip()
-    status = row['status'].strip()
-    planning_policy_url = row['plan-policy-url'].strip()
-    date = row['date'].strip()
-    entry_id = row['entry-number'].strip()
+    if 'None' not in plan:
+        status = row['status'].strip()
+        planning_policy_url = row['plan-policy-url'].strip()
+        date = row['date'].strip()
+        entry_id = row['entry-number'].strip()
 
-    lp = LocalPlan()
-    lp.local_plan = plan
-    lp.status = status
-    lp.planning_policy_url = planning_policy_url
-    if date:
-        lp.date = date
-    lp.entry_id = entry_id
+        lp = LocalPlan()
+        lp.local_plan = plan
+        lp.status = status
+        lp.planning_policy_url = planning_policy_url
+        if date:
+            lp.date = date
+        lp.entry_id = entry_id
 
-    pa.local_plans.append(lp)
-    db.session.add(pa)
-    db.session.commit()
-
-    if status == 'adopted' and row.get('plan-document-url', None) is not None:
-        pd = PlanDocument(url=row.get('plan-document-url'))
-        lp.plan_documents.append(pd)
+        pa.local_plans.append(lp)
         db.session.add(pa)
         db.session.commit()
+        print('loaded local plan', plan)
+
+        if status == 'adopted' and row.get('plan-document-url', None) is not None:
+            pd = PlanDocument(url=row.get('plan-document-url'))
+            lp.plan_documents.append(pd)
+            db.session.add(pa)
+            db.session.commit()
+            print('loaded plan document for plan', plan, 'document', row.get('plan-document-url'))
 
 
 @click.command()
