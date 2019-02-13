@@ -1,0 +1,63 @@
+// A govuk style search box
+// ========================
+
+$icon-size: 40px;
+
+@mixin search-box($max-with: 450px) {
+  max-width: 100%;
+  @include govuk-media-query($from: desktop) {
+    width: $max-with;
+  }
+}
+
+.search-box__wrapper {
+  display: block;
+  position: relative;
+  //height: $icon-size;
+  //background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36' width='40' height='40'%3E%3Cpath d='M25.7 24.8L21.9 21c.7-1 1.1-2.2 1.1-3.5 0-3.6-2.9-6.5-6.5-6.5S10 13.9 10 17.5s2.9 6.5 6.5 6.5c1.6 0 3-.6 4.1-1.5l3.7 3.7 1.4-1.4zM12 17.5c0-2.5 2-4.5 4.5-4.5s4.5 2 4.5 4.5-2 4.5-4.5 4.5-4.5-2-4.5-4.5z' fill='white'%3E%3C/path%3E%3C/svg%3E") govuk-colour("blue") no-repeat top right;
+  //background-size: $icon-size $icon-size;
+}
+
+.search-box__input {
+  @include govuk-font($size: 19);
+  box-sizing: border-box;
+  position: relative;
+  width: calc(100% - #{$icon-size});
+  height: $icon-size;
+  margin-right: $icon-size;
+  padding: 9px 10px 5px;
+  border: 2px solid govuk-colour("grey-2");
+  background-color: $govuk-body-background-colour;
+
+  &:focus {
+    width: 100%;
+    margin-right: 0;
+    border: 0;
+    outline: 3px solid govuk-colour("yellow");
+    outline-offset: none;
+
+    & + .search-box__submit {
+      display: none;
+    }
+  }
+}
+
+.search-box__submit {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: $icon-size;
+  height: $icon-size;
+  border: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36' width='40' height='40'%3E%3Cpath d='M25.7 24.8L21.9 21c.7-1 1.1-2.2 1.1-3.5 0-3.6-2.9-6.5-6.5-6.5S10 13.9 10 17.5s2.9 6.5 6.5 6.5c1.6 0 3-.6 4.1-1.5l3.7 3.7 1.4-1.4zM12 17.5c0-2.5 2-4.5 4.5-4.5s4.5 2 4.5 4.5-2 4.5-4.5 4.5-4.5-2-4.5-4.5z' fill='white'%3E%3C/path%3E%3C/svg%3E") govuk-colour("blue") no-repeat top right;
+  background-size: $icon-size $icon-size;
+  font-size: 0;
+}
+
+.search-box {
+  @include search-box;
+}
+
+.search-box--small {
+  @include search-box($max-with: 300px);
+}

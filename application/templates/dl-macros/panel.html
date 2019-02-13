@@ -1,0 +1,8 @@
+{% macro statusPanel(class, text) %}
+<div class="govuk-panel {{ class }}">
+    <h2 class="govuk-panel__title">
+        Validation {{ text }}
+    </h2>
+    {{ caller() }}
+</div>
+{% endmacro %}

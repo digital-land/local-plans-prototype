@@ -1,0 +1,35 @@
+.govuk-panel__body {
+  @include govuk-font($size: 36);
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.govuk-panel {
+  .govuk-panel__link {
+    @include govuk-font($size: 24);
+
+    &:link,
+    &:visited {
+      color: $govuk-body-background-colour;
+    }
+  }
+}
+
+.govuk-panel--confirmation {
+  color: $govuk-body-background-colour;
+  background: govuk-color("turquoise");
+}
+
+.govuk-panel--error {
+  border: 8px solid govuk-colour("red");
+  color: $govuk-text-colour;
+  background: $govuk-canvas-background-colour;
+}
+
+.govuk-panel--warning {
+  border: 8px solid govuk-colour("yellow");
+  color: $govuk-text-colour;
+  background: $govuk-canvas-background-colour;
+}

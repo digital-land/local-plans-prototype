@@ -1,0 +1,22 @@
+// Fixes to GOVUK design system
+// when using Helvetica instead on NTA font
+
+// @note shouldn't use NTA if not on gov.uk
+
+$using-helvetica: true;
+
+* {
+  font-family: "HelveticaNeue", "Helvetica Neue", "Arial", "Helvetica", sans-serif;
+}
+
+// required if using helvetica, not NTA
+@if $using-helvetica == true {
+  .govuk-warning-text__icon {
+    line-height: 26px;
+  }
+
+  .govuk-button--start {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+}

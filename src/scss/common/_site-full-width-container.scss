@@ -1,0 +1,36 @@
+// Provides a class to use if you want to break out of
+// 960px default width
+// ===========================================
+
+$govuk-page-width-full: 1280px;
+
+@mixin govuk-width-container-full {
+  // Limit the width of the container to the page width
+  max-width: $govuk-page-width-full;
+
+  @include govuk-if-ie8 {
+    width: $govuk-page-width-full;
+  }
+
+  // On mobile, add half width gutters
+  margin: 0 $govuk-gutter-half;
+
+  // On tablet, add full width gutters
+  @include govuk-media-query($from: tablet) {
+    margin: 0 $govuk-gutter;
+  }
+
+  // As soon as the viewport is greater than the width of the page plus the
+  // gutters, just centre the content instead of adding gutters.
+  @include govuk-media-query($and: "(min-width: #{($govuk-page-width-full + $govuk-gutter * 2)})") {
+    margin: 0 auto;
+  }
+}
+
+.govuk-width-container-full {
+  @include govuk-width-container-full;
+}
+
+.govuk-header__container.govuk-width-container-full {
+  margin-bottom: -10px;
+}

@@ -1,0 +1,191 @@
+// Used to display bar chart like bars
+//
+// These bars are of variable length
+// display their values
+// can be interacted with
+// ====================================
+
+// padding vars
+$line-thickness: 2px;
+
+$padding-top: 11px;
+$padding-right: 10px;
+$padding-bottom: 7px;
+$padding-left: 10px;
+$padding: $padding-top $padding-right $padding-bottom $padding-left;
+$padding-with-border: #{$padding-top - $line-thickness} #{$padding-right - $line-thickness} #{$padding-bottom - $line-thickness} #{$padding-left - $line-thickness};
+
+
+//.categories-container {
+//  .contribution-bar:hover {
+//    background: govuk-colour("grey-4");
+//  }
+//}
+
+.contribution-category-row {
+  margin-bottom: 15px;
+
+  .cb-floating-figure {
+    display: none;
+  }
+}
+
+.contribution-category-heading {
+  margin-bottom: 0;
+  line-height: 42px;
+}
+
+.contribution-bar {
+  box-sizing: border-box;
+  padding: $padding;
+
+  // --inline ?
+  float: left;
+  overflow: hidden;
+
+  color: $dlf-white-colour;
+  background: govuk-colour("grey-2");
+
+  .data-item {
+    line-height: 1 !important;
+  }
+}
+
+.contribution-bar--small {
+  position: relative;
+
+  & > .data-item {
+    visibility: hidden;
+  }
+
+  & + .cb-floating-figure {
+    display: inline-block;
+    position: relative;
+    padding: $padding-top $padding-right $padding-bottom 25px;
+    float: left;
+    line-height: 1 !important;
+  }
+}
+
+.cb-floating-figure {
+  color: govuk-colour("grey-2");
+
+  &:after {
+    // sass-lint:disable-block no-duplicate-properties
+    content: "";
+    position: absolute;
+    top: 50%; // fallback for browsers without calc()
+    top: calc(50% - #{$line-thickness/2});
+    left: 0;
+
+    width: 15px;
+    height: $line-thickness;
+    background: govuk-colour("grey-2");
+  }
+}
+
+// sets colour of bar and the floating text for smaller bars
+@mixin set-bar-color($color) {
+
+  .contribution-bar {
+    background: $color;
+  }
+
+  .cb-floating-figure {
+    color: $color;
+
+    &:after {
+      background: $color;
+    }
+  }
+}
+
+.categories-set--received {
+  @include set-bar-color(govuk-colour("blue"));
+}
+
+.categories-set--spent {
+  @include set-bar-color(govuk-colour("green"));
+}
+
+.categories-set--not-received {
+  @include set-bar-color(govuk-colour("grey-1"));
+}
+
+// alterations on hover
+.contribution-bar-container:hover .contribution-bar--small,
+.contribution-bar:hover {
+  padding: $padding-with-border;
+  border: $line-thickness solid $govuk-text-colour;
+  color: $govuk-text-colour;
+  background: govuk-colour("grey-4");
+}
+
+.contribution-bar-container:hover {
+  cursor: pointer;
+
+  .cb-floating-figure {
+    color: $govuk-text-colour;
+
+    &:after {
+      background: $govuk-text-colour;
+    }
+  }
+}
+
+.contribution-box {
+  box-sizing: border-box;
+  padding: 15px;
+  color: govuk-colour("white");
+  background: govuk-colour("grey-1");
+
+  &:hover {
+    padding: 10px;
+    border: 5px solid govuk-colour("black");
+    color: govuk-colour("black");
+    background: govuk-colour("grey-3");
+    cursor: pointer;
+  }
+
+  .data-item {
+    display: block;
+  }
+}
+
+.contribution-box--small {
+  width: 15%;
+  margin-bottom: 100px;
+  padding: 0;
+  color: govuk-colour("grey-1");
+
+  .data {
+    position: relative;
+    padding: 15px;
+    transform: translateY(100%);
+
+    &:after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 30px;
+      background: govuk-colour("grey-1");
+    }
+  }
+
+  &:hover {
+    padding: 0;
+
+    .data {
+      padding: 10px;
+      transform: translateY(calc(100% + 10px));
+    }
+
+    .data:after {
+      top: -5px;
+      left: -5px;
+      background: govuk-colour("black");
+    }
+  }
+}

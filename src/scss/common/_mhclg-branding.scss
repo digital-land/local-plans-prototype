@@ -1,0 +1,8 @@
+// this is in organisation colours but not sure how to access
+$mhclg-websafe-colour: #37836e;
+
+.mhclg {
+  .govuk-header__container {
+    border-color: $mhclg-websafe-colour;
+  }
+}

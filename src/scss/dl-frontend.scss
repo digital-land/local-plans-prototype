@@ -1,0 +1,43 @@
+$govuk-fonts-path: "/static/govuk-frontend/assets/fonts/";
+$govuk-images-path: "/static/govuk-frontend/assets/images/";
+
+// import all GOVUK Frontend scss
+@import "all";
+
+// Import common Digital Land styles
+@import "common/colours";
+@import "common/helvetica-fixes";
+@import "common/mhclg-branding";
+@import "common/site-full-width-container";
+
+// import Digital Land components
+@import "components/buttons";
+@import "components/contribution-bar";
+@import "components/hero";
+@import "components/tags";
+@import "components/panels";
+@import "components/task-list";
+@import "components/contents";
+@import "components/govuk-search";
+@import "components/dl-info-text";
+@import "components/related-items";
+@import "components/highlight-box";
+
+
+a {
+  @extend %govuk-link;
+}
+
+p {
+  max-width: 30em;
+}
+
+// required for the Autocomplete if using
+// Govuk design system
+// --------------------------------------
+.autocomplete__menu {
+  font-family: "nta", Arial, sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

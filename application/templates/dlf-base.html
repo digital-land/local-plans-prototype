@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% from "govuk-jinja-components/phase-banner/macro.jinja" import govukPhaseBanner %}
+{% from "govuk-jinja-components/breadcrumbs/macro.jinja" import govukBreadcrumbs %}
+
+{% block head %}
+<link href="/static/stylesheets/dl-frontend.css" rel="stylesheet" />
+{% endblock %}
+
+{% block beforeContent %}
+{{ govukPhaseBanner({
+  "tag": {
+    "text": "styleguide"
+  },
+  "html": 'This is a styleguide for digital land projects'
+}) }}
+{% endblock %}
+
+{% block bodyEnd %}
+<script src='/static/javascripts/vendor/highlight.pack.js'></script>
+<script>hljs.initHighlightingOnLoad();</script>
+{% endblock %}

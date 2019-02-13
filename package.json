@@ -1,0 +1,25 @@
+{
+  "name": "local-plan-prototype",
+  "version": "1.0.0",
+  "description": "Prototype for Local plans",
+  "main": "index.js",
+  "scripts": {
+    "scss": "gulp stylesheets"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/digital-land/[something]"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/digital-land/[something]/issues"
+  },
+  "homepage": "https://github.com/digital-land/[something]#readme",
+  "devDependencies": {
+    "gulp": "^4.0.0",
+    "gulp-clean": "^0.4.0",
+    "gulp-sass": "^4.0.1",
+    "gulp-sass-lint": "^1.4.0"
+  }
+}
