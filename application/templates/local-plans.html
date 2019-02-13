@@ -7,8 +7,8 @@
       <h1 class="govuk-heading-xl">Local plan prototypes</h1>
 
         <ul>
-          {% for planning_authority in planning_authorities %}
-            <li><a href="{{ url_for('frontend.local_plan', planning_authority= planning_authority.id ) }}">{{ planning_authority.id }} - {{ planning_authority.name }}</a></li>
+          {% for plan in planning_authority.local_plans %}
+            <li>{{ plan }}</li>
           {% endfor %}
         </ul>
 

@@ -13,6 +13,7 @@ flask-migrate = "*"
 flask-dotenv = "*"
 psycopg2 = "*"
 requests = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.7"
