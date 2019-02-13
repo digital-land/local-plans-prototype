@@ -31,8 +31,6 @@ class LocalPlan(db.Model):
 
     date = db.Column(db.Date)
 
-    # plan_documents = db.relationship('PlanDocument', back_populates='local_plan', lazy=True)
-
     def __repr__(self):
         return f'{self.local_plan} {self.status} {self.date}'
 

@@ -31,7 +31,7 @@ def create_other_data(pa, row):
         db.session.commit()
         print('loaded local plan', plan)
 
-        if status == 'adopted' and row.get('plan-document-url', None) is not None:
+        if status == 'adopted' and row.get('plan-document-url'):
             pd = PlanDocument(url=row.get('plan-document-url'))
             lp.plan_documents.append(pd)
             db.session.add(pa)
