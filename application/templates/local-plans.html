@@ -1,5 +1,21 @@
 {% extends "dlf-base.html" %}
 
+{% block beforeContent %}
+ {{ super() }}
+
+ {{ govukBreadcrumbs({
+   "items": [
+     {
+       "text": "Planning Authority",
+       "href": url_for("frontend.index")
+     },
+     {
+       "text": planning_authority.name
+     }
+   ]
+ }) }}
+
+{% endblock %}
 
 {% block content %}
   <div class="govuk-grid-row">
