@@ -11,10 +11,6 @@ def index():
     planning_authorities = PlanningAuthority.query.all()
     return render_template('index.html', planning_authorities=planning_authorities)
 
-@frontend.route('/local-plan-test')
-def local_plan_test():
-    return render_template('local-plan-test-ui.html')
-
 @frontend.route('/local-plans/<planning_authority>')
 def local_plan(planning_authority):
 	pla = PlanningAuthority.query.get(planning_authority)
