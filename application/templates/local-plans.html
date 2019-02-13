@@ -4,14 +4,13 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-xl">Local plan prototypes</h1>
-
-        <ul>
-          {% for plan in planning_authority.local_plans %}
-            <li>{{ plan }}</li>
-          {% endfor %}
-        </ul>
-
+        {% for group in grouped_plans %}
+            <ul>
+                {% for plan in group %}
+                    <li>{{ plan }}</li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
     </div>
 
   </div>
