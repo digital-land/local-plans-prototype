@@ -1,0 +1,90 @@
+
+.pims-stages {
+  margin-bottom: $govuk-gutter;
+  padding: $govuk-gutter-half;
+  color: govuk-colour("white");
+  background: govuk-colour("blue");
+
+  .govuk-details {
+    margin-bottom: 0;
+  }
+
+  .govuk-details__summary,
+  .govuk-table {
+    color: govuk-colour("white");
+  }
+
+  .govuk-details__text {
+    border: 0;
+  }
+}
+
+.current-stage {
+  @include govuk-font($size: 24);
+  margin-bottom: $govuk-gutter-half;
+  padding-bottom: $govuk-gutter-half;
+  border-bottom: 2px solid govuk-colour("white");
+}
+
+.stage-tag {
+  margin-right: $govuk-gutter-half;
+  padding: 0 8px;
+  border: 2px solid govuk-colour("white");
+  font-weight: bold;
+}
+
+.lp-section-box {
+  margin-bottom: $govuk-gutter;
+  padding: $govuk-gutter-half;
+  background: govuk-colour("grey-4");
+
+  // .govuk-button:last-child {
+  //   margin-bottom: 0;
+  // }
+}
+
+$url-btn-width: 100px;
+
+.url-list {
+  padding-left: 0;
+  list-style: none;
+}
+
+.url-item {
+  position: relative;
+  margin-bottom: 10px;
+  line-height: 27px;
+
+  .url-link {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    padding-top: 3px;
+    padding-right: (($url-btn-width * 2) + $govuk-gutter-half);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__controls {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: govuk-colour("grey-4");
+  }
+
+  &__btn {
+    display: inline-block;
+    width: $url-btn-width;
+    padding-top: 3px;
+    color: $govuk-text-colour !important;
+    background: govuk-colour("grey-3");
+    line-height: 27px;
+    text-align: center;
+    text-decoration: none;
+  }
+}
+
+.govuk-form-group:last-of-type {
+  margin-bottom: 0; // Remove margin from last item in nested groups
+}
