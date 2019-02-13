@@ -9,6 +9,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
 
+
 class DevelopmentConfig(Config):
     DEBUG = True
     WTF_CSRF_ENABLED = False

@@ -4,7 +4,7 @@ from flask import Flask, render_template
 from flask.cli import load_dotenv
 
 
-if os.environ['FLASK_ENV'] == 'production':
+if os.environ.get('FLASK_ENV') == 'production':
     dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
     load_dotenv(dotenv_path)
 
@@ -37,13 +37,19 @@ def register_blueprints(app):
 
 
 def register_extensions(app):
-
     from application.extensions import db
     db.init_app(app)
 
+    from application.models import PlanningAuthority
+    from application.extensions import migrate
+    migrate.init_app(app=app)
+
 
 def register_commands(app):
-    pass
+    from application.commands import load, clear
+    app.cli.add_command(load, name='load')
+    app.cli.add_command(clear, name='clear')
+
 
 def register_filters(app):
     pass

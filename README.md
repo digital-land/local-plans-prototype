@@ -23,4 +23,3 @@ Generate CSS
 Run flask server
 
     flask run
-# local-plans-prototype
