@@ -44,26 +44,25 @@
     </h2>
 
     <ul class="govuk-tabs__list">
+      {% for plan in plans %}
       <li class="govuk-tabs__list-item">
-        <a class="govuk-tabs__tab govuk-tabs__tab--selected" href="#past-day">
-          ARUJAN2005
+        <a class="govuk-tabs__tab govuk-tabs__tab--selected" href="#{{ plan.local_plan }}">
+          {{ plan.local_plan }}
         </a>
       </li>
-      <li class="govuk-tabs__list-item">
-        <a class="govuk-tabs__tab" href="#past-week">
-          ARUOCT2016
-        </a>
-      </li>
+      {% endfor %}
     </ul>
 
-    <section class="govuk-tabs__panel" id="past-day">
-      <h2 class="govuk-heading-l">ARUJAN2005</h2>
+    {% for plan in plans %}
+    <section class="govuk-tabs__panel" id="{{ plan.local_plan }}">
+      <h2 class="govuk-heading-l">{{ plan.local_plan }}</h2>
 
       <div class="pims-stages">
 
+        {% set lastState = plan.ordered_states()|last %}
         <div class="current-stage">
-          <span class="stage-tag">Adopted</span>
-          <span class="stage-date">Oct 2018</span>
+          <span class="stage-tag">{{ lastState.state }}</span>
+          <span class="stage-date">{{ lastState.date }}</span>
         </div>
 
         <details class="govuk-details">
@@ -75,22 +74,12 @@
           <div class="govuk-details__text">
             <table class="govuk-table">
               <tbody class="govuk-table__body">
+                {% for state in plan.ordered_states() %}
                 <tr class="govuk-table__row">
-                  <th class="govuk-table__cell" scope="row">Published</th>
-                  <td class="govuk-table__cell">Apr 2017</td>
+                  <th class="govuk-table__cell" scope="row">{{ state.state }}</th>
+                  <td class="govuk-table__cell">{{ state.date }}</td>
                 </tr>
-                <tr class="govuk-table__row">
-                  <th class="govuk-table__cell" scope="row">Submitted</th>
-                  <td class="govuk-table__cell">Jun 2017</td>
-                </tr>
-                <tr class="govuk-table__row">
-                  <th class="govuk-table__cell" scope="row">Validated</th>
-                  <td class="govuk-table__cell">Dec 2017</td>
-                </tr>
-                <tr class="govuk-table__row">
-                  <th class="govuk-table__cell" scope="row">Adopted</th>
-                  <td class="govuk-table__cell">Oct 2018</td>
-                </tr>
+                {% endfor %}
               </tbody>
             </table>
           </div>
@@ -101,20 +90,17 @@
       <section class="lp-section-box lp-section-box__urls">
         <h3 class="govuk-heading-m">Local plan URLs</h3>
         <ul class="url-list">
-          <li class="url-item">
-            <a class="url-link" href="https://www.barnsley.gov.uk/services/planning-and-buildings/local-planning-and-development/our-new-local-plan/barnsleys-local-plan/">https://www.barnsley.gov.uk/services/planning-and-buildings/local-planning-and-development/our-new-local-plan/barnsleys-local-plan/</a>
-            <div class="url-item__controls">
-              <a href="" class="url-item__btn url-edit-btn">Edit</a>
-              <a href="" class="url-item__btn">Remove</a>
-            </div>
-          </li>
-          <li class="url-item">
-            <a class="url-link" href="https://www.blackpool.gov.uk/Residents/Planning-environment-and-community/Planning/Planning-policy/Blackpool-local-plan/Core-strategy.aspx">https://www.blackpool.gov.uk/Residents/Planning-environment-and-community/Planning/Planning-policy/Blackpool-local-plan/Core-strategy.aspx</a>
-            <div class="url-item__controls">
-              <a href="" class="url-item__btn url-edit-btn">Edit</a>
-              <a href="" class="url-item__btn">Remove</a>
-            </div>
-          </li>
+          {% if plan.plan_documents|length > 0 %}
+            {% for doc in plan.plan_documents %}
+            <li class="url-item">
+              <a class="url-link" href="{{ doc.url }}">{{ doc.url }}</a>
+              <div class="url-item__controls">
+                <a href="" class="url-item__btn url-edit-btn">Edit</a>
+                <a href="" class="url-item__btn">Remove</a>
+              </div>
+            </li>
+            {% endfor %}
+          {% endif %}
         </ul>
 
         <form action="" class="govuk-form url-edit-form">
@@ -137,7 +123,7 @@
 
       <section class="lp-section-box lp-section-box__notes">
         <h3 class="govuk-heading-m">Notes</h3>
-        <p class="govuk-body note-contents">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nisi cum possimus nihil a delectus officiis, ipsam maiores aspernatur temporibus consectetur, sequi qui numquam distinctio odit! Labore sequi ex ipsum dolore!</p>
+        <p class="govuk-body note-contents">{{ plan.notes }}</p>
         <div class="edit">
           <button class="govuk-button dlf-secondary-button note-edit-btn">Edit<span class="govuk-visually-hidden">notes</span></button>
         </div>
@@ -176,11 +162,7 @@
       </section>
 
     </section>
-    <section class="govuk-tabs__panel govuk-tabs__panel--hidden" id="past-week">
-      <h2 class="govuk-heading-l">ARUOCT2016</h2>
-      
-
-    </section>
+    {% endfor %}
 
   </div>
 {% endblock %}
