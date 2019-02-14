@@ -6339,3 +6339,49 @@ p {
 .govuk-form-group:last-of-type {
   margin-bottom: 0;
 }
+
+.list-filter {
+  border-top: 1px solid #bfc1c3;
+  border-bottom: 1px solid #bfc1c3;
+  margin-top: 15px;
+  margin-bottom: 20px;
+  padding-top: 15px;
+}
+
+@media (min-width: 40.0625em) {
+  .list-filter {
+    margin-top: 15px;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .list-filter {
+    margin-bottom: 30px;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .list-filter {
+    padding-top: 20px;
+  }
+}
+
+.button-filter-table {
+  background: #005ea5;
+}
+
+.la-search-form {
+  padding-bottom: 15px;
+}
+
+.la-search-form .button-autocomplete-action {
+  margin-top: 15px;
+}
+
+.js-enabled .button-autocomplete-action {
+  display: none;
+}
+
+.js-enabled .autocomplete-used .button-autocomplete-action {
+  display: inline-block;
+}

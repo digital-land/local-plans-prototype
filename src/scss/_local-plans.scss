@@ -88,3 +88,35 @@ $url-btn-width: 100px;
 .govuk-form-group:last-of-type {
   margin-bottom: 0; // Remove margin from last item in nested groups
 }
+
+.list-filter {
+  border-top: 1px solid govuk-colour(grey-2);
+  border-bottom: 1px solid govuk-colour(grey-2);
+  @include govuk-responsive-margin(3, "top");
+  @include govuk-responsive-margin(6, "bottom");
+  @include govuk-responsive-padding(4, "top");
+}
+
+.button-filter-table {
+  background: govuk-colour("blue");
+}
+
+.la-search-form {
+  padding-bottom: $govuk-gutter-half;
+
+  .button-autocomplete-action {
+    margin-top: $govuk-gutter-half;
+  }
+}
+
+.js-enabled {
+  .button-autocomplete-action {
+    display: none;
+  }
+
+  .autocomplete-used {
+    .button-autocomplete-action {
+      display: inline-block;
+    }
+  }
+}
