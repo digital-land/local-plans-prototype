@@ -119,4 +119,54 @@ $url-btn-width: 100px;
       display: inline-block;
     }
   }
+
+  .lp-section-box__notes {
+    .note-edit-form {
+      display: none;
+    }
+
+    &.editing .note-edit-form {
+      display: block;
+    }
+  }
+
+  .lp-section-box__number {
+    .number-edit-form {
+      display: none;
+    }
+
+    &.editing .number-edit-form {
+      display: block;
+    }
+  }
+
+  .lp-section-box__urls {
+    .url-edit-form {
+      display: none;
+    }
+
+    &.editing .url-edit-form {
+      display: block;
+    }
+  }
+
+  .url-edit-form {
+    .label-add,
+    .label-edit {
+      display: none;
+    }
+
+    &.editing {
+      .label-edit {
+        display: block;
+      }
+    }
+
+    &.adding {
+      .label-add {
+        display: block;
+      }
+    }
+  }
 }
+

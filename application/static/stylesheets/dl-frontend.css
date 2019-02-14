@@ -6385,3 +6385,40 @@ p {
 .js-enabled .autocomplete-used .button-autocomplete-action {
   display: inline-block;
 }
+
+.js-enabled .lp-section-box__notes .note-edit-form {
+  display: none;
+}
+
+.js-enabled .lp-section-box__notes.editing .note-edit-form {
+  display: block;
+}
+
+.js-enabled .lp-section-box__number .number-edit-form {
+  display: none;
+}
+
+.js-enabled .lp-section-box__number.editing .number-edit-form {
+  display: block;
+}
+
+.js-enabled .lp-section-box__urls .url-edit-form {
+  display: none;
+}
+
+.js-enabled .lp-section-box__urls.editing .url-edit-form {
+  display: block;
+}
+
+.js-enabled .url-edit-form .label-add,
+.js-enabled .url-edit-form .label-edit {
+  display: none;
+}
+
+.js-enabled .url-edit-form.editing .label-edit {
+  display: block;
+}
+
+.js-enabled .url-edit-form.adding .label-add {
+  display: block;
+}
