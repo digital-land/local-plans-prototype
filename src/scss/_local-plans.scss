@@ -119,4 +119,15 @@ $url-btn-width: 100px;
       display: inline-block;
     }
   }
+
+  .lp-section-box__notes {
+    .note-edit-form {
+      display: none;
+    }
+
+    &.editing .note-edit-form {
+      display: block;
+    }
+  }
 }
+

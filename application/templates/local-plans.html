@@ -119,7 +119,7 @@
         <form action="" class="govuk-form">
           <div class="govuk-form-group">
             <label class="govuk-label" for="url-input">
-              Add URL to document
+              Add URL to a local plan document
             </label>
             <input class="govuk-input" id="url-input" name="url-input" type="text">
           </div>
@@ -128,16 +128,16 @@
           </div>
         </form>
 
-        <button class="govuk-button dlf-secondary-button">Add URL</button>
+        <button class="govuk-button dlf-secondary-button url-add-btn">Add URL</button>
       </section>
 
-      <section class="lp-section-box">
+      <section class="lp-section-box lp-section-box__notes">
         <h3 class="govuk-heading-m">Notes</h3>
-        <p class="govuk-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nisi cum possimus nihil a delectus officiis, ipsam maiores aspernatur temporibus consectetur, sequi qui numquam distinctio odit! Labore sequi ex ipsum dolore!</p>
+        <p class="govuk-body note-contents">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nisi cum possimus nihil a delectus officiis, ipsam maiores aspernatur temporibus consectetur, sequi qui numquam distinctio odit! Labore sequi ex ipsum dolore!</p>
         <div class="edit">
-          <button class="govuk-button dlf-secondary-button">Edit<span class="govuk-visually-hidden">notes</span></button>
+          <button class="govuk-button dlf-secondary-button note-edit-btn">Edit<span class="govuk-visually-hidden">notes</span></button>
         </div>
-        <form action="" class="govuk-form">
+        <form action="" class="govuk-form note-edit-form">
           <div class="govuk-form-group">
             <label class="govuk-label" for="more-detail">
               Provide some information about the Local Plan
@@ -167,7 +167,7 @@
           </div>
         </form>
         
-        <button class="govuk-button dlf-secondary-button">Add number</button>
+        <button class="govuk-button dlf-secondary-button number-edit-btn">Add number</button>
       </section>
 
     </section>
@@ -178,4 +178,22 @@
     </section>
 
   </div>
+{% endblock %}
+
+{% block bodyEnd %}
+<script>
+  const noteEditBtn = document.querySelector(".note-edit-btn");
+  const noteSection = document.querySelector(".lp-section-box__notes");
+  const numberEditBtn = document.querySelector(".number-edit-btn");
+  const urlAddBtn = document.querySelector(".url-add-btn");
+
+  noteEditBtn.addEventListener('click', (e) => {
+    noteSection.classList.add("editing");
+    const note = noteSection.querySelector('.note-contents').textContent;
+    if(note !== "") {
+      noteSection.querySelector('textarea').value = note;
+    }
+    console.log(note);
+  });
+</script>
 {% endblock %}

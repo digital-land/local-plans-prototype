@@ -6385,3 +6385,11 @@ p {
 .js-enabled .autocomplete-used .button-autocomplete-action {
   display: inline-block;
 }
+
+.js-enabled .lp-section-box__notes .note-edit-form {
+  display: none;
+}
+
+.js-enabled .lp-section-box__notes.editing .note-edit-form {
+  display: block;
+}
