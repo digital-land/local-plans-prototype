@@ -52,8 +52,9 @@ def register_commands(app):
 
 
 def register_filters(app):
-    pass
-
+    from application.filters import format_date, format_month_and_year
+    app.add_template_filter(format_date)
+    app.add_template_filter(format_month_and_year)
 
 def register_context_processors(app):
 

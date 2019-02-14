@@ -24,7 +24,7 @@
             <p>plan: {{ plan.local_plan }}: adopted: {{ plan.is_adopted() }}</p>
             <ul>
                 {% for state in plan.ordered_states() %}
-                    <li>{{ state.state }} {{ state.date }}</li>
+                    <li>{{ state.state }} {{ state.date | format_month_and_year }}</li>
                 {% endfor %}
             </ul>
         {% endfor %}
