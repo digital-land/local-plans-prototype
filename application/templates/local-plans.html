@@ -18,20 +18,6 @@
 {% endblock %}
 
 {% block content %}
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        {% for plan in plans %}
-            <p>plan: {{ plan.local_plan }}: adopted: {{ plan.is_adopted() }}</p>
-            <ul>
-                {% for state in plan.ordered_states() %}
-                    <li>{{ state.state }} {{ state.date | format_month_and_year }}</li>
-                {% endfor %}
-            </ul>
-        {% endfor %}
-    </div>
-  </div>
-
-  <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
 
   <span class="govuk-caption-l">Local plan data</span>
   <h1 class="govuk-heading-l">{{ planning_authority.name }}</h1>
