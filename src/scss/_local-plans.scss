@@ -129,5 +129,14 @@ $url-btn-width: 100px;
       display: block;
     }
   }
-}
 
+  .lp-section-box__number {
+    .number-edit-form {
+      display: none;
+    }
+
+    &.editing .number-edit-form {
+      display: block;
+    }
+  }
+}

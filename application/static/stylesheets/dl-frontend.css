@@ -6393,3 +6393,11 @@ p {
 .js-enabled .lp-section-box__notes.editing .note-edit-form {
   display: block;
 }
+
+.js-enabled .lp-section-box__number .number-edit-form {
+  display: none;
+}
+
+.js-enabled .lp-section-box__number.editing .number-edit-form {
+  display: block;
+}
