@@ -6288,6 +6288,7 @@ p {
   padding: 0 8px;
   border: 2px solid #ffffff;
   font-weight: bold;
+  text-transform: uppercase;
 }
 
 .lp-section-box {
