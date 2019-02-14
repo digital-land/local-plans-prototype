@@ -305,6 +305,7 @@
       .then(data => {
         const notesEl = section.querySelector(".note-contents")
         notesEl.textContent = data.notes;
+        section.classList.remove("editing");
         if(section.querySelector('.secondary-text')) {
           section.querySelector('.secondary-text').remove();
         }
@@ -332,6 +333,7 @@
       .then(data => {
         const numberEl = section.querySelector(".number-contents")
         numberEl.textContent = data.housing_units;
+        section.classList.remove("editing");
         if(section.querySelector('.secondary-text')) {
           section.querySelector('.secondary-text').remove();
         }
