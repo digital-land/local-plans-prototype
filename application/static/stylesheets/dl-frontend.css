@@ -6422,3 +6422,7 @@ p {
 .js-enabled .url-edit-form.adding .label-add {
   display: block;
 }
+
+.secondary-text {
+  color: #bfc1c3;
+}

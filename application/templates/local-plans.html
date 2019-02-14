@@ -62,7 +62,7 @@
         {% set lastState = plan.ordered_states()|last %}
         <div class="current-stage">
           <span class="stage-tag">{{ lastState.state }}</span>
-          <span class="stage-date">{{ lastState.date }}</span>
+          <span class="stage-date">{{ lastState.date | format_month_and_year }}</span>
         </div>
 
         <details class="govuk-details">
@@ -77,7 +77,7 @@
                 {% for state in plan.ordered_states() %}
                 <tr class="govuk-table__row">
                   <th class="govuk-table__cell" scope="row">{{ state.state }}</th>
-                  <td class="govuk-table__cell">{{ state.date }}</td>
+                  <td class="govuk-table__cell">{{ state.date | format_month_and_year }}</td>
                 </tr>
                 {% endfor %}
               </tbody>
@@ -123,7 +123,12 @@
 
       <section class="lp-section-box lp-section-box__notes">
         <h3 class="govuk-heading-m">Notes</h3>
+        {% if plan.notes == None %}
+        <p class="govuk-body note-contents"></p>
+        <p class="govuk-body secondary-text">-- no notes captured --</p>
+        {% else %}
         <p class="govuk-body note-contents">{{ plan.notes }}</p>
+        {% endif %}
         <div class="edit">
           <button class="govuk-button dlf-secondary-button note-edit-btn">Edit<span class="govuk-visually-hidden">notes</span></button>
         </div>
@@ -145,6 +150,12 @@
 
       <section class="lp-section-box lp-section-box__number">
         <h3 class="govuk-heading-m">Number of houses</h3>
+        {% if plan.number_of_houses == None %}
+        <p class="govuk-body number-contents"></p>
+        <p class="govuk-body secondary-text">-- no number captured --</p>
+        {% else %}
+        <p class="govuk-body number-contents">{{ plan.number_of_houses }}</p>
+        {% endif %}
         <p class="number-contents"></p>
         <form action="" class="govuk-form number-edit-form">
           <div class="govuk-form-group">
