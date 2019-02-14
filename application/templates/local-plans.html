@@ -97,29 +97,32 @@
 
       </div>
 
-      <section class="lp-section-box">
+      <section class="lp-section-box lp-section-box__urls">
         <h3 class="govuk-heading-m">Local plan URLs</h3>
         <ul class="url-list">
           <li class="url-item">
             <a class="url-link" href="https://www.barnsley.gov.uk/services/planning-and-buildings/local-planning-and-development/our-new-local-plan/barnsleys-local-plan/">https://www.barnsley.gov.uk/services/planning-and-buildings/local-planning-and-development/our-new-local-plan/barnsleys-local-plan/</a>
             <div class="url-item__controls">
-              <a href="" class="url-item__btn">Edit</a>
+              <a href="" class="url-item__btn url-edit-btn">Edit</a>
               <a href="" class="url-item__btn">Remove</a>
             </div>
           </li>
           <li class="url-item">
             <a class="url-link" href="https://www.blackpool.gov.uk/Residents/Planning-environment-and-community/Planning/Planning-policy/Blackpool-local-plan/Core-strategy.aspx">https://www.blackpool.gov.uk/Residents/Planning-environment-and-community/Planning/Planning-policy/Blackpool-local-plan/Core-strategy.aspx</a>
             <div class="url-item__controls">
-              <a href="" class="url-item__btn">Edit</a>
+              <a href="" class="url-item__btn url-edit-btn">Edit</a>
               <a href="" class="url-item__btn">Remove</a>
             </div>
           </li>
         </ul>
 
-        <form action="" class="govuk-form">
+        <form action="" class="govuk-form url-edit-form">
           <div class="govuk-form-group">
-            <label class="govuk-label" for="url-input">
+            <label class="govuk-label label-add" for="url-input">
               Add URL to a local plan document
+            </label>
+            <label class="govuk-label label-edit" for="url-input">
+              Edit URL to a local plan document
             </label>
             <input class="govuk-input" id="url-input" name="url-input" type="text">
           </div>
@@ -188,6 +191,7 @@
   const numberEditBtn = document.querySelector(".number-edit-btn");
   const numberSection = document.querySelector(".lp-section-box__number");
   const urlAddBtn = document.querySelector(".url-add-btn");
+  const urlEditBtns = document.querySelectorAll(".url-edit-btn");
 
   noteEditBtn.addEventListener('click', (e) => {
     noteSection.classList.add("editing");
@@ -206,6 +210,36 @@
     } else {
       console.log("No number set");
     }
+  });
+
+  function getNearestSection(el) {
+    return el.closest(".lp-section-box");
+  }
+
+  function switchClasses(el, toAdd, toRemove) {
+    el.classList.remove(toRemove);
+    el.classList.add(toAdd);
+  }
+
+  urlAddBtn.addEventListener('click', (e) => {
+    const current = e.currentTarget;
+    const urlSection = getNearestSection(e.currentTarget);
+    urlSection.classList.add('editing');
+    urlSection.querySelector('.url-edit-form input[type=text]').value = "";
+    const form = urlSection.querySelector('.url-edit-form');
+    switchClasses(form, "adding", "editing");
+  });
+
+  urlEditBtns.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const urlSection = getNearestSection(e.currentTarget);
+      const currentUrl = e.currentTarget.closest('.url-item').querySelector(".url-link").textContent;
+      urlSection.classList.add('editing');
+      urlSection.querySelector('.url-edit-form input[type=text]').value = currentUrl;
+      const form = urlSection.querySelector('.url-edit-form');
+      switchClasses(form, "editing", "adding");
+    });
   });
 </script>
 {% endblock %}

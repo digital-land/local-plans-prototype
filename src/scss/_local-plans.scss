@@ -139,4 +139,34 @@ $url-btn-width: 100px;
       display: block;
     }
   }
+
+  .lp-section-box__urls {
+    .url-edit-form {
+      display: none;
+    }
+
+    &.editing .url-edit-form {
+      display: block;
+    }
+  }
+
+  .url-edit-form {
+    .label-add,
+    .label-edit {
+      display: none;
+    }
+
+    &.editing {
+      .label-edit {
+        display: block;
+      }
+    }
+
+    &.adding {
+      .label-add {
+        display: block;
+      }
+    }
+  }
 }
+
