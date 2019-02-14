@@ -22,7 +22,7 @@
   <span class="govuk-caption-l">Local plan data</span>
   <h1 class="govuk-heading-l">{{ planning_authority.name }}</h1>
 
-  <h3 class="govuk-heading-m">Local plans with PIMS</h3>
+  <h3 class="govuk-heading-m">Local plans</h3>
 
   <div class="govuk-tabs" data-module="tabs">
     <h2 class="govuk-tabs__title">
@@ -121,11 +121,8 @@
         <form action="" class="govuk-form note-edit-form">
           <div class="govuk-form-group">
             <label class="govuk-label" for="more-detail">
-              Provide some information about the Local Plan
+              Provide some information about the local plan
             </label>
-            <span id="more-detail-hint" class="govuk-hint">
-              Do this and this.....
-            </span>
             <textarea class="govuk-textarea" id="more-detail" name="more-detail" rows="5" aria-describedby="more-detail-hint"></textarea>
           </div>
           <div class="govuk-form-group">
@@ -135,7 +132,7 @@
       </section>
 
       <section class="lp-section-box lp-section-box__number">
-        <h3 class="govuk-heading-m">Number of houses</h3>
+        <h3 class="govuk-heading-m">Number of housing units</h3>
         {% if plan.number_of_houses == None %}
         <p class="govuk-body number-contents"></p>
         <p class="govuk-body secondary-text">-- no number captured --</p>
