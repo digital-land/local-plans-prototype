@@ -1,13 +1,9 @@
 import csv
-import json
-import sqlalchemy
-from contextlib import closing
-
 import click
 import requests
-from flask.cli import with_appcontext
-from sqlalchemy.dialects.postgresql import ARRAY, JSON
 
+from flask.cli import with_appcontext
+from contextlib import closing
 from application.extensions import db
 from application.models import PlanningAuthority, LocalPlan, PlanDocument
 
