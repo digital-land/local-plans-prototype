@@ -15,6 +15,7 @@ psycopg2 = "*"
 requests = "*"
 python-dotenv = "*"
 gunicorn = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.7"
