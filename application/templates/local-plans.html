@@ -54,7 +54,7 @@
         <details class="govuk-details">
           <summary class="govuk-details__summary">
             <span class="govuk-details__summary-text">
-             PIMS Timeline
+             PINS Timeline
             </span>
           </summary>
           <div class="govuk-details__text">
@@ -89,7 +89,7 @@
           {% endif %}
         </ul>
 
-        <form action="" class="govuk-form url-edit-form">
+        <form action="{{ url_for('frontend.add_document_to_plan', planning_authority=planning_authority.id, local_plan=plan.local_plan )}}" class="govuk-form url-edit-form">
           <div class="govuk-form-group">
             <label class="govuk-label label-add" for="url-input">
               Add URL to a local plan document
@@ -100,7 +100,7 @@
             <input class="govuk-input" id="url-input" name="url-input" type="text">
           </div>
           <div class="govuk-form-group">
-            <button class="govuk-button">Save</button>
+            <button class="govuk-button url-save-btn">Save</button>
           </div>
         </form>
 
@@ -163,30 +163,34 @@
 
 {% block bodyEnd %}
 <script>
-  const noteEditBtn = document.querySelector(".note-edit-btn");
-  const numberEditBtn = document.querySelector(".number-edit-btn");
-  const urlAddBtn = document.querySelector(".url-add-btn");
+  const noteEditBtns = document.querySelectorAll(".note-edit-btn");
+  const numberEditBtns = document.querySelectorAll(".number-edit-btn");
+  const urlAddBtns = document.querySelectorAll(".url-add-btn");
   const urlEditBtns = document.querySelectorAll(".url-edit-btn");
+  const urlSaveBtns = document.querySelectorAll(".url-save-btn");
 
-  noteEditBtn.addEventListener('click', (e) => {
-    const noteSection = getNearestSection(e.currentTarget);
-    noteSection.classList.add("editing");
-    const note = noteSection.querySelector('.note-contents').textContent;
-    if(note !== "") {
-      noteSection.querySelector('textarea').value = note;
-    }
-    console.log(note);
+  noteEditBtns.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const noteSection = getNearestSection(e.currentTarget);
+      noteSection.classList.add("editing");
+      const note = noteSection.querySelector('.note-contents').textContent;
+      if(note !== "") {
+        noteSection.querySelector('textarea').value = note;
+      }
+    });
   });
 
-  numberEditBtn.addEventListener('click', (e) => {
-    const numberSection = getNearestSection(e.currentTarget);
-    numberSection.classList.add("editing");
-    const number = numberSection.querySelector('.number-contents').textContent;
-    if(number !== "") {
-      numberSection.querySelector('input[type=text]').value = number;
-    } else {
-      console.log("No number set");
-    }
+  numberEditBtns.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const numberSection = getNearestSection(e.currentTarget);
+      numberSection.classList.add("editing");
+      const number = numberSection.querySelector('.number-contents').textContent;
+      if(number !== "") {
+        numberSection.querySelector('input[type=text]').value = number;
+      } else {
+        console.log("No number set");
+      }
+    });
   });
 
   function getNearestSection(el) {
@@ -198,13 +202,15 @@
     el.classList.add(toAdd);
   }
 
-  urlAddBtn.addEventListener('click', (e) => {
-    const current = e.currentTarget;
-    const urlSection = getNearestSection(e.currentTarget);
-    urlSection.classList.add('editing');
-    urlSection.querySelector('.url-edit-form input[type=text]').value = "";
-    const form = urlSection.querySelector('.url-edit-form');
-    switchClasses(form, "adding", "editing");
+  urlAddBtns.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const current = e.currentTarget;
+      const urlSection = getNearestSection(e.currentTarget);
+      urlSection.classList.add('editing');
+      urlSection.querySelector('.url-edit-form input[type=text]').value = "";
+      const form = urlSection.querySelector('.url-edit-form');
+      switchClasses(form, "adding", "editing");
+    });
   });
 
   urlEditBtns.forEach((btn) => {
@@ -216,6 +222,27 @@
       urlSection.querySelector('.url-edit-form input[type=text]').value = currentUrl;
       const form = urlSection.querySelector('.url-edit-form');
       switchClasses(form, "editing", "adding");
+    });
+  });
+
+  urlSaveBtns.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const form = e.currentTarget.closest("form");
+      const url = form.getAttribute("action");
+      var data = {
+        url: form.querySelector("input[type=text]").value
+      };
+      console.log(data);
+      fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => console.log(data))
     });
   });
 </script>

@@ -31,4 +31,4 @@ def add_document_to_plan(planning_authority, local_plan):
     db.session.add(plan)
     db.session.commit()
 
-    return jsonify({'OK': 200})
+    return jsonify({'OK': 200, 'url': url})
