@@ -162,12 +162,25 @@
 {% endblock %}
 
 {% block bodyEnd %}
+<script src="/static/javascripts/vendor/handlebars-v4.1.0.js"></script>
+{% raw %}
+<script id="url-item-template" type="text/x-handlebars-template">
+    <a class="url-link" href="{{ url }}">{{ url }}</a>
+    <div class="url-item__controls">
+      <a href="" class="url-item__btn url-edit-btn govuk-visually-hidden">Edit</a>
+      <a href="" class="url-item__btn">Remove</a>
+    </div>
+</script>
+{% endraw %}
 <script>
   const noteEditBtns = document.querySelectorAll(".note-edit-btn");
   const numberEditBtns = document.querySelectorAll(".number-edit-btn");
   const urlAddBtns = document.querySelectorAll(".url-add-btn");
   const urlEditBtns = document.querySelectorAll(".url-edit-btn");
   const urlSaveBtns = document.querySelectorAll(".url-save-btn");
+
+  var source   = document.getElementById("url-item-template").innerHTML;
+  var urlTemplate = Handlebars.compile(source);
 
   noteEditBtns.forEach((btn) => {
     btn.addEventListener('click', (e) => {
@@ -230,6 +243,7 @@
       e.preventDefault();
       const form = e.currentTarget.closest("form");
       const url = form.getAttribute("action");
+      const urlSection = getNearestSection(e.currentTarget);
       var data = {
         url: form.querySelector("input[type=text]").value
       };
@@ -242,7 +256,14 @@
         body: JSON.stringify(data)
       })
       .then(response => response.json())
-      .then(data => console.log(data))
+      .then(data => {
+        const urlList = urlSection.querySelector(".url-list")
+        var item = document.createElement("li");
+        item.classList.add('url-item');
+        item.innerHTML = urlTemplate(data);
+        urlList.appendChild( item );
+        form.querySelector("input[type=text]").value = "";
+      })
     });
   });
 </script>
