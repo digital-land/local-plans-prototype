@@ -118,7 +118,7 @@
         <div class="edit">
           <button class="govuk-button dlf-secondary-button note-edit-btn">Edit<span class="govuk-visually-hidden">notes</span></button>
         </div>
-        <form action="" class="govuk-form note-edit-form">
+        <form action="{{ url_for('frontend.add_document_to_plan', planning_authority=planning_authority.id, local_plan=plan.local_plan )}}" class="govuk-form note-edit-form">
           <div class="govuk-form-group">
             <label class="govuk-label" for="more-detail">
               Provide some information about the local plan
@@ -126,7 +126,7 @@
             <textarea class="govuk-textarea" id="more-detail" name="more-detail" rows="5" aria-describedby="more-detail-hint"></textarea>
           </div>
           <div class="govuk-form-group">
-            <button class="govuk-button">Save</button>
+            <button class="govuk-button notes-save-btn">Save</button>
           </div>
         </form>
       </section>
@@ -140,7 +140,7 @@
         <p class="govuk-body number-contents">{{ plan.number_of_houses }}</p>
         {% endif %}
         <p class="number-contents"></p>
-        <form action="" class="govuk-form number-edit-form">
+        <form action="{{ url_for('frontend.add_document_to_plan', planning_authority=planning_authority.id, local_plan=plan.local_plan )}}" class="govuk-form number-edit-form">
           <div class="govuk-form-group">
             <label class="govuk-label" for="number-input">
               Homes to be built
@@ -148,7 +148,7 @@
             <input class="govuk-input govuk-input--width-10" id="number-input" name="number-input" type="text">
           </div>
           <div class="govuk-form-group">
-            <button class="govuk-button">Save</button>
+            <button class="govuk-button number-save-btn">Save</button>
           </div>
         </form>
         
@@ -174,7 +174,9 @@
 {% endraw %}
 <script>
   const noteEditBtns = document.querySelectorAll(".note-edit-btn");
+  const noteSaveBtns = document.querySelectorAll(".notes-save-btn");
   const numberEditBtns = document.querySelectorAll(".number-edit-btn");
+  const numberSaveBtns = document.querySelectorAll(".number-save-btn");
   const urlAddBtns = document.querySelectorAll(".url-add-btn");
   const urlEditBtns = document.querySelectorAll(".url-edit-btn");
   const urlSaveBtns = document.querySelectorAll(".url-save-btn");
@@ -280,7 +282,61 @@
       .then(data => {
         currentTarget.closest('.url-item').remove();
       });
-    })
+    });
+  });
+
+  noteSaveBtns.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const form = e.currentTarget.closest("form");
+      const url = form.getAttribute("action");
+      const section = getNearestSection(e.currentTarget);
+      var data = {
+        notes: form.querySelector("textarea").value
+      };
+      fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        const notesEl = section.querySelector(".note-contents")
+        notesEl.textContent = data.notes;
+        if(section.querySelector('.secondary-text')) {
+          section.querySelector('.secondary-text').remove();
+        }
+      });
+    });
+  });
+
+  numberSaveBtns.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const form = e.currentTarget.closest("form");
+      const url = form.getAttribute("action");
+      const section = getNearestSection(e.currentTarget);
+      var data = {
+        housing_units: form.querySelector("input[type=text]").value
+      };
+      fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        const numberEl = section.querySelector(".number-contents")
+        numberEl.textContent = data.housing_units;
+        if(section.querySelector('.secondary-text')) {
+          section.querySelector('.secondary-text').remove();
+        }
+      });
+    });
   });
 </script>
 {% endblock %}
