@@ -48,3 +48,10 @@ def add_document_to_plan(planning_authority, local_plan):
 
     return jsonify(resp)
 
+
+@frontend.route('/local-plans/<local_plan>/document/<document_id>', methods=['DELETE'])
+def remove_document_from_plan(local_plan, document_id):
+    plan = PlanDocument.query.filter_by(local_plan_id=local_plan, id=document_id).one()
+    db.session.delete(plan)
+    db.session.commit()
+    return jsonify({204: 'No Contest'})
