@@ -187,13 +187,12 @@
 {% block bodyEnd %}
 <script>
   const noteEditBtn = document.querySelector(".note-edit-btn");
-  const noteSection = document.querySelector(".lp-section-box__notes");
   const numberEditBtn = document.querySelector(".number-edit-btn");
-  const numberSection = document.querySelector(".lp-section-box__number");
   const urlAddBtn = document.querySelector(".url-add-btn");
   const urlEditBtns = document.querySelectorAll(".url-edit-btn");
 
   noteEditBtn.addEventListener('click', (e) => {
+    const noteSection = getNearestSection(e.currentTarget);
     noteSection.classList.add("editing");
     const note = noteSection.querySelector('.note-contents').textContent;
     if(note !== "") {
@@ -203,6 +202,7 @@
   });
 
   numberEditBtn.addEventListener('click', (e) => {
+    const numberSection = getNearestSection(e.currentTarget);
     numberSection.classList.add("editing");
     const number = numberSection.querySelector('.number-contents').textContent;
     if(number !== "") {
