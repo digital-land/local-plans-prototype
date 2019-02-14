@@ -82,7 +82,7 @@
               <a class="url-link" href="{{ doc.url }}">{{ doc.url }}</a>
               <div class="url-item__controls">
                 <a href="" class="url-item__btn url-edit-btn govuk-visually-hidden">Edit</a>
-                <a href="" class="url-item__btn">Remove</a>
+                <a href="{{ url_for('frontend.remove_document_from_plan', document_id=doc.id, local_plan=plan.local_plan) }}" class="url-item__btn url-remove-btn">Remove</a>
               </div>
             </li>
             {% endfor %}
@@ -178,6 +178,7 @@
   const urlAddBtns = document.querySelectorAll(".url-add-btn");
   const urlEditBtns = document.querySelectorAll(".url-edit-btn");
   const urlSaveBtns = document.querySelectorAll(".url-save-btn");
+  const urlRemoveBtns = document.querySelectorAll(".url-remove-btn");
 
   var source   = document.getElementById("url-item-template").innerHTML;
   var urlTemplate = Handlebars.compile(source);
@@ -265,6 +266,21 @@
         form.querySelector("input[type=text]").value = "";
       })
     });
+  });
+
+  urlRemoveBtns.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const currentTarget = e.currentTarget;
+      const url = e.currentTarget.href;
+      fetch(url, {
+        method: "DELETE"
+      })
+      .then(response => response.json())
+      .then(data => {
+        currentTarget.closest('.url-item').remove();
+      });
+    })
   });
 </script>
 {% endblock %}
