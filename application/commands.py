@@ -45,10 +45,11 @@ def load():
         for row in reader:
             id = row['organisation'].strip()
             name = row['name'].strip()
+            plan_policy_url = row['plan-policy-url']
             if id != '':
                 pa = PlanningAuthority.query.get(id)
                 if pa is None:
-                    pa = PlanningAuthority(id=id, name=name)
+                    pa = PlanningAuthority(id=id, name=name, plan_policy_url=plan_policy_url)
                     db.session.add(pa)
                     db.session.commit()
                     print(row['organisation'], row['name'])

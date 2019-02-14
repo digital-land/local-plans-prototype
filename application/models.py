@@ -44,6 +44,8 @@ class PlanningAuthority(db.Model):
     id = db.Column(db.String(64), primary_key=True)
     name = db.Column(db.String(256))
 
+    plan_policy_url = db.Column(db.String())
+
     local_plans = db.relationship('LocalPlan', back_populates='planning_authority', lazy=True)
 
 
