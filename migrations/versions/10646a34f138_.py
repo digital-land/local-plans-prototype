@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 3e60ac0fe412
+Revision ID: 10646a34f138
 Revises: 
-Create Date: 2019-02-13 15:04:31.386710
+Create Date: 2019-02-14 11:32:18.501790
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = '3e60ac0fe412'
+revision = '10646a34f138'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -25,20 +25,20 @@ def upgrade():
     )
     op.create_table('local_plan',
     sa.Column('local_plan', sa.String(), nullable=False),
-    sa.Column('status', sa.String(), nullable=False),
     sa.Column('planning_policy_url', sa.String(), nullable=True),
     sa.Column('planning_authority_id', sa.String(length=64), nullable=False),
-    sa.Column('date', sa.Date(), nullable=True),
+    sa.Column('states', postgresql.ARRAY(sa.String()), server_default='{}', nullable=True),
+    sa.Column('notes', sa.String(), nullable=True),
+    sa.Column('number_of_houses', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['planning_authority_id'], ['planning_authority.id'], ),
-    sa.PrimaryKeyConstraint('local_plan', 'status')
+    sa.PrimaryKeyConstraint('local_plan')
     )
     op.create_table('plan_document',
     sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('plan_document_type', sa.String(), nullable=True),
     sa.Column('url', sa.String(), nullable=True),
-    sa.Column('local_plan_id', sa.String(), nullable=False),
-    sa.Column('local_plan_status', sa.String(), nullable=False),
-    sa.ForeignKeyConstraint(['local_plan_id', 'local_plan_status'], ['local_plan.local_plan', 'local_plan.status'], ),
+    sa.Column('local_plan_id', sa.String(length=64), nullable=False),
+    sa.ForeignKeyConstraint(['local_plan_id'], ['local_plan.local_plan'], ),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###

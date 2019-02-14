@@ -1,42 +1,42 @@
 import csv
+import json
+import sqlalchemy
 from contextlib import closing
 
 import click
 import requests
 from flask.cli import with_appcontext
+from sqlalchemy.dialects.postgresql import ARRAY, JSON
 
 from application.extensions import db
 from application.models import PlanningAuthority, LocalPlan, PlanDocument
 
 
 def create_other_data(pa, row):
+    plan_id = row['local-plan'].strip()
+    plan = LocalPlan.query.get(plan_id)
+    if plan is not None:
+        status = [row['status'].strip(), row['date'].strip()]
+        plan.states.append(status)
+        print('updated local plan', plan_id)
+    else:
+        plan = LocalPlan()
+        plan.local_plan = plan_id
+        plan.planning_policy_url = row['plan-policy-url'].strip()
+        plan.states = [[row['status'].strip(), row['date'].strip()]]
+        pa.local_plans.append(plan)
+        print('created local plan', plan_id)
 
-    plan = row['local-plan'].strip()
-    if 'None' not in plan:
-        status = row['status'].strip()
-        planning_policy_url = row['plan-policy-url'].strip()
-        date = row['date'].strip()
-        entry_id = row['entry-number'].strip()
+    db.session.add(pa)
+    db.session.commit()
+    print('loaded local plan', plan_id)
 
-        lp = LocalPlan()
-        lp.local_plan = plan
-        lp.status = status
-        lp.planning_policy_url = planning_policy_url
-        if date:
-            lp.date = date
-        lp.entry_id = entry_id
-
-        pa.local_plans.append(lp)
+    if row['status'].strip() == 'adopted' and row.get('plan-document-url') and row.get('plan-document-url') != '?':
+        pd = PlanDocument(url=row.get('plan-document-url'))
+        plan.plan_documents.append(pd)
         db.session.add(pa)
         db.session.commit()
-        print('loaded local plan', plan)
-
-        if status == 'adopted' and row.get('plan-document-url') and row.get('plan-document-url') != '?':
-            pd = PlanDocument(url=row.get('plan-document-url'))
-            lp.plan_documents.append(pd)
-            db.session.add(pa)
-            db.session.commit()
-            print('loaded plan document for plan', plan, 'document', row.get('plan-document-url'))
+        print('loaded plan document for plan', plan, 'document', row.get('plan-document-url'))
 
 
 @click.command()

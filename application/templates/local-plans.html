@@ -20,10 +20,11 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        {% for group in grouped_plans %}
+        {% for plan in plans %}
+            <p>plan: {{ plan.local_plan }}: adopted: {{ plan.is_adopted() }}</p>
             <ul>
-                {% for plan in group %}
-                    <li>{{ plan }}</li>
+                {% for state in plan.ordered_states() %}
+                    <li>{{ state.state }} {{ state.date }}</li>
                 {% endfor %}
             </ul>
         {% endfor %}

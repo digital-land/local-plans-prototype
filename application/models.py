@@ -1,13 +1,42 @@
 import uuid
 
-from sqlalchemy import ForeignKeyConstraint
-
+from datetime import datetime
+from sqlalchemy.ext.mutable import Mutable
 from application.extensions import db
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSON
 
 
 def _generate_uuid():
     return uuid.uuid4()
+
+
+class MutableList(Mutable, list):
+
+    def __setitem__(self, key, value):
+        list.__setitem__(self, key, value)
+        self.changed()
+
+    def __delitem__(self, key):
+        list.__delitem__(self, key)
+        self.changed()
+
+    def append(self, value):
+        list.append(self, value)
+        self.changed()
+
+    def pop(self, index=0):
+        value = list.pop(self, index)
+        self.changed()
+        return value
+
+    @classmethod
+    def coerce(cls, key, value):
+        if not isinstance(value, MutableList):
+            if isinstance(value, list):
+                return MutableList(value)
+            return Mutable.coerce(key, value)
+        else:
+            return value
 
 
 class PlanningAuthority(db.Model):
@@ -18,21 +47,37 @@ class PlanningAuthority(db.Model):
     local_plans = db.relationship('LocalPlan', back_populates='planning_authority', lazy=True)
 
 
+def _parse_date(datestr):
+    return datetime.strptime(datestr, '%Y-%m-%d')
+
+
 class LocalPlan(db.Model):
 
     local_plan = db.Column(db.String(), primary_key=True)
-    status = db.Column(db.String(), primary_key=True)
 
-    entry_id = db.Integer()
     planning_policy_url = db.Column(db.String())
 
     planning_authority_id = db.Column(db.String(64), db.ForeignKey('planning_authority.id'), nullable=False)
     planning_authority = db.relationship('PlanningAuthority', back_populates='local_plans')
 
-    date = db.Column(db.Date)
+    states = db.Column(MutableList.as_mutable(ARRAY(db.String())), server_default='{}')
+
+    notes = db.Column(db.String())
+    number_of_houses = db.Column(db.Integer())
+
+    plan_documents = db.relationship('PlanDocument', back_populates='local_plan', lazy=True)
+
+    def is_adopted(self):
+        return 'adopted' in [s[0] for s in self.states]
+        
+    def ordered_states(self):
+        ordered = []
+        for s in self.states:
+            ordered.append(State(state=s[0], date=_parse_date(s[1])))
+        return sorted(ordered)
 
     def __repr__(self):
-        return f'{self.local_plan} {self.status} {self.date}'
+        return f'{self.local_plan} {self.states}'
 
 
 class PlanDocument(db.Model):
@@ -41,20 +86,15 @@ class PlanDocument(db.Model):
     plan_document_type = db.Column(db.String)
     url = db.Column(db.String())
 
-    local_plan_id = db.Column(db.String(), nullable=False)
-    local_plan_status = db.Column(db.String(), nullable=False)
-
-    local_plan = db.relationship('LocalPlan',
-        foreign_keys=[local_plan_id, local_plan_status],
-        remote_side=[LocalPlan.local_plan, LocalPlan.status],
-        backref=db.backref('plan_documents'),
-    )
+    local_plan_id = db.Column(db.String(64), db.ForeignKey('local_plan.local_plan'), nullable=False)
+    local_plan = db.relationship('LocalPlan', back_populates='plan_documents')
 
 
-    __table_args__ = (
-        ForeignKeyConstraint(
-            ['local_plan_id', 'local_plan_status'],
-            ['local_plan.local_plan', 'local_plan.status'],
-        ),
-    )
+class State:
 
+    def __init__(self, state, date):
+        self.state = state
+        self.date = date
+
+    def __lt__(self, other):
+        return self.date < other.date
