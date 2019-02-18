@@ -32,7 +32,8 @@ def add_document_to_plan(planning_authority, local_plan):
         plan.plan_documents.append(document)
         db.session.add(plan)
         db.session.commit()
-        resp = {'OK': 200, 'url': url, 'document_id': str(document.id)}
+        remove_url = url_for('frontend.remove_document_from_plan', document_id=str(document.id), local_plan=plan.local_plan)
+        resp = {'OK': 200, 'url': url, 'document_id': str(document.id), 'remove_url': remove_url}
     elif request.json.get('notes') is not None:
         notes = request.json.get('notes')
         plan.notes = notes

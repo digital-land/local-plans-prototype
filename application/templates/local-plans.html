@@ -168,7 +168,7 @@
     <a class="url-link" href="{{ url }}">{{ url }}</a>
     <div class="url-item__controls">
       <a href="" class="url-item__btn url-edit-btn govuk-visually-hidden">Edit</a>
-      <a href="" class="url-item__btn">Remove</a>
+      <a href="{{ remove_url }}" class="url-item__btn url-remove-btn">Remove</a>
     </div>
 </script>
 {% endraw %}
@@ -238,7 +238,7 @@
         body: JSON.stringify(data)
       })
       .then(response => response.json())
-      .then( callback(data, section) );
+      .then( (resp_data) => callback(resp_data, section) );
     });
   }
 
@@ -265,19 +265,21 @@
     });
   });
 
-  urlRemoveBtns.forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const currentTarget = e.currentTarget;
-      const url = e.currentTarget.href;
-      fetch(url, {
-        method: "DELETE"
-      })
-      .then(response => response.json())
-      .then(data => {
-        currentTarget.closest('.url-item').remove();
-      });
+  function removeURLBtnClickHandler(e) {
+    e.preventDefault();
+    const currentTarget = e.currentTarget;
+    const url = e.currentTarget.href;
+    fetch(url, {
+      method: "DELETE"
+    })
+    .then(response => response.json())
+    .then(data => {
+      currentTarget.closest('.url-item').remove();
     });
+  }
+
+  urlRemoveBtns.forEach((btn) => {
+    btn.addEventListener('click', removeURLBtnClickHandler);
   });
 
   urlSaveBtns.forEach((btn) => {
@@ -287,6 +289,7 @@
       item.classList.add('url-item');
       item.innerHTML = urlTemplate(data);
       urlList.appendChild( item );
+      item.querySelector(".url-remove-btn").addEventListener('click', removeURLBtnClickHandler);
       section.querySelector("form input[type=text]").value = "";
     });
   });
