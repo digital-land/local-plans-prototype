@@ -218,6 +218,30 @@
     el.classList.add(toAdd);
   }
 
+  function postDataFieldSaveEvent(btn, dataKey, inputSelector, callback) {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const form = e.currentTarget.closest("form");
+      const url = form.getAttribute("action");
+      const section = getNearestSection(e.currentTarget);
+
+      // set up data obj to post
+      var data = {};
+      data[dataKey] = form.querySelector(inputSelector).value;
+
+      // perform post
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then( callback(data, section) );
+    });
+  }
+
   urlAddBtns.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const current = e.currentTarget;
@@ -241,35 +265,6 @@
     });
   });
 
-  urlSaveBtns.forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const form = e.currentTarget.closest("form");
-      const url = form.getAttribute("action");
-      const urlSection = getNearestSection(e.currentTarget);
-      var data = {
-        url: form.querySelector("input[type=text]").value
-      };
-      console.log(data);
-      fetch(url, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      })
-      .then(response => response.json())
-      .then(data => {
-        const urlList = urlSection.querySelector(".url-list")
-        var item = document.createElement("li");
-        item.classList.add('url-item');
-        item.innerHTML = urlTemplate(data);
-        urlList.appendChild( item );
-        form.querySelector("input[type=text]").value = "";
-      })
-    });
-  });
-
   urlRemoveBtns.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
@@ -285,60 +280,38 @@
     });
   });
 
-  noteSaveBtns.forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const form = e.currentTarget.closest("form");
-      const url = form.getAttribute("action");
-      const section = getNearestSection(e.currentTarget);
-      var data = {
-        notes: form.querySelector("textarea").value
-      };
-      fetch(url, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      })
-      .then(response => response.json())
-      .then(data => {
-        const notesEl = section.querySelector(".note-contents")
-        notesEl.textContent = data.notes;
-        section.classList.remove("editing");
-        if(section.querySelector('.secondary-text')) {
-          section.querySelector('.secondary-text').remove();
-        }
-      });
+  urlSaveBtns.forEach((btn) => {
+    postDataFieldSaveEvent(btn, "url", "input[type=text]", (data, section) => {
+      const urlList = section.querySelector(".url-list")
+      var item = document.createElement("li");
+      item.classList.add('url-item');
+      item.innerHTML = urlTemplate(data);
+      urlList.appendChild( item );
+      section.querySelector("form input[type=text]").value = "";
     });
   });
 
   numberSaveBtns.forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const form = e.currentTarget.closest("form");
-      const url = form.getAttribute("action");
-      const section = getNearestSection(e.currentTarget);
-      var data = {
-        housing_units: form.querySelector("input[type=text]").value
-      };
-      fetch(url, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      })
-      .then(response => response.json())
-      .then(data => {
-        const numberEl = section.querySelector(".number-contents")
-        numberEl.textContent = data.housing_units;
-        section.classList.remove("editing");
-        if(section.querySelector('.secondary-text')) {
-          section.querySelector('.secondary-text').remove();
-        }
-      });
+    postDataFieldSaveEvent(btn, "housing_units", "input[type=text]", (data, section) => {
+      const numberEl = section.querySelector(".number-contents")
+      numberEl.textContent = data.housing_units;
+      section.classList.remove("editing");
+      if(section.querySelector('.secondary-text')) {
+        section.querySelector('.secondary-text').remove();
+      }
     });
   });
+
+  noteSaveBtns.forEach((btn) => {
+    postDataFieldSaveEvent(btn, "notes", "textarea", (data, section) => {
+      const notesEl = section.querySelector(".note-contents")
+      notesEl.textContent = data.notes;
+      section.classList.remove("editing");
+      if(section.querySelector('.secondary-text')) {
+        section.querySelector('.secondary-text').remove();
+      }
+    });
+  });
+
 </script>
 {% endblock %}
