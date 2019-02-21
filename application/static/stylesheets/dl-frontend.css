@@ -6301,6 +6301,10 @@ p {
   background: #f8f8f8;
 }
 
+.lp-section-box.editing .lp-section-box__edit-btn {
+  display: none;
+}
+
 .url-list {
   padding-left: 0;
   list-style: none;

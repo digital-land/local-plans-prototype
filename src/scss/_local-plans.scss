@@ -43,6 +43,11 @@
   padding: $govuk-gutter-half;
   background: govuk-colour("grey-4");
 
+  &.editing {
+    .lp-section-box__edit-btn {
+      display: none;
+    }
+  }
   // .govuk-button:last-child {
   //   margin-bottom: 0;
   // }
