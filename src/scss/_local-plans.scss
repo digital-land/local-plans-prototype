@@ -3,7 +3,7 @@
   margin-bottom: $govuk-gutter;
   padding: $govuk-gutter-half;
   color: govuk-colour("white");
-  background: govuk-colour("blue");
+  background: govuk-colour("grey-1");
 
   .govuk-details {
     margin-bottom: 0;
@@ -16,6 +16,10 @@
 
   .govuk-details__text {
     border: 0;
+  }
+
+  .adopted-plan & {
+    background: govuk-colour("blue");
   }
 }
 
@@ -173,4 +177,15 @@ $url-btn-width: 100px;
 
 .secondary-text {
   color: govuk-colour("grey-2");
+}
+
+// tweaks to govuk-tabs
+.adopted-plan {
+  .govuk-tabs__tab {
+    color: govuk-colour("blue");
+  }
+
+  .govuk-tabs__tab--selected {
+    font-weight: bolder;
+  }
 }

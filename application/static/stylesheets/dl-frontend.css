@@ -6233,7 +6233,7 @@ p {
   margin-bottom: 30px;
   padding: 15px;
   color: #ffffff;
-  background: #005ea5;
+  background: #6f777b;
 }
 
 .pims-stages .govuk-details {
@@ -6247,6 +6247,10 @@ p {
 
 .pims-stages .govuk-details__text {
   border: 0;
+}
+
+.adopted-plan .pims-stages {
+  background: #005ea5;
 }
 
 .current-stage {
@@ -6426,4 +6430,12 @@ p {
 
 .secondary-text {
   color: #bfc1c3;
+}
+
+.adopted-plan .govuk-tabs__tab {
+  color: #005ea5;
+}
+
+.adopted-plan .govuk-tabs__tab--selected {
+  font-weight: bolder;
 }
