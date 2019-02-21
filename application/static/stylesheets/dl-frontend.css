@@ -6443,3 +6443,64 @@ p {
 .adopted-plan .govuk-tabs__tab--selected {
   font-weight: bolder;
 }
+
+.cancel-btn {
+  display: none;
+  font-family: "nta", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 14px;
+  font-size: 0.875rem;
+  line-height: 1.14286;
+  width: 100%;
+  padding: 14px 10px 11px;
+  border: 0;
+  color: #005ea5;
+  background: transparent;
+  text-align: center;
+  vertical-align: top;
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+
+@media print {
+  .cancel-btn {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .cancel-btn {
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1;
+  }
+}
+
+@media print {
+  .cancel-btn {
+    font-size: 14pt;
+    line-height: 16px;
+  }
+}
+
+.cancel-btn:focus {
+  outline: 3px solid #ffbf47;
+  outline-offset: 0;
+}
+
+@media (min-width: 40.0625em) {
+  .cancel-btn {
+    width: auto;
+  }
+}
+
+.cancel-btn:link, .cancel-btn:visited, .cancel-btn:active, .cancel-btn:hover {
+  color: #005ea5;
+  text-decoration: underline;
+}
+
+.js-enabled .cancel-btn {
+  display: inline-block;
+}

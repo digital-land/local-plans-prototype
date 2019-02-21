@@ -194,3 +194,36 @@ $url-btn-width: 100px;
     font-weight: bolder;
   }
 }
+
+.cancel-btn {
+  display: none;
+
+  @include govuk-font($size: 16, $line-height: 16px);
+  @include govuk-focusable;
+
+  width: 100%;
+  padding: 14px 10px 11px;
+  border: 0;
+  color: govuk-colour("blue");
+  background: transparent;
+  text-align: center;
+  vertical-align: top;
+  cursor: pointer;
+  -webkit-appearance: none;
+
+  @include govuk-media-query($from: tablet) {
+    width: auto;
+  }
+
+  &:link,
+  &:visited,
+  &:active,
+  &:hover {
+    color: $govuk-link-colour;
+    text-decoration: underline;
+  }
+
+  .js-enabled & {
+    display: inline-block;
+  }
+}
