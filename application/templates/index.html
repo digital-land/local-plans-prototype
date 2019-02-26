@@ -39,7 +39,12 @@
       <dd class="govuk-grid-column-two-thirds">
         <ul class="govuk-list lps-table-view__list">
           {% for plan in planning_authority.local_plans %}
-          <li><a href="{{ url_for('frontend.local_plan', planning_authority= planning_authority.id, _anchor=plan.local_plan ) }}">{{ plan.local_plan }}</a> is {% if not plan.is_adopted() %}not {% endif %}adopted</li>
+          <li>
+            <a href="{{ url_for('frontend.local_plan', planning_authority= planning_authority.id, _anchor=plan.local_plan ) }}">{{ plan.local_plan }}</a>
+            {% set lastState = plan.states|last %}
+            <span class="stage-tag">{{ lastState[0] }}</span>
+            <span>{{ lastState[1]|format_date_from_str }}</span>
+          </li>
           {% endfor %}
         </ul>
       </dd>
