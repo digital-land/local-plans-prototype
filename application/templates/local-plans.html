@@ -30,7 +30,7 @@
     </h2>
 
     <ul class="govuk-tabs__list">
-      {% for plan in plans %}
+      {% for plan in plans|sort_plans %}
       <li class="govuk-tabs__list-item {% if plan.is_adopted() %}adopted-plan{% endif %}">
         <a class="govuk-tabs__tab govuk-tabs__tab--selected" href="#{{ plan.local_plan }}">
           {{ plan.local_plan }}
@@ -39,7 +39,7 @@
       {% endfor %}
     </ul>
 
-    {% for plan in plans %}
+    {% for plan in plans|sort_plans %}
     <section class="govuk-tabs__panel {% if plan.is_adopted() %}adopted-plan{% endif %}" id="{{ plan.local_plan }}">
       <h2 class="govuk-heading-l">{{ plan.local_plan }}</h2>
 
