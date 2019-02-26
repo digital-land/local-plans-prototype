@@ -1,0 +1,29 @@
+.lps-table-view {
+  //display: table;
+
+  dd {
+    margin: 0;
+  }
+}
+
+
+.lps-table-view__row {
+  //display: table-row;
+  border-bottom: 1px solid govuk-colour("grey-2");
+
+  dt,
+  dd {
+    //display: table-cell;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+}
+
+.lps-table-view__heading {
+  margin: 0;
+  color: $govuk-text-colour !important;
+}
+
+.lps-table-view__list {
+  margin-bottom: 0;
+}

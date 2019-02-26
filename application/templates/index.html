@@ -31,19 +31,22 @@
     </div>
   </div>
 
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <ul class="govuk-list">
-        {% for planning_authority in planning_authorities %}
-        <li>
-          <h3 class="govuk-heading-m">
-            <a href="{{ url_for('frontend.local_plan', planning_authority= planning_authority.id ) }}">{{ planning_authority.name }}</a>
-          </h3>
-        </li>
-        {% endfor %}
-      </ul>
+
+  <dl class="lps-table-view">
+    {% for planning_authority in planning_authorities %}
+    <div class="govuk-grid-row lps-table-view__row">
+      <dt class="govuk-grid-column-one-third"><a href="{{ url_for('frontend.local_plan', planning_authority= planning_authority.id ) }}" class="govuk-heading-s lps-table-view__heading">{{ planning_authority.name }}</a></dt>
+      <dd class="govuk-grid-column-two-thirds">
+        <ul class="govuk-list lps-table-view__list">
+          {% for plan in planning_authority.local_plans %}
+          <li><a href="{{ url_for('frontend.local_plan', planning_authority= planning_authority.id, _anchor=plan.local_plan ) }}">{{ plan.local_plan }}</a> is {% if not plan.is_adopted() %}not {% endif %}adopted</li>
+          {% endfor %}
+        </ul>
+      </dd>
     </div>
-  </div>
+    {% endfor %}
+  </dl>
+
 {% endblock %}
 
 {% block bodyEnd %}
