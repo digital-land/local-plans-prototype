@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Placeholder page to process new documents</title>
+</head>
+<body>
+    <h1>{{ planning_authority.name }}</h1>
+    <ul>
+        {% for document in planning_authority.unchecked_documents %}
+            <li>{{ document.id }} - {{ document.url }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

@@ -38,7 +38,6 @@ def create_other_data(pa, row):
 @click.command()
 @with_appcontext
 def load():
-
     websites = 'https://raw.githubusercontent.com/digital-land/alpha-data/master/local-authority-websites.csv'
     mapping = {}
     print('Loading', websites)

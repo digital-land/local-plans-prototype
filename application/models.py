@@ -47,6 +47,7 @@ class PlanningAuthority(db.Model):
     plan_policy_url = db.Column(db.String())
 
     local_plans = db.relationship('LocalPlan', back_populates='planning_authority', lazy=True)
+    unchecked_documents = db.relationship('UncheckedDocument', back_populates='planning_authority', lazy=True)
 
 
 def _parse_date(datestr):
@@ -90,6 +91,16 @@ class PlanDocument(db.Model):
 
     local_plan_id = db.Column(db.String(64), db.ForeignKey('local_plan.local_plan'), nullable=False)
     local_plan = db.relationship('LocalPlan', back_populates='plan_documents')
+
+
+class UncheckedDocument(db.Model):
+
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=_generate_uuid)
+    url = db.Column(db.String())
+
+    planning_authority_id = db.Column(db.String(64), db.ForeignKey('planning_authority.id'), nullable=False)
+    planning_authority = db.relationship('PlanningAuthority', back_populates='unchecked_documents')
+
 
 
 class State:

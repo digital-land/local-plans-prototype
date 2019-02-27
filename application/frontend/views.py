@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, jsonif
 from sqlalchemy import asc
 
 from application.extensions import db
-from application.models import PlanningAuthority, LocalPlan, PlanDocument
+from application.models import PlanningAuthority, LocalPlan, PlanDocument, UncheckedDocument
 
 frontend = Blueprint('frontend', __name__, template_folder='templates')
 
@@ -63,10 +63,43 @@ def remove_document_from_plan(local_plan, document_id):
     return jsonify({204: 'No Contest'})
 
 
+def _get_planning_authority_url(documents):
+    from urllib.parse import urlparse
+    if documents:
+        url = documents[0]
+        url = urlparse(url)
+        return f'{url.scheme}://{url.netloc}'
+    else:
+        return None
+
+
 @frontend.route('/local-plans/add-document', methods=['POST'])
 def add_document_for_checking():
-    print(request.json)
-    return redirect(url_for('frontend.index'))
+    documents = request.json['documents']
+
+    # Note this doesn't work as window.location.origin in chrome extensions isn't
+    # location of parent window so for no get domain of local authority user is
+    # on from documents
+    # planning_authority = request.json['planning_authority']
+
+    website = _get_planning_authority_url(documents)
+
+    if website is not None:
+        pla = PlanningAuthority.query.filter_by(website=website).one()
+        for doc in documents:
+            pla.unchecked_documents.append(UncheckedDocument(url=doc))
+
+        db.session.add(pla)
+        db.session.commit()
+
+        # TODO get the actual contents and store in s3
+        resp = {'OK': 200, 'check_page': url_for('frontend.check_documents',
+                                                 planning_authority=pla.id,
+                                                 _external=True)}
+    else:
+        resp = {'OK': 200}
+
+    return jsonify(resp)
 
 
 @frontend.route('/local-plans/check')
@@ -76,3 +109,9 @@ def lucky_dip():
     row_count = int(query.count())
     pla = query.offset(int(row_count * random.random())).first()
     return render_template('lucky-dip.html', planning_authority=pla)
+
+
+@frontend.route('/local-plans/<planning_authority>/check-plan-documents')
+def check_documents(planning_authority):
+    pla = PlanningAuthority.query.get(planning_authority)
+    return render_template('check-plan-documents.html', planning_authority=pla)

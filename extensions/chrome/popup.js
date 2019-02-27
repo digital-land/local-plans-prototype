@@ -42,7 +42,8 @@ function toggleAll() {
   }
 }
 
-// Save all visible checked links.
+// Note the url to post to is hard coded. Need to work out how to make user choose an
+// option to set destination url but this is for local test at this point
 function saveDocuments() {
   toSend = [];
   for (var i = 0; i < visibleLinks.length; ++i) {
@@ -52,16 +53,18 @@ function saveDocuments() {
     }
   }
   if (toSend.length > 0) {
+    checkLink = document.getElementById('local-authority')
+
     fetch('http://localhost:5000/local-plans/add-document', {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({'documents': toSend})
+        body: JSON.stringify({'documents': toSend, 'planning_authority': window.location.origin})
       })
-      .then(response => console.log(response))
+      .then(response => response.json())
+      .then( (resp_data) => checkLink.innerHTML = resp_data['check_page'] );
   }
-  window.close();
 }
 
 
