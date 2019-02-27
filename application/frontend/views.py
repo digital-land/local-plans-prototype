@@ -87,7 +87,8 @@ def add_document_for_checking():
     if website is not None:
         pla = PlanningAuthority.query.filter_by(website=website).one()
         for doc in documents:
-            pla.unchecked_documents.append(UncheckedDocument(url=doc))
+            if UncheckedDocument.query.filter_by(url=doc).first() is None:
+                pla.unchecked_documents.append(UncheckedDocument(url=doc))
 
         db.session.add(pla)
         db.session.commit()
