@@ -44,11 +44,22 @@ function toggleAll() {
 
 // Save all visible checked links.
 function saveDocuments() {
-
+  toSend = [];
   for (var i = 0; i < visibleLinks.length; ++i) {
     if (document.getElementById('check' + i).checked) {
-      console.log('****** post this to back end => ' + visibleLinks[i]);
+      console.log('post this to back end => ' + visibleLinks[i]);
+      toSend.push(visibleLinks[i]);
     }
+  }
+  if (toSend.length > 0) {
+    fetch('http://localhost:5000/local-plans/add-document', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({'documents': toSend})
+      })
+      .then(response => console.log(response))
   }
   window.close();
 }

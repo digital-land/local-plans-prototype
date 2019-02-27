@@ -38,6 +38,15 @@ def create_other_data(pa, row):
 @click.command()
 @with_appcontext
 def load():
+
+    websites = 'https://raw.githubusercontent.com/digital-land/alpha-data/master/local-authority-websites.csv'
+    mapping = {}
+    print('Loading', websites)
+    with closing(requests.get(websites, stream=True)) as r:
+        reader = csv.DictReader(r.iter_lines(decode_unicode=True), delimiter=',')
+        for row in reader:
+            mapping[row['local-authority'].strip()] = row['website'].strip()
+
     register = 'https://raw.githubusercontent.com/digital-land/alpha-data/master/local-plans/local-plan-register.csv'
     print('Loading', register)
     with closing(requests.get(register, stream=True)) as r:
@@ -50,6 +59,8 @@ def load():
                 pa = PlanningAuthority.query.get(id)
                 if pa is None:
                     pa = PlanningAuthority(id=id, name=name, plan_policy_url=plan_policy_url)
+                    if mapping.get(id) is not None:
+                        pa.website = mapping.get(id)
                     db.session.add(pa)
                     db.session.commit()
                     print(row['organisation'], row['name'])

@@ -11,7 +11,8 @@ frontend = Blueprint('frontend', __name__, template_folder='templates')
 def index():
     return render_template('index.html')
 
-@frontend.route('/all', methods=['GET', 'POST'])
+
+@frontend.route('/local-plans', methods=['GET', 'POST'])
 def list_all():
     planning_authorities = PlanningAuthority.query.all()
     if request.method == 'POST':
@@ -60,6 +61,12 @@ def remove_document_from_plan(local_plan, document_id):
     db.session.delete(plan)
     db.session.commit()
     return jsonify({204: 'No Contest'})
+
+
+@frontend.route('/local-plans/add-document', methods=['POST'])
+def add_document_for_checking():
+    print(request.json)
+    return redirect(url_for('frontend.index'))
 
 
 @frontend.route('/local-plans/check')
