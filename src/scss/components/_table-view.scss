@@ -17,6 +17,31 @@
     padding-top: 10px;
     padding-bottom: 10px;
   }
+
+  .local-plan-id {
+    display: inline-block;
+    min-width: govuk-em(100, 19);
+    margin-right: 15px;
+  }
+
+  .plan-details__item {
+    display: inline-block;
+  }
+
+  .stage-tag {
+    box-sizing: border-box;
+    width: govuk-em(130, 19);
+    margin-right: 5px;
+    padding-bottom: 1px;
+    border: 0;
+    color: $govuk-body-background-colour;
+    background: govuk-colour("grey-1");
+    text-align: center;
+
+    &.is-adopted {
+      background: govuk-colour("blue");
+    }
+  }
 }
 
 .lps-table-view__heading {
@@ -27,3 +52,4 @@
 .lps-table-view__list {
   margin-bottom: 0;
 }
+

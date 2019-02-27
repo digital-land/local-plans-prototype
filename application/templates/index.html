@@ -40,10 +40,12 @@
         <ul class="govuk-list lps-table-view__list">
           {% for plan in planning_authority.local_plans %}
           <li>
-            <a href="{{ url_for('frontend.local_plan', planning_authority= planning_authority.id, _anchor=plan.local_plan ) }}">{{ plan.local_plan }}</a>
-            {% set lastState = plan.states|last %}
-            <span class="stage-tag">{{ lastState[0] }}</span>
-            <span>{{ lastState[1]|format_date_from_str }}</span>
+            <div class="plan-details">
+              <a class="plan-details__item local-plan-id" href="{{ url_for('frontend.local_plan', planning_authority= planning_authority.id, _anchor=plan.local_plan ) }}">{{ plan.local_plan }}</a>
+              {% set lastState = plan.states|last %}
+              <span class="stage-tag plan-details__item {% if plan.is_adopted() %}is-adopted{% endif %}">{{ lastState[0] }}</span>
+              <span class="plan-details__item">{{ lastState[1]|format_date_from_str }}</span>
+            </div>
           </li>
           {% endfor %}
         </ul>

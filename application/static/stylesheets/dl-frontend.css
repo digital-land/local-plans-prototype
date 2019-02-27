@@ -6243,6 +6243,31 @@ p {
   padding-bottom: 10px;
 }
 
+.lps-table-view__row .local-plan-id {
+  display: inline-block;
+  min-width: 5.26316em;
+  margin-right: 15px;
+}
+
+.lps-table-view__row .plan-details__item {
+  display: inline-block;
+}
+
+.lps-table-view__row .stage-tag {
+  box-sizing: border-box;
+  width: 6.84211em;
+  margin-right: 5px;
+  padding-bottom: 1px;
+  border: 0;
+  color: #ffffff;
+  background: #6f777b;
+  text-align: center;
+}
+
+.lps-table-view__row .stage-tag.is-adopted {
+  background: #005ea5;
+}
+
 .lps-table-view__heading {
   margin: 0;
   color: #0b0c0c !important;
