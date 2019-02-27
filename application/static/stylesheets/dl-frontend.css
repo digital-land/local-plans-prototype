@@ -6229,6 +6229,98 @@ p {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.lps-table-view dd {
+  margin: 0;
+}
+
+.lps-table-view__row {
+  border-bottom: 1px solid #bfc1c3;
+}
+
+.lps-table-view__row dt,
+.lps-table-view__row dd {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.lps-table-view__row .local-plan-id {
+  display: inline-block;
+  min-width: 5.26316em;
+  margin-right: 15px;
+}
+
+.lps-table-view__row .plan-details__item {
+  display: inline-block;
+}
+
+.lps-table-view__row .stage-tag {
+  box-sizing: border-box;
+  width: 6.84211em;
+  margin-right: 5px;
+  padding-bottom: 1px;
+  border: 0;
+  color: #ffffff;
+  background: #6f777b;
+  text-align: center;
+}
+
+.lps-table-view__row .stage-tag.is-adopted {
+  background: #005ea5;
+}
+
+.lps-table-view__row .plan-no-of-docs {
+  font-family: "nta", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 14px;
+  font-size: 0.875rem;
+  line-height: 1.78571;
+  margin-left: 5px;
+}
+
+@media print {
+  .lps-table-view__row .plan-no-of-docs {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .lps-table-view__row .plan-no-of-docs {
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.5625;
+  }
+}
+
+@media print {
+  .lps-table-view__row .plan-no-of-docs {
+    font-size: 14pt;
+    line-height: 25px;
+  }
+}
+
+@media (min-width: 53.125em) {
+  .lps-table-view__row .plan-no-of-docs {
+    margin-left: 0;
+    padding-top: 3px;
+    float: right;
+  }
+}
+
+.lps-table-view__heading {
+  margin: 0;
+  color: #0b0c0c !important;
+}
+
+.lps-table-view__list {
+  margin-bottom: 0;
+}
+
+.lps-table-view__list li:last-child {
+  margin-bottom: 0;
+}
+
 .pims-stages {
   margin-bottom: 30px;
   padding: 15px;
