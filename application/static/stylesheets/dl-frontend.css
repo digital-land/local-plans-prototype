@@ -6276,8 +6276,7 @@ p {
   font-size: 14px;
   font-size: 0.875rem;
   line-height: 1.78571;
-  padding-top: 3px;
-  float: right;
+  margin-left: 5px;
 }
 
 @media print {
@@ -6298,6 +6297,14 @@ p {
   .lps-table-view__row .plan-no-of-docs {
     font-size: 14pt;
     line-height: 25px;
+  }
+}
+
+@media (min-width: 53.125em) {
+  .lps-table-view__row .plan-no-of-docs {
+    margin-left: 0;
+    padding-top: 3px;
+    float: right;
   }
 }
 
