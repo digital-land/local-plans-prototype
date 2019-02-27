@@ -6218,10 +6218,6 @@
   margin-left: 0;
 }
 
-p {
-  max-width: 30em;
-}
-
 .autocomplete__menu {
   font-family: "nta", Arial, sans-serif;
   font-weight: 400;
