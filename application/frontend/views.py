@@ -60,3 +60,12 @@ def remove_document_from_plan(local_plan, document_id):
     db.session.delete(plan)
     db.session.commit()
     return jsonify({204: 'No Contest'})
+
+
+@frontend.route('/local-plans/check')
+def lucky_dip():
+    import random
+    query = db.session.query(PlanningAuthority)
+    row_count = int(query.count())
+    pla = query.offset(int(row_count * random.random())).first()
+    return render_template('lucky-dip.html', planning_authority=pla)
