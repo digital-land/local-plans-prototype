@@ -9,10 +9,14 @@ frontend = Blueprint('frontend', __name__, template_folder='templates')
 
 @frontend.route('/', methods=['GET', 'POST'])
 def index():
+    return render_template('index.html')
+
+@frontend.route('/all', methods=['GET', 'POST'])
+def list_all():
     planning_authorities = PlanningAuthority.query.all()
     if request.method == 'POST':
         return redirect(url_for('frontend.local_plan', planning_authority=request.form['local-authority-select']))
-    return render_template('index.html', planning_authorities=planning_authorities)
+    return render_template('list.html', planning_authorities=planning_authorities)
 
 
 @frontend.route('/local-plans/<planning_authority>')

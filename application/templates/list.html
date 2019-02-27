@@ -1,0 +1,82 @@
+{% extends "dlf-base.html" %}
+{%- set mainClasses = "govuk-main-wrapper--l" -%}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="/static/stylesheets/vendor/govuk-accessible-autocomplete.min.css" />
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-xl">Local plans</span>
+      <h1 class="govuk-heading-xl">Current local plans</h1>
+    </div>
+  </div>
+
+  <div class="list-filter">
+    <h3 class="govuk-heading-s govuk-visually-hidden">Search for planning authority</h3>
+    <div class="govuk-grid-row">
+      <form class="govuk-form la-search-form govuk-grid-column-one-half" action="{{ url_for('frontend.index') }}" method="post">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-!-font-weight-bold" for="local-authority-select">Search for planning authority</label>
+          <span class="govuk-hint">E.g. East Riding of Yorkshire Council</span>
+          <select class="govuk-select" name="local-authority-select" id="local-authority-select">
+            <option value="">Select local authority</option>
+            {% for planning_authority in planning_authorities %}
+            <option value="{{ planning_authority.id }}">{{ planning_authority.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <input type="submit" class="govuk-button button-autocomplete-action button-filter-table" value="View local plans" />
+      </form>
+    </div>
+  </div>
+
+  <h2 class="govuk-heading-l">All Planning authorities</h2>
+  <dl class="lps-table-view">
+    {% for planning_authority in planning_authorities %}
+    <div class="govuk-grid-row lps-table-view__row">
+      <dt class="govuk-grid-column-one-third"><a href="{{ url_for('frontend.local_plan', planning_authority= planning_authority.id ) }}" class="govuk-heading-s lps-table-view__heading">{{ planning_authority.name }}</a></dt>
+      <dd class="govuk-grid-column-two-thirds">
+        <ul class="govuk-list lps-table-view__list">
+          {% for plan in planning_authority.local_plans %}
+          <li>
+            <div class="plan-details">
+              <a class="plan-details__item local-plan-id" href="{{ url_for('frontend.local_plan', planning_authority= planning_authority.id, _anchor=plan.local_plan ) }}">{{ plan.local_plan }}</a>
+              {% set lastState = plan.states|last %}
+              <span class="stage-tag plan-details__item {% if plan.is_adopted() %}is-adopted{% endif %}">{{ lastState[0] }}</span>
+              <span class="plan-details__item">{{ lastState[1]|format_date_from_str }}</span>
+              <span class="plan-details__item plan-no-of-docs">{{ plan.plan_documents|length }} associated documents</span>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </dd>
+    </div>
+    {% endfor %}
+  </dl>
+{% endblock %}
+
+{% block bodyEnd %}
+<script src="/static/javascripts/vendor/accessible-autocomplete.min.js"></script>
+<script type="text/javascript">
+  ;(function(window) {
+    const form = document.querySelector('.la-search-form');
+    const laSelect = document.querySelector('#local-authority-select');
+    accessibleAutocomplete.enhanceSelectElement({
+      defaultValue: '',
+      selectElement: document.querySelector('#local-authority-select'),
+      onConfirm: (val) => {
+        // replicates plugin onConfirm function
+        const requestedOption = [].filter.call(laSelect.options, option => (option.textContent || option.innerText) === val) [0];
+        if (requestedOption) { requestedOption.selected = true }
+        // the new bit
+        form.classList.add("autocomplete-used");
+      }
+    })
+  }).call(this, window);
+</script>
+{% endblock %}
+
+
