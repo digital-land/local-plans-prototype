@@ -45,6 +45,7 @@
               {% set lastState = plan.states|last %}
               <span class="stage-tag plan-details__item {% if plan.is_adopted() %}is-adopted{% endif %}">{{ lastState[0] }}</span>
               <span class="plan-details__item">{{ lastState[1]|format_date_from_str }}</span>
+              <span class="plan-details__item plan-no-of-docs">{{ plan.plan_documents|length }} associated documents</span>
             </div>
           </li>
           {% endfor %}
