@@ -22,6 +22,7 @@ def create_other_data(pa, row):
         plan.planning_policy_url = row['plan-policy-url'].strip()
         plan.states = [[row['status'].strip(), row['date'].strip()]]
         pa.local_plans.append(plan)
+        plan.title = row['title'].strip()
         print('created local plan', plan_id)
 
     db.session.add(pa)

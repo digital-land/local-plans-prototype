@@ -49,6 +49,9 @@ class LocalPlan(db.Model):
 
     local_plan = db.Column(db.String(), primary_key=True)
     planning_policy_url = db.Column(db.String())
+
+    title = db.Column(db.String())
+
     states = db.Column(MutableList.as_mutable(ARRAY(db.String())), server_default='{}')
 
     plan_documents = db.relationship('PlanDocument', back_populates='local_plan', lazy=True)
