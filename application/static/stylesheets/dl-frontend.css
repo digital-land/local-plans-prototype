@@ -5327,15 +5327,6 @@
   font-family: "HelveticaNeue", "Helvetica Neue", "Arial", "Helvetica", sans-serif;
 }
 
-.govuk-warning-text__icon {
-  line-height: 26px;
-}
-
-.govuk-button--start {
-  padding-top: 8px;
-  padding-bottom: 8px;
-}
-
 .mhclg .govuk-header__container {
   border-color: #37836e;
 }

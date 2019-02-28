@@ -3,7 +3,7 @@
 
 // @note shouldn't use NTA if not on gov.uk
 
-$using-helvetica: true;
+$using-helvetica: true !default;
 
 * {
   font-family: "HelveticaNeue", "Helvetica Neue", "Arial", "Helvetica", sans-serif;
