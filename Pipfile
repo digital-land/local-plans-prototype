@@ -16,6 +16,7 @@ requests = "*"
 python-dotenv = "*"
 gunicorn = "*"
 pytest = "*"
+flask-wtf = "*"
 
 [requires]
 python_version = "3.7"
