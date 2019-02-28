@@ -7,7 +7,7 @@
   box-sizing: border-box;
   display: block;
   max-width: 30em;
-  margin: 0 $govuk-gutter-half;
+  margin: 0 $govuk-gutter-half $govuk-gutter;
   padding: 20px;
   border: 1px solid govuk-colour("grey-2");
   background: govuk-colour("grey-4");
@@ -45,10 +45,37 @@
   }
 
   p {
-    color: $govuk-text-colour !important;
+    color: $govuk-text-colour;
   }
 }
 
+
 .highlight-box--flush {
   margin-left: 0;
+}
+
+
+.highlight-box--gap {
+  padding: 19px;
+  border-width: 2px;
+  border-style: dashed;
+
+  .highlight-box__title {
+    margin: 0;
+    color: $govuk-text-colour !important;
+  }
+
+  p {
+    color: $govuk-secondary-text-colour;
+  }
+
+  &:hover {
+    .highlight-box__title {
+      color: $govuk-text-colour !important;
+    }
+
+    p {
+      color: $govuk-text-colour;
+    }
+  }
 }

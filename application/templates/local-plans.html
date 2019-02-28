@@ -19,12 +19,31 @@
 
 {% block content %}
 
-  <span class="govuk-caption-l">Local plan data</span>
-  <h1 class="govuk-heading-l">{{ planning_authority.name }}</h1>
+  <span class="govuk-caption-xl">Local plan data</span>
+  <h1 class="govuk-heading-xl">{{ planning_authority.name }}</h1>
 
-  <p><a id="policy-url" href="{{ planning_authority.plan_policy_url }}">{{ planning_authority.plan_policy_url }}</a> </p>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-l">Local development schema</h2>
+      <p class="govuk-body">
+        Each planning authority is expected to publish a local development scheme. For {{ planning_authority.name }} you should be able to view it at:
+      </p>
+    </div>
+  </div>
+  
+  {% if planning_authority.plan_policy_url %}
+  <p class="govuk-body">
+    <a id="policy-url" class="govuk-link" href="{{ planning_authority.plan_policy_url }}">{{ planning_authority.plan_policy_url }}</a>
+  </p>
+  <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="{{ url_for('frontend.update_planning_policy_url', planning_authority=planning_authority.id) }}" class="govuk-link">Update the url</a>.</p>
+  {% else %}
+  <a class="highlight-box highlight-box--gap highlight-box--flush" href="{{ url_for('frontend.update_planning_policy_url', planning_authority=planning_authority.id) }}">
+    <h3 class="govuk-heading-s highlight-box__title">URL unavailable</h3>
+    <p class="govuk-body govuk-!-margin-bottom-0">We do not have a link to the local development scheme. Can you add one?</p>
+  </a>
+  {% endif %}
 
-  <h3 class="govuk-heading-m">Local plans</h3>
+  <h2 class="govuk-heading-l">Local plans</h2>
 
   <div class="govuk-tabs" data-module="tabs">
     <h2 class="govuk-tabs__title">

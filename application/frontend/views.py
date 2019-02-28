@@ -3,6 +3,7 @@ from sqlalchemy import asc
 
 from application.extensions import db
 from application.models import PlanningAuthority, LocalPlan, PlanDocument, UncheckedDocument
+from application.frontend.forms import PlanningPolicyURLForm
 
 frontend = Blueprint('frontend', __name__, template_folder='templates')
 
@@ -53,6 +54,24 @@ def add_document_to_plan(planning_authority, local_plan):
         resp = {'OK': 200, 'housing_units': housing_units}
 
     return jsonify(resp)
+
+
+@frontend.route('/local-plans/<planning_authority>/update-planning-policy-url', methods=['GET', 'POST'])
+def update_planning_policy_url(planning_authority):
+    pla = PlanningAuthority.query.get(planning_authority)
+    form = PlanningPolicyURLForm()
+
+    if request.method == 'POST' and form.validate_on_submit():
+        pla.plan_policy_url = form.url.data
+        db.session.add(pla)
+        db.session.commit()
+        return redirect(url_for('frontend.local_plan', planning_authority=pla.id))
+
+    # do I need to do this to populate the existing URL?
+    if pla.plan_policy_url is not None and request.method == 'GET':
+        form.url.data = pla.plan_policy_url
+
+    return render_template('update-pp-url.html', planning_authority=pla, form=form)
 
 
 @frontend.route('/local-plans/<local_plan>/document/<document_id>', methods=['DELETE'])
