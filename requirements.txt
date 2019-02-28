@@ -8,8 +8,8 @@ click==7.0
 flask-dotenv==0.1.1
 flask-migrate==2.4.0
 flask-sqlalchemy==2.3.2
+flask-wtf==0.14.2
 flask==1.0.2
-Flask-WTF==0.14.2
 gunicorn==19.9.0
 idna==2.8
 itsdangerous==1.1.0
@@ -29,4 +29,4 @@ six==1.12.0
 sqlalchemy==1.2.18
 urllib3==1.24.1
 werkzeug==0.14.1
-WTForms==2.2.1
+wtforms==2.2.1
