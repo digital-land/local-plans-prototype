@@ -39,36 +39,24 @@ class MutableList(Mutable, list):
             return value
 
 
-class PlanningAuthority(db.Model):
-
-    id = db.Column(db.String(64), primary_key=True)
-    name = db.Column(db.String(256))
-    website = db.Column(db.String())
-    plan_policy_url = db.Column(db.String())
-
-    local_plans = db.relationship('LocalPlan', back_populates='planning_authority', lazy=True)
-    unchecked_documents = db.relationship('UncheckedDocument', back_populates='planning_authority', lazy=True)
-
-
-def _parse_date(datestr):
-    return datetime.strptime(datestr, '%Y-%m-%d')
+planning_authority_plan = db.Table('planning_authority_plan',
+    db.Column('planning_authority_id', db.String(64), db.ForeignKey('planning_authority.id'), primary_key=True),
+    db.Column('local_plan_id', db.String, db.ForeignKey('local_plan.local_plan'), primary_key=True)
+)
 
 
 class LocalPlan(db.Model):
 
     local_plan = db.Column(db.String(), primary_key=True)
-
     planning_policy_url = db.Column(db.String())
-
-    planning_authority_id = db.Column(db.String(64), db.ForeignKey('planning_authority.id'), nullable=False)
-    planning_authority = db.relationship('PlanningAuthority', back_populates='local_plans')
-
     states = db.Column(MutableList.as_mutable(ARRAY(db.String())), server_default='{}')
 
-    notes = db.Column(db.String())
-    number_of_houses = db.Column(db.Integer())
-
     plan_documents = db.relationship('PlanDocument', back_populates='local_plan', lazy=True)
+
+    planning_authorities = db.relationship('PlanningAuthority',
+                                           secondary=planning_authority_plan,
+                                           lazy=True,
+                                           back_populates='local_plans')
 
     def is_adopted(self):
         return 'adopted' in [s[0] for s in self.states]
@@ -83,6 +71,23 @@ class LocalPlan(db.Model):
         return f'{self.local_plan} {self.states}'
 
 
+class PlanningAuthority(db.Model):
+
+    id = db.Column(db.String(64), primary_key=True)
+    name = db.Column(db.String(256))
+    website = db.Column(db.String())
+    plan_policy_url = db.Column(db.String())
+    unchecked_documents = db.relationship('UncheckedDocument', back_populates='planning_authority', lazy=True)
+    local_plans = db.relationship('LocalPlan',
+                                   secondary=planning_authority_plan,
+                                   lazy=True,
+                                   back_populates='planning_authorities')
+
+
+def _parse_date(datestr):
+    return datetime.strptime(datestr, '%Y-%m-%d')
+
+
 class PlanDocument(db.Model):
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=_generate_uuid)
@@ -92,6 +97,19 @@ class PlanDocument(db.Model):
     local_plan_id = db.Column(db.String(64), db.ForeignKey('local_plan.local_plan'), nullable=False)
     local_plan = db.relationship('LocalPlan', back_populates='plan_documents')
 
+    facts = db.relationship('Fact', back_populates='plan_document', lazy=True)
+
+
+class Fact(db.Model):
+
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=_generate_uuid)
+
+    number = db.Column(db.Integer())
+    notes = db.Column(db.String())
+
+    plan_document_id = db.Column(UUID(as_uuid=True), db.ForeignKey('plan_document.id'), nullable=False)
+    plan_document = db.relationship('PlanDocument', back_populates='facts')
+
 
 class UncheckedDocument(db.Model):
 
@@ -100,7 +118,6 @@ class UncheckedDocument(db.Model):
 
     planning_authority_id = db.Column(db.String(64), db.ForeignKey('planning_authority.id'), nullable=False)
     planning_authority = db.relationship('PlanningAuthority', back_populates='unchecked_documents')
-
 
 
 class State:

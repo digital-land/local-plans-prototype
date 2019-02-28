@@ -66,7 +66,7 @@
     </h2>
 
     <ul class="govuk-tabs__list">
-      {% for plan in plans|sort_plans %}
+      {% for plan in planning_authority.local_plans|sort_plans %}
       <li class="govuk-tabs__list-item {% if plan.is_adopted() %}adopted-plan{% endif %}">
         <a class="govuk-tabs__tab govuk-tabs__tab--selected" href="#{{ plan.local_plan }}">
           {{ plan.local_plan }}
@@ -75,7 +75,7 @@
       {% endfor %}
     </ul>
 
-    {% for plan in plans|sort_plans %}
+    {% for plan in planning_authority.local_plans|sort_plans %}
     <section class="govuk-tabs__panel {% if plan.is_adopted() %}adopted-plan{% endif %}" id="{{ plan.local_plan }}">
       <h2 class="govuk-heading-l">{{ plan.local_plan }}</h2>
 
@@ -118,7 +118,7 @@
               <a class="url-link" href="{{ doc.url }}">{{ doc.url }}</a>
               <div class="url-item__controls">
                 <a href="" class="url-item__btn url-edit-btn govuk-visually-hidden">Edit</a>
-                <a href="{{ url_for('frontend.remove_document_from_plan', document_id=doc.id, local_plan=plan.local_plan) }}" class="url-item__btn url-remove-btn">Remove</a>
+                <a href="{{ url_for('frontend.remove_document_from_plan', document=doc.id, local_plan=plan.local_plan) }}" class="url-item__btn url-remove-btn">Remove</a>
               </div>
             </li>
             {% endfor %}

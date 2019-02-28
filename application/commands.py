@@ -5,7 +5,7 @@ import requests
 from flask.cli import with_appcontext
 from contextlib import closing
 from application.extensions import db
-from application.models import PlanningAuthority, LocalPlan, PlanDocument
+from application.models import PlanningAuthority, LocalPlan, PlanDocument, UncheckedDocument
 
 
 def create_other_data(pa, row):
@@ -13,8 +13,9 @@ def create_other_data(pa, row):
     plan = LocalPlan.query.get(plan_id)
     if plan is not None:
         status = [row['status'].strip(), row['date'].strip()]
-        plan.states.append(status)
-        print('updated local plan', plan_id)
+        if status not in plan.states:
+            plan.states.append(status)
+            print('updated local plan', plan_id)
     else:
         plan = LocalPlan()
         plan.local_plan = plan_id
@@ -72,6 +73,8 @@ def load():
 @click.command()
 @with_appcontext
 def clear():
+    db.session.execute('DELETE FROM planning_authority_plan');
+    db.session.query(UncheckedDocument).delete()
     db.session.query(PlanDocument).delete()
     db.session.query(LocalPlan).delete()
     db.session.query(PlanningAuthority).delete()

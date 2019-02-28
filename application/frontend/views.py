@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, jsonif
 from sqlalchemy import asc
 
 from application.extensions import db
-from application.models import PlanningAuthority, LocalPlan, PlanDocument, UncheckedDocument
+from application.models import PlanningAuthority, LocalPlan, PlanDocument, UncheckedDocument, Fact
 from application.frontend.forms import PlanningPolicyURLForm
 
 frontend = Blueprint('frontend', __name__, template_folder='templates')
@@ -24,13 +24,12 @@ def list_all():
 @frontend.route('/local-plans/<planning_authority>')
 def local_plan(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
-    plans = LocalPlan.query.filter_by(planning_authority_id=planning_authority).all()
-    return render_template('local-plans.html', plans=plans, planning_authority=pla)
+    return render_template('local-plans.html', planning_authority=pla)
 
 
 @frontend.route('/local-plans/<planning_authority>/<local_plan>', methods=['POST'])
 def add_document_to_plan(planning_authority, local_plan):
-    plan = LocalPlan.query.filter_by(planning_authority_id=planning_authority, local_plan=local_plan).one()
+    plan = LocalPlan.query.get(local_plan)
 
     if request.json.get('url') is not None:
         url = request.json['url']
@@ -38,22 +37,37 @@ def add_document_to_plan(planning_authority, local_plan):
         plan.plan_documents.append(document)
         db.session.add(plan)
         db.session.commit()
-        remove_url = url_for('frontend.remove_document_from_plan', document_id=str(document.id), local_plan=plan.local_plan)
+        remove_url = url_for('frontend.remove_document_from_plan', document=str(document.id), local_plan=plan.local_plan)
         resp = {'OK': 200, 'url': url, 'document_id': str(document.id), 'remove_url': remove_url}
-    elif request.json.get('notes') is not None:
-        notes = request.json.get('notes')
-        plan.notes = notes
-        db.session.add(plan)
-        db.session.commit()
-        resp = {'OK': 200, 'notes': notes}
-    elif request.json.get('housing_units') is not None:
-        housing_units = request.json.get('housing_units')
-        plan.number_of_houses = housing_units
-        db.session.add(plan)
-        db.session.commit()
-        resp = {'OK': 200, 'housing_units': housing_units}
+    else:
+        resp = {'OK': 200}
 
     return jsonify(resp)
+
+
+@frontend.route('/local-plans/<planning_authority>/<local_plan>/<document>', methods=['POST'])
+def add_fact_to_document(planning_authority, local_plan, document):
+
+    plan_document = PlanDocument.query.filter_by(id=document, local_plan=local_plan).one()
+
+    if request.json.get('fact') is not None:
+        fact = request.json['fact']
+        fact = Fact(number=fact.get('number'), notes=fact.get('notes'))
+        plan_document.facts.append(fact)
+        db.session.add(plan_document)
+        db.session.commit()
+        remove_url = url_for('frontend.remove_fact_from_document', document=str(document.id), fact=fact.id)
+        resp = {'OK': 200, 'fact': str(fact.id), 'remove_url': remove_url}
+    else:
+        resp = {'OK': 200}
+
+    return jsonify(resp)
+
+
+@frontend.route('/local-plans/<document>/<fact>', methods=['DELETE'])
+def remove_fact_from_document(document, fact):
+    # do something
+    return jsonify({204: 'No Content'})
 
 
 @frontend.route('/local-plans/<planning_authority>/update-planning-policy-url', methods=['GET', 'POST'])
@@ -74,12 +88,12 @@ def update_planning_policy_url(planning_authority):
     return render_template('update-pp-url.html', planning_authority=pla, form=form)
 
 
-@frontend.route('/local-plans/<local_plan>/document/<document_id>', methods=['DELETE'])
-def remove_document_from_plan(local_plan, document_id):
-    plan = PlanDocument.query.filter_by(local_plan_id=local_plan, id=document_id).one()
+@frontend.route('/local-plans/<local_plan>/document/<document>', methods=['DELETE'])
+def remove_document_from_plan(local_plan, document):
+    plan = PlanDocument.query.filter_by(local_plan_id=local_plan, id=document).one()
     db.session.delete(plan)
     db.session.commit()
-    return jsonify({204: 'No Contest'})
+    return jsonify({204: 'No Content'})
 
 
 def _get_planning_authority_url(documents):
