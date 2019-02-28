@@ -101,7 +101,8 @@ def add_document_for_checking():
     # on from documents
     # planning_authority = request.json['planning_authority']
 
-    website = _get_planning_authority_url(documents)
+    website = (request.json['active_page_origin']
+        if request.json['active_page_origin'] is not "" else _get_planning_authority_url(documents))
 
     if website is not None:
         pla = PlanningAuthority.query.filter_by(website=website).one()

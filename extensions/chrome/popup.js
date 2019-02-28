@@ -60,7 +60,11 @@ function saveDocuments() {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({'documents': toSend, 'planning_authority': window.location.origin})
+        body: JSON.stringify({
+          'documents': toSend,
+          'planning_authority': window.location.origin,
+          'active_page_origin': activePageDetails["currentOrigin"] || "",
+          'active_page_location': activePageDetails["currentLocation"] || ""})
       })
       .then(response => response.json())
       .then( (resp_data) => checkLink.innerHTML = resp_data['check_page'] );
@@ -98,3 +102,25 @@ window.onload = function() {
     });
   });
 };
+
+var activePageDetails = {};
+(function($) {
+  $(function () {
+    chrome.tabs.executeScript(null, {
+          file: "fetch-page-details.js"
+      }); 
+  });
+
+  chrome.runtime.onMessage.addListener(function (request, _sender) {
+    if (request.action == "fetchPageDetails") {
+      activePageDetails = {
+        "currentLocation": request.currentLocation,
+        "currentHost": request.currentHost,
+        "currentOrigin": request.currentOrigin,
+        "currentPathname": request.currentPathname,
+        "windowHeight": request.windowHeight
+      }
+      console.log(activePageDetails);
+    }
+  });
+}(jQuery));
