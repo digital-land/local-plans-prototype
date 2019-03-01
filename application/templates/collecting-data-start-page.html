@@ -1,0 +1,43 @@
+{% extends "dlf-base.html" %}
+
+{% block beforeContent %}
+ {{ super() }}
+
+  <a href="{{ url_for('frontend.index') }}" class="govuk-back-link">Back</a>
+
+{% endblock %}
+
+
+{% block content %}
+
+  <span class="govuk-caption-xl">Local plans</span>
+  <h1 class="govuk-heading-xl">Collecting local plan data</h1>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <ol class="app-task-list">
+        <li>
+          <h2 class="app-task-list__section">1. Install the browser extension</h2>
+          <p class="govuk-body">The browser extension will allow you to collect data for a given local plan. It will</p>
+          <ul class="govuk-list govuk-list--bullet">
+            <li>Collect urls of the documents related to the local plan</li>
+            <li>Enter the number of houses outlined in the local plan</li>
+            <li>Record any further notes</li>
+          </ul>
+        </li>
+        <li>
+          <h2 class="app-task-list__section">2. Start collecting data</h2>
+          <p class="govuk-body">To start collecting data you can either select a <a href="{{ url_for('frontend.list_all') }}">Planning Authority from the list</a> or click on the lucky dip button below, this will select a Planning Authority at random for you to look at.</p>
+          <div class="govuk-form-group">
+            <a href="{{ url_for('frontend.lucky_dip') }}" class="govuk-button">Lucky dip</a>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </div>
+  
+
+{% endblock %}
+
+{% block bodyEnd %}
+{% endblock %}

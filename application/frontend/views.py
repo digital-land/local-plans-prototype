@@ -27,6 +27,11 @@ def local_plan(planning_authority):
     return render_template('local-plans.html', planning_authority=pla)
 
 
+@frontend.route('/start-collecting-data')
+def start_collecting_data():
+    return render_template('collecting-data-start-page.html')
+
+
 @frontend.route('/local-plans/<planning_authority>/<local_plan>', methods=['POST'])
 def add_document_to_plan(planning_authority, local_plan):
     plan = LocalPlan.query.get(local_plan)
@@ -136,6 +141,7 @@ def add_document_for_checking():
 
     return jsonify(resp)
 
+
 # serialise planning authority as json obj
 # should this be part of the model???
 def make_planning_authority_obj(pla):
@@ -152,6 +158,7 @@ def make_planning_authority_obj(pla):
         })
 
     return obj
+
 
 @frontend.route('/local-plans/check-url', methods=['POST'])
 def check_url():
