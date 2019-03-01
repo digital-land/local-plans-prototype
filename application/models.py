@@ -73,6 +73,12 @@ class LocalPlan(db.Model):
     def __repr__(self):
         return f'{self.local_plan} {self.states}'
 
+    def to_dict(self):
+        data = {
+            'id': self.local_plan,
+            'title': self.title
+        }
+        return data
 
 class PlanningAuthority(db.Model):
 
@@ -85,6 +91,14 @@ class PlanningAuthority(db.Model):
                                    secondary=planning_authority_plan,
                                    lazy=True,
                                    back_populates='planning_authorities')
+
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'name': self.name,
+            'plans': [plan.to_dict() for plan in self.local_plans]
+        }
+        return data
 
 
 def _parse_date(datestr):
