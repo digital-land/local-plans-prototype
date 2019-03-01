@@ -136,6 +136,40 @@ def add_document_for_checking():
 
     return jsonify(resp)
 
+# serialise planning authority as json obj
+# should this be part of the model???
+def make_planning_authority_obj(pla):
+    obj = {
+        'id': pla.id,
+        'name': pla.name,
+        'plans': []
+    }
+    print(obj)
+    for plan in pla.local_plans:
+        obj['plans'].append({
+            'id': plan.local_plan,
+            'title': plan.title
+        })
+
+    return obj
+
+@frontend.route('/local-plans/check-url', methods=['POST'])
+def check_url():
+    website_origin = request.json['active_page_origin']
+    website_location = request.json['active_page_location']
+
+    if website_location is not "":
+        pla = PlanningAuthority.query.filter_by(plan_policy_url=website_location).one()
+        print("FOUND BASED ON PLANNING POLICY DOC")
+        resp = {'OK': 200, 'planning_authority': make_planning_authority_obj(pla) }
+    elif website_origin is not "":
+        pla = PlanningAuthority.query.filter_by(website=website_origin).one()
+        resp = {'OK': 200, 'planning_authority': make_planning_authority_obj(pla)}
+    else:
+        resp = {'OK': 404}
+
+    return jsonify(resp)
+
 
 @frontend.route('/local-plans/check')
 def lucky_dip():
