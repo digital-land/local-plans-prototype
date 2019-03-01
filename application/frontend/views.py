@@ -134,23 +134,36 @@ def add_document_for_checking():
     else:
         resp = {'OK': 200}
 
+    # Colm do you know if we can handle a redirect in chrome extension or open the check_page url in a new
+    # tab? something like that?
     return jsonify(resp)
 
 
 @frontend.route('/local-plans/check-url', methods=['POST'])
 def check_url():
-    website_origin = request.json['active_page_origin']
-    website_location = request.json['active_page_location']
 
-    if website_location is not "":
-        pla = PlanningAuthority.query.filter_by(plan_policy_url=website_location).one()
-        print("FOUND BASED ON PLANNING POLICY DOC")
-        resp = {'OK': 200, 'planning_authority': pla.to_dict() }
-    elif website_origin is not "":
-        pla = PlanningAuthority.query.filter_by(website=website_origin).one()
-        resp = {'OK': 200, 'planning_authority': pla.to_dict()}
-    else:
-        resp = {'OK': 404}
+    # Maybe best do this on origin only? the reason is that the plan policy urls
+    # are sort of unknown provenance. The LA website urls I got from LGA
+    website_origin = request.json.get('active_page_origin')
+    website_location = request.json.get('active_page_location')
+
+    if website_origin is not None:
+
+        try:
+            pla = PlanningAuthority.query.filter_by(website=website_origin).one()
+            resp = {'OK': 200, 'planning_authority': pla.to_dict()}
+        except Exception as e:
+            print(e)
+            resp = {'OK': 404}
+
+    elif website_location is not None:
+        try:
+            pla = PlanningAuthority.query.filter_by(plan_policy_url=website_location).one()
+            print("FOUND BASED ON PLANNING POLICY DOC")
+            resp = {'OK': 200, 'planning_authority': pla.to_dict() }
+        except Exception as e:
+            print(e)
+            resp = {'OK': 404}
 
     return jsonify(resp)
 
