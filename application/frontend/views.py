@@ -122,14 +122,14 @@ def add_document_for_checking():
     if active_plan_id is not None:
         plan = LocalPlan.query.get(active_plan_id)
         for doc in documents:
-            document = PlanDocument(url=doc)
-            # TODO
-            # need to check if it has already been added
-            # need to remove from unchecked bucket if in there
-            plan.plan_documents.append(document)
-        db.session.add(plan)
-        db.session.commit()
+            if PlanDocument.query.filter_by(url=doc).first() is None:
+                document = PlanDocument(url=doc)
+                plan.plan_documents.append(document)
+                db.session.add(plan)
+                db.session.commit()
 
+                # TODO get the actual contents and store in s3
+                
         resp = {'OK': 200, 'check_page': url_for('frontend.local_plan',
                                                  planning_authority=request.json['pla_id'],
                                                  _anchor=plan.local_plan,
