@@ -16,6 +16,8 @@ def create_other_data(pa, row):
         if status not in plan.states:
             plan.states.append(status)
             print('updated local plan', plan_id)
+        if pa not in plan.planning_authorities:
+            pa.local_plans.append(plan)
     else:
         plan = LocalPlan()
         plan.local_plan = plan_id
