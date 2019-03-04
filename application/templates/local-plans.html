@@ -109,8 +109,8 @@
 
       </div>
 
-      <section class="lp-section-box lp-section-box__urls">
-        <h3 class="govuk-heading-m">Local plan URLs</h3>
+      
+        <h3 class="govuk-heading-m">Local plan documents</h3>
         <ul class="url-list">
           {% if plan.plan_documents|length > 0 %}
             {% for doc in plan.plan_documents %}
@@ -120,10 +120,40 @@
                 <a href="" class="url-item__btn url-edit-btn govuk-visually-hidden">Edit</a>
                 <a href="{{ url_for('frontend.remove_document_from_plan', document=doc.id, local_plan=plan.local_plan) }}" class="url-item__btn url-remove-btn">Remove</a>
               </div>
+
+              <table class="govuk-table">
+                <tbody class="govuk-table__body">
+                {% for fact in doc.facts %}
+                <tr class="govuk-table__row">
+                  <th class="govuk-table__header" scope="row">{{ fact.number }}</th>
+                  <td class="govuk-table__cell">{{ fact.notes }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+
+              <form action="{{ url_for('frontend.add_fact_to_document', planning_authority=planning_authority.id, local_plan=plan.local_plan, document=doc.id) }}" class="govuk-form add-fact-form">
+                <h4 class="govuk-heading-s">Add fact from document</h4>
+                <div class="govuk-form-group">
+                  <label for="document-number-{{loop.index}}" class="govuk-label">Number</label>
+                  <input type="text" class="govuk-input govuk-input--width-10" name="document-number-{{loop.index}}" id="document-number-{{loop.index}}">
+                </div>
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="document-note-{{loop.index}}">
+                    Provide some information about the number
+                  </label>
+                  <textarea class="govuk-textarea" id="document-note-{{loop.index}}" name="document-note-{{loop.index}}" rows="5"></textarea>
+                </div>
+                <div class="govuk-form-group">
+                  <button class="govuk-button fact-save-btn">Save</button>
+                  <button class="cancel-btn">Cancel</button>
+                </div>
+              </form>
             </li>
             {% endfor %}
           {% endif %}
         </ul>
+
 
         <form action="{{ url_for('frontend.add_document_to_plan', planning_authority=planning_authority.id, local_plan=plan.local_plan )}}" class="govuk-form url-edit-form">
           <div class="govuk-form-group">
@@ -142,9 +172,9 @@
         </form>
 
         <button class="govuk-button dlf-secondary-button url-add-btn lp-section-box__edit-btn">Add URL</button>
-      </section>
+      
 
-      <section class="lp-section-box lp-section-box__notes">
+      <!--<section class="lp-section-box lp-section-box__notes">
         <h3 class="govuk-heading-m">Notes</h3>
         {% if plan.notes == None %}
         <p class="govuk-body note-contents"></p>
@@ -190,7 +220,7 @@
         </form>
         
         <button class="govuk-button dlf-secondary-button number-edit-btn lp-section-box__edit-btn">Add number</button>
-      </section>
+      </section>-->
 
     </section>
     {% endfor %}
@@ -219,6 +249,8 @@
   const urlSaveBtns = document.querySelectorAll(".url-save-btn");
   const urlRemoveBtns = document.querySelectorAll(".url-remove-btn");
   const cancelBtns = document.querySelectorAll(".cancel-btn");
+
+  const factSaveBtns = document.querySelectorAll(".fact-save-btn");
 
   var source   = document.getElementById("url-item-template").innerHTML;
   var urlTemplate = Handlebars.compile(source);
@@ -279,6 +311,28 @@
       .then( (resp_data) => callback(resp_data, section) );
     });
   }
+
+  factSaveBtns.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const form = e.currentTarget.closest("form");
+      const url = form.getAttribute("action");
+      // set up data obj to post
+      var fact = {};
+      fact["number"] = form.querySelector("input").value;
+      fact["notes"] = form.querySelector("textarea").value;
+      // perform post
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ 'fact': fact })
+      })
+      .then(response => response.json())
+      .then( (resp_data) => console.log(resp_data) );
+    });
+  });
 
   urlAddBtns.forEach((btn) => {
     btn.addEventListener('click', (e) => {

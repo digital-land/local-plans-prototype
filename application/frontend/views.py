@@ -53,7 +53,7 @@ def add_document_to_plan(planning_authority, local_plan):
 @frontend.route('/local-plans/<planning_authority>/<local_plan>/<document>', methods=['POST'])
 def add_fact_to_document(planning_authority, local_plan, document):
 
-    plan_document = PlanDocument.query.filter_by(id=document, local_plan=local_plan).one()
+    plan_document = PlanDocument.query.filter_by(id=document, local_plan_id=local_plan).one()
 
     if request.json.get('fact') is not None:
         fact = request.json['fact']
@@ -61,7 +61,7 @@ def add_fact_to_document(planning_authority, local_plan, document):
         plan_document.facts.append(fact)
         db.session.add(plan_document)
         db.session.commit()
-        remove_url = url_for('frontend.remove_fact_from_document', document=str(document.id), fact=fact.id)
+        remove_url = url_for('frontend.remove_fact_from_document', document=str(plan_document.id), fact=fact.id)
         resp = {'OK': 200, 'fact': str(fact.id), 'remove_url': remove_url}
     else:
         resp = {'OK': 200}
