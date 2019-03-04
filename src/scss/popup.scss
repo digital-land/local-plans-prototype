@@ -18,6 +18,10 @@ body::before {
   background: govuk-colour("black");
 }
 
+header p:first-child {
+  margin-bottom: 0;
+}
+
 .select-toggle {
   margin-bottom: 10px;
 }
@@ -60,6 +64,10 @@ body::before {
     color: govuk-colour("white");
     background: govuk-colour("blue");
   }
+}
+
+.govuk-checkboxes__list {
+  @include govuk-responsive-margin(6, "bottom");
 }
 
 .ext-message {

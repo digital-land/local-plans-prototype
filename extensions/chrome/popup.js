@@ -36,6 +36,7 @@ function showLinks() {
     input.value = visibleLinks[i];
     checkboxContainer.appendChild( item );
   }
+  document.querySelector(".document-count").textContent = visibleLinks.length;
 }
 
 // Toggle the checked state of all visible links.
@@ -196,8 +197,6 @@ var activePageDetails = {};
 
     const docsSavedLink = document.querySelector(".ext-message__link");
     docsSavedLink.addEventListener('click', (e) => openNewTab(e.currentTarget));
-
-
 
 
     chrome.windows.getCurrent(function (currentWindow) {

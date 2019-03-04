@@ -5341,6 +5341,10 @@ body::before {
   background: #0b0c0c;
 }
 
+header p:first-child {
+  margin-bottom: 0;
+}
+
 .select-toggle {
   margin-bottom: 10px;
 }
@@ -5379,6 +5383,16 @@ body::before {
   border-color: #005ea5;
   color: #ffffff;
   background: #005ea5;
+}
+
+.govuk-checkboxes__list {
+  margin-bottom: 20px;
+}
+
+@media (min-width: 40.0625em) {
+  .govuk-checkboxes__list {
+    margin-bottom: 30px;
+  }
 }
 
 .ext-message {
