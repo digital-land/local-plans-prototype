@@ -34,3 +34,21 @@ body::before {
   font-size: 16px;
 }
 
+.ext-message {
+  @include govuk-font($size: 16);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 7px 5px 5px;
+  transition: opacity .2s ease-in-out;
+  opacity: 0;
+  color: govuk-colour("white");
+  background: govuk-colour("turquoise");
+  line-height: 1.5em;
+
+  &.success {
+    opacity: 1;
+  }
+}
+

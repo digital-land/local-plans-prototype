@@ -35,7 +35,10 @@
 
         <button class="govuk-button" id="save">Save selected</button>
 
-        <a id="local-authority" href=""></a>
+        <div class="ext-message">
+            <span class="ext-message__content"></span>
+            <a class="ext-message__link" id="local-authority" href="">Open tab</a>
+        </div>
 
     <script id="checkbox-template" type="text/x-handlebars-template">
     <input class="govuk-checkboxes__input" id="url-{{ count }}" name="urls" type="checkbox" value="{{ link }}">

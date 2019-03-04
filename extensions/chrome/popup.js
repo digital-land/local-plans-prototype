@@ -52,7 +52,7 @@ function saveDocuments() {
     }
   }
   if (toSend.length > 0) {
-    checkLink = document.getElementById('local-authority')
+    const extMessageContainer = document.querySelector('.ext-message');
 
     fetch('http://localhost:5000/local-plans/add-document', {
         method: "POST",
@@ -66,7 +66,15 @@ function saveDocuments() {
           'active_page_location': activePageDetails["currentLocation"] || ""})
       })
       .then(response => response.json())
-      .then( (resp_data) => checkLink.innerHTML = resp_data['check_page'] );
+      .then( (resp_data) => {
+        if(resp_data['OK'] === 200) {
+          extMessageContainer.classList.add("success");
+          var linkEl = extMessageContainer.querySelector(".ext-message__link");
+          var message = extMessageContainer.querySelector(".ext-message__content");
+          linkEl.href = resp_data['check_page'];
+          message.innerHTML = "Docs saved successfully. ";
+        }
+      });
   }
 }
 
@@ -108,6 +116,18 @@ function checkPageBelongsToAuthority(pageDetails) {
 
 }
 
+function openNewTab(linkEl) {
+  const url = linkEl.href;
+  if(url !== "") {
+    chrome.tabs.create({
+      url: url,
+      active: false
+    });
+  } else {
+    console.log("href not set");
+  }
+}
+
 // Add links to allLinks and visibleLinks, sort and show them.  send_links.js is
 // injected into all frames of the active tab, so this listener may be called
 // multiple times.
@@ -131,7 +151,10 @@ var activePageDetails = {};
     // tab.
 
     document.getElementById('toggle').onchange = toggleAll;
-    document.getElementById('save').onclick = saveDocuments; 
+    document.getElementById('save').onclick = saveDocuments;
+
+    const docsSavedLink = document.querySelector(".ext-message__link");
+    docsSavedLink.addEventListener('click', (e) => openNewTab(e.currentTarget));
 
     chrome.windows.getCurrent(function (currentWindow) {
       chrome.tabs.query(

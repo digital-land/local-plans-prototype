@@ -132,10 +132,8 @@ def add_document_for_checking():
                                                  planning_authority=pla.id,
                                                  _external=True)}
     else:
-        resp = {'OK': 200}
+        resp = {'OK': 404}
 
-    # Colm do you know if we can handle a redirect in chrome extension or open the check_page url in a new
-    # tab? something like that?
     return jsonify(resp)
 
 
