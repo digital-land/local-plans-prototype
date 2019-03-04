@@ -1,5 +1,6 @@
 body {
     position: relative;
+    min-width: 400px;
     margin: 15px 0 0;
     padding: 30px 15px;
     border-top: 5px solid #005ea5;
