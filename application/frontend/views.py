@@ -132,6 +132,7 @@ def add_document_for_checking():
 
         resp = {'OK': 200, 'check_page': url_for('frontend.local_plan',
                                                  planning_authority=request.json['pla_id'],
+                                                 _anchor=plan.local_plan,
                                                  _external=True)}
 
     elif website is not None:

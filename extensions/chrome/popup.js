@@ -11,6 +11,8 @@ var visibleLinks = [];
 var activePlan = undefined;
 var pla = undefined;
 
+var planList;
+
 // Display all visible links.
 function showLinks() {
   var checkboxContainer = document.querySelector(".govuk-checkboxes__list");
@@ -94,29 +96,37 @@ function createStageTag(plan, _class) {
   //<span class="stage-tag plan-details__item is-adopted">adopted</span>
   var tagElement = document.createElement('span');
   (classes === undefined) ? tagElement.classList.add('stage-tag'):tagElement.classList.add('stage-tag', classes);
+  tagElement.dataset.planId = plan['id'];
   tagElement.textContent = plan['id'];
   if(plan['is_adopted']) tagElement.classList.add('stage-tag--adopted');
   return tagElement;
 }
 
+function setActivePlan(selectedTag) {
+  activePlan = selectedTag.dataset.planId;
+  const tags = planList.querySelectorAll(".stage-tag");
+  tags.forEach((tag) => tag.classList.remove("selected"));
+  selectedTag.classList.add("selected");
+}
+
 function displayPageDetails(pla_obj) {
   pla = pla_obj;
   var pageDetailsContainer = document.querySelector(".page-details");
-  var planList = document.querySelector(".plan-list");
   var nameElement = pageDetailsContainer.querySelector(".pla-name");
   console.log(pla_obj.name);
   nameElement.textContent = pla_obj.name;
 
   if(pla_obj['plans'].length === 1) {
     console.log("just the one");
-    activePlan = pla_obj['plans'][0]['id'];
     planList.appendChild( createStageTag(pla_obj['plans'][0], "selected") );
   } else {
     pla_obj['plans'].forEach((plan) => {
       planList.appendChild( createStageTag(plan) );
       console.log(plan);
     });
+    planList.querySelector(`[data-plan-id=${pla_obj['plans'][0]['id']}]`).classList.add("selected");
   }
+  activePlan = pla_obj['plans'][0]['id'];
 }
 
 function checkPageBelongsToAuthority(pageDetails) {
@@ -169,14 +179,26 @@ var activePageDetails = {};
 (function($) {
   $(function () {
 
+    planList = document.querySelector(".plan-list");
+
     // Set up event handlers and inject send_links.js into all frames in the active
     // tab.
 
     document.getElementById('toggle').onchange = toggleAll;
     document.getElementById('save').onclick = saveDocuments;
 
+    planList.addEventListener('click', (e) => {
+      const target = e.target;
+      if(target.classList.contains('stage-tag')) {
+        setActivePlan(target);
+      }
+    });
+
     const docsSavedLink = document.querySelector(".ext-message__link");
     docsSavedLink.addEventListener('click', (e) => openNewTab(e.currentTarget));
+
+
+
 
     chrome.windows.getCurrent(function (currentWindow) {
       chrome.tabs.query(
