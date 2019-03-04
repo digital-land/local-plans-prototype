@@ -5357,6 +5357,30 @@ body::before {
   font-size: 16px;
 }
 
+.stage-tag:hover, .stage-tag:active {
+  border-color: #6f777b;
+  color: #6f777b;
+  cursor: pointer;
+}
+
+.stage-tag.selected {
+  border-color: #6f777b;
+  color: #ffffff;
+  background: #6f777b;
+}
+
+.stage-tag--adopted:hover, .stage-tag--adopted:active {
+  border-color: #005ea5;
+  color: #005ea5;
+  cursor: pointer;
+}
+
+.stage-tag--adopted.selected {
+  border-color: #005ea5;
+  color: #ffffff;
+  background: #005ea5;
+}
+
 .ext-message {
   font-family: "nta", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

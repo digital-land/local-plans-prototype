@@ -32,6 +32,34 @@ body::before {
   border-color: govuk-colour("grey-2");
   color: govuk-colour("grey-2");
   font-size: 16px;
+
+  &:hover,
+  &:active {
+    border-color: govuk-colour("grey-1");
+    color: govuk-colour("grey-1");
+    cursor: pointer;
+  }
+
+  &.selected {
+    border-color: govuk-colour("grey-1");
+    color: govuk-colour("white");
+    background: govuk-colour("grey-1");
+  }
+}
+
+.stage-tag--adopted {
+  &:hover,
+  &:active {
+    border-color: govuk-colour("blue");
+    color: govuk-colour("blue");
+    cursor: pointer;
+  }
+
+  &.selected {
+    border-color: govuk-colour("blue");
+    color: govuk-colour("white");
+    background: govuk-colour("blue");
+  }
 }
 
 .ext-message {
@@ -51,4 +79,3 @@ body::before {
     opacity: 1;
   }
 }
-

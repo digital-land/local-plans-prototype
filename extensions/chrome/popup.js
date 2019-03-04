@@ -8,6 +8,9 @@
 var allLinks = [];
 var visibleLinks = [];
 
+var activePlan = undefined;
+var pla = undefined;
+
 // Display all visible links.
 function showLinks() {
   var checkboxContainer = document.querySelector(".govuk-checkboxes__list");
@@ -54,16 +57,24 @@ function saveDocuments() {
   if (toSend.length > 0) {
     const extMessageContainer = document.querySelector('.ext-message');
 
+    let dataToSend = {
+      'documents': toSend,
+      'active_page_origin': activePageDetails["currentOrigin"] || "",
+      'active_page_location': activePageDetails["currentLocation"] || ""
+    };
+    if(activePlan !== undefined) {
+      dataToSend['active_plan'] = activePlan;
+      dataToSend['pla_id'] = pla['id'];
+    }
+
+    console.log(dataToSend);
+
     fetch('http://localhost:5000/local-plans/add-document', {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          'documents': toSend,
-          'planning_authority': window.location.origin,
-          'active_page_origin': activePageDetails["currentOrigin"] || "",
-          'active_page_location': activePageDetails["currentLocation"] || ""})
+        body: JSON.stringify(dataToSend)
       })
       .then(response => response.json())
       .then( (resp_data) => {
@@ -78,23 +89,34 @@ function saveDocuments() {
   }
 }
 
-function createStageTag(plan) {
+function createStageTag(plan, _class) {
+  let classes = _class || undefined;
   //<span class="stage-tag plan-details__item is-adopted">adopted</span>
   var tagElement = document.createElement('span');
-  tagElement.classList.add('stage-tag');
+  (classes === undefined) ? tagElement.classList.add('stage-tag'):tagElement.classList.add('stage-tag', classes);
   tagElement.textContent = plan['id'];
+  if(plan['is_adopted']) tagElement.classList.add('stage-tag--adopted');
   return tagElement;
 }
 
 function displayPageDetails(pla_obj) {
+  pla = pla_obj;
   var pageDetailsContainer = document.querySelector(".page-details");
   var planList = document.querySelector(".plan-list");
   var nameElement = pageDetailsContainer.querySelector(".pla-name");
   console.log(pla_obj.name);
   nameElement.textContent = pla_obj.name;
-  pla_obj['plans'].forEach((plan) => {
-    planList.appendChild( createStageTag(plan) );
-  });
+
+  if(pla_obj['plans'].length === 1) {
+    console.log("just the one");
+    activePlan = pla_obj['plans'][0]['id'];
+    planList.appendChild( createStageTag(pla_obj['plans'][0], "selected") );
+  } else {
+    pla_obj['plans'].forEach((plan) => {
+      planList.appendChild( createStageTag(plan) );
+      console.log(plan);
+    });
+  }
 }
 
 function checkPageBelongsToAuthority(pageDetails) {

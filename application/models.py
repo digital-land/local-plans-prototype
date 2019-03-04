@@ -76,6 +76,7 @@ class LocalPlan(db.Model):
     def to_dict(self):
         data = {
             'id': self.local_plan,
+            'is_adopted': self.is_adopted(),
             'title': self.title
         }
         return data

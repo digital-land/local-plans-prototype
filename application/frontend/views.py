@@ -114,11 +114,27 @@ def _get_planning_authority_url(documents):
 @frontend.route('/local-plans/add-document', methods=['POST'])
 def add_document_for_checking():
     documents = request.json['documents']
+    active_plan_id = request.json.get('active_plan')
 
     website = (request.json['active_page_origin']
         if request.json['active_page_origin'] is not "" else _get_planning_authority_url(documents))
 
-    if website is not None:
+    if active_plan_id is not None:
+        plan = LocalPlan.query.get(active_plan_id)
+        for doc in documents:
+            document = PlanDocument(url=doc)
+            # TODO
+            # need to check if it has already been added
+            # need to remove from unchecked bucket if in there
+            plan.plan_documents.append(document)
+        db.session.add(plan)
+        db.session.commit()
+
+        resp = {'OK': 200, 'check_page': url_for('frontend.local_plan',
+                                                 planning_authority=request.json['pla_id'],
+                                                 _external=True)}
+
+    elif website is not None:
         pla = PlanningAuthority.query.filter_by(website=website).one()
         for doc in documents:
             if UncheckedDocument.query.filter_by(url=doc).first() is None:
