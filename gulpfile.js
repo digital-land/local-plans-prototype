@@ -68,7 +68,7 @@ const copyGovukJS = () =>
 
 const copyCompiledCSS = () =>
   gulp
-    .src(`${config.destPath}/dl-frontend.css`)
+    .src([`${config.destPath}/dl-frontend.css`, `${config.destPath}/popup.css`])
     .pipe(gulp.dest(`${config.chromeExtDest}`));
 
 
