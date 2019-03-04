@@ -2,8 +2,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, jsonif
 from sqlalchemy import asc
 
 from application.extensions import db
-from application.models import PlanningAuthority, LocalPlan, PlanDocument, UncheckedDocument, Fact
-from application.frontend.forms import PlanningPolicyURLForm
+from application.models import PlanningAuthority, LocalPlan, PlanDocument, EmergingPlanDocument, Fact
+from application.frontend.forms import PlanningPolicyURLForm, LocalPlanURLForm
 
 frontend = Blueprint('frontend', __name__, template_folder='templates')
 
@@ -75,22 +75,32 @@ def remove_fact_from_document(document, fact):
     return jsonify({204: 'No Content'})
 
 
-@frontend.route('/local-plans/<planning_authority>/update-planning-policy-url', methods=['GET', 'POST'])
-def update_planning_policy_url(planning_authority):
+@frontend.route('/local-plans/<planning_authority>/update-local-scheme-url', methods=['GET', 'POST'])
+def update_local_scheme_url(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
-    form = PlanningPolicyURLForm()
+    form = PlanningPolicyURLForm(url=pla.local_scheme_url)
 
-    if request.method == 'POST' and form.validate_on_submit():
-        pla.plan_policy_url = form.url.data
+    if form.validate_on_submit():
+        pla.local_scheme_url = form.url.data
         db.session.add(pla)
         db.session.commit()
         return redirect(url_for('frontend.local_plan', planning_authority=pla.id))
 
-    # do I need to do this to populate the existing URL?
-    if pla.plan_policy_url is not None and request.method == 'GET':
-        form.url.data = pla.plan_policy_url
+    return render_template('update-scheme-url.html', planning_authority=pla, form=form)
 
-    return render_template('update-pp-url.html', planning_authority=pla, form=form)
+
+@frontend.route('/local-plans/<planning_authority>/<local_plan>/update-plan-url', methods=['GET', 'POST'])
+def update_local_plan_url(planning_authority, local_plan):
+    pla = PlanningAuthority.query.get(planning_authority)
+    plan = LocalPlan.query.get(local_plan)
+    form = LocalPlanURLForm(url=plan.planning_policy_url)
+    if form.validate_on_submit():
+        plan.planning_policy_url = form.url.data
+        db.session.add(pla)
+        db.session.commit()
+        return redirect(url_for('frontend.local_plan', planning_authority=pla.id))
+
+    return render_template('update-local-plan-url.html', planning_authority=pla, local_plan=plan, form=form)
 
 
 @frontend.route('/local-plans/<local_plan>/document/<document>', methods=['DELETE'])
@@ -138,8 +148,8 @@ def add_document_for_checking():
     elif website is not None:
         pla = PlanningAuthority.query.filter_by(website=website).one()
         for doc in documents:
-            if UncheckedDocument.query.filter_by(url=doc).first() is None:
-                pla.unchecked_documents.append(UncheckedDocument(url=doc))
+            if EmergingPlanDocument.query.filter_by(url=doc).first() is None:
+                pla.unchecked_documents.append(EmergingPlanDocument(url=doc))
 
         db.session.add(pla)
         db.session.commit()

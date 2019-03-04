@@ -48,7 +48,7 @@ planning_authority_plan = db.Table('planning_authority_plan',
 class LocalPlan(db.Model):
 
     local_plan = db.Column(db.String(), primary_key=True)
-    planning_policy_url = db.Column(db.String())
+    url = db.Column(db.String())
 
     title = db.Column(db.String())
 
@@ -81,17 +81,20 @@ class LocalPlan(db.Model):
         }
         return data
 
+
 class PlanningAuthority(db.Model):
 
     id = db.Column(db.String(64), primary_key=True)
     name = db.Column(db.String(256))
     website = db.Column(db.String())
-    plan_policy_url = db.Column(db.String())
-    unchecked_documents = db.relationship('UncheckedDocument', back_populates='planning_authority', lazy=True)
+
+    local_scheme_url = db.Column(db.String())
+    emerging_plan_documents = db.relationship('EmergingPlanDocument', back_populates='planning_authority', lazy=True)
+
     local_plans = db.relationship('LocalPlan',
-                                   secondary=planning_authority_plan,
-                                   lazy=True,
-                                   back_populates='planning_authorities')
+                                  secondary=planning_authority_plan,
+                                  lazy=True,
+                                  back_populates='planning_authorities')
 
     def to_dict(self):
         data = {
@@ -129,13 +132,13 @@ class Fact(db.Model):
     plan_document = db.relationship('PlanDocument', back_populates='facts')
 
 
-class UncheckedDocument(db.Model):
+class EmergingPlanDocument(db.Model):
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=_generate_uuid)
     url = db.Column(db.String())
 
     planning_authority_id = db.Column(db.String(64), db.ForeignKey('planning_authority.id'), nullable=False)
-    planning_authority = db.relationship('PlanningAuthority', back_populates='unchecked_documents')
+    planning_authority = db.relationship('PlanningAuthority', back_populates='emerging_plan_documents')
 
 
 class State:

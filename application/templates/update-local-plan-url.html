@@ -14,7 +14,7 @@
        "href": url_for("frontend.local_plan", planning_authority=planning_authority.id)
      },
      {
-       "text": "Update LDS url"
+       "text": "Update Local Plan url"
      }
    ]
  }) }}
@@ -33,11 +33,11 @@
 
 {% block content %}
 
-  <span class="govuk-caption-l">{{ planning_authority.name }}</span>
-  <h1 class="govuk-heading-l">Update LDS url</h1>
+  <span class="govuk-caption-l">{{ local_plan.local_plan }}</span>
+  <h1 class="govuk-heading-l">Update Local Plan url</h1>
 
   <div class="govuk-grid-row">
-    <form action="{{ url_for('frontend.update_planning_policy_url', planning_authority=planning_authority.id) }}" class="govuk-form govuk-grid-column-one-half" method="POST">
+    <form action="{{ url_for('frontend.update_local_plan_url', planning_authority=planning_authority.id, local_plan=local_plan.local_plan) }}" class="govuk-form govuk-grid-column-one-half" method="POST">
       {{ render_field(form.url) }}
       <div class="govuk-form-group">
         <button class="govuk-button" type="submit">Save</button>
