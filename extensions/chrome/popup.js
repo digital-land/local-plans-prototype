@@ -13,6 +13,8 @@ var pla = undefined;
 
 var planList;
 
+var localPlanUrl = 'http://localhost:5000';
+
 // Display all visible links.
 function showLinks() {
   var checkboxContainer = document.querySelector(".govuk-checkboxes__list");
@@ -72,7 +74,7 @@ function saveDocuments() {
 
     console.log(dataToSend);
 
-    fetch('http://localhost:5000/local-plans/add-document', {
+    fetch( localPlanUrl + '/local-plans/add-document', {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -132,7 +134,7 @@ function displayPageDetails(pla_obj) {
 
 function checkPageBelongsToAuthority(pageDetails) {
 
-  fetch('http://localhost:5000/local-plans/check-url', {
+  fetch( localPlanUrl + '/local-plans/check-url', {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -203,7 +205,7 @@ var activePageDetails = {};
       chrome.tabs.query(
         { active: true, windowId: currentWindow.id },
         function(activeTabs) {
-          chrome.tabs.executeScript(activeTabs[0].id, {file: 'send_links.js', allFrames: true});
+          chrome.tabs.executeScript(activeTabs[0].id, {file: 'find_links.js', allFrames: true});
         }
       );
     });
@@ -228,4 +230,11 @@ var activePageDetails = {};
       console.log(activePageDetails);
     }
   });
+
+  chrome.storage.sync.get(['localPlanUrl'], function(data) {
+    if (data.localPlanUrl !== undefined) {
+      localPlanUrl = data.localPlanUrl.replace(/\/$/, '');
+    }
+  });
+
 }(jQuery));
