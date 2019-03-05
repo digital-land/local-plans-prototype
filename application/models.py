@@ -1,6 +1,8 @@
 import uuid
 
 from datetime import datetime
+from enum import Enum
+
 from sqlalchemy.ext.mutable import Mutable
 from application.extensions import db
 from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSON
@@ -130,12 +132,43 @@ class PlanDocument(db.Model):
         return data
 
 
+class FactType(Enum):
+
+    __order__ = 'PLAN_NAME PLAN_START_YEAR PLAN_END_YEAR HOUSING_REQUIREMENT_TOTAL HOUSING_REQUIREMENT_RANGE'
+
+    PLAN_NAME = 'Plan name'
+    PLAN_START_YEAR = 'Plan period start year'
+    PLAN_END_YEAR = 'Plan period end year'
+    HOUSING_REQUIREMENT_TOTAL = 'Housing requirement total'
+    HOUSING_REQUIREMENT_RANGE = 'Housing requirement range'
+
+
+class EmergingFactType(Enum):
+
+    # __order__ = 'PUBLICATION_DATE PROPOSED_REG_18_DATE PROPOSED_PUBLICATION_DATE PROPOSED_' \
+    #             'SUBMISSION_DATE PROPOSED_MAIN_MODIFICATIONS_DATE PROPOSED_ADOPTION_DATE ' \
+    #             'HOUSING_REQUIREMENT_TOTAL HOUSING_REQUIREMENT_RANGE'
+
+    PUBLICATION_DATE = 'Publication date'
+    PROPOSED_REG_18_DATE = 'Proposed Regulation 18 date'
+    PROPOSED_PUBLICATION_DATE = 'Proposed publication date'
+    PROPOSED_SUBMISSION_DATE = 'Proposed submission date'
+    PROPOSED_MAIN_MODIFICATIONS_DATE = 'Proposed main modifications date'
+    PROPOSED_ADOPTION_DATE = 'Proposed adoption date'
+    HOUSING_REQUIREMENT_TOTAL = 'Housing requirement total'
+    HOUSING_REQUIREMENT_RANGE = 'Housing requirement range'
+
+
+
+# TODO - Note with facts and emerging facts the 'fact' field can contain strings, dates, numbers or ranges
+# so will put method to return right value based on fact_type
+
 class Fact(db.Model):
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=_generate_uuid)
-
-    number = db.Column(db.Integer())
     notes = db.Column(db.String())
+    fact = db.Column(db.String())
+    fact_type = db.Column(db.String())
 
     plan_document_id = db.Column(UUID(as_uuid=True), db.ForeignKey('plan_document.id'), nullable=False)
     plan_document = db.relationship('PlanDocument', back_populates='facts')
@@ -143,9 +176,31 @@ class Fact(db.Model):
     def to_dict(self):
         data = {
             'id': self.id,
-            'number': self.number,
+            'fact': self.fact,
+            'fact_type': self.fact_type.name,
             'notes': self.notes,
             'document_id': self.plan_document_id
+        }
+        return data
+
+
+class EmergingFact(db.Model):
+
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=_generate_uuid)
+    fact = db.Column(db.String())
+    fact_type = db.Column(db.String())
+    notes = db.Column(db.String())
+
+    emerging_plan_document_id = db.Column(UUID(as_uuid=True), db.ForeignKey('emerging_plan_document.id'), nullable=False)
+    emerging_plan_document = db.relationship('EmergingPlanDocument', back_populates='facts')
+
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'fact': self.fact,
+            'fact_type': self.fact_type.name,
+            'notes': self.notes,
+            'document_id': self.emerging_plan_document_id
         }
         return data
 
@@ -157,6 +212,8 @@ class EmergingPlanDocument(db.Model):
 
     planning_authority_id = db.Column(db.String(64), db.ForeignKey('planning_authority.id'), nullable=False)
     planning_authority = db.relationship('PlanningAuthority', back_populates='emerging_plan_documents')
+
+    facts = db.relationship('EmergingFact', back_populates='emerging_plan_document', lazy=True)
 
 
 class State:

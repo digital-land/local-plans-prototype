@@ -59,21 +59,21 @@
 
               <section class="document-facts govuk-grid-column-two-thirds">
 
-
                 <!-- TODO need some facts for emerging plan docs -->
                 {% if doc.facts|length > 0 %}
-                <table class="govuk-table document-facts__table">
-                  <caption class="govuk-table__caption">Facts from document</caption>
-                  <tbody class="govuk-table__body">
-                  {% for fact in doc.facts %}
-                  <tr class="govuk-table__row">
-                    <th class="govuk-table__header" scope="row">{{ fact.number }}</th>
-                    <td class="govuk-table__cell">{{ fact.notes }}</td>
-                    <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact" href="{{ url_for('frontend.remove_fact_from_document', document=doc.id, fact=fact.id) }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
-                  </tr>
-                  {% endfor %}
-                  </tbody>
-                </table>
+                    <table class="govuk-table document-facts__table">
+                      <caption class="govuk-table__caption">Facts from document</caption>
+                      <tbody class="govuk-table__body">
+
+                      {% for fact in doc.facts %}
+                      <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">{{ fact.number }}</th>
+                        <td class="govuk-table__cell">{{ fact.notes }}</td>
+                        <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact" href="{{ url_for('frontend.remove_fact_from_document', document=doc.id, fact=fact.id) }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
+                      </tr>
+                      {% endfor %}
+                      </tbody>
+                    </table>
                 {% endif %}
 
                 <details class="govuk-details govuk-details--facts">
@@ -82,12 +82,26 @@
                       Add fact from document
                     </span>
                   </summary>
+
                   <form action="3" class="govuk-form add-fact-form govuk-details__text">
                     <h4 class="govuk-heading-s govuk-visually-hidden">Add fact from document</h4>
-                    <div class="govuk-form-group">
-                      <label for="document-number-{{loop.index}}" class="govuk-label">Number</label>
-                      <input type="text" class="govuk-input govuk-input--width-10" name="document-number-{{loop.index}}" id="document-number-{{loop.index}}">
+
+{#                    <div class="govuk-form-group">#}
+{#                      <label for="document-number-{{loop.index}}" class="govuk-label">Number</label>#}
+{#                      <input type="text" class="govuk-input govuk-input--width-10" name="document-number-{{loop.index}}" id="document-number-{{loop.index}}">#}
+{#                    </div>#}
+
+                      <div class="govuk-form-group">
+                       <label class="govuk-label" for="document-note-{{loop.index}}">
+                           Specify the type of fact
+                       </label>
+                        <select class="govuk-select" id="fact-type-{{loop.index}}" name="fact-type-{{loop.index}}">
+                          {% for fact_type in emerging_fact_types %}
+                             <option value="{{ fact_type.name }}">{{ fact_type.value }}</option>
+                          {% endfor %}
+                      </select>
                     </div>
+
                     <div class="govuk-form-group">
                       <label class="govuk-label" for="document-note-{{loop.index}}">
                         Provide some information about the number
@@ -232,13 +246,27 @@
                   </summary>
                   <form action="{{ url_for('frontend.add_fact_to_document', planning_authority=planning_authority.id, local_plan=plan.local_plan, document=doc.id) }}" class="govuk-form add-fact-form govuk-details__text">
                     <h4 class="govuk-heading-s govuk-visually-hidden">Add fact from document</h4>
+
                     <div class="govuk-form-group">
-                      <label for="document-number-{{loop.index}}" class="govuk-label">Number</label>
-                      <input type="text" class="govuk-input govuk-input--width-10" name="document-number-{{loop.index}}" id="document-number-{{loop.index}}">
+                       <label class="govuk-label" for="document-note-{{loop.index}}">
+                           Specify the type of fact
+                       </label>
+                        <select class="govuk-select" id="fact-type-{{loop.index}}" name="fact-type-{{loop.index}}">
+                          {% for fact_type in fact_types %}
+                             <option value="{{ fact_type.name }}">{{ fact_type.value }}</option>
+                          {% endfor %}
+                      </select>
                     </div>
+
+                     <!-- TODO depending on type of fact chosen render input for fact
+                     e.g. if plan name just an text input note we know some of the names already,
+                     if plan start or end date chose render input for date in format YYYY-MM
+                     if total housing number just integer of range then two inputs 'from' integer to 'integer'
+                     -->
+
                     <div class="govuk-form-group">
                       <label class="govuk-label" for="document-note-{{loop.index}}">
-                        Provide some information about the number
+                        Provide any additional information about the fact
                       </label>
                       <textarea class="govuk-textarea" id="document-note-{{loop.index}}" name="document-note-{{loop.index}}" rows="5"></textarea>
                     </div>

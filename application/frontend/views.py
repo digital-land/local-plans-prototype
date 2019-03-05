@@ -2,7 +2,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, jsonif
 from sqlalchemy import asc
 
 from application.extensions import db
-from application.models import PlanningAuthority, LocalPlan, PlanDocument, EmergingPlanDocument, Fact
+from application.models import PlanningAuthority, LocalPlan, PlanDocument, EmergingPlanDocument, Fact, FactType, \
+    EmergingFactType
 from application.frontend.forms import PlanningPolicyURLForm, LocalPlanURLForm
 
 frontend = Blueprint('frontend', __name__, template_folder='templates')
@@ -24,7 +25,10 @@ def list_all():
 @frontend.route('/local-plans/<planning_authority>')
 def local_plan(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
-    return render_template('local-plans.html', planning_authority=pla)
+    return render_template('local-plans.html',
+                           planning_authority=pla,
+                           fact_types=FactType,
+                           emerging_fact_types=EmergingFactType)
 
 
 @frontend.route('/start-collecting-data')
