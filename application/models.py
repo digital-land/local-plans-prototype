@@ -78,7 +78,7 @@ class LocalPlan(db.Model):
             'id': self.local_plan,
             'is_adopted': self.is_adopted(),
             'title': self.title,
-            'planning_authorities': [authority.name for authority in self.planning_authorities]
+            'planning_authorities': [{'name': authority.name, 'id':authority.id} for authority in self.planning_authorities]
         }
         return data
 
@@ -120,6 +120,7 @@ class PlanDocument(db.Model):
 
     def to_dict(self):
         data = {
+            'id': self.id,
             'url': self.url,
             'facts': [fact.to_dict() for fact in self.facts]
         }

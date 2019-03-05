@@ -45,17 +45,23 @@
                 <h2 class="govuk-heading-l facts__doc-url">No document url</h2>
                 <p class="govuk-body">which is a document associated with plan <span class="facts__local-plan"></span></p>
             </header>
+
+            <table class="govuk-table document-facts__table">
+                <caption class="govuk-table__caption">Facts from document</caption>
+                <tbody class="govuk-table__body"></tbody>
+            </table>
+
             <form action="" class="govuk-form add-fact-form govuk-details__text">
                 <h4 class="govuk-heading-s">Add fact from document</h4>
                 <div class="govuk-form-group">
-                  <label for="document-number-{{loop.index}}" class="govuk-label">Number</label>
-                  <input type="text" class="govuk-input govuk-input--width-10" name="document-number-{{loop.index}}" id="document-number-{{loop.index}}">
+                  <label for="document-number" class="govuk-label">Number</label>
+                  <input type="text" class="govuk-input govuk-input--width-10" name="document-number" id="document-number">
                 </div>
                 <div class="govuk-form-group">
-                  <label class="govuk-label" for="document-note-{{loop.index}}">
+                  <label class="govuk-label" for="document-note">
                     Provide some information about the number
                   </label>
-                  <textarea class="govuk-textarea" id="document-note-{{loop.index}}" name="document-note-{{loop.index}}" rows="5"></textarea>
+                  <textarea class="govuk-textarea" id="document-note" name="document-note" rows="5"></textarea>
                 </div>
                 <div class="govuk-form-group">
                   <button class="govuk-button fact-save-btn">Save</button>
