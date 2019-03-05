@@ -6610,3 +6610,112 @@
 .request-for-update {
   color: #6f777b;
 }
+
+.url-list {
+  padding-left: 0;
+  list-style: none;
+}
+
+.url-item {
+  position: relative;
+  margin-bottom: 10px;
+  line-height: 27px;
+}
+
+.url-item .url-link {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  padding-top: 3px;
+  padding-right: 215px;
+  overflow: hidden;
+  color: #0b0c0c;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.url-item__controls {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #f8f8f8;
+}
+
+.url-item__btn {
+  display: inline-block;
+  width: 100px;
+  padding-top: 3px;
+  color: #0b0c0c !important;
+  background: #dee0e2;
+  line-height: 27px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.govuk-details--facts .govuk-details__summary {
+  box-sizing: border-box;
+  margin-bottom: 0;
+  padding-right: 15px;
+}
+
+.govuk-details--facts .govuk-details__summary:before {
+  content: "+";
+  bottom: auto;
+  width: 1em;
+  height: 100%;
+  border: 0;
+}
+
+.govuk-details--facts[open] .govuk-details__summary {
+  padding-left: 20px;
+  border-left: 5px solid #005ea5;
+  background: #f8f8f8;
+}
+
+.govuk-details--facts[open] .govuk-details__summary:before {
+  content: "";
+  border: 0;
+}
+
+.govuk-details--facts[open] .govuk-details__summary-text {
+  font-weight: bold;
+}
+
+.govuk-details--facts[open] .govuk-details__text {
+  margin-top: -2px;
+}
+
+.govuk-details--facts[open] .govuk-details__text .govuk-form-group:last-of-type .govuk-button {
+  margin-bottom: 0;
+}
+
+.document-facts__add {
+  font-family: "nta", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 14px;
+  font-size: 0.875rem;
+  line-height: 1.14286;
+}
+
+@media print {
+  .document-facts__add {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .document-facts__add {
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1;
+  }
+}
+
+@media print {
+  .document-facts__add {
+    font-size: 14pt;
+    line-height: 16px;
+  }
+}
