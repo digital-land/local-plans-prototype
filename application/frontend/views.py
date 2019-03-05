@@ -35,23 +35,6 @@ def start_collecting_data():
     return render_template('collecting-data-start-page.html')
 
 
-@frontend.route('/local-plans/<planning_authority>/<local_plan>', methods=['POST'])
-def add_document_to_plan(planning_authority, local_plan):
-    plan = LocalPlan.query.get(local_plan)
-
-    if request.json.get('url') is not None:
-        url = request.json['url']
-        document = PlanDocument(url=url)
-        plan.plan_documents.append(document)
-        db.session.add(plan)
-        db.session.commit()
-        remove_url = url_for('frontend.remove_document_from_plan', document=str(document.id), local_plan=plan.local_plan)
-        resp = {'OK': 200, 'url': url, 'document_id': str(document.id), 'remove_url': remove_url}
-    else:
-        resp = {'OK': 200}
-
-    return jsonify(resp)
-
 
 @frontend.route('/local-plans/<planning_authority>/document/<document>', methods=['POST'])
 def add_fact_to_document(planning_authority, document):
@@ -123,8 +106,16 @@ def update_local_plan_url(planning_authority, local_plan):
 
 @frontend.route('/local-plans/<local_plan>/document/<document>', methods=['DELETE'])
 def remove_document_from_plan(local_plan, document):
-    plan = PlanDocument.query.filter_by(local_plan_id=local_plan, id=document).one()
-    db.session.delete(plan)
+    doc = PlanDocument.query.filter_by(local_plan_id=local_plan, id=document).one()
+    db.session.delete(doc)
+    db.session.commit()
+    return jsonify({204: 'No Content'})
+
+
+@frontend.route('/local-plans/<planning_authority>/document/<document>', methods=['DELETE'])
+def remove_emerging_document_from_planning_authority(planning_authority, document):
+    doc = EmergingPlanDocument.query.filter_by(local_authority_id=planning_authority, id=document).one()
+    db.session.delete(doc)
     db.session.commit()
     return jsonify({204: 'No Content'})
 
@@ -139,8 +130,51 @@ def _get_planning_authority_url(documents):
         return None
 
 
+# TODO can these two add_document_to_plan and add_document be merged?
+
+@frontend.route('/local-plans/<planning_authority>/document', methods=['POST'])
+def add_document_to_plan(planning_authority):
+
+    document_type = request.args.get('document_type')
+
+    if request.json.get('url') is not None:
+        url = request.json['url']
+
+        if document_type == 'plan_document':
+            local_plan = request.args.get('local_plan')
+            add_to = LocalPlan.query.get(local_plan)
+            document = PlanDocument.query.filter_by(url=url).first()
+            if document is None:
+                document = PlanDocument(url=url)
+                add_to.plan_documents.append(document)
+                db.session.add(add_to)
+                db.session.commit()
+            remove_url = url_for('frontend.remove_document_from_plan',
+                                 document=str(document.id),
+                                 local_plan=add_to.local_plan)
+
+        elif document_type == 'emerging_plan_document':
+            document = EmergingPlanDocument.query.filter_by(url=url).first()
+            if document is None:
+                document = EmergingPlanDocument(url=url)
+                add_to = PlanningAuthority.query.get(planning_authority)
+                add_to.emerging_plan_documents.append(document)
+                db.session.add(add_to)
+                db.session.commit()
+
+            remove_url = url_for('frontend.remove_emerging_document_from_planning_authority',
+                                 document=str(document.id),
+                                 planning_authority=add_to.id)
+    
+        resp = {'OK': 200, 'url': url, 'document_id': str(document.id), 'remove_url': remove_url}
+    else:
+        resp = {'OK': 200}
+
+    return jsonify(resp)
+
+
 @frontend.route('/local-plans/add-document', methods=['POST'])
-def add_document_for_checking():
+def add_document():
     documents = request.json['documents']
     active_plan_id = request.json.get('active_plan')
     website = (request.json.get('active_page_origin') if request.json.get('active_page_origin') is not None else _get_planning_authority_url(documents))

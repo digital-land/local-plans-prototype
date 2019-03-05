@@ -334,8 +334,7 @@
           {% endif %}
         </ul>
 
-
-        <form action="{{ url_for('frontend.add_document_to_plan', planning_authority=planning_authority.id, local_plan=plan.local_plan )}}" class="govuk-form url-edit-form">
+        <form action="{{ url_for('frontend.add_document_to_plan', planning_authority=planning_authority.id, local_plan=plan.local_plan, document_type='plan_document' )}}" class="govuk-form url-edit-form">
           <div class="govuk-form-group">
             <label class="govuk-label label-add" for="url-input">
               Add URL to a local plan document
