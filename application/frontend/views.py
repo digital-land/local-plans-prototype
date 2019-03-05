@@ -128,11 +128,23 @@ def _get_planning_authority_url(documents):
 def add_document_for_checking():
     documents = request.json['documents']
     active_plan_id = request.json.get('active_plan')
+    website = (request.json.get('active_page_origin') if request.json.get('active_page_origin') is not None else _get_planning_authority_url(documents))
 
-    website = (request.json['active_page_origin']
-        if request.json['active_page_origin'] is not "" else _get_planning_authority_url(documents))
+    if active_plan_id == 'localDevelopmentScheme' and website is not None:
 
-    if active_plan_id is not None:
+        pla = PlanningAuthority.query.filter_by(website=website).one()
+        for doc in documents:
+            if EmergingPlanDocument.query.filter_by(url=doc).first() is None:
+                pla.emerging_plan_documents.append(EmergingPlanDocument(url=doc))
+
+        db.session.add(pla)
+        db.session.commit()
+
+        # TODO get the actual contents and store in s3
+        resp = {'OK': 200, 'check_page': url_for('frontend.local_plan', planning_authority=pla.id, _external=True)}
+
+    elif active_plan_id is not None:
+
         plan = LocalPlan.query.get(active_plan_id)
         for doc in documents:
             if PlanDocument.query.filter_by(url=doc).first() is None:
@@ -141,25 +153,10 @@ def add_document_for_checking():
                 db.session.add(plan)
                 db.session.commit()
 
-                # TODO get the actual contents and store in s3
-                
+        # TODO get the actual contents and store in s3
         resp = {'OK': 200, 'check_page': url_for('frontend.local_plan',
                                                  planning_authority=request.json['pla_id'],
                                                  _anchor=plan.local_plan,
-                                                 _external=True)}
-
-    elif website is not None:
-        pla = PlanningAuthority.query.filter_by(website=website).one()
-        for doc in documents:
-            if EmergingPlanDocument.query.filter_by(url=doc).first() is None:
-                pla.unchecked_documents.append(EmergingPlanDocument(url=doc))
-
-        db.session.add(pla)
-        db.session.commit()
-
-        # TODO get the actual contents and store in s3
-        resp = {'OK': 200, 'check_page': url_for('frontend.check_documents',
-                                                 planning_authority=pla.id,
                                                  _external=True)}
     else:
         resp = {'OK': 404}
