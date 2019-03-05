@@ -71,6 +71,9 @@ def add_fact_to_document(planning_authority, local_plan, document):
 
 @frontend.route('/local-plans/<document>/<fact>', methods=['GET', 'DELETE'])
 def remove_fact_from_document(document, fact):
+    fact = Fact.query.filter_by(id=fact, plan_document_id=document).one();
+    db.session.delete(fact)
+    db.session.commit()
     # do something
     return jsonify({204: 'No Content'})
 
