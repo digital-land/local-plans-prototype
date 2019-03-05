@@ -7,35 +7,68 @@
     </head>
     <body>
 
-        <header class="page-details">
-            <p class="govuk-body">We think you are on a page belonging to</p>
-            <h2 class="govuk-heading-l pla-name">Unsure</h2>
-            <p class="govuk-body">If that is not correct we suggest you save any URLs on the data collector toool directly.</p>
-        </header>
+        <section class="save-urls-section">
+            <header class="page-details">
+                <p class="govuk-body">We think you are on a page belonging to</p>
+                <h2 class="govuk-heading-l pla-name">Unsure</h2>
+                <p class="govuk-body">If that is not correct we suggest you save any URLs on the data collector toool directly.</p>
+            </header>
 
-        <h3 class="govuk-heading-s">Choose local plan</h3>
-        <div class="plan-list">
+            <h3 class="govuk-heading-s">Choose local plan</h3>
+            <div class="plan-list">
 
-        </div>
-
-        <h3 class="govuk-heading-s"><span class="document-count"></span> document URLs on the page. Select the ones to save.</h3>
-        
-        <div class="govuk-checkboxes select-toggle">
-            <div class="govuk-checkboxes__item">
-                <input class="govuk-checkboxes__input" id="toggle" name="url" type="checkbox" value="Select all">
-                <label class="govuk-label govuk-checkboxes__label govuk-!-font-weight-bold" for="toggle">
-                    Select all
-                </label>
             </div>
-        </div>
 
-        <table id="links" class="govuk-visually-hidden">
-        </table>
+            <h3 class="govuk-heading-s"><span class="document-count"></span> document URLs on the page. Select the ones to save.</h3>
+            
+            <div class="govuk-checkboxes select-toggle">
+                <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="toggle" name="url" type="checkbox" value="Select all">
+                    <label class="govuk-label govuk-checkboxes__label govuk-!-font-weight-bold" for="toggle">
+                        Select all
+                    </label>
+                </div>
+            </div>
 
-        <div class="govuk-checkboxes govuk-checkboxes__list">
-        </div>
+            <table id="links" class="govuk-visually-hidden">
+            </table>
 
-        <button class="govuk-button" id="save">Save selected</button>
+            <div class="govuk-checkboxes govuk-checkboxes__list">
+            </div>
+
+            <button class="govuk-button" id="save">Save selected</button>
+        </section>
+
+        <section class="add-facts-section">
+            <header class="document-details">
+                <p class="govuk-body">You are looking at</p>
+                <h2 class="govuk-heading-l facts__doc-url">No document url</h2>
+                <p class="govuk-body">which is a document associated with plan <span class="facts__local-plan"></span></p>
+            </header>
+
+            <table class="govuk-table document-facts__table">
+                <caption class="govuk-table__caption">Facts from document</caption>
+                <tbody class="govuk-table__body"></tbody>
+            </table>
+
+            <form action="" class="govuk-form add-fact-form govuk-details__text">
+                <h4 class="govuk-heading-s">Add fact from document</h4>
+                <div class="govuk-form-group">
+                  <label for="document-number" class="govuk-label">Number</label>
+                  <input type="text" class="govuk-input govuk-input--width-10" name="document-number" id="document-number">
+                </div>
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="document-note">
+                    Provide some information about the number
+                  </label>
+                  <textarea class="govuk-textarea" id="document-note" name="document-note" rows="5"></textarea>
+                </div>
+                <div class="govuk-form-group">
+                  <button class="govuk-button fact-save-btn">Save</button>
+                  <button class="cancel-btn">Cancel</button>
+                </div>
+              </form>
+        </section>
 
         <div class="ext-message">
             <span class="ext-message__content"></span>

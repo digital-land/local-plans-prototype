@@ -53,7 +53,7 @@ def add_document_to_plan(planning_authority, local_plan):
 @frontend.route('/local-plans/<planning_authority>/<local_plan>/<document>', methods=['POST'])
 def add_fact_to_document(planning_authority, local_plan, document):
 
-    plan_document = PlanDocument.query.filter_by(id=document, local_plan=local_plan).one()
+    plan_document = PlanDocument.query.filter_by(id=document, local_plan_id=local_plan).one()
 
     if request.json.get('fact') is not None:
         fact = request.json['fact']
@@ -61,16 +61,19 @@ def add_fact_to_document(planning_authority, local_plan, document):
         plan_document.facts.append(fact)
         db.session.add(plan_document)
         db.session.commit()
-        remove_url = url_for('frontend.remove_fact_from_document', document=str(document.id), fact=fact.id)
-        resp = {'OK': 200, 'fact': str(fact.id), 'remove_url': remove_url}
+        remove_url = url_for('frontend.remove_fact_from_document', document=str(plan_document.id), fact=fact.id)
+        resp = {'OK': 200, 'fact': fact.to_dict(), 'remove_url': remove_url}
     else:
         resp = {'OK': 200}
 
     return jsonify(resp)
 
 
-@frontend.route('/local-plans/<document>/<fact>', methods=['DELETE'])
+@frontend.route('/local-plans/<document>/<fact>', methods=['GET', 'DELETE'])
 def remove_fact_from_document(document, fact):
+    fact = Fact.query.filter_by(id=fact, plan_document_id=document).one();
+    db.session.delete(fact)
+    db.session.commit()
     # do something
     return jsonify({204: 'No Content'})
 
@@ -162,7 +165,13 @@ def check_url():
     website_origin = request.json.get('active_page_origin')
     website_location = request.json.get('active_page_location')
 
-    if website_origin is not None:
+    # handle documents differently
+    if website_location.endswith(('.pdf')):
+        document = PlanDocument.query.filter_by(url=website_location).first()
+        print(document)
+        resp = {'OK': 200, 'type': 'document', 'document': document.to_dict(), 'local_plan': document.local_plan.to_dict()}
+
+    elif website_origin is not None:
 
         try:
             pla = PlanningAuthority.query.filter_by(website=website_origin).one()

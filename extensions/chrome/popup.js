@@ -132,6 +132,25 @@ function displayPageDetails(pla_obj) {
   activePlan = pla_obj['plans'][0]['id'];
 }
 
+function populateFactsView(data) {
+  pla = data.local_plan.planning_authorities[0];
+
+  const urlEl = document.querySelector('.facts__doc-url');
+  urlEl.textContent = data.document.url;
+  urlEl.dataset.documentId = data.document['id'];
+
+  const planEl = document.querySelector('.facts__local-plan');
+  planEl.appendChild( createStageTag(data.local_plan, "selected") );
+  activePlan = data.local_plan['id'];
+
+  const table = document.querySelector('.document-facts__table');
+  if(data.document.facts.length > 0) {
+    data.document.facts.forEach((fact) => table.appendChild( createFactRow(fact) ));
+  } else {
+    table.classList.add('govuk-visually-hidden');
+  }
+}
+
 function checkPageBelongsToAuthority(pageDetails) {
 
   fetch( localPlanUrl + '/local-plans/check-url', {
@@ -146,9 +165,71 @@ function checkPageBelongsToAuthority(pageDetails) {
     .then(response => response.json())
     .then( (resp_data) => {
       //console.log(resp_data);
-      displayPageDetails(resp_data.planning_authority);
+      if(resp_data['type'] === 'document') {
+        console.log(resp_data);
+        populateFactsView(resp_data)
+        document.body.classList.add("facts-view");
+      } else {
+        displayPageDetails(resp_data.planning_authority);
+        document.body.classList.add("url-view");
+      }
     });
 
+}
+
+function createFactRow(fact) {
+  const row = document.createElement('tr');
+  row.classList.add('govuk-table__row');
+  const row_figure = document.createElement('th');
+  row_figure.classList.add('govuk-table__header');
+  row_figure.setAttribute('scope', 'row');
+  row_figure.textContent = fact.number;
+  const row_note = document.createElement('td');
+  row_note.classList.add('govuk-table__cell');
+  row_note.textContent = fact.notes;
+
+  row.appendChild( row_figure );
+  row.appendChild( row_note );
+
+  return row;
+}
+
+function saveFact(url, fact, form) {
+  fetch( url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({'fact': fact})
+    })
+    .then(response => response.json())
+    .then( (resp_data) => {
+      if(resp_data['OK'] === 200) {
+        // Todo: show a success message
+        form.reset();
+        const table = document.querySelector('.document-facts__table');
+        table.classList.remove('govuk-visually-hidden');
+        table.appendChild( createFactRow( resp_data.fact ));
+      }
+    });
+}
+
+function saveFactHandler(e) {
+  e.preventDefault();
+  const form = e.target;
+  const doc_id = document.querySelector('.facts__doc-url').dataset.documentId;
+
+  const url = `${localPlanUrl}/local-plans/${pla['id']}/${activePlan}/${doc_id}`;
+
+  const numberInput = form.querySelector('#document-number');
+  const notesInput = form.querySelector('#document-note');
+
+  const fact = {
+    'number': numberInput.value,
+    'notes': notesInput.value
+  }
+
+  saveFact(url, fact, form);
 }
 
 function openNewTab(linkEl) {
@@ -199,6 +280,9 @@ var activePageDetails = {};
 
     const docsSavedLink = document.querySelector(".ext-message__link");
     docsSavedLink.addEventListener('click', (e) => openNewTab(e.currentTarget));
+
+    const addFactForm = document.querySelector(".add-fact-form");
+    addFactForm.addEventListener('submit', saveFactHandler);
 
 
     chrome.windows.getCurrent(function (currentWindow) {

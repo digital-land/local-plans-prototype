@@ -77,7 +77,8 @@ class LocalPlan(db.Model):
         data = {
             'id': self.local_plan,
             'is_adopted': self.is_adopted(),
-            'title': self.title
+            'title': self.title,
+            'planning_authorities': [{'name': authority.name, 'id':authority.id} for authority in self.planning_authorities]
         }
         return data
 
@@ -117,6 +118,14 @@ class PlanDocument(db.Model):
 
     facts = db.relationship('Fact', back_populates='plan_document', lazy=True)
 
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'url': self.url,
+            'facts': [fact.to_dict() for fact in self.facts]
+        }
+        return data
+
 
 class Fact(db.Model):
 
@@ -127,6 +136,15 @@ class Fact(db.Model):
 
     plan_document_id = db.Column(UUID(as_uuid=True), db.ForeignKey('plan_document.id'), nullable=False)
     plan_document = db.relationship('PlanDocument', back_populates='facts')
+
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'number': self.number,
+            'notes': self.notes,
+            'document_id': self.plan_document_id
+        }
+        return data
 
 
 class UncheckedDocument(db.Model):

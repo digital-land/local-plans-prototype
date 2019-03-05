@@ -109,21 +109,68 @@
 
       </div>
 
-      <section class="lp-section-box lp-section-box__urls">
-        <h3 class="govuk-heading-m">Local plan URLs</h3>
+      
+        <h3 class="govuk-heading-m">Local plan documents</h3>
         <ul class="url-list">
           {% if plan.plan_documents|length > 0 %}
             {% for doc in plan.plan_documents %}
-            <li class="url-item">
-              <a class="url-link" href="{{ doc.url }}">{{ doc.url }}</a>
-              <div class="url-item__controls">
-                <a href="" class="url-item__btn url-edit-btn govuk-visually-hidden">Edit</a>
-                <a href="{{ url_for('frontend.remove_document_from_plan', document=doc.id, local_plan=plan.local_plan) }}" class="url-item__btn url-remove-btn">Remove</a>
-              </div>
+            <li class="url-item govuk-grid-row">
+              <section class="document-link govuk-grid-column-full">
+                <a class="url-link" href="{{ doc.url }}">{{ doc.url }}</a>
+                <div class="url-item__controls">
+                  <a href="" class="url-item__btn url-edit-btn govuk-visually-hidden">Edit</a>
+                  <a href="{{ url_for('frontend.remove_document_from_plan', document=doc.id, local_plan=plan.local_plan) }}" class="url-item__btn url-remove-btn">Remove</a>
+                </div>
+              </section>
+
+              <section class="document-facts govuk-grid-column-two-thirds">
+
+                {% if doc.facts|length > 0 %}
+                <table class="govuk-table document-facts__table">
+                  <caption class="govuk-table__caption">Facts from document</caption>
+                  <tbody class="govuk-table__body">
+                  {% for fact in doc.facts %}
+                  <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="row">{{ fact.number }}</th>
+                    <td class="govuk-table__cell">{{ fact.notes }}</td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact" href="{{ url_for('frontend.remove_fact_from_document', document=doc.id, fact=fact.id) }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
+                  </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+                {% endif %}
+
+                <details class="govuk-details govuk-details--facts">
+                  <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text document-facts__add">
+                      Add fact from document
+                    </span>
+                  </summary>
+                  <form action="{{ url_for('frontend.add_fact_to_document', planning_authority=planning_authority.id, local_plan=plan.local_plan, document=doc.id) }}" class="govuk-form add-fact-form govuk-details__text">
+                    <h4 class="govuk-heading-s govuk-visually-hidden">Add fact from document</h4>
+                    <div class="govuk-form-group">
+                      <label for="document-number-{{loop.index}}" class="govuk-label">Number</label>
+                      <input type="text" class="govuk-input govuk-input--width-10" name="document-number-{{loop.index}}" id="document-number-{{loop.index}}">
+                    </div>
+                    <div class="govuk-form-group">
+                      <label class="govuk-label" for="document-note-{{loop.index}}">
+                        Provide some information about the number
+                      </label>
+                      <textarea class="govuk-textarea" id="document-note-{{loop.index}}" name="document-note-{{loop.index}}" rows="5"></textarea>
+                    </div>
+                    <div class="govuk-form-group">
+                      <button class="govuk-button fact-save-btn">Save</button>
+                      <button class="cancel-btn">Cancel</button>
+                    </div>
+                  </form>
+                </details>
+                
+              </section>
             </li>
             {% endfor %}
           {% endif %}
         </ul>
+
 
         <form action="{{ url_for('frontend.add_document_to_plan', planning_authority=planning_authority.id, local_plan=plan.local_plan )}}" class="govuk-form url-edit-form">
           <div class="govuk-form-group">
@@ -142,9 +189,9 @@
         </form>
 
         <button class="govuk-button dlf-secondary-button url-add-btn lp-section-box__edit-btn">Add URL</button>
-      </section>
+      
 
-      <section class="lp-section-box lp-section-box__notes">
+      <!--<section class="lp-section-box lp-section-box__notes">
         <h3 class="govuk-heading-m">Notes</h3>
         {% if plan.notes == None %}
         <p class="govuk-body note-contents"></p>
@@ -190,7 +237,7 @@
         </form>
         
         <button class="govuk-button dlf-secondary-button number-edit-btn lp-section-box__edit-btn">Add number</button>
-      </section>
+      </section>-->
 
     </section>
     {% endfor %}
@@ -208,6 +255,11 @@
       <a href="{{ remove_url }}" class="url-item__btn url-remove-btn">Remove</a>
     </div>
 </script>
+<script id="fact-row-template" type="text/x-handlebars-template">
+  <th class="govuk-table__header" scope="row">{{ fact.number }}</th>
+  <td class="govuk-table__cell">{{ fact.notes }}</td>
+  <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact" href="{{ remove_url }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
+</script>
 {% endraw %}
 <script>
   const noteEditBtns = document.querySelectorAll(".note-edit-btn");
@@ -220,8 +272,25 @@
   const urlRemoveBtns = document.querySelectorAll(".url-remove-btn");
   const cancelBtns = document.querySelectorAll(".cancel-btn");
 
+  const factSaveBtns = document.querySelectorAll(".fact-save-btn");
+  const factCancelBtns = document.querySelectorAll(".add-fact-form .cancel-btn");
+  const factRemoveBtns = document.querySelectorAll(".remove-fact");
+
   var source   = document.getElementById("url-item-template").innerHTML;
   var urlTemplate = Handlebars.compile(source);
+
+  var factTemplateSource = document.getElementById("fact-row-template").innerHTML;
+  var factTemplate = Handlebars.compile(factTemplateSource);
+
+  
+  const htmlStringToElement = (function () {
+    const parser = new DOMParser();
+    return function(htmlStr) {
+      const generatedDoc = parser.parseFromString(htmlStr, "text/xml");
+      return generatedDoc.childNodes[0];
+    }
+    //console.log("this runs straight away");
+  })();
 
   noteEditBtns.forEach((btn) => {
     btn.addEventListener('click', (e) => {
@@ -280,6 +349,62 @@
     });
   }
 
+  // save a fact
+  // ===========
+  factSaveBtns.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const form = e.currentTarget.closest("form");
+      const url = form.getAttribute("action");
+      // set up data obj to post
+      var fact = {};
+      fact["number"] = form.querySelector("input").value;
+      fact["notes"] = form.querySelector("textarea").value;
+      // perform post
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ 'fact': fact })
+      })
+      .then(response => response.json())
+      .then( (resp_data) => factAddedCallback(resp_data, form) );
+    });
+  });
+
+  function factAddedCallback(resp_data, form) {
+    if(resp_data['OK'] === 200) {
+      console.log(factTemplate(resp_data));
+      const factsEl = form.closest(".document-facts");
+      const table = factsEl.querySelector(".document-facts__table tbody");
+
+      var row = document.createElement("tr");
+      row.classList.add('govuk-table__row');
+      row.innerHTML = factTemplate(resp_data);
+      table.appendChild( row );
+
+      form.reset();
+    }
+  }
+
+  // close fact form
+  // ===============
+  factCancelBtns.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const details = btn.closest('.govuk-details');
+      //console.log(details);
+      details.open = false;
+    })
+  });
+
+  // remove fact
+  // ===========
+  factRemoveBtns.forEach((btn) => {
+    btn.addEventListener('click', (e) => removeBtnClickHandler(e, '.govuk-table__row'));
+  });
+
   urlAddBtns.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const current = e.currentTarget;
@@ -303,7 +428,7 @@
     });
   });
 
-  function removeURLBtnClickHandler(e) {
+  function removeBtnClickHandler(e, selector) {
     e.preventDefault();
     const currentTarget = e.currentTarget;
     const url = e.currentTarget.href;
@@ -312,12 +437,12 @@
     })
     .then(response => response.json())
     .then(data => {
-      currentTarget.closest('.url-item').remove();
+      currentTarget.closest(selector).remove();
     });
   }
 
   urlRemoveBtns.forEach((btn) => {
-    btn.addEventListener('click', removeURLBtnClickHandler);
+    btn.addEventListener('click', (e) => removeBtnClickHandler(e, '.url-item'));
   });
 
   urlSaveBtns.forEach((btn) => {
