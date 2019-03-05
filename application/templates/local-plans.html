@@ -1,5 +1,6 @@
 {% extends "dlf-base.html" %}
 {% from "govuk-jinja-components/warning-text/macro.jinja" import govukWarningText %}
+{% from "dl-macros/date-input.html" import renderDateInput %}
 
 {% block beforeContent %}
  {{ super() }}
@@ -275,6 +276,59 @@
                      if plan start or end date chose render input for date in format YYYY-MM - or submits that at least which I think input type month does?
                      if total housing number just integer of range then two inputs 'from' integer to 'integer'
                      -->
+
+                    <!-- for Plan Name -->
+                    <div class="govuk-form-group">
+                      <label class="govuk-label" for="plan-name-{{ loop.index }}">
+                        Plan name
+                      </label>
+                      <input class="govuk-input govuk-input--width-20 plan-name-input" id="plan-name-{{ loop.index }}" name="plan-name-{{ loop.index }}" type="text">
+                    </div>
+
+                    <!-- for Plan start date -->
+                    {{ renderDateInput({
+                      "text":"Plan period start date",
+                      "classes":"plan-start-date-input",
+                      "prefix":"plan-start-date-" + loop.index|string
+                    }) }}
+
+                    <!-- for Plan end date -->
+                    {{ renderDateInput({
+                      "text":"Plan period end date",
+                      "classes":"plan-end-date-input",
+                      "prefix":"plan-end-date-" + loop.index|string
+                    }) }}
+
+                    <!-- for Housing requirement total -->
+                    <div class="govuk-form-group">
+                      <label class="govuk-label" for="housing-req-total-{{ loop.index }}">
+                        Housing requirement total
+                      </label>
+                      <input class="govuk-input govuk-input--width-10 plan-housing-req-total" id="housing-req-total-{{ loop.index }}" name="housing-req-total-{{ loop.index }}" type="text">
+                    </div>
+
+                    <!-- for Housing requirement range -->
+                    <fieldset class="govuk-fieldset housing-req-range-fieldset">
+                      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                        <h1 class="govuk-fieldset__heading">
+                          Housing requirement range
+                        </h1>
+                      </legend>
+
+                      <div class="govuk-form-group">
+                        <label class="govuk-label" for="housing-req-range-min-{{ loop.index }}">
+                          Min
+                        </label>
+                        <input class="govuk-input govuk-input--width-10" id="housing-req-range-min-{{ loop.index }}" name="housing-req-range-min-{{ loop.index }}" type="text">
+                      </div>
+
+                      <div class="govuk-form-group">
+                        <label class="govuk-label" for="housing-req-range-max-{{ loop.index }}">
+                          Max
+                        </label>
+                        <input class="govuk-input govuk-input--width-10" id="housing-req-range-max-{{ loop.index }}" name="housing-req-range-max-{{ loop.index }}" type="text">
+                      </div>
+                    </fieldset>
 
                     <div class="govuk-form-group">
                       <label class="govuk-label" for="document-note-{{loop.index}}">

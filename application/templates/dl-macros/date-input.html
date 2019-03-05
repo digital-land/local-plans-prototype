@@ -1,0 +1,40 @@
+{% macro renderDateInput(params) %}
+<div class="govuk-form-group {{ params.classes }}">
+  <fieldset class="govuk-fieldset" aria-describedby="{{ params.prefix }}-hint" role="group">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+      <h1 class="govuk-fieldset__heading">
+        {{ params.text }}
+      </h1>
+    </legend>
+    <span id="{{ params.prefix }}-hint" class="govuk-hint">
+      For example, 12 11 2007
+    </span>
+    <div class="govuk-date-input" id="{{ params.prefix }}">
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="{{ params.prefix }}-day">
+            Day
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="{{ params.prefix }}-day" name="{{ params.prefix }}-day" type="number" pattern="[0-9]*">
+        </div>
+      </div>
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="{{ params.prefix }}-month">
+            Month
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="{{ params.prefix }}-month" name="{{ params.prefix }}-month" type="number" pattern="[0-9]*">
+        </div>
+      </div>
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="{{ params.prefix }}-year">
+            Year
+          </label>
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="{{ params.prefix }}-year" name="{{ params.prefix }}-year" type="number" pattern="[0-9]*">
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</div>
+{% endmacro %}
