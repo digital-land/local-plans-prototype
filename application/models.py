@@ -134,20 +134,15 @@ class PlanDocument(db.Model):
 
 class FactType(Enum):
 
-    __order__ = 'PLAN_NAME PLAN_START_YEAR PLAN_END_YEAR HOUSING_REQUIREMENT_TOTAL HOUSING_REQUIREMENT_RANGE'
-
     PLAN_NAME = 'Plan name'
     PLAN_START_YEAR = 'Plan period start year'
     PLAN_END_YEAR = 'Plan period end year'
     HOUSING_REQUIREMENT_TOTAL = 'Housing requirement total'
     HOUSING_REQUIREMENT_RANGE = 'Housing requirement range'
+    OTHER = 'Other'
 
 
 class EmergingFactType(Enum):
-
-    # __order__ = 'PUBLICATION_DATE PROPOSED_REG_18_DATE PROPOSED_PUBLICATION_DATE PROPOSED_' \
-    #             'SUBMISSION_DATE PROPOSED_MAIN_MODIFICATIONS_DATE PROPOSED_ADOPTION_DATE ' \
-    #             'HOUSING_REQUIREMENT_TOTAL HOUSING_REQUIREMENT_RANGE'
 
     PUBLICATION_DATE = 'Publication date'
     PROPOSED_REG_18_DATE = 'Proposed Regulation 18 date'
@@ -157,6 +152,7 @@ class EmergingFactType(Enum):
     PROPOSED_ADOPTION_DATE = 'Proposed adoption date'
     HOUSING_REQUIREMENT_TOTAL = 'Housing requirement total'
     HOUSING_REQUIREMENT_RANGE = 'Housing requirement range'
+    OTHER = 'Other'
 
 
 
