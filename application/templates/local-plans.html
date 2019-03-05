@@ -106,14 +106,6 @@
                       </select>
                     </div>
 
-                    <!-- TODO depending on type of fact chosen render input for fact
-                     e.g. if date field input for date in format YYYY-MM - or submits that at least which I think input type month does?
-                     if total housing number just integer of range then two inputs 'from' integer to 'integer'
-
-                     and a big old bucket of 'I have no idea' called other, which is where I suspect most info will
-                     end up.
-                     -->
-
                     <div class="govuk-form-group">
                       <label class="govuk-label" for="document-note-{{loop.index}}">
                         Provide some information about the number
@@ -132,6 +124,22 @@
             {% endfor %}
           {% endif %}
         </ul>
+
+      <form action="{{ url_for('frontend.add_document_to_plan', planning_authority=planning_authority.id,  document_type='emerging_plan_document' )}}" class="govuk-form url-edit-form">
+          <div class="govuk-form-group">
+            <label class="govuk-label label-add" for="url-input">
+              Add URL to a local development scheme or emerging plan document
+            </label>
+            <label class="govuk-label label-edit" for="url-input">
+              Edit URL for a local development scheme or emerging plan document
+            </label>
+            <input class="govuk-input" id="url-input" name="url-input" type="text">
+          </div>
+          <div class="govuk-form-group">
+            <button class="govuk-button url-save-btn">Save</button>
+            <button class="cancel-btn">Cancel</button>
+          </div>
+        </form>
 
   {% else %}
       <a class="highlight-box highlight-box--gap highlight-box--flush" href="{{ url_for('frontend.update_local_scheme_url', planning_authority=planning_authority.id) }}">

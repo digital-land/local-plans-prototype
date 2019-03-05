@@ -165,7 +165,7 @@ def add_document_to_plan(planning_authority):
             remove_url = url_for('frontend.remove_emerging_document_from_planning_authority',
                                  document=str(document.id),
                                  planning_authority=add_to.id)
-    
+
         resp = {'OK': 200, 'url': url, 'document_id': str(document.id), 'remove_url': remove_url}
     else:
         resp = {'OK': 200}
