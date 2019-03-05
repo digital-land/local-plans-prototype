@@ -71,11 +71,12 @@
                       <tbody class="govuk-table__body">
 
                       {% for fact in doc.facts %}
-                      <tr class="govuk-table__row">
-                        <th class="govuk-table__header" scope="row">{{ fact.number }}</th>
-                        <td class="govuk-table__cell">{{ fact.notes }}</td>
-                        <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact" href="{{ url_for('frontend.remove_fact_from_document', document=doc.id, fact=fact.id) }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
-                      </tr>
+                          <tr class="govuk-table__row">
+                            <th class="govuk-table__header" scope="row">{{ fact.fact_type | format_fact }}</th>
+                            <th class="govuk-table__header" scope="row">{{ fact.fact }}</th>
+                            <td class="govuk-table__cell">{{ fact.notes }}</td>
+                            <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact" href="{{ url_for('frontend.remove_fact_from_document', document=doc.id, fact=fact.id) }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
+                          </tr>
                       {% endfor %}
                       </tbody>
                     </table>
@@ -222,13 +223,14 @@
                 <table class="govuk-table document-facts__table">
                   {% if doc.facts|length > 0 %}<caption class="govuk-table__caption">Facts from document</caption>{% endif %}
                   <tbody class="govuk-table__body">
-                  {% for fact in doc.facts %}
-                      <tr class="govuk-table__row">
-                        <th class="govuk-table__header" scope="row">{{ fact.number }}</th>
-                        <td class="govuk-table__cell">{{ fact.notes }}</td>
-                        <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact" href="{{ url_for('frontend.remove_fact_from_document', document=doc.id, fact=fact.id) }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
-                      </tr>
-                  {% endfor %}
+                      {% for fact in doc.facts %}
+                          <tr class="govuk-table__row">
+                            <th class="govuk-table__header" scope="row">{{ fact.fact_type | format_fact }}</th>
+                            <th class="govuk-table__header" scope="row">{{ fact.fact }}</th>
+                            <td class="govuk-table__cell">{{ fact.notes }}</td>
+                            <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact" href="{{ url_for('frontend.remove_fact_from_document', document=doc.id, fact=fact.id) }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
+                          </tr>
+                      {% endfor %}
                   </tbody>
                 </table>
 
@@ -523,10 +525,9 @@
   }
 
   function extractDate(fieldset) {
-    const day = fieldset.querySelector(".govuk-date-input__day");
     const month = fieldset.querySelector(".govuk-date-input__month");
     const year = fieldset.querySelector(".govuk-date-input__year");
-    return `${day.value}-${month.value}-${year.value}`;
+    return `${year.value}-${month.value}`;
   }
 
   function extractRange(fieldset) {

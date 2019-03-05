@@ -1,6 +1,9 @@
 from jinja2 import Undefined
 from datetime import datetime
 
+from application.models import FactType, EmergingFactType
+
+
 def format_date(date_time):
     return date_time.strftime('%d %b %Y')
 
@@ -24,3 +27,12 @@ def sort_plans(plans):
 		return plans
 
 	return sorted(plans, key=last_state_date, reverse=True)
+
+
+def format_fact(name):
+	if name in FactType.__members__:
+		return FactType[name].value
+	elif name in EmergingFactType.__members__:
+		return EmergingFactType[name].value
+	else:
+		return name
