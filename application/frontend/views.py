@@ -1,9 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify
-from sqlalchemy import asc
 
 from application.extensions import db
 from application.models import PlanningAuthority, LocalPlan, PlanDocument, EmergingPlanDocument, Fact, FactType, \
-    EmergingFactType
+    EmergingFactType, EmergingFact
 from application.frontend.forms import LocalDevelopmentSchemeURLForm, LocalPlanURLForm
 
 frontend = Blueprint('frontend', __name__, template_folder='templates')
@@ -54,18 +53,27 @@ def add_document_to_plan(planning_authority, local_plan):
     return jsonify(resp)
 
 
-@frontend.route('/local-plans/<planning_authority>/<local_plan>/<document>', methods=['POST'])
-def add_fact_to_document(planning_authority, local_plan, document):
+@frontend.route('/local-plans/<planning_authority>/document/<document>', methods=['POST'])
+def add_fact_to_document(planning_authority, document):
 
-    plan_document = PlanDocument.query.filter_by(id=document, local_plan_id=local_plan).one()
+    fact = request.json.get('fact')
 
-    if request.json.get('fact') is not None:
-        fact = request.json['fact']
-        fact = Fact(number=fact.get('number'), notes=fact.get('notes'))
-        plan_document.facts.append(fact)
-        db.session.add(plan_document)
+    if fact is not None :
+        document_type = fact.get('document_type')
+
+        if document_type == 'plan_document':
+            local_plan_id = request.args.get('local_plan')
+            document = PlanDocument.query.filter_by(id=document, local_plan_id=local_plan_id).one()
+            fact = Fact(fact=fact.get('fact'), fact_type=fact.get('fact_type'), notes=fact.get('notes'))
+
+        elif document_type == 'emerging_plan_document':
+            document = EmergingPlanDocument.query.filter_by(id=document, planning_authority_id=planning_authority).one()
+            fact = EmergingFact(fact=fact.get('fact'), fact_type=fact.get('fact_type'), notes=fact.get('notes'))
+
+        document.facts.append(fact)
+        db.session.add(document)
         db.session.commit()
-        remove_url = url_for('frontend.remove_fact_from_document', document=str(plan_document.id), fact=fact.id)
+        remove_url = url_for('frontend.remove_fact_from_document', document=str(document.id), fact=fact.id)
         resp = {'OK': 200, 'fact': fact.to_dict(), 'remove_url': remove_url}
     else:
         resp = {'OK': 200}
@@ -73,12 +81,13 @@ def add_fact_to_document(planning_authority, local_plan, document):
     return jsonify(resp)
 
 
+# TODO - needs update to take a param in json for doc type to remove from
+# so that we can delete a Fact or and EmergingFact as appropriate
 @frontend.route('/local-plans/<document>/<fact>', methods=['GET', 'DELETE'])
 def remove_fact_from_document(document, fact):
     fact = Fact.query.filter_by(id=fact, plan_document_id=document).one();
     db.session.delete(fact)
     db.session.commit()
-    # do something
     return jsonify({204: 'No Content'})
 
 

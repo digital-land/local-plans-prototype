@@ -162,9 +162,9 @@ class EmergingFactType(Enum):
 class Fact(db.Model):
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=_generate_uuid)
-    notes = db.Column(db.String())
     fact = db.Column(db.String())
     fact_type = db.Column(db.String())
+    notes = db.Column(db.String())
 
     plan_document_id = db.Column(UUID(as_uuid=True), db.ForeignKey('plan_document.id'), nullable=False)
     plan_document = db.relationship('PlanDocument', back_populates='facts')
@@ -173,7 +173,7 @@ class Fact(db.Model):
         data = {
             'id': self.id,
             'fact': self.fact,
-            'fact_type': self.fact_type.name,
+            'fact_type': self.fact_type,
             'notes': self.notes,
             'document_id': self.plan_document_id
         }
@@ -194,7 +194,7 @@ class EmergingFact(db.Model):
         data = {
             'id': self.id,
             'fact': self.fact,
-            'fact_type': self.fact_type.name,
+            'fact_type': self.fact_type,
             'notes': self.notes,
             'document_id': self.emerging_plan_document_id
         }

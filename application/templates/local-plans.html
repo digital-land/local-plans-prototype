@@ -88,19 +88,17 @@
                     </span>
                   </summary>
 
-                  <form action="3" class="govuk-form add-fact-form govuk-details__text">
-                    <h4 class="govuk-heading-s govuk-visually-hidden">Add fact from document</h4>
+                  <form action="{{ url_for('frontend.add_fact_to_document', planning_authority=planning_authority.id, document=doc.id) }}" class="govuk-form add-fact-form govuk-details__text">
 
-{#                    <div class="govuk-form-group">#}
-{#                      <label for="document-number-{{loop.index}}" class="govuk-label">Number</label>#}
-{#                      <input type="text" class="govuk-input govuk-input--width-10" name="document-number-{{loop.index}}" id="document-number-{{loop.index}}">#}
-{#                    </div>#}
+                      <input type="hidden" id="document-type" value="emerging_plan_document">
+
+                      <h4 class="govuk-heading-s govuk-visually-hidden">Add fact from document</h4>
 
                       <div class="govuk-form-group">
                        <label class="govuk-label" for="document-note-{{loop.index}}">
                            Specify the type of fact
                        </label>
-                        <select class="govuk-select" id="fact-type-{{loop.index}}" name="fact-type-{{loop.index}}">
+                        <select class="govuk-select fact-select-types" id="fact-type-{{loop.index}}" name="fact-type-{{loop.index}}">
                           {% for fact_type in emerging_fact_types %}
                              <option value="{{ fact_type.name }}">{{ fact_type.value }}</option>
                           {% endfor %}
@@ -134,7 +132,6 @@
           {% endif %}
         </ul>
 
-
   {% else %}
       <a class="highlight-box highlight-box--gap highlight-box--flush" href="{{ url_for('frontend.update_local_scheme_url', planning_authority=planning_authority.id) }}">
         <h3 class="govuk-heading-s highlight-box__title">URL unavailable</h3>
@@ -143,21 +140,6 @@
   {% endif %}
 
   <h2 class="govuk-heading-l">Local plans</h2>
-
-<!-- TODO I think this can go -->
-{#  <div class="govuk-grid-row">#}
-{#    <div class="govuk-grid-column-two-thirds">#}
-{#    {% if planning_authority.unchecked_documents|length > 0 %}#}
-{#      <div class="govuk-warning-text">#}
-{#        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>#}
-{#        <strong class="govuk-warning-text__text">#}
-{#          <span class="govuk-warning-text__assistive">Warning</span>#}
-{#          There are documents that need to be associated with a plan. <a href="{{ url_for('frontend.check_documents', planning_authority=planning_authority.id) }}">Add to the right plan now</a>.#}
-{#        </strong>#}
-{#      </div>#}
-{#    {% endif %}#}
-{#    </div>#}
-{#  </div>#}
 
   <div class="govuk-tabs" data-module="tabs">
     <h2 class="govuk-tabs__title">
@@ -258,6 +240,7 @@
                   </summary>
 
                   <form action="{{ url_for('frontend.add_fact_to_document', planning_authority=planning_authority.id, local_plan=plan.local_plan, document=doc.id) }}" class="govuk-form add-fact-form govuk-details__text plan-name">
+                    <input type="hidden" value="plan_document">
                     <h4 class="govuk-heading-s govuk-visually-hidden">Add fact from document</h4>
 
                     <div class="govuk-form-group">
@@ -565,6 +548,7 @@
       var fact = {};
       fact["fact_type"] = form.querySelector("select").value;
       fact["notes"] = form.querySelector("textarea").value;
+      fact["document_type"] = form.querySelector("input[type='hidden']").value
 
 "plan-name", "plan-start-year", "plan-end-year", "housing-requirement-total", "housing-requirement-range"
 
