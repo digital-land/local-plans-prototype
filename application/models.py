@@ -131,6 +131,15 @@ class Fact(db.Model):
     plan_document_id = db.Column(UUID(as_uuid=True), db.ForeignKey('plan_document.id'), nullable=False)
     plan_document = db.relationship('PlanDocument', back_populates='facts')
 
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'number': self.number,
+            'notes': self.notes,
+            'document_id': self.plan_document_id
+        }
+        return data
+
 
 class EmergingPlanDocument(db.Model):
 
