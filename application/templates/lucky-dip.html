@@ -1,11 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Placeholder page for local plan roulette</title>
-</head>
-<body>
-    <h1>Local plan roulette</h1>
-    <p>Get to work on <a href="{{ planning_authority.website }}">{{ planning_authority.name }}</a></p>
-</body>
-</html>
+{% extends "dlf-base.html" %}
+{%- set mainClasses = "govuk-main-wrapper--l" -%}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-m">Start collection information for</h1>
+        <p>
+            <a href="{{ url_for('frontend.local_plan', planning_authority=planning_authority.id) }}">
+                {{ planning_authority.name }}
+            </a>
+        </p>
+    </div>
+  </div>
+{%  endblock %}

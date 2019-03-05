@@ -6,6 +6,10 @@
 
  {{ govukBreadcrumbs({
    "items": [
+    {
+       "text": "Home",
+       "href": url_for("frontend.index")
+     },
      {
        "text": "Planning Authority",
        "href": url_for("frontend.list_all")
