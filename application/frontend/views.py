@@ -4,7 +4,7 @@ from sqlalchemy import asc
 from application.extensions import db
 from application.models import PlanningAuthority, LocalPlan, PlanDocument, EmergingPlanDocument, Fact, FactType, \
     EmergingFactType
-from application.frontend.forms import PlanningPolicyURLForm, LocalPlanURLForm
+from application.frontend.forms import LocalDevelopmentSchemeURLForm, LocalPlanURLForm
 
 frontend = Blueprint('frontend', __name__, template_folder='templates')
 
@@ -85,7 +85,7 @@ def remove_fact_from_document(document, fact):
 @frontend.route('/local-plans/<planning_authority>/update-local-scheme-url', methods=['GET', 'POST'])
 def update_local_scheme_url(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
-    form = PlanningPolicyURLForm(url=pla.local_scheme_url)
+    form = LocalDevelopmentSchemeURLForm(url=pla.local_scheme_url)
 
     if form.validate_on_submit():
         pla.local_scheme_url = form.url.data
@@ -100,9 +100,9 @@ def update_local_scheme_url(planning_authority):
 def update_local_plan_url(planning_authority, local_plan):
     pla = PlanningAuthority.query.get(planning_authority)
     plan = LocalPlan.query.get(local_plan)
-    form = LocalPlanURLForm(url=plan.planning_policy_url)
+    form = LocalPlanURLForm(url=plan.url)
     if form.validate_on_submit():
-        plan.planning_policy_url = form.url.data
+        plan.url = form.url.data
         db.session.add(pla)
         db.session.commit()
         return redirect(url_for('frontend.local_plan', planning_authority=pla.id))
