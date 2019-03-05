@@ -5,7 +5,7 @@ import requests
 from flask.cli import with_appcontext
 from contextlib import closing
 from application.extensions import db
-from application.models import PlanningAuthority, LocalPlan, PlanDocument, UncheckedDocument
+from application.models import PlanningAuthority, LocalPlan, PlanDocument, EmergingPlanDocument
 
 
 def create_other_data(pa, row):
@@ -21,7 +21,7 @@ def create_other_data(pa, row):
     else:
         plan = LocalPlan()
         plan.local_plan = plan_id
-        plan.planning_policy_url = row['plan-policy-url'].strip()
+        plan.url = row['plan-policy-url'].strip()
         plan.states = [[row['status'].strip(), row['date'].strip()]]
         pa.local_plans.append(plan)
         plan.title = row['title'].strip()
@@ -57,11 +57,10 @@ def load():
         for row in reader:
             id = row['organisation'].strip()
             name = row['name'].strip()
-            plan_policy_url = row['plan-policy-url']
             if id != '':
                 pa = PlanningAuthority.query.get(id)
                 if pa is None:
-                    pa = PlanningAuthority(id=id, name=name, plan_policy_url=plan_policy_url)
+                    pa = PlanningAuthority(id=id, name=name)
                     if mapping.get(id) is not None:
                         pa.website = mapping.get(id)
                     db.session.add(pa)
@@ -77,7 +76,7 @@ def load():
 @with_appcontext
 def clear():
     db.session.execute('DELETE FROM planning_authority_plan');
-    db.session.query(UncheckedDocument).delete()
+    db.session.query(EmergingPlanDocument).delete()
     db.session.query(PlanDocument).delete()
     db.session.query(LocalPlan).delete()
     db.session.query(PlanningAuthority).delete()

@@ -1,0 +1,51 @@
+{% extends "dlf-base.html" %}
+
+{% block beforeContent %}
+ {{ super() }}
+
+ {{ govukBreadcrumbs({
+   "items": [
+     {
+       "text": "Planning Authority",
+       "href": url_for("frontend.index")
+     },
+     {
+       "text": planning_authority.name,
+       "href": url_for("frontend.local_plan", planning_authority=planning_authority.id)
+     },
+     {
+       "text": "Update LDS url"
+     }
+   ]
+ }) }}
+
+{% endblock %}
+
+{% macro render_field(field) %}
+  <div class="govuk-form-group">
+  {{ field.label(class_="govuk-label") }}
+  {{ field(class_="govuk-input",**kwargs)|safe }}
+  {% for error in field.errors %}
+  <span style="color: red;">[{{ error }}]</span>
+  {% endfor %}
+  </div>
+{% endmacro %}
+
+{% block content %}
+
+  <span class="govuk-caption-l">{{ planning_authority.name }}</span>
+  <h1 class="govuk-heading-l">Update LDS url</h1>
+
+  <div class="govuk-grid-row">
+    <form action="{{ url_for('frontend.update_local_scheme_url', planning_authority=planning_authority.id) }}" class="govuk-form govuk-grid-column-one-half" method="POST">
+      {{ render_field(form.url) }}
+      <div class="govuk-form-group">
+        <button class="govuk-button" type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+
+{% endblock %}
+
+{% block bodyEnd %}
+{% endblock %}

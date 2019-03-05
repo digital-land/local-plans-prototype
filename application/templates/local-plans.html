@@ -25,23 +25,29 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h2 class="govuk-heading-l">Local development schema</h2>
+      <h2 class="govuk-heading-l">Local development scheme</h2>
       <p class="govuk-body">
         Each planning authority is expected to publish a local development scheme. For {{ planning_authority.name }} you should be able to view it at:
       </p>
     </div>
   </div>
   
-  {% if planning_authority.plan_policy_url %}
-  <p class="govuk-body">
-    <a id="policy-url" class="govuk-link" href="{{ planning_authority.plan_policy_url }}">{{ planning_authority.plan_policy_url }}</a>
-  </p>
-  <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="{{ url_for('frontend.update_planning_policy_url', planning_authority=planning_authority.id) }}" class="govuk-link">Update the url</a>.</p>
-  {% else %}
-  <a class="highlight-box highlight-box--gap highlight-box--flush" href="{{ url_for('frontend.update_planning_policy_url', planning_authority=planning_authority.id) }}">
-    <h3 class="govuk-heading-s highlight-box__title">URL unavailable</h3>
-    <p class="govuk-body govuk-!-margin-bottom-0">We do not have a link to the local development scheme. Can you add one?</p>
-  </a>
+  {% if planning_authority.local_scheme_url %}
+
+      <!--
+      TODO we need to be able to add documents to this as well. in the same was as we add docs to plans
+      except these are stored against local authority but in table emerging_plan_documents
+      -->
+
+      <p class="govuk-body">
+        <a id="policy-url" class="govuk-link" href="{{ planning_authority.local_scheme_url }}">{{ planning_authority.local_scheme_url }}</a>
+      </p>
+      <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="{{ url_for('frontend.update_local_scheme_url', planning_authority=planning_authority.id) }}" class="govuk-link">Update the url</a>.</p>
+      {% else %}
+      <a class="highlight-box highlight-box--gap highlight-box--flush" href="{{ url_for('frontend.update_local_scheme_url', planning_authority=planning_authority.id) }}">
+        <h3 class="govuk-heading-s highlight-box__title">URL unavailable</h3>
+        <p class="govuk-body govuk-!-margin-bottom-0">We do not have a link to the local development scheme. Can you add one?</p>
+      </a>
   {% endif %}
 
   <h2 class="govuk-heading-l">Local plans</h2>
@@ -78,6 +84,19 @@
     {% for plan in planning_authority.local_plans|sort_plans %}
     <section class="govuk-tabs__panel {% if plan.is_adopted() %}adopted-plan{% endif %}" id="{{ plan.local_plan }}">
       <h2 class="govuk-heading-l">{{ plan.local_plan }}</h2>
+
+       {% if plan.url %}
+          <h3 class="govuk-heading-m">Local plan URL</h3>
+          <p class="govuk-body">
+            <a id="policy-url" class="govuk-link" href="{{ plan.url }}">{{ plan.url }}</a>
+          </p>
+          <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="{{ url_for('frontend.update_local_plan_url', planning_authority=planning_authority.id, local_plan=plan.local_plan) }}" class="govuk-link">Update the url</a>.</p>
+          {% else %}
+          <a class="highlight-box highlight-box--gap highlight-box--flush" href="{{ url_for('frontend.update_local_plan_url', planning_authority=planning_authority.id, local_plan=plan.local_plan) }}">
+            <h3 class="govuk-heading-s highlight-box__title">URL unavailable</h3>
+            <p class="govuk-body govuk-!-margin-bottom-0">We do not have a link to the local plan. Can you add one?</p>
+          </a>
+       {% endif %}
 
       <div class="pims-stages">
 
