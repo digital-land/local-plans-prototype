@@ -165,7 +165,13 @@ def check_url():
     website_origin = request.json.get('active_page_origin')
     website_location = request.json.get('active_page_location')
 
-    if website_origin is not None:
+    # handle documents differently
+    if website_location.endswith(('.pdf')):
+        document = PlanDocument.query.filter_by(url=website_location).first()
+        print(document)
+        resp = {'OK': 200, 'type': 'document', 'document': document.to_dict(), 'local_plan': document.local_plan.to_dict()}
+
+    elif website_origin is not None:
 
         try:
             pla = PlanningAuthority.query.filter_by(website=website_origin).one()

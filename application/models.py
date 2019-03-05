@@ -77,7 +77,8 @@ class LocalPlan(db.Model):
         data = {
             'id': self.local_plan,
             'is_adopted': self.is_adopted(),
-            'title': self.title
+            'title': self.title,
+            'planning_authorities': [authority.name for authority in self.planning_authorities]
         }
         return data
 
@@ -116,6 +117,13 @@ class PlanDocument(db.Model):
     local_plan = db.relationship('LocalPlan', back_populates='plan_documents')
 
     facts = db.relationship('Fact', back_populates='plan_document', lazy=True)
+
+    def to_dict(self):
+        data = {
+            'url': self.url,
+            'facts': [fact.to_dict() for fact in self.facts]
+        }
+        return data
 
 
 class Fact(db.Model):
