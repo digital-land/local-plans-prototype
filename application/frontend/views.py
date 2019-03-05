@@ -73,21 +73,23 @@ def add_fact_to_document(planning_authority, document):
         document.facts.append(fact)
         db.session.add(document)
         db.session.commit()
-        remove_url = url_for('frontend.remove_fact_from_document', document=str(document.id), fact=fact.id)
+        remove_url = url_for('frontend.remove_fact_from_document', document=str(document.id), fact=fact.id, document_type=document_type)
         resp = {'OK': 200, 'fact': fact.to_dict(), 'remove_url': remove_url}
     else:
         resp = {'OK': 200}
 
     return jsonify(resp)
 
-
-# TODO - needs update to take a param in json for doc type to remove from
-# so that we can delete a Fact or and EmergingFact as appropriate
 @frontend.route('/local-plans/<document>/<fact>', methods=['GET', 'DELETE'])
 def remove_fact_from_document(document, fact):
-    fact = Fact.query.filter_by(id=fact, plan_document_id=document).one();
-    db.session.delete(fact)
-    db.session.commit()
+    document_type = request.args.get('document_type')
+    if document_type == 'plan_document':
+        fact = Fact.query.filter_by(id=fact, plan_document_id=document).one()
+    elif document_type == 'emerging_plan_document':
+        fact = EmergingFact.query.filter_by(id=fact, emerging_plan_document_id=document).one()
+    if fact is not None:
+        db.session.delete(fact)
+        db.session.commit()
     return jsonify({204: 'No Content'})
 
 
