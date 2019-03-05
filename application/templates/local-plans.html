@@ -319,14 +319,14 @@
                         <label class="govuk-label" for="housing-req-range-min-{{ loop.index }}">
                           Min
                         </label>
-                        <input class="govuk-input govuk-input--width-10" id="housing-req-range-min-{{ loop.index }}" name="housing-req-range-min-{{ loop.index }}" type="text">
+                        <input class="govuk-input govuk-input--width-10 housing-req-range-min" id="housing-req-range-min-{{ loop.index }}" name="housing-req-range-min-{{ loop.index }}" type="text">
                       </div>
 
                       <div class="govuk-form-group">
                         <label class="govuk-label" for="housing-req-range-max-{{ loop.index }}">
                           Max
                         </label>
-                        <input class="govuk-input govuk-input--width-10" id="housing-req-range-max-{{ loop.index }}" name="housing-req-range-max-{{ loop.index }}" type="text">
+                        <input class="govuk-input govuk-input--width-10 housing-req-range-max" id="housing-req-range-max-{{ loop.index }}" name="housing-req-range-max-{{ loop.index }}" type="text">
                       </div>
                     </fieldset>
 
@@ -539,6 +539,13 @@
     });
   }
 
+  function extractDate(fieldset) {
+    const day = fieldset.querySelector(".govuk-date-input__day");
+    const month = fieldset.querySelector(".govuk-date-input__month");
+    const year = fieldset.querySelector(".govuk-date-input__year");
+    return `${day.value}-${month.value}-${year.value}`;
+  }
+
   // save a fact
   // ===========
   factSaveBtns.forEach((btn) => {
@@ -547,15 +554,19 @@
       const form = e.currentTarget.closest("form");
       const url = form.getAttribute("action");
 
-      // **Todo**
-      // need to serialise whole form
-      // and send back to server
-      // let server decide what to save
-
       // set up data obj to post
+      // serialise all parts of form
       var fact = {};
-      fact["number"] = form.querySelector("input").value;
+      fact["fact_type"] = form.querySelector("select").value;
+      fact["plan_name"] = form.querySelector(".plan-name-input input").value;
+      fact["plan_start_date"] = extractDate( form.querySelector(".plan-start-date-input fieldset") );
+      fact["plan_end_date"] = extractDate( form.querySelector(".plan-end-date-input fieldset") );
+      fact["housing_req_total"] = form.querySelector(".plan-housing-req-total input").value;
+      fact["housing_req_range_min"] = form.querySelector(".housing-req-range-fieldset .housing-req-range-min").value;
+      fact["housing_req_range_max"] = form.querySelector(".housing-req-range-fieldset .housing-req-range-max").value;
       fact["notes"] = form.querySelector("textarea").value;
+      console.log(fact);
+
       // perform post
       fetch(url, {
         method: "POST",
