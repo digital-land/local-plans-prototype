@@ -546,6 +546,12 @@
     return `${day.value}-${month.value}-${year.value}`;
   }
 
+  function extractRange(fieldset) {
+    var min = fieldset.querySelector(".housing-req-range-min");
+    var max = fieldset.querySelector(".housing-req-range-max");
+    return `${min.value} - ${max.value}`;
+  }
+
   // save a fact
   // ===========
   factSaveBtns.forEach((btn) => {
@@ -558,13 +564,30 @@
       // serialise all parts of form
       var fact = {};
       fact["fact_type"] = form.querySelector("select").value;
-      fact["plan_name"] = form.querySelector(".plan-name-input input").value;
-      fact["plan_start_date"] = extractDate( form.querySelector(".plan-start-date-input fieldset") );
-      fact["plan_end_date"] = extractDate( form.querySelector(".plan-end-date-input fieldset") );
-      fact["housing_req_total"] = form.querySelector(".plan-housing-req-total input").value;
-      fact["housing_req_range_min"] = form.querySelector(".housing-req-range-fieldset .housing-req-range-min").value;
-      fact["housing_req_range_max"] = form.querySelector(".housing-req-range-fieldset .housing-req-range-max").value;
       fact["notes"] = form.querySelector("textarea").value;
+
+"plan-name", "plan-start-year", "plan-end-year", "housing-requirement-total", "housing-requirement-range"
+
+      if(form.classList.contains('plan-name')) {
+        fact["fact"] = form.querySelector(".plan-name-input input").value;
+      } else if (form.classList.contains('plan-start-year')) {
+        fact["fact"] = extractDate( form.querySelector(".plan-start-date-input fieldset") );
+      } else if (form.classList.contains('plan-end-year')) {
+        fact["fact"] = extractDate( form.querySelector(".plan-end-date-input fieldset") );
+      } else if (form.classList.contains('housing-requirement-total')) {
+        fact["fact"] = form.querySelector(".plan-housing-req-total input").value;
+      } else if (form.classList.contains('housing-requirement-range')) {
+        fact["fact"] = extractRange( form.querySelector(".housing-req-range-fieldset") );
+      } 
+      
+      // if serialising
+      // fact["plan_name"] = form.querySelector(".plan-name-input input").value;
+      // fact["plan_start_date"] = extractDate( form.querySelector(".plan-start-date-input fieldset") );
+      // fact["plan_end_date"] = extractDate( form.querySelector(".plan-end-date-input fieldset") );
+      // fact["housing_req_total"] = form.querySelector(".plan-housing-req-total input").value;
+      // fact["housing_req_range_min"] = form.querySelector(".housing-req-range-fieldset .housing-req-range-min").value;
+      // fact["housing_req_range_max"] = form.querySelector(".housing-req-range-fieldset .housing-req-range-max").value;
+      
       console.log(fact);
 
       // perform post
