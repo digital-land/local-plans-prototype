@@ -1,3 +1,43 @@
+.plan-name-input,
+.plan-start-date-input,
+.plan-end-date-input,
+.plan-housing-req-total,
+.housing-req-range-fieldset {
+  display: none;
+}
+
 .housing-req-range-fieldset {
   margin-bottom: $govuk-gutter;
 }
+
+.plan-name {
+  .plan-name-input {
+    display: block;
+  }
+}
+
+.plan-start-year {
+  .plan-start-date-input {
+    display: block;
+  }
+}
+
+.plan-end-year {
+  .plan-end-date-input {
+    display: block;
+  }
+}
+
+.housing-requirement-total {
+  .plan-housing-req-total {
+    display: block;
+  }
+}
+
+.housing-requirement-range {
+  .housing-req-range-fieldset {
+    display: block;
+  }
+}
+
+.other {}

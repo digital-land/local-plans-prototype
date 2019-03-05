@@ -250,23 +250,23 @@
                   </tbody>
                 </table>
 
-
                 <details class="govuk-details govuk-details--facts">
                   <summary class="govuk-details__summary">
                     <span class="govuk-details__summary-text document-facts__add">
                       Add fact from document
                     </span>
                   </summary>
-                  <form action="{{ url_for('frontend.add_fact_to_document', planning_authority=planning_authority.id, local_plan=plan.local_plan, document=doc.id) }}" class="govuk-form add-fact-form govuk-details__text">
+
+                  <form action="{{ url_for('frontend.add_fact_to_document', planning_authority=planning_authority.id, local_plan=plan.local_plan, document=doc.id) }}" class="govuk-form add-fact-form govuk-details__text plan-name">
                     <h4 class="govuk-heading-s govuk-visually-hidden">Add fact from document</h4>
 
                     <div class="govuk-form-group">
                        <label class="govuk-label" for="document-note-{{loop.index}}">
                            Specify the type of fact
                        </label>
-                        <select class="govuk-select" id="fact-type-{{loop.index}}" name="fact-type-{{loop.index}}">
+                        <select class="govuk-select fact-select-types" id="fact-type-{{loop.index}}" name="fact-type-{{loop.index}}">
                           {% for fact_type in fact_types %}
-                             <option value="{{ fact_type.name }}">{{ fact_type.value }}</option>
+                             <option value="{{ fact_type.name }}" data-type-class="{{ fact_type.name|lower|replace('_', '-') }}">{{ fact_type.value }}</option>
                           {% endfor %}
                       </select>
                     </div>
@@ -278,11 +278,11 @@
                      -->
 
                     <!-- for Plan Name -->
-                    <div class="govuk-form-group">
+                    <div class="govuk-form-group plan-name-input">
                       <label class="govuk-label" for="plan-name-{{ loop.index }}">
                         Plan name
                       </label>
-                      <input class="govuk-input govuk-input--width-20 plan-name-input" id="plan-name-{{ loop.index }}" name="plan-name-{{ loop.index }}" type="text">
+                      <input class="govuk-input govuk-input--width-20" id="plan-name-{{ loop.index }}" name="plan-name-{{ loop.index }}" type="text">
                     </div>
 
                     <!-- for Plan start date -->
@@ -300,11 +300,11 @@
                     }) }}
 
                     <!-- for Housing requirement total -->
-                    <div class="govuk-form-group">
+                    <div class="govuk-form-group plan-housing-req-total">
                       <label class="govuk-label" for="housing-req-total-{{ loop.index }}">
                         Housing requirement total
                       </label>
-                      <input class="govuk-input govuk-input--width-10 plan-housing-req-total" id="housing-req-total-{{ loop.index }}" name="housing-req-total-{{ loop.index }}" type="text">
+                      <input class="govuk-input govuk-input--width-10" id="housing-req-total-{{ loop.index }}" name="housing-req-total-{{ loop.index }}" type="text">
                     </div>
 
                     <!-- for Housing requirement range -->
@@ -460,6 +460,18 @@
   var factTemplateSource = document.getElementById("fact-row-template").innerHTML;
   var factTemplate = Handlebars.compile(factTemplateSource);
 
+  // handle changes to form when user changes select
+  const addFactForms = document.querySelectorAll(".add-fact-form");
+  const addFactSelects = Array.prototype.slice.call( addFactForms ).map((form) => form.querySelector(".fact-select-types"));
+  addFactSelects.forEach((select) => {
+    select.addEventListener('change', (e) => {
+      const form = e.target.closest('form');
+      const option = e.target.querySelector('option:checked');
+      // remove all these classes before adding selected class
+      form.classList.remove("plan-name", "plan-start-year", "plan-end-year", "housing-requirement-total", "housing-requirement-range");
+      form.classList.add(option.dataset.typeClass);
+    });
+  });
   
   const htmlStringToElement = (function () {
     const parser = new DOMParser();
@@ -534,6 +546,12 @@
       e.preventDefault();
       const form = e.currentTarget.closest("form");
       const url = form.getAttribute("action");
+
+      // **Todo**
+      // need to serialise whole form
+      // and send back to server
+      // let server decide what to save
+
       // set up data obj to post
       var fact = {};
       fact["number"] = form.querySelector("input").value;
