@@ -87,3 +87,21 @@ header p:first-child {
     opacity: 1;
   }
 }
+
+.add-facts-section,
+.save-urls-section {
+  display: none;
+}
+
+.facts-view {
+  .add-facts-section {
+    display: block;
+  }
+}
+
+.url-view {
+  .save-urls-section {
+    display: block;
+  }
+}
+

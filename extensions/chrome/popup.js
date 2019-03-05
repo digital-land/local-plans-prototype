@@ -132,6 +132,14 @@ function displayPageDetails(pla_obj) {
   activePlan = pla_obj['plans'][0]['id'];
 }
 
+function populateFactsView(data) {
+  const urlEl = document.querySelector('.facts__doc-url');
+  urlEl.textContent = data.document.url;
+
+  const planEl = document.querySelector('.facts__local-plan');
+  planEl.appendChild( createStageTag(data.local_plan, "selected") );
+}
+
 function checkPageBelongsToAuthority(pageDetails) {
 
   fetch( localPlanUrl + '/local-plans/check-url', {
@@ -146,7 +154,14 @@ function checkPageBelongsToAuthority(pageDetails) {
     .then(response => response.json())
     .then( (resp_data) => {
       //console.log(resp_data);
-      displayPageDetails(resp_data.planning_authority);
+      if(resp_data['type'] === 'document') {
+        console.log(resp_data);
+        populateFactsView(resp_data)
+        document.body.classList.add("facts-view");
+      } else {
+        displayPageDetails(resp_data.planning_authority);
+        document.body.classList.add("url-view");
+      }
     });
 
 }
