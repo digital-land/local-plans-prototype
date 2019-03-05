@@ -126,13 +126,14 @@
               <section class="document-facts govuk-grid-column-two-thirds">
 
                 {% if doc.facts|length > 0 %}
-                <h4 class="govuk-heading-s">Facts from document</h4>
-                <table class="govuk-table">
+                <table class="govuk-table document-facts__table">
+                  <caption class="govuk-table__caption">Facts from document</caption>
                   <tbody class="govuk-table__body">
                   {% for fact in doc.facts %}
                   <tr class="govuk-table__row">
                     <th class="govuk-table__header" scope="row">{{ fact.number }}</th>
                     <td class="govuk-table__cell">{{ fact.notes }}</td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric"><a href="{{ url_for('frontend.remove_fact_from_document', document=doc.id, fact=fact.id) }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
                   </tr>
                   {% endfor %}
                   </tbody>
@@ -254,6 +255,11 @@
       <a href="{{ remove_url }}" class="url-item__btn url-remove-btn">Remove</a>
     </div>
 </script>
+<script id="fact-row-template" type="text/x-handlebars-template">
+  <th class="govuk-table__header" scope="row">{{ fact.number }}</th>
+  <td class="govuk-table__cell">{{ fact.notes }}</td>
+  <td class="govuk-table__cell govuk-table__cell--numeric"><a href="{{ remove_url }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
+</script>
 {% endraw %}
 <script>
   const noteEditBtns = document.querySelectorAll(".note-edit-btn");
@@ -267,9 +273,23 @@
   const cancelBtns = document.querySelectorAll(".cancel-btn");
 
   const factSaveBtns = document.querySelectorAll(".fact-save-btn");
+  const factCancelBtns = document.querySelectorAll(".add-fact-form .cancel-btn");
 
   var source   = document.getElementById("url-item-template").innerHTML;
   var urlTemplate = Handlebars.compile(source);
+
+  var factTemplateSource = document.getElementById("fact-row-template").innerHTML;
+  var factTemplate = Handlebars.compile(factTemplateSource);
+
+  
+  const htmlStringToElement = (function () {
+    const parser = new DOMParser();
+    return function(htmlStr) {
+      const generatedDoc = parser.parseFromString(htmlStr, "text/xml");
+      return generatedDoc.childNodes[0];
+    }
+    //console.log("this runs straight away");
+  })();
 
   noteEditBtns.forEach((btn) => {
     btn.addEventListener('click', (e) => {
@@ -328,6 +348,8 @@
     });
   }
 
+  // save a fact
+  // ===========
   factSaveBtns.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
@@ -346,9 +368,35 @@
         body: JSON.stringify({ 'fact': fact })
       })
       .then(response => response.json())
-      .then( (resp_data) => console.log(resp_data) );
+      .then( (resp_data) => factAddedCallback(resp_data, form) );
     });
   });
+
+  function factAddedCallback(resp_data, form) {
+    if(resp_data['OK'] === 200) {
+      console.log(factTemplate(resp_data));
+      const factsEl = form.closest(".document-facts");
+      const table = factsEl.querySelector(".document-facts__table tbody");
+
+      var row = document.createElement("tr");
+      row.classList.add('govuk-table__row');
+      row.innerHTML = factTemplate(resp_data);
+      table.appendChild( row );
+
+      form.reset();
+    }
+  }
+
+  // close fact form
+  // ===============
+  factCancelBtns.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const details = btn.closest('.govuk-details');
+      //console.log(details);
+      details.open = false;
+    })
+  })
 
   urlAddBtns.forEach((btn) => {
     btn.addEventListener('click', (e) => {

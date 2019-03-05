@@ -41,6 +41,21 @@ $url-btn-width: 100px;
   }
 }
 
+.document-facts__table {
+  margin: 15px 0 5px;
+
+  .govuk-table__caption {
+    margin-bottom: 5px;
+  }
+
+  .govuk-table__row:first-of-type {
+    th,
+    td {
+      border-top: 1px solid govuk-colour("grey-2");
+    }
+  }
+}
+
 
 .govuk-details--facts {
   .govuk-details__summary {

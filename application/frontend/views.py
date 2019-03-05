@@ -62,14 +62,14 @@ def add_fact_to_document(planning_authority, local_plan, document):
         db.session.add(plan_document)
         db.session.commit()
         remove_url = url_for('frontend.remove_fact_from_document', document=str(plan_document.id), fact=fact.id)
-        resp = {'OK': 200, 'fact': str(fact.id), 'remove_url': remove_url}
+        resp = {'OK': 200, 'fact': fact.to_dict(), 'remove_url': remove_url}
     else:
         resp = {'OK': 200}
 
     return jsonify(resp)
 
 
-@frontend.route('/local-plans/<document>/<fact>', methods=['DELETE'])
+@frontend.route('/local-plans/<document>/<fact>', methods=['GET', 'DELETE'])
 def remove_fact_from_document(document, fact):
     # do something
     return jsonify({204: 'No Content'})
