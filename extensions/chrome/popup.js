@@ -61,13 +61,20 @@ function saveDocuments() {
   }
   if (toSend.length > 0) {
     const extMessageContainer = document.querySelector('.ext-message');
+    const ldsTag = document.querySelector('.stage-tag--lds');
 
     let dataToSend = {
       'documents': toSend,
       'active_page_origin': activePageDetails["currentOrigin"] || "",
       'active_page_location': activePageDetails["currentLocation"] || ""
     };
-    if(activePlan !== undefined) {
+
+    // firstly check if local development scheme is selected
+    if(ldsTag.classList.contains('selected')) {
+      dataToSend['active_plan'] = "localDevelopmentScheme";
+      dataToSend['pla_id'] = "localDevelopmentScheme";
+    }
+    else if(activePlan !== undefined) {
       dataToSend['active_plan'] = activePlan;
       dataToSend['pla_id'] = pla['id'];
     }
@@ -118,6 +125,8 @@ function displayPageDetails(pla_obj) {
   var nameElement = pageDetailsContainer.querySelector(".pla-name");
   console.log(pla_obj.name);
   nameElement.textContent = pla_obj.name;
+
+  const ldsTag = document.querySelector('.stage-tag--lds').classList.remove('selected');
 
   if(pla_obj['plans'].length === 1) {
     console.log("just the one");

@@ -28,6 +28,11 @@ header p:first-child {
 
 .plan-list {
   margin-bottom: 30px;
+
+  .stage-tag {
+    display: inline-block;
+    margin-bottom: 2px;
+  }
 }
 
 .stage-tag {
