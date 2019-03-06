@@ -49,149 +49,145 @@
                 <p class="govuk-body">which is a document associated with plan <span class="facts__local-plan"></span></p>
             </header>
 
+            <section class="document-facts">
             <table class="govuk-table document-facts__table">
                 <caption class="govuk-table__caption">Facts from document</caption>
                 <tbody class="govuk-table__body"></tbody>
             </table>
 
-            <details class="govuk-details govuk-details--facts govuk-details--facts-plan-doc" role="group" open="">
-                <summary class="govuk-details__summary" role="button" aria-controls="details-content-cd928191-90c1-4536-a5f7-dde1e4947b55" aria-expanded="true">
-                    <span class="govuk-details__summary-text document-facts__add">Add fact from document</span>
-                </summary>
+            <form action="/local-plans/local-authority-eng:ADU/document/c6618465-7c5a-4900-8a5d-6c9fb872f60b?local_plan=ADU-2016" class="govuk-form add-fact-form plan-name">
+                <input type="hidden" value="plan_document">
+                <h4 class="govuk-heading-m">Add fact from document</h4>
 
-                <form action="/local-plans/local-authority-eng:ADU/document/c6618465-7c5a-4900-8a5d-6c9fb872f60b?local_plan=ADU-2016" class="govuk-form add-fact-form govuk-details__text plan-name">
-                    <input type="hidden" value="plan_document">
-                    <h4 class="govuk-heading-s govuk-visually-hidden">Add fact from document</h4>
+                <div class="govuk-form-group" id="details-content-cd928191-90c1-4536-a5f7-dde1e4947b55" aria-hidden="false">
+                    <label class="govuk-label" for="document-note-3">Specify the type of fact</label>
+                    <select class="govuk-select fact-select-types" id="fact-type-3" name="fact-type-3">
+                        <option value="PLAN_NAME" data-type-class="plan-name">Plan name</option>
+                        <option value="PLAN_START_YEAR" data-type-class="plan-start-year">Plan period start year</option>
+                        <option value="PLAN_END_YEAR" data-type-class="plan-end-year">Plan period end year</option>
+                        <option value="HOUSING_REQUIREMENT_TOTAL" data-type-class="housing-requirement-total">Housing requirement total</option>
+                        <option value="HOUSING_REQUIREMENT_RANGE" data-type-class="housing-requirement-range">Housing requirement range</option>
+                        <option value="OTHER" data-type-class="other">Other</option>
+                    </select>
+                </div>
 
-                    <div class="govuk-form-group" id="details-content-cd928191-90c1-4536-a5f7-dde1e4947b55" aria-hidden="false">
-                        <label class="govuk-label" for="document-note-3">Specify the type of fact</label>
-                        <select class="govuk-select fact-select-types" id="fact-type-3" name="fact-type-3">
-                            <option value="PLAN_NAME" data-type-class="plan-name">Plan name</option>
-                            <option value="PLAN_START_YEAR" data-type-class="plan-start-year">Plan period start year</option>
-                            <option value="PLAN_END_YEAR" data-type-class="plan-end-year">Plan period end year</option>
-                            <option value="HOUSING_REQUIREMENT_TOTAL" data-type-class="housing-requirement-total">Housing requirement total</option>
-                            <option value="HOUSING_REQUIREMENT_RANGE" data-type-class="housing-requirement-range">Housing requirement range</option>
-                            <option value="OTHER" data-type-class="other">Other</option>
-                        </select>
-                    </div>
+                <!-- for Plan Name -->
+                <div class="govuk-form-group plan-name-input">
+                  <label class="govuk-label" for="plan-name-3">
+                    Plan name
+                  </label>
+                  <input class="govuk-input govuk-input--width-20" id="plan-name-3" name="plan-name-3" type="text">
+                </div>
 
-                    <!-- for Plan Name -->
-                    <div class="govuk-form-group plan-name-input">
-                      <label class="govuk-label" for="plan-name-3">
-                        Plan name
-                      </label>
-                      <input class="govuk-input govuk-input--width-20" id="plan-name-3" name="plan-name-3" type="text">
-                    </div>
-
-                    <!-- for Plan start date -->               
-                    <div class="govuk-form-group plan-start-date-input">
-                      <fieldset class="govuk-fieldset" aria-describedby="plan-start-date-3-hint" role="group">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                          <h1 class="govuk-fieldset__heading">
-                            Plan period start date
-                          </h1>
-                        </legend>
-                        <span id="plan-start-date-3-hint" class="govuk-hint">
-                          For example, 12 2007
-                        </span>
-                        <div class="govuk-date-input" id="plan-start-date-3">
-                          <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
-                              <label class="govuk-label govuk-date-input__label" for="plan-start-date-3-month">
-                                Month
-                              </label>
-                              <input class="govuk-input govuk-date-input__month govuk-date-input__input govuk-input--width-2" id="plan-start-date-3-month" name="plan-start-date-3-month" type="number" pattern="[0-9]*">
-                            </div>
-                          </div>
-                          <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
-                              <label class="govuk-label govuk-date-input__label" for="plan-start-date-3-year">
-                                Year
-                              </label>
-                              <input class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4" id="plan-start-date-3-year" name="plan-start-date-3-year" type="number" pattern="[0-9]*">
-                            </div>
-                          </div>
+                <!-- for Plan start date -->               
+                <div class="govuk-form-group plan-start-date-input">
+                  <fieldset class="govuk-fieldset" aria-describedby="plan-start-date-3-hint" role="group">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                      <h1 class="govuk-fieldset__heading">
+                        Plan period start date
+                      </h1>
+                    </legend>
+                    <span id="plan-start-date-3-hint" class="govuk-hint">
+                      For example, 12 2007
+                    </span>
+                    <div class="govuk-date-input" id="plan-start-date-3">
+                      <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                          <label class="govuk-label govuk-date-input__label" for="plan-start-date-3-month">
+                            Month
+                          </label>
+                          <input class="govuk-input govuk-date-input__month govuk-date-input__input govuk-input--width-2" id="plan-start-date-3-month" name="plan-start-date-3-month" type="number" pattern="[0-9]*">
                         </div>
-                      </fieldset>
-                    </div>
-
-
-                    <!-- for Plan end date -->            
-                    <div class="govuk-form-group plan-end-date-input">
-                      <fieldset class="govuk-fieldset" aria-describedby="plan-end-date-3-hint" role="group">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                          <h1 class="govuk-fieldset__heading">
-                            Plan period end date
-                          </h1>
-                        </legend>
-                        <span id="plan-end-date-3-hint" class="govuk-hint">
-                          For example, 12 2007
-                        </span>
-                        <div class="govuk-date-input" id="plan-end-date-3">
-                          <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
-                              <label class="govuk-label govuk-date-input__label" for="plan-end-date-3-month">
-                                Month
-                              </label>
-                              <input class="govuk-input govuk-date-input__month govuk-date-input__input govuk-input--width-2" id="plan-end-date-3-month" name="plan-end-date-3-month" type="number" pattern="[0-9]*">
-                            </div>
-                          </div>
-                          <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
-                              <label class="govuk-label govuk-date-input__label" for="plan-end-date-3-year">
-                                Year
-                              </label>
-                              <input class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4" id="plan-end-date-3-year" name="plan-end-date-3-year" type="number" pattern="[0-9]*">
-                            </div>
-                          </div>
+                      </div>
+                      <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                          <label class="govuk-label govuk-date-input__label" for="plan-start-date-3-year">
+                            Year
+                          </label>
+                          <input class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4" id="plan-start-date-3-year" name="plan-start-date-3-year" type="number" pattern="[0-9]*">
                         </div>
-                      </fieldset>
-                    </div>
-
-
-                    <!-- for Housing requirement total -->
-                    <div class="govuk-form-group plan-housing-req-total">
-                      <label class="govuk-label" for="housing-req-total-3">
-                        Housing requirement total
-                      </label>
-                      <input class="govuk-input govuk-input--width-10" id="housing-req-total-3" name="housing-req-total-3" type="text">
-                    </div>
-
-                    <!-- for Housing requirement range -->
-                    <fieldset class="govuk-fieldset housing-req-range-fieldset">
-                      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                        <h1 class="govuk-fieldset__heading">
-                          Housing requirement range
-                        </h1>
-                      </legend>
-
-                      <div class="govuk-form-group">
-                        <label class="govuk-label" for="housing-req-range-min-3">
-                          Min
-                        </label>
-                        <input class="govuk-input govuk-input--width-10 housing-req-range-min" id="housing-req-range-min-3" name="housing-req-range-min-3" type="text">
                       </div>
+                    </div>
+                  </fieldset>
+                </div>
 
-                      <div class="govuk-form-group">
-                        <label class="govuk-label" for="housing-req-range-max-3">
-                          Max
-                        </label>
-                        <input class="govuk-input govuk-input--width-10 housing-req-range-max" id="housing-req-range-max-3" name="housing-req-range-max-3" type="text">
+
+                <!-- for Plan end date -->            
+                <div class="govuk-form-group plan-end-date-input">
+                  <fieldset class="govuk-fieldset" aria-describedby="plan-end-date-3-hint" role="group">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                      <h1 class="govuk-fieldset__heading">
+                        Plan period end date
+                      </h1>
+                    </legend>
+                    <span id="plan-end-date-3-hint" class="govuk-hint">
+                      For example, 12 2007
+                    </span>
+                    <div class="govuk-date-input" id="plan-end-date-3">
+                      <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                          <label class="govuk-label govuk-date-input__label" for="plan-end-date-3-month">
+                            Month
+                          </label>
+                          <input class="govuk-input govuk-date-input__month govuk-date-input__input govuk-input--width-2" id="plan-end-date-3-month" name="plan-end-date-3-month" type="number" pattern="[0-9]*">
+                        </div>
                       </div>
-                    </fieldset>
+                      <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                          <label class="govuk-label govuk-date-input__label" for="plan-end-date-3-year">
+                            Year
+                          </label>
+                          <input class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4" id="plan-end-date-3-year" name="plan-end-date-3-year" type="number" pattern="[0-9]*">
+                        </div>
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
 
-                    <div class="govuk-form-group">
-                      <label class="govuk-label" for="document-note-3">
-                        Provide any additional information about the fact
-                      </label>
-                      <textarea class="govuk-textarea" id="document-note-3" name="document-note-3" rows="5"></textarea>
-                    </div>
-                    <div class="govuk-form-group">
-                      <button class="govuk-button fact-save-btn">Save</button>
-                      <button class="cancel-btn">Cancel</button>
-                    </div>
-                </form>
-            </details>
+
+                <!-- for Housing requirement total -->
+                <div class="govuk-form-group plan-housing-req-total">
+                  <label class="govuk-label" for="housing-req-total-3">
+                    Housing requirement total
+                  </label>
+                  <input class="govuk-input govuk-input--width-10" id="housing-req-total-3" name="housing-req-total-3" type="text">
+                </div>
+
+                <!-- for Housing requirement range -->
+                <fieldset class="govuk-fieldset housing-req-range-fieldset">
+                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    <h1 class="govuk-fieldset__heading">
+                      Housing requirement range
+                    </h1>
+                  </legend>
+
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="housing-req-range-min-3">
+                      Min
+                    </label>
+                    <input class="govuk-input govuk-input--width-10 housing-req-range-min" id="housing-req-range-min-3" name="housing-req-range-min-3" type="text">
+                  </div>
+
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="housing-req-range-max-3">
+                      Max
+                    </label>
+                    <input class="govuk-input govuk-input--width-10 housing-req-range-max" id="housing-req-range-max-3" name="housing-req-range-max-3" type="text">
+                  </div>
+                </fieldset>
+
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="document-note-3">
+                    Provide any additional information about the fact
+                  </label>
+                  <textarea class="govuk-textarea" id="document-note-3" name="document-note-3" rows="5"></textarea>
+                </div>
+                <div class="govuk-form-group">
+                  <button class="govuk-button fact-save-btn">Save</button>
+                  <button class="cancel-btn">Cancel</button>
+                </div>
+            </form>
+            </section>
         </section>
 
         <section class="emerging-plan-facts-section">
@@ -201,280 +197,274 @@
                 <p class="govuk-body">which is a document associated with the <span class="stage-tag stage-tag--lds selected">Local development scheme</span></p>
             </header>
 
+            <section class="document-facts">
             <table class="govuk-table document-facts__table">
                 <caption class="govuk-table__caption">Facts from document</caption>
                 <tbody class="govuk-table__body"></tbody>
             </table>
 
-            <details class="govuk-details govuk-details--facts govuk-details--facts-emerging-plan-doc" role="group" open="">
-                <summary class="govuk-details__summary" role="button" aria-controls="details-content-a8dad8cc-3ac4-4cae-b7d5-4ae22bba20ca" aria-expanded="true">
-                    <span class="govuk-details__summary-text document-facts__add">
-                      Add fact from document
+            <form action="/local-plans/local-authority-eng:ADU/document/e6e988f5-e714-4a92-83a0-79d9c2da5b86" class="govuk-form add-fact-form publication-date">
+
+                <input type="hidden" id="document-type" value="emerging_plan_document">
+
+                <h4 class="govuk-heading-m">Add fact from document</h4>
+
+                <div class="govuk-form-group" id="details-content-a8dad8cc-3ac4-4cae-b7d5-4ae22bba20ca" aria-hidden="false">
+                    <label class="govuk-label" for="document-note-1">Specify the type of fact</label>
+                    <select class="govuk-select fact-select-types" id="fact-type-1" name="fact-type-1">
+                        <option value="PUBLICATION_DATE" data-type-class="publication-date">Publication date</option>
+                        <option value="PROPOSED_REG_18_DATE" data-type-class="proposed-reg-18-date">Proposed Regulation 18 date</option>
+                        <option value="PROPOSED_PUBLICATION_DATE" data-type-class="proposed-publication-date">Proposed publication date</option>
+                        <option value="PROPOSED_SUBMISSION_DATE" data-type-class="proposed-submission-date">Proposed submission date</option>
+                        <option value="PROPOSED_MAIN_MODIFICATIONS_DATE" data-type-class="proposed-main-modifications-date">Proposed main modifications date</option>
+                        <option value="PROPOSED_ADOPTION_DATE" data-type-class="proposed-adoption-date">Proposed adoption date</option>
+                        <option value="HOUSING_REQUIREMENT_TOTAL" data-type-class="housing-requirement-total">Housing requirement total</option>
+                        <option value="HOUSING_REQUIREMENT_RANGE" data-type-class="housing-requirement-range">Housing requirement range</option>
+                        <option value="OTHER" data-type-class="other">Other</option>
+                    </select>
+                </div>
+
+                <!-- for Publication date -->
+                <div class="govuk-form-group publication-date-input">
+                  <fieldset class="govuk-fieldset" aria-describedby="publication-date-1-hint" role="group">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                      <h1 class="govuk-fieldset__heading">
+                        Publication date
+                      </h1>
+                    </legend>
+                    <span id="publication-date-1-hint" class="govuk-hint">
+                      For example, 12 2007
                     </span>
-                </summary>
-
-                <form action="/local-plans/local-authority-eng:ADU/document/e6e988f5-e714-4a92-83a0-79d9c2da5b86" class="govuk-form add-fact-form govuk-details__text publication-date">
-
-                    <input type="hidden" id="document-type" value="emerging_plan_document">
-
-                    <h4 class="govuk-heading-s govuk-visually-hidden">Add fact from document</h4>
-
-                    <div class="govuk-form-group" id="details-content-a8dad8cc-3ac4-4cae-b7d5-4ae22bba20ca" aria-hidden="false">
-                        <label class="govuk-label" for="document-note-1">Specify the type of fact</label>
-                        <select class="govuk-select fact-select-types" id="fact-type-1" name="fact-type-1">
-                            <option value="PUBLICATION_DATE" data-type-class="publication-date">Publication date</option>
-                            <option value="PROPOSED_REG_18_DATE" data-type-class="proposed-reg-18-date">Proposed Regulation 18 date</option>
-                            <option value="PROPOSED_PUBLICATION_DATE" data-type-class="proposed-publication-date">Proposed publication date</option>
-                            <option value="PROPOSED_SUBMISSION_DATE" data-type-class="proposed-submission-date">Proposed submission date</option>
-                            <option value="PROPOSED_MAIN_MODIFICATIONS_DATE" data-type-class="proposed-main-modifications-date">Proposed main modifications date</option>
-                            <option value="PROPOSED_ADOPTION_DATE" data-type-class="proposed-adoption-date">Proposed adoption date</option>
-                            <option value="HOUSING_REQUIREMENT_TOTAL" data-type-class="housing-requirement-total">Housing requirement total</option>
-                            <option value="HOUSING_REQUIREMENT_RANGE" data-type-class="housing-requirement-range">Housing requirement range</option>
-                            <option value="OTHER" data-type-class="other">Other</option>
-                        </select>
-                    </div>
-
-                    <!-- for Publication date -->
-                    <div class="govuk-form-group publication-date-input">
-                      <fieldset class="govuk-fieldset" aria-describedby="publication-date-1-hint" role="group">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                          <h1 class="govuk-fieldset__heading">
-                            Publication date
-                          </h1>
-                        </legend>
-                        <span id="publication-date-1-hint" class="govuk-hint">
-                          For example, 12 2007
-                        </span>
-                        <div class="govuk-date-input" id="publication-date-1">
-                          <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
-                              <label class="govuk-label govuk-date-input__label" for="publication-date-1-month">
-                                Month
-                              </label>
-                              <input class="govuk-input govuk-date-input__month govuk-date-input__input govuk-input--width-2" id="publication-date-1-month" name="publication-date-1-month" type="number" pattern="[0-9]*">
-                            </div>
-                          </div>
-                          <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
-                              <label class="govuk-label govuk-date-input__label" for="publication-date-1-year">
-                                Year
-                              </label>
-                              <input class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4" id="publication-date-1-year" name="publication-date-1-year" type="number" pattern="[0-9]*">
-                            </div>
-                          </div>
+                    <div class="govuk-date-input" id="publication-date-1">
+                      <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                          <label class="govuk-label govuk-date-input__label" for="publication-date-1-month">
+                            Month
+                          </label>
+                          <input class="govuk-input govuk-date-input__month govuk-date-input__input govuk-input--width-2" id="publication-date-1-month" name="publication-date-1-month" type="number" pattern="[0-9]*">
                         </div>
-                      </fieldset>
-                    </div>
-
-
-                    <!-- for Regulation 18 date -->
-                    <div class="govuk-form-group regulation-18-date-input">
-                      <fieldset class="govuk-fieldset" aria-describedby="regulation-18-date-1-hint" role="group">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                          <h1 class="govuk-fieldset__heading">
-                            Proposed regulation 18 date
-                          </h1>
-                        </legend>
-                        <span id="regulation-18-date-1-hint" class="govuk-hint">
-                          For example, 12 2007
-                        </span>
-                        <div class="govuk-date-input" id="regulation-18-date-1">
-                          <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
-                              <label class="govuk-label govuk-date-input__label" for="regulation-18-date-1-month">
-                                Month
-                              </label>
-                              <input class="govuk-input govuk-date-input__month govuk-date-input__input govuk-input--width-2" id="regulation-18-date-1-month" name="regulation-18-date-1-month" type="number" pattern="[0-9]*">
-                            </div>
-                          </div>
-                          <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
-                              <label class="govuk-label govuk-date-input__label" for="regulation-18-date-1-year">
-                                Year
-                              </label>
-                              <input class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4" id="regulation-18-date-1-year" name="regulation-18-date-1-year" type="number" pattern="[0-9]*">
-                            </div>
-                          </div>
-                        </div>
-                      </fieldset>
-                    </div>
-
-
-                    <!-- for Proposed publication date -->     
-                    <div class="govuk-form-group proposed-publication-date-input">
-                      <fieldset class="govuk-fieldset" aria-describedby="proposed-publication-date-1-hint" role="group">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                          <h1 class="govuk-fieldset__heading">
-                            Proposed publication date
-                          </h1>
-                        </legend>
-                        <span id="proposed-publication-date-1-hint" class="govuk-hint">
-                          For example, 12 2007
-                        </span>
-                        <div class="govuk-date-input" id="proposed-publication-date-1">
-                          <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
-                              <label class="govuk-label govuk-date-input__label" for="proposed-publication-date-1-month">
-                                Month
-                              </label>
-                              <input class="govuk-input govuk-date-input__month govuk-date-input__input govuk-input--width-2" id="proposed-publication-date-1-month" name="proposed-publication-date-1-month" type="number" pattern="[0-9]*">
-                            </div>
-                          </div>
-                          <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
-                              <label class="govuk-label govuk-date-input__label" for="proposed-publication-date-1-year">
-                                Year
-                              </label>
-                              <input class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4" id="proposed-publication-date-1-year" name="proposed-publication-date-1-year" type="number" pattern="[0-9]*">
-                            </div>
-                          </div>
-                        </div>
-                      </fieldset>
-                    </div>
-
-
-                    <!-- for Proposed submission date -->       
-                    <div class="govuk-form-group proposed-submission-date-input">
-                      <fieldset class="govuk-fieldset" aria-describedby="proposed-submission-date-1-hint" role="group">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                          <h1 class="govuk-fieldset__heading">
-                            Proposed submission date
-                          </h1>
-                        </legend>
-                        <span id="proposed-submission-date-1-hint" class="govuk-hint">
-                          For example, 12 2007
-                        </span>
-                        <div class="govuk-date-input" id="proposed-submission-date-1">
-                          <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
-                              <label class="govuk-label govuk-date-input__label" for="proposed-submission-date-1-month">
-                                Month
-                              </label>
-                              <input class="govuk-input govuk-date-input__month govuk-date-input__input govuk-input--width-2" id="proposed-submission-date-1-month" name="proposed-submission-date-1-month" type="number" pattern="[0-9]*">
-                            </div>
-                          </div>
-                          <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
-                              <label class="govuk-label govuk-date-input__label" for="proposed-submission-date-1-year">
-                                Year
-                              </label>
-                              <input class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4" id="proposed-submission-date-1-year" name="proposed-submission-date-1-year" type="number" pattern="[0-9]*">
-                            </div>
-                          </div>
-                        </div>
-                      </fieldset>
-                    </div>
-
-
-                    <!-- for Main modifications date --> 
-                    <div class="govuk-form-group proposed-main-modifications-date-input">
-                      <fieldset class="govuk-fieldset" aria-describedby="proposed-main-modifications-date-1-hint" role="group">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                          <h1 class="govuk-fieldset__heading">
-                            Proposed main modifications date
-                          </h1>
-                        </legend>
-                        <span id="proposed-main-modifications-date-1-hint" class="govuk-hint">
-                          For example, 12 2007
-                        </span>
-                        <div class="govuk-date-input" id="proposed-main-modifications-date-1">
-                          <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
-                              <label class="govuk-label govuk-date-input__label" for="proposed-main-modifications-date-1-month">
-                                Month
-                              </label>
-                              <input class="govuk-input govuk-date-input__month govuk-date-input__input govuk-input--width-2" id="proposed-main-modifications-date-1-month" name="proposed-main-modifications-date-1-month" type="number" pattern="[0-9]*">
-                            </div>
-                          </div>
-                          <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
-                              <label class="govuk-label govuk-date-input__label" for="proposed-main-modifications-date-1-year">
-                                Year
-                              </label>
-                              <input class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4" id="proposed-main-modifications-date-1-year" name="proposed-main-modifications-date-1-year" type="number" pattern="[0-9]*">
-                            </div>
-                          </div>
-                        </div>
-                      </fieldset>
-                    </div>
-
-
-                    <!-- for Proposed adoption date -->
-                    <div class="govuk-form-group proposed-adoption-date-input">
-                      <fieldset class="govuk-fieldset" aria-describedby="proposed-adoption-date-1-hint" role="group">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                          <h1 class="govuk-fieldset__heading">
-                            Proposed adoption date
-                          </h1>
-                        </legend>
-                        <span id="proposed-adoption-date-1-hint" class="govuk-hint">
-                          For example, 12 2007
-                        </span>
-                        <div class="govuk-date-input" id="proposed-adoption-date-1">
-                          <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
-                              <label class="govuk-label govuk-date-input__label" for="proposed-adoption-date-1-month">
-                                Month
-                              </label>
-                              <input class="govuk-input govuk-date-input__month govuk-date-input__input govuk-input--width-2" id="proposed-adoption-date-1-month" name="proposed-adoption-date-1-month" type="number" pattern="[0-9]*">
-                            </div>
-                          </div>
-                          <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
-                              <label class="govuk-label govuk-date-input__label" for="proposed-adoption-date-1-year">
-                                Year
-                              </label>
-                              <input class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4" id="proposed-adoption-date-1-year" name="proposed-adoption-date-1-year" type="number" pattern="[0-9]*">
-                            </div>
-                          </div>
-                        </div>
-                      </fieldset>
-                    </div>
-
-
-                    <!-- for Housing requirement total -->
-                    <div class="govuk-form-group plan-housing-req-total">
-                      <label class="govuk-label" for="housing-req-total-1">
-                        Housing requirement total
-                      </label>
-                      <input class="govuk-input govuk-input--width-10" id="housing-req-total-1" name="housing-req-total-1" type="text">
-                    </div>
-
-                    <!-- for Housing requirement range -->
-                    <fieldset class="govuk-fieldset housing-req-range-fieldset">
-                      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                        <h1 class="govuk-fieldset__heading">
-                          Housing requirement range
-                        </h1>
-                      </legend>
-
-                      <div class="govuk-form-group">
-                        <label class="govuk-label" for="housing-req-range-min-1">
-                          Min
-                        </label>
-                        <input class="govuk-input govuk-input--width-10 housing-req-range-min" id="housing-req-range-min-1" name="housing-req-range-min-1" type="text">
                       </div>
-
-                      <div class="govuk-form-group">
-                        <label class="govuk-label" for="housing-req-range-max-1">
-                          Max
-                        </label>
-                        <input class="govuk-input govuk-input--width-10 housing-req-range-max" id="housing-req-range-max-1" name="housing-req-range-max-1" type="text">
+                      <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                          <label class="govuk-label govuk-date-input__label" for="publication-date-1-year">
+                            Year
+                          </label>
+                          <input class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4" id="publication-date-1-year" name="publication-date-1-year" type="number" pattern="[0-9]*">
+                        </div>
                       </div>
-                    </fieldset>
+                    </div>
+                  </fieldset>
+                </div>
 
-                    <div class="govuk-form-group">
-                      <label class="govuk-label" for="document-note-1">
-                        Provide some information about the number
-                      </label>
-                      <textarea class="govuk-textarea" id="document-note-1" name="document-note-1" rows="5"></textarea>
+
+                <!-- for Regulation 18 date -->
+                <div class="govuk-form-group regulation-18-date-input">
+                  <fieldset class="govuk-fieldset" aria-describedby="regulation-18-date-1-hint" role="group">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                      <h1 class="govuk-fieldset__heading">
+                        Proposed regulation 18 date
+                      </h1>
+                    </legend>
+                    <span id="regulation-18-date-1-hint" class="govuk-hint">
+                      For example, 12 2007
+                    </span>
+                    <div class="govuk-date-input" id="regulation-18-date-1">
+                      <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                          <label class="govuk-label govuk-date-input__label" for="regulation-18-date-1-month">
+                            Month
+                          </label>
+                          <input class="govuk-input govuk-date-input__month govuk-date-input__input govuk-input--width-2" id="regulation-18-date-1-month" name="regulation-18-date-1-month" type="number" pattern="[0-9]*">
+                        </div>
+                      </div>
+                      <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                          <label class="govuk-label govuk-date-input__label" for="regulation-18-date-1-year">
+                            Year
+                          </label>
+                          <input class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4" id="regulation-18-date-1-year" name="regulation-18-date-1-year" type="number" pattern="[0-9]*">
+                        </div>
+                      </div>
                     </div>
-                    <div class="govuk-form-group">
-                      <button class="govuk-button fact-save-btn">Save</button>
-                      <button class="cancel-btn">Cancel</button>
+                  </fieldset>
+                </div>
+
+
+                <!-- for Proposed publication date -->     
+                <div class="govuk-form-group proposed-publication-date-input">
+                  <fieldset class="govuk-fieldset" aria-describedby="proposed-publication-date-1-hint" role="group">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                      <h1 class="govuk-fieldset__heading">
+                        Proposed publication date
+                      </h1>
+                    </legend>
+                    <span id="proposed-publication-date-1-hint" class="govuk-hint">
+                      For example, 12 2007
+                    </span>
+                    <div class="govuk-date-input" id="proposed-publication-date-1">
+                      <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                          <label class="govuk-label govuk-date-input__label" for="proposed-publication-date-1-month">
+                            Month
+                          </label>
+                          <input class="govuk-input govuk-date-input__month govuk-date-input__input govuk-input--width-2" id="proposed-publication-date-1-month" name="proposed-publication-date-1-month" type="number" pattern="[0-9]*">
+                        </div>
+                      </div>
+                      <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                          <label class="govuk-label govuk-date-input__label" for="proposed-publication-date-1-year">
+                            Year
+                          </label>
+                          <input class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4" id="proposed-publication-date-1-year" name="proposed-publication-date-1-year" type="number" pattern="[0-9]*">
+                        </div>
+                      </div>
                     </div>
-                </form>
-            </details>
+                  </fieldset>
+                </div>
+
+
+                <!-- for Proposed submission date -->       
+                <div class="govuk-form-group proposed-submission-date-input">
+                  <fieldset class="govuk-fieldset" aria-describedby="proposed-submission-date-1-hint" role="group">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                      <h1 class="govuk-fieldset__heading">
+                        Proposed submission date
+                      </h1>
+                    </legend>
+                    <span id="proposed-submission-date-1-hint" class="govuk-hint">
+                      For example, 12 2007
+                    </span>
+                    <div class="govuk-date-input" id="proposed-submission-date-1">
+                      <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                          <label class="govuk-label govuk-date-input__label" for="proposed-submission-date-1-month">
+                            Month
+                          </label>
+                          <input class="govuk-input govuk-date-input__month govuk-date-input__input govuk-input--width-2" id="proposed-submission-date-1-month" name="proposed-submission-date-1-month" type="number" pattern="[0-9]*">
+                        </div>
+                      </div>
+                      <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                          <label class="govuk-label govuk-date-input__label" for="proposed-submission-date-1-year">
+                            Year
+                          </label>
+                          <input class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4" id="proposed-submission-date-1-year" name="proposed-submission-date-1-year" type="number" pattern="[0-9]*">
+                        </div>
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
+
+
+                <!-- for Main modifications date --> 
+                <div class="govuk-form-group proposed-main-modifications-date-input">
+                  <fieldset class="govuk-fieldset" aria-describedby="proposed-main-modifications-date-1-hint" role="group">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                      <h1 class="govuk-fieldset__heading">
+                        Proposed main modifications date
+                      </h1>
+                    </legend>
+                    <span id="proposed-main-modifications-date-1-hint" class="govuk-hint">
+                      For example, 12 2007
+                    </span>
+                    <div class="govuk-date-input" id="proposed-main-modifications-date-1">
+                      <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                          <label class="govuk-label govuk-date-input__label" for="proposed-main-modifications-date-1-month">
+                            Month
+                          </label>
+                          <input class="govuk-input govuk-date-input__month govuk-date-input__input govuk-input--width-2" id="proposed-main-modifications-date-1-month" name="proposed-main-modifications-date-1-month" type="number" pattern="[0-9]*">
+                        </div>
+                      </div>
+                      <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                          <label class="govuk-label govuk-date-input__label" for="proposed-main-modifications-date-1-year">
+                            Year
+                          </label>
+                          <input class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4" id="proposed-main-modifications-date-1-year" name="proposed-main-modifications-date-1-year" type="number" pattern="[0-9]*">
+                        </div>
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
+
+
+                <!-- for Proposed adoption date -->
+                <div class="govuk-form-group proposed-adoption-date-input">
+                  <fieldset class="govuk-fieldset" aria-describedby="proposed-adoption-date-1-hint" role="group">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                      <h1 class="govuk-fieldset__heading">
+                        Proposed adoption date
+                      </h1>
+                    </legend>
+                    <span id="proposed-adoption-date-1-hint" class="govuk-hint">
+                      For example, 12 2007
+                    </span>
+                    <div class="govuk-date-input" id="proposed-adoption-date-1">
+                      <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                          <label class="govuk-label govuk-date-input__label" for="proposed-adoption-date-1-month">
+                            Month
+                          </label>
+                          <input class="govuk-input govuk-date-input__month govuk-date-input__input govuk-input--width-2" id="proposed-adoption-date-1-month" name="proposed-adoption-date-1-month" type="number" pattern="[0-9]*">
+                        </div>
+                      </div>
+                      <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                          <label class="govuk-label govuk-date-input__label" for="proposed-adoption-date-1-year">
+                            Year
+                          </label>
+                          <input class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4" id="proposed-adoption-date-1-year" name="proposed-adoption-date-1-year" type="number" pattern="[0-9]*">
+                        </div>
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
+
+
+                <!-- for Housing requirement total -->
+                <div class="govuk-form-group plan-housing-req-total">
+                  <label class="govuk-label" for="housing-req-total-1">
+                    Housing requirement total
+                  </label>
+                  <input class="govuk-input govuk-input--width-10" id="housing-req-total-1" name="housing-req-total-1" type="text">
+                </div>
+
+                <!-- for Housing requirement range -->
+                <fieldset class="govuk-fieldset housing-req-range-fieldset">
+                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    <h1 class="govuk-fieldset__heading">
+                      Housing requirement range
+                    </h1>
+                  </legend>
+
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="housing-req-range-min-1">
+                      Min
+                    </label>
+                    <input class="govuk-input govuk-input--width-10 housing-req-range-min" id="housing-req-range-min-1" name="housing-req-range-min-1" type="text">
+                  </div>
+
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="housing-req-range-max-1">
+                      Max
+                    </label>
+                    <input class="govuk-input govuk-input--width-10 housing-req-range-max" id="housing-req-range-max-1" name="housing-req-range-max-1" type="text">
+                  </div>
+                </fieldset>
+
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="document-note-1">
+                    Provide some information about the number
+                  </label>
+                  <textarea class="govuk-textarea" id="document-note-1" name="document-note-1" rows="5"></textarea>
+                </div>
+                <div class="govuk-form-group">
+                  <button class="govuk-button fact-save-btn">Save</button>
+                  <button class="cancel-btn">Cancel</button>
+                </div>
+            </form>
+            </section>
         </section>
 
         <div class="ext-message">

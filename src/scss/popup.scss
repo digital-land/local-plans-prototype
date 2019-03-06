@@ -6,6 +6,11 @@ body {
   margin: 15px 0 0;
   padding: 30px 15px;
   border-top: 5px solid govuk-colour("blue");
+
+  &.local-plan-view,
+  &.emerging-plan-view {
+    min-width: 600px;
+  }
 }
 
 body::before {
@@ -91,6 +96,12 @@ header p:first-child {
   &.success {
     opacity: 1;
   }
+}
+
+.add-fact-form {
+  padding: $govuk-gutter-half;
+  border: 1px solid govuk-colour("grey-2");
+  background: govuk-colour("grey-4");
 }
 
 .page-not-recognised-section,

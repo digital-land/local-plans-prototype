@@ -6710,6 +6710,10 @@
   background: #b10e1e;
 }
 
+.document-facts__table th {
+  white-space: nowrap;
+}
+
 .govuk-details--facts {
   margin-top: 5px;
 }

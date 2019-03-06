@@ -5331,6 +5331,10 @@ body {
   border-top: 5px solid #005ea5;
 }
 
+body.local-plan-view, body.emerging-plan-view {
+  min-width: 600px;
+}
+
 body::before {
   content: "";
   position: absolute;
@@ -5443,6 +5447,12 @@ header p:first-child {
 
 .ext-message.success {
   opacity: 1;
+}
+
+.add-fact-form {
+  padding: 15px;
+  border: 1px solid #bfc1c3;
+  background: #f8f8f8;
 }
 
 .page-not-recognised-section,
