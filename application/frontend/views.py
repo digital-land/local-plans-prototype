@@ -1,4 +1,9 @@
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify
+import time
+import zipfile
+from io import BytesIO
+from pathlib import Path
+
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify, send_file
 
 from application.extensions import db
 from application.models import PlanningAuthority, LocalPlan, PlanDocument, EmergingPlanDocument, Fact, FactType, \
@@ -284,3 +289,15 @@ def lucky_dip():
 def check_documents(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
     return render_template('check-plan-documents.html', planning_authority=pla)
+
+
+@frontend.route('/local-plans/chrome-extension')
+def get_extension():
+    import os
+    import shutil
+    path = Path(os.path.dirname(os.path.realpath(__file__)))
+    base_path = path.parent.parent
+    extension_dir = os.path.join(base_path, 'extensions', 'chrome')
+    zip_path = shutil.make_archive('local-plan-extension', 'zip', extension_dir)
+    return send_file(zip_path, attachment_filename='local-plan-extension.zip', as_attachment=True)
+
