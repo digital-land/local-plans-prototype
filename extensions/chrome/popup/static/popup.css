@@ -5445,12 +5445,22 @@ header p:first-child {
   opacity: 1;
 }
 
-.add-facts-section,
+.page-not-recognised-section,
+.local-plan-facts-section,
+.emerging-plan-facts-section,
 .save-urls-section {
   display: none;
 }
 
-.facts-view .add-facts-section {
+.not-recognised-view .page-not-recognised-section {
+  display: block;
+}
+
+.local-plan-view .local-plan-facts-section {
+  display: block;
+}
+
+.emerging-plan-view .emerging-plan-facts-section {
   display: block;
 }
 

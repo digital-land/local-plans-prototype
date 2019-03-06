@@ -234,15 +234,21 @@ def check_url():
 
     # handle documents differently
     if website_location.endswith(('.pdf')):
-        document = PlanDocument.query.filter_by(url=website_location).first()
+        # first check for Emerging Plan document
+        if EmergingPlanDocument.query.filter_by(url=website_location).first():
+            document = EmergingPlanDocument.query.filter_by(url=website_location).one()
+            resp = {'OK': 200, 'view-type': 'emerging-plan-document', 'document': document.to_dict()}
+        else:
+            document = PlanDocument.query.filter_by(url=website_location).first()
+            resp = {'OK': 200, 'view-type': 'plan-document', 'document': document.to_dict(), 'local_plan': document.local_plan.to_dict()}
+        
         print(document)
-        resp = {'OK': 200, 'type': 'document', 'document': document.to_dict(), 'local_plan': document.local_plan.to_dict()}
 
     elif website_origin is not None:
 
         try:
             pla = PlanningAuthority.query.filter_by(website=website_origin).one()
-            resp = {'OK': 200, 'planning_authority': pla.to_dict()}
+            resp = {'OK': 200, 'view-type': 'urls', 'planning_authority': pla.to_dict()}
         except Exception as e:
             print(e)
             resp = {'OK': 404}
@@ -251,7 +257,7 @@ def check_url():
         try:
             pla = PlanningAuthority.query.filter_by(plan_policy_url=website_location).one()
             print("FOUND BASED ON PLANNING POLICY DOC")
-            resp = {'OK': 200, 'planning_authority': pla.to_dict() }
+            resp = {'OK': 200, 'view-type': 'urls', 'planning_authority': pla.to_dict() }
         except Exception as e:
             print(e)
             resp = {'OK': 404}

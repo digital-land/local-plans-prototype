@@ -6,6 +6,9 @@
         <script src='popup.js'></script>
     </head>
     <body>
+        <section class="page-not-recognised-section">
+            <p class="govuk-body">The page you are on does not look like a page or document belonging to a Planning authority.</p>
+        </section>
 
         <section class="save-urls-section">
             <header class="page-details">
@@ -39,11 +42,42 @@
             <button class="govuk-button" id="save">Save selected</button>
         </section>
 
-        <section class="add-facts-section">
+        <section class="local-plan-facts-section">
             <header class="document-details">
                 <p class="govuk-body">You are looking at</p>
                 <h2 class="govuk-heading-l facts__doc-url">No document url</h2>
                 <p class="govuk-body">which is a document associated with plan <span class="facts__local-plan"></span></p>
+            </header>
+
+            <table class="govuk-table document-facts__table">
+                <caption class="govuk-table__caption">Facts from document</caption>
+                <tbody class="govuk-table__body"></tbody>
+            </table>
+
+            <form action="" class="govuk-form add-fact-form govuk-details__text">
+                <h4 class="govuk-heading-s">Add fact from document</h4>
+                <div class="govuk-form-group">
+                  <label for="document-number" class="govuk-label">Number</label>
+                  <input type="text" class="govuk-input govuk-input--width-10" name="document-number" id="document-number">
+                </div>
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="document-note">
+                    Provide some information about the number
+                  </label>
+                  <textarea class="govuk-textarea" id="document-note" name="document-note" rows="5"></textarea>
+                </div>
+                <div class="govuk-form-group">
+                  <button class="govuk-button fact-save-btn">Save</button>
+                  <button class="cancel-btn">Cancel</button>
+                </div>
+              </form>
+        </section>
+
+        <section class="emerging-plan-facts-section">
+            <header class="document-details">
+                <p class="govuk-body">You are looking at</p>
+                <h2 class="govuk-heading-l facts__doc-url">No document url</h2>
+                <p class="govuk-body">which is a document associated with the <span class="stage-tag stage-tag--lds selected">Local development scheme</span></p>
             </header>
 
             <table class="govuk-table document-facts__table">

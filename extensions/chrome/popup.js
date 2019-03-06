@@ -141,23 +141,33 @@ function displayPageDetails(pla_obj) {
   activePlan = pla_obj['plans'][0]['id'];
 }
 
-function populateFactsView(data) {
+function populatePlanView(data) {
+  const section = document.querySelector('.local-plan-facts-section');
   pla = data.local_plan.planning_authorities[0];
 
-  const urlEl = document.querySelector('.facts__doc-url');
-  urlEl.textContent = data.document.url;
-  urlEl.dataset.documentId = data.document['id'];
+  displayURLAsHeading(data.document.url, section, data.document['id']);
 
-  const planEl = document.querySelector('.facts__local-plan');
+  const planEl = section.querySelector('.facts__local-plan');
   planEl.appendChild( createStageTag(data.local_plan, "selected") );
   activePlan = data.local_plan['id'];
 
-  const table = document.querySelector('.document-facts__table');
+  const table = section.querySelector('.document-facts__table');
   if(data.document.facts.length > 0) {
     data.document.facts.forEach((fact) => table.appendChild( createFactRow(fact) ));
   } else {
     table.classList.add('govuk-visually-hidden');
   }
+}
+
+function displayURLAsHeading(url, section, docId) {
+  const urlEl = section.querySelector('.facts__doc-url');
+  urlEl.textContent = url;
+  urlEl.dataset.documentId = docId;
+}
+
+function populateEmergingPlanView(data) {
+  const section = document.querySelector('.emerging-plan-facts-section');
+  displayURLAsHeading(data.document.url, section, data.document['id']);
 }
 
 function checkPageBelongsToAuthority(pageDetails) {
@@ -173,14 +183,21 @@ function checkPageBelongsToAuthority(pageDetails) {
     })
     .then(response => response.json())
     .then( (resp_data) => {
+      document.body.classList.remove("not-recognised-view");
       //console.log(resp_data);
-      if(resp_data['type'] === 'document') {
+      if(resp_data['view-type'] === 'plan-document') {
         console.log(resp_data);
-        populateFactsView(resp_data)
-        document.body.classList.add("facts-view");
-      } else {
+        populatePlanView(resp_data);
+        document.body.classList.add("local-plan-view");
+      } else if (resp_data['view-type'] === 'emerging-plan-document') {
+        console.log(resp_data);
+        populateEmergingPlanView(resp_data);
+        document.body.classList.add("emerging-plan-view");
+      } else if (resp_data['view-type'] === 'urls') {
         displayPageDetails(resp_data.planning_authority);
         document.body.classList.add("url-view");
+      } else {
+        document.body.classList.add("not-recognised-view");
       }
     });
 
