@@ -516,7 +516,6 @@
 
   const factSaveBtns = document.querySelectorAll(".fact-save-btn");
   const factCancelBtns = document.querySelectorAll(".add-fact-form .cancel-btn");
-  const factRemoveBtns = document.querySelectorAll(".remove-fact");
   const factTables = document.querySelectorAll(".document-facts__table");
 
   var source   = document.getElementById("url-item-template").innerHTML;
@@ -533,12 +532,14 @@
       const form = e.target.closest('form');
       const option = e.target.querySelector('option:checked');
       // remove all these classes before adding selected class
-      form.classList.remove("plan-name", "plan-start-year", "plan-end-year", "housing-requirement-total", "housing-requirement-range", "publication-date", "proposed-reg-18-date", "proposed-publication-date", "proposed-submission-date", "proposed-main-modifications-date", "proposed-adoption-date");
+      removeAllClassesFromFactForm(form);
       form.classList.add(option.dataset.typeClass);
     });
   });
 
-  
+  function removeAllClassesFromFactForm(form) {
+    form.classList.remove("plan-name", "plan-start-year", "plan-end-year", "housing-requirement-total", "housing-requirement-range", "publication-date", "proposed-reg-18-date", "proposed-publication-date", "proposed-submission-date", "proposed-main-modifications-date", "proposed-adoption-date");
+  }
   
   const htmlStringToElement = (function () {
     const parser = new DOMParser();
@@ -694,7 +695,24 @@
       row.innerHTML = factTemplate(resp_data);
       table.appendChild( row );
 
-      form.reset();
+      resetFactForm(form);
+    }
+  }
+
+  // resets the form
+  // - deletes any added content
+  // - sets form to initial display config
+  function resetFactForm(form) {
+    form.reset();
+    const formType = form.querySelector("input[type='hidden']").value;
+
+    // remove all classes
+    removeAllClassesFromFactForm(form);
+    // add initial class relevant to type of fact
+    if(formType === "plan_document") {
+      form.classList.add('plan-name');
+    } else {
+      form.classList.add('publication-date');
     }
   }
 
@@ -703,6 +721,8 @@
   factCancelBtns.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
+      const form = btn.closest('.govuk-form');
+      resetFactForm(form);
       const details = btn.closest('.govuk-details');
       //console.log(details);
       details.open = false;
