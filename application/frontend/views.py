@@ -15,7 +15,7 @@ def index():
 
 @frontend.route('/local-plans', methods=['GET', 'POST'])
 def list_all():
-    planning_authorities = PlanningAuthority.query.all()
+    planning_authorities = PlanningAuthority.query.order_by(PlanningAuthority.name).all()
     if request.method == 'POST':
         return redirect(url_for('frontend.local_plan', planning_authority=request.form['local-authority-select']))
     return render_template('list.html', planning_authorities=planning_authorities)
