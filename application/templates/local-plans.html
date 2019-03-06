@@ -62,24 +62,26 @@
                 </div>
               </section>
 
-              <section class="document-facts govuk-grid-column-two-thirds">
+              <section class="document-facts govuk-clearfix">
 
+                <div class="govuk-grid-column-full">
                 <!-- TODO need some facts for emerging plan docs -->
-                <table class="govuk-table document-facts__table">
-                  {% if doc.facts|length > 0 %}<caption class="govuk-table__caption">Facts from document</caption>{% endif %}
-                  <tbody class="govuk-table__body">
-                  {% for fact in doc.facts %}
-                    <tr class="govuk-table__row">
-                      <th class="govuk-table__header" scope="row">{{ fact.fact }}</th>
-                      <td class="govuk-table__cell">{{ fact.fact_type | format_fact }}</td>
-                      <td class="govuk-table__cell">{% if fact.notes == "" %}-{% else %}{{ fact.notes }}{% endif %}</td>
-                      <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact" href="{{ url_for('frontend.remove_fact_from_document', document=doc.id, fact=fact.id) }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
-                    </tr>
-                  {% endfor %}
-                  </tbody>
-                </table>
+                  <table class="govuk-table document-facts__table">
+                    {% if doc.facts|length > 0 %}<caption class="govuk-table__caption">Facts from document</caption>{% endif %}
+                    <tbody class="govuk-table__body">
+                    {% for fact in doc.facts %}
+                      <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">{{ fact.fact }}</th>
+                        <td class="govuk-table__cell">{{ fact.fact_type | format_fact }}</td>
+                        <td class="govuk-table__cell">{% if fact.notes == "" %}-{% else %}{{ fact.notes }}{% endif %}</td>
+                        <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact" href="{{ url_for('frontend.remove_fact_from_document', document=doc.id, fact=fact.id) }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
 
-                <details class="govuk-details govuk-details--facts govuk-details--facts-emerging-plan-doc">
+                <details class="govuk-details govuk-details--facts govuk-details--facts-emerging-plan-doc govuk-grid-column-two-thirds">
                   <summary class="govuk-details__summary">
                     <span class="govuk-details__summary-text document-facts__add">
                       Add fact from document
@@ -214,7 +216,7 @@
       </a>
   {% endif %}
 
-  <h2 class="govuk-heading-l">Local plans</h2>
+  <h2 class="govuk-heading-l govuk-!-margin-top-9">Local plans</h2>
 
   <div class="govuk-tabs" data-module="tabs">
     <h2 class="govuk-tabs__title">
@@ -292,23 +294,25 @@
                 </div>
               </section>
 
-              <section class="document-facts govuk-grid-column-two-thirds">
+              <section class="document-facts govuk-clearfix">
 
-                <table class="govuk-table document-facts__table">
-                  {% if doc.facts|length > 0 %}<caption class="govuk-table__caption">Facts from document</caption>{% endif %}
-                  <tbody class="govuk-table__body">
-                      {% for fact in doc.facts %}
-                          <tr class="govuk-table__row">
-                            <th class="govuk-table__header" scope="row">{{ fact.fact }}</th>
-                            <td class="govuk-table__cell">{{ fact.fact_type | format_fact }}</td>
-                            <td class="govuk-table__cell">{% if fact.notes == "" %}-{% else %}{{ fact.notes }}{% endif %}</td>
-                            <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact" href="{{ url_for('frontend.remove_fact_from_document', document=doc.id, fact=fact.id) }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
-                          </tr>
-                      {% endfor %}
-                  </tbody>
-                </table>
+                <div class="govuk-grid-column-full">
+                  <table class="govuk-table document-facts__table">
+                    {% if doc.facts|length > 0 %}<caption class="govuk-table__caption">Facts from document</caption>{% endif %}
+                    <tbody class="govuk-table__body">
+                        {% for fact in doc.facts %}
+                            <tr class="govuk-table__row">
+                              <th class="govuk-table__header" scope="row">{{ fact.fact }}</th>
+                              <td class="govuk-table__cell">{{ fact.fact_type | format_fact }}</td>
+                              <td class="govuk-table__cell">{% if fact.notes == "" %}-{% else %}{{ fact.notes }}{% endif %}</td>
+                              <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact" href="{{ url_for('frontend.remove_fact_from_document', document=doc.id, fact=fact.id) }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
 
-                <details class="govuk-details govuk-details--facts govuk-details--facts-plan-doc">
+                <details class="govuk-details govuk-details--facts govuk-details--facts-plan-doc govuk-grid-column-two-thirds">
                   <summary class="govuk-details__summary">
                     <span class="govuk-details__summary-text document-facts__add">
                       Add fact from document
@@ -496,10 +500,12 @@
       <a href="{{ remove_url }}" class="url-item__btn url-remove-btn">Remove</a>
     </div>
   </section>
-  <section class="document-facts govuk-grid-column-two-thirds">
-    <table class="govuk-table document-facts__table">
-      <tbody class="govuk-table__body"></tbody>
-    </table>
+  <section class="document-facts govuk-clearfix">
+    <div class="govuk-grid-column-full">
+      <table class="govuk-table document-facts__table">
+        <tbody class="govuk-table__body"></tbody>
+      </table>
+    </div>
   </section>
 </script>
 <script id="fact-row-template" type="text/x-handlebars-template">

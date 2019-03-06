@@ -6646,11 +6646,39 @@
 }
 
 .url-item {
+  font-family: "nta", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 1.25;
   position: relative;
   margin-bottom: 10px;
   transition: opacity .25s ease-out;
   opacity: 1;
   line-height: 27px;
+}
+
+@media print {
+  .url-item {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .url-item {
+    font-size: 19px;
+    font-size: 1.1875rem;
+    line-height: 1.31579;
+  }
+}
+
+@media print {
+  .url-item {
+    font-size: 14pt;
+    line-height: 1.15;
+  }
 }
 
 .url-item.being-deleted {
@@ -6685,6 +6713,10 @@
   line-height: 27px;
   text-align: center;
   text-decoration: none;
+}
+
+.document-facts {
+  padding: 0 15px;
 }
 
 .document-facts__table {

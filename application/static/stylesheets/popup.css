@@ -5449,6 +5449,10 @@ header p:first-child {
   opacity: 1;
 }
 
+.document-facts {
+  padding: 0;
+}
+
 .add-fact-form {
   padding: 15px;
   border: 1px solid #bfc1c3;

@@ -6,6 +6,7 @@ $url-btn-width: 100px;
 }
 
 .url-item {
+  @include govuk-font($size: 19);
   position: relative;
   margin-bottom: 10px;
   transition: opacity .25s ease-out;
@@ -45,6 +46,10 @@ $url-btn-width: 100px;
     text-align: center;
     text-decoration: none;
   }
+}
+
+.document-facts {
+  padding: 0 $govuk-gutter-half;
 }
 
 .document-facts__table {
