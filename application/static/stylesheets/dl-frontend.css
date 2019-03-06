@@ -6700,7 +6700,7 @@
 .url-item__controls {
   position: absolute;
   top: 0;
-  right: 0;
+  right: 15px;
   background: #f8f8f8;
 }
 

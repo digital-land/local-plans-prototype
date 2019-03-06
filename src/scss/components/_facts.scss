@@ -32,7 +32,7 @@ $url-btn-width: 100px;
   &__controls {
     position: absolute;
     top: 0;
-    right: 0;
+    right: $govuk-gutter-half;
     background: govuk-colour("grey-4");
   }
 
@@ -80,7 +80,6 @@ $url-btn-width: 100px;
     white-space: nowrap;
   }
 }
-
 
 .govuk-details--facts {
   margin-top: 5px;
