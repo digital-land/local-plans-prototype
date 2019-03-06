@@ -478,6 +478,14 @@
 {% endblock %}
 
 {% block bodyEnd %}
+<div class="govuk-visually-hidden emerging-plan-details-template">
+  {% include "partials/emerging-plan-details.html" ignore missing %}
+</div>
+
+<div class="govuk-visually-hidden local-plan-details-template">
+  {% include "partials/local-plan-details.html" ignore missing %}
+</div>
+
 <script src="/static/javascripts/vendor/handlebars-v4.1.0.js"></script>
 {% raw %}
 <script id="url-item-template" type="text/x-handlebars-template">
@@ -820,13 +828,14 @@
   }
 
   function cloneAddFactForm(docType, add_fact_url) {
-    let formContainer;
+    let template;
     if(docType === "plan_document") {
-      formContainer = document.querySelector(".govuk-details--facts-plan-doc");
+      template = document.querySelector(".local-plan-details-template");
     } else {
-      formContainer = document.querySelector(".govuk-details--facts-emerging-plan-doc");
+      template = document.querySelector(".emerging-plan-details-template");
     }
-    const clonedFormContainer = formContainer.cloneNode(true);
+    const detailsElement = template.querySelector('details');
+    const clonedFormContainer = detailsElement.cloneNode(true);
     // update the action attribute
     const form = clonedFormContainer.querySelector('form');
     form.action = add_fact_url;

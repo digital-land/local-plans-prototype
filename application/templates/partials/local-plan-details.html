@@ -1,0 +1,141 @@
+<details class="govuk-details govuk-details--facts govuk-details--facts-plan-doc">
+
+	<summary class="govuk-details__summary">
+		<span class="govuk-details__summary-text document-facts__add">
+		Add fact from document
+		</span>
+	</summary>
+
+	<form action="" class="govuk-form govuk-details__text add-fact-form plan-name">
+	    <input type="hidden" value="plan_document">
+	    <h4 class="govuk-heading-m">Add fact from document</h4>
+
+	    <div class="govuk-form-group" id="details-content-cd928191-90c1-4536-a5f7-dde1e4947b55" aria-hidden="false">
+	        <label class="govuk-label" for="document-note-3">Specify the type of fact</label>
+	        <select class="govuk-select fact-select-types" id="fact-type-3" name="fact-type-3">
+	            <option value="PLAN_NAME" data-type-class="plan-name">Plan name</option>
+	            <option value="PLAN_START_YEAR" data-type-class="plan-start-year">Plan period start year</option>
+	            <option value="PLAN_END_YEAR" data-type-class="plan-end-year">Plan period end year</option>
+	            <option value="HOUSING_REQUIREMENT_TOTAL" data-type-class="housing-requirement-total">Housing requirement total</option>
+	            <option value="HOUSING_REQUIREMENT_RANGE" data-type-class="housing-requirement-range">Housing requirement range</option>
+	            <option value="OTHER" data-type-class="other">Other</option>
+	        </select>
+	    </div>
+
+	    <!-- for Plan Name -->
+	    <div class="govuk-form-group plan-name-input">
+	      <label class="govuk-label" for="plan-name-3">
+	        Plan name
+	      </label>
+	      <input class="govuk-input govuk-input--width-20" id="plan-name-3" name="plan-name-3" type="text">
+	    </div>
+
+	    <!-- for Plan start date -->               
+	    <div class="govuk-form-group plan-start-date-input">
+	      <fieldset class="govuk-fieldset" aria-describedby="plan-start-date-3-hint" role="group">
+	        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+	          <h1 class="govuk-fieldset__heading">
+	            Plan period start date
+	          </h1>
+	        </legend>
+	        <span id="plan-start-date-3-hint" class="govuk-hint">
+	          For example, 12 2007
+	        </span>
+	        <div class="govuk-date-input" id="plan-start-date-3">
+	          <div class="govuk-date-input__item">
+	            <div class="govuk-form-group">
+	              <label class="govuk-label govuk-date-input__label" for="plan-start-date-3-month">
+	                Month
+	              </label>
+	              <input class="govuk-input govuk-date-input__month govuk-date-input__input govuk-input--width-2" id="plan-start-date-3-month" name="plan-start-date-3-month" type="number" pattern="[0-9]*">
+	            </div>
+	          </div>
+	          <div class="govuk-date-input__item">
+	            <div class="govuk-form-group">
+	              <label class="govuk-label govuk-date-input__label" for="plan-start-date-3-year">
+	                Year
+	              </label>
+	              <input class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4" id="plan-start-date-3-year" name="plan-start-date-3-year" type="number" pattern="[0-9]*">
+	            </div>
+	          </div>
+	        </div>
+	      </fieldset>
+	    </div>
+
+
+	    <!-- for Plan end date -->            
+	    <div class="govuk-form-group plan-end-date-input">
+	      <fieldset class="govuk-fieldset" aria-describedby="plan-end-date-3-hint" role="group">
+	        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+	          <h1 class="govuk-fieldset__heading">
+	            Plan period end date
+	          </h1>
+	        </legend>
+	        <span id="plan-end-date-3-hint" class="govuk-hint">
+	          For example, 12 2007
+	        </span>
+	        <div class="govuk-date-input" id="plan-end-date-3">
+	          <div class="govuk-date-input__item">
+	            <div class="govuk-form-group">
+	              <label class="govuk-label govuk-date-input__label" for="plan-end-date-3-month">
+	                Month
+	              </label>
+	              <input class="govuk-input govuk-date-input__month govuk-date-input__input govuk-input--width-2" id="plan-end-date-3-month" name="plan-end-date-3-month" type="number" pattern="[0-9]*">
+	            </div>
+	          </div>
+	          <div class="govuk-date-input__item">
+	            <div class="govuk-form-group">
+	              <label class="govuk-label govuk-date-input__label" for="plan-end-date-3-year">
+	                Year
+	              </label>
+	              <input class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4" id="plan-end-date-3-year" name="plan-end-date-3-year" type="number" pattern="[0-9]*">
+	            </div>
+	          </div>
+	        </div>
+	      </fieldset>
+	    </div>
+
+
+	    <!-- for Housing requirement total -->
+	    <div class="govuk-form-group plan-housing-req-total">
+	      <label class="govuk-label" for="housing-req-total-3">
+	        Housing requirement total
+	      </label>
+	      <input class="govuk-input govuk-input--width-10" id="housing-req-total-3" name="housing-req-total-3" type="text">
+	    </div>
+
+	    <!-- for Housing requirement range -->
+	    <fieldset class="govuk-fieldset housing-req-range-fieldset">
+	      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+	        <h1 class="govuk-fieldset__heading">
+	          Housing requirement range
+	        </h1>
+	      </legend>
+
+	      <div class="govuk-form-group">
+	        <label class="govuk-label" for="housing-req-range-min-3">
+	          Min
+	        </label>
+	        <input class="govuk-input govuk-input--width-10 housing-req-range-min" id="housing-req-range-min-3" name="housing-req-range-min-3" type="text">
+	      </div>
+
+	      <div class="govuk-form-group">
+	        <label class="govuk-label" for="housing-req-range-max-3">
+	          Max
+	        </label>
+	        <input class="govuk-input govuk-input--width-10 housing-req-range-max" id="housing-req-range-max-3" name="housing-req-range-max-3" type="text">
+	      </div>
+	    </fieldset>
+
+	    <div class="govuk-form-group">
+	      <label class="govuk-label" for="document-note-3">
+	        Provide any additional information about the fact
+	      </label>
+	      <textarea class="govuk-textarea" id="document-note-3" name="document-note-3" rows="5"></textarea>
+	    </div>
+	    <div class="govuk-form-group">
+	      <button class="govuk-button fact-save-btn">Save</button>
+	      <button class="cancel-btn">Cancel</button>
+	    </div>
+	</form>
+</details>
