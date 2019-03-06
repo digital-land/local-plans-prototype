@@ -89,22 +89,95 @@
                     </span>
                   </summary>
 
-                  <form action="{{ url_for('frontend.add_fact_to_document', planning_authority=planning_authority.id, document=doc.id) }}" class="govuk-form add-fact-form govuk-details__text">
+                  <form action="{{ url_for('frontend.add_fact_to_document', planning_authority=planning_authority.id, document=doc.id) }}" class="govuk-form add-fact-form govuk-details__text publication-date">
 
-                      <input type="hidden" id="document-type" value="emerging_plan_document">
+                    <input type="hidden" id="document-type" value="emerging_plan_document">
 
-                      <h4 class="govuk-heading-s govuk-visually-hidden">Add fact from document</h4>
+                    <h4 class="govuk-heading-s govuk-visually-hidden">Add fact from document</h4>
 
-                      <div class="govuk-form-group">
-                       <label class="govuk-label" for="document-note-{{loop.index}}">
-                           Specify the type of fact
-                       </label>
-                        <select class="govuk-select fact-select-types" id="fact-type-{{loop.index}}" name="fact-type-{{loop.index}}">
-                          {% for fact_type in emerging_fact_types %}
-                             <option value="{{ fact_type.name }}">{{ fact_type.value }}</option>
-                          {% endfor %}
+                    <div class="govuk-form-group">
+                      <label class="govuk-label" for="document-note-{{loop.index}}">
+                        Specify the type of fact
+                      </label>
+                      <select class="govuk-select fact-select-types" id="fact-type-{{loop.index}}" name="fact-type-{{loop.index}}">
+                      {% for fact_type in emerging_fact_types %}
+                         <option value="{{ fact_type.name }}" data-type-class="{{ fact_type.name|lower|replace('_', '-') }}">{{ fact_type.value }}</option>
+                      {% endfor %}
                       </select>
                     </div>
+
+                    <!-- for Publication date -->
+                    {{ renderDateInput({
+                      "text":"Publication date",
+                      "classes":"publication-date-input",
+                      "prefix":"publication-date-" + loop.index|string
+                    }) }}
+
+                    <!-- for Regulation 18 date -->
+                    {{ renderDateInput({
+                      "text":"Proposed regulation 18 date",
+                      "classes":"regulation-18-date-input",
+                      "prefix":"regulation-18-date-" + loop.index|string
+                    }) }}
+
+                    <!-- for Proposed publication date -->
+                    {{ renderDateInput({
+                      "text":"Proposed publication date",
+                      "classes":"proposed-publication-date-input",
+                      "prefix":"proposed-publication-date-" + loop.index|string
+                    }) }}
+
+                    <!-- for Proposed submission date -->
+                    {{ renderDateInput({
+                      "text":"Proposed submission date",
+                      "classes":"proposed-submission-date-input",
+                      "prefix":"proposed-submission-date-" + loop.index|string
+                    }) }}
+
+                    <!-- for Main modifications date -->
+                    {{ renderDateInput({
+                      "text":"Proposed main modifications date",
+                      "classes":"proposed-main-modifications-date-input",
+                      "prefix":"proposed-main-modifications-date-" + loop.index|string
+                    }) }}
+
+                    <!-- for Proposed adoption date -->
+                    {{ renderDateInput({
+                      "text":"Proposed adoption date",
+                      "classes":"proposed-adoption-date-input",
+                      "prefix":"proposed-adoption-date-" + loop.index|string
+                    }) }}
+
+                    <!-- for Housing requirement total -->
+                    <div class="govuk-form-group plan-housing-req-total">
+                      <label class="govuk-label" for="housing-req-total-{{ loop.index }}">
+                        Housing requirement total
+                      </label>
+                      <input class="govuk-input govuk-input--width-10" id="housing-req-total-{{ loop.index }}" name="housing-req-total-{{ loop.index }}" type="text">
+                    </div>
+
+                    <!-- for Housing requirement range -->
+                    <fieldset class="govuk-fieldset housing-req-range-fieldset">
+                      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                        <h1 class="govuk-fieldset__heading">
+                          Housing requirement range
+                        </h1>
+                      </legend>
+
+                      <div class="govuk-form-group">
+                        <label class="govuk-label" for="housing-req-range-min-{{ loop.index }}">
+                          Min
+                        </label>
+                        <input class="govuk-input govuk-input--width-10 housing-req-range-min" id="housing-req-range-min-{{ loop.index }}" name="housing-req-range-min-{{ loop.index }}" type="text">
+                      </div>
+
+                      <div class="govuk-form-group">
+                        <label class="govuk-label" for="housing-req-range-max-{{ loop.index }}">
+                          Max
+                        </label>
+                        <input class="govuk-input govuk-input--width-10 housing-req-range-max" id="housing-req-range-max-{{ loop.index }}" name="housing-req-range-max-{{ loop.index }}" type="text">
+                      </div>
+                    </fieldset>
 
                     <div class="govuk-form-group">
                       <label class="govuk-label" for="document-note-{{loop.index}}">
@@ -458,10 +531,12 @@
       const form = e.target.closest('form');
       const option = e.target.querySelector('option:checked');
       // remove all these classes before adding selected class
-      form.classList.remove("plan-name", "plan-start-year", "plan-end-year", "housing-requirement-total", "housing-requirement-range");
+      form.classList.remove("plan-name", "plan-start-year", "plan-end-year", "housing-requirement-total", "housing-requirement-range", "publication-date", "proposed-reg-18-date", "proposed-publication-date", "proposed-submission-date", "proposed-main-modifications-date", "proposed-adoption-date");
       form.classList.add(option.dataset.typeClass);
     });
   });
+
+  
   
   const htmlStringToElement = (function () {
     const parser = new DOMParser();

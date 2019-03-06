@@ -6571,6 +6571,12 @@
   color: #6f777b;
 }
 
+.publication-date-input,
+.regulation-18-date-input,
+.proposed-publication-date-input,
+.proposed-submission-date-input,
+.proposed-main-modifications-date-input,
+.proposed-adoption-date-input,
 .plan-name-input,
 .plan-start-date-input,
 .plan-end-date-input,
@@ -6600,6 +6606,30 @@
 }
 
 .housing-requirement-range .housing-req-range-fieldset {
+  display: block;
+}
+
+.publication-date .publication-date-input {
+  display: block;
+}
+
+.proposed-reg-18-date .regulation-18-date-input {
+  display: block;
+}
+
+.proposed-publication-date .proposed-publication-date-input {
+  display: block;
+}
+
+.proposed-submission-date .proposed-submission-date-input {
+  display: block;
+}
+
+.proposed-main-modifications-date .proposed-main-modifications-date-input {
+  display: block;
+}
+
+.proposed-adoption-date .proposed-adoption-date-input {
   display: block;
 }
 
