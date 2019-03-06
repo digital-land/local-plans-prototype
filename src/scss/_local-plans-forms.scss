@@ -1,3 +1,23 @@
+// Styles for the various forms on the local plans pages
+// =====================================================
+
+.add-url-form {
+  box-sizing: border-box;
+  display: block;
+  margin-bottom: $govuk-gutter;
+  padding: 20px;
+  border: 1px solid govuk-colour("grey-2");
+  background: govuk-colour("grey-4");
+  text-decoration: none;
+
+  @include govuk-media-query($from: tablet) {
+    padding: $govuk-gutter;
+  }
+
+  & .govuk-form-group:last-child .govuk-button {
+    margin-bottom: 0;
+  }
+}
 
 .publication-date-input,
 .regulation-18-date-input,

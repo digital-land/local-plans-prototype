@@ -151,6 +151,10 @@ def add_document_to_plan(planning_authority):
             remove_url = url_for('frontend.remove_document_from_plan',
                                  document=str(document.id),
                                  local_plan=add_to.local_plan)
+            add_fact_url = url_for('frontend.add_fact_to_document',
+                                 planning_authority=planning_authority, 
+                                 local_plan=add_to.local_plan, 
+                                 document=str(document.id))
 
         elif document_type == 'emerging_plan_document':
             document = EmergingPlanDocument.query.filter_by(url=url).first()
@@ -164,8 +168,11 @@ def add_document_to_plan(planning_authority):
             remove_url = url_for('frontend.remove_emerging_document_from_planning_authority',
                                  document=str(document.id),
                                  planning_authority=add_to.id)
+            add_fact_url = url_for('frontend.add_fact_to_document',
+                                 planning_authority=planning_authority,  
+                                 document=str(document.id))
 
-        resp = {'OK': 200, 'url': url, 'document_id': str(document.id), 'remove_url': remove_url}
+        resp = {'OK': 200, 'url': url, 'document': document.to_dict(), 'remove_url': remove_url, 'add_fact_url': add_fact_url}
     else:
         resp = {'OK': 200}
 

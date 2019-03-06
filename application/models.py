@@ -127,7 +127,8 @@ class PlanDocument(db.Model):
         data = {
             'id': self.id,
             'url': self.url,
-            'facts': [fact.to_dict() for fact in self.facts]
+            'facts': [fact.to_dict() for fact in self.facts],
+            'type': "plan_document"
         }
         return data
 
@@ -212,6 +213,15 @@ class EmergingPlanDocument(db.Model):
     planning_authority = db.relationship('PlanningAuthority', back_populates='emerging_plan_documents')
 
     facts = db.relationship('EmergingFact', back_populates='emerging_plan_document', lazy=True)
+
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'url': self.url,
+            'facts': [fact.to_dict() for fact in self.facts],
+            'type': "emerging_plan_document"
+        }
+        return data
 
 
 class State:

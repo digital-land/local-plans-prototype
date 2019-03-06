@@ -42,9 +42,10 @@ $url-btn-width: 100px;
 }
 
 .document-facts__table {
-  margin: 15px 0 5px;
+  margin: 0;
 
   .govuk-table__caption {
+    margin-top: 15px;
     margin-bottom: 5px;
   }
 
@@ -67,6 +68,8 @@ $url-btn-width: 100px;
 
 
 .govuk-details--facts {
+  margin-top: 5px;
+
   .govuk-details__summary {
     box-sizing: border-box;
     margin-bottom: 0;

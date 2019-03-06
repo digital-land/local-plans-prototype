@@ -119,25 +119,6 @@
       display: block;
     }
   }
-
-  .url-edit-form {
-    .label-add,
-    .label-edit {
-      display: none;
-    }
-
-    &.editing {
-      .label-edit {
-        display: block;
-      }
-    }
-
-    &.adding {
-      .label-add {
-        display: block;
-      }
-    }
-  }
 }
 
 .secondary-text {
