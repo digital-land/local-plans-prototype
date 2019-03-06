@@ -6481,19 +6481,6 @@
   display: block;
 }
 
-.js-enabled .url-edit-form .label-add,
-.js-enabled .url-edit-form .label-edit {
-  display: none;
-}
-
-.js-enabled .url-edit-form.editing .label-edit {
-  display: block;
-}
-
-.js-enabled .url-edit-form.adding .label-add {
-  display: block;
-}
-
 .secondary-text {
   color: #bfc1c3;
 }
@@ -6571,15 +6558,131 @@
   color: #6f777b;
 }
 
+.add-url-form {
+  box-sizing: border-box;
+  display: block;
+  margin-bottom: 30px;
+  padding: 20px;
+  border: 1px solid #bfc1c3;
+  background: #f8f8f8;
+  text-decoration: none;
+}
+
+@media (min-width: 40.0625em) {
+  .add-url-form {
+    padding: 30px;
+  }
+}
+
+.add-url-form .govuk-form-group:last-child .govuk-button {
+  margin-bottom: 0;
+}
+
+.publication-date-input,
+.regulation-18-date-input,
+.proposed-publication-date-input,
+.proposed-submission-date-input,
+.proposed-main-modifications-date-input,
+.proposed-adoption-date-input,
+.plan-name-input,
+.plan-start-date-input,
+.plan-end-date-input,
+.plan-housing-req-total,
+.housing-req-range-fieldset {
+  display: none;
+}
+
+.housing-req-range-fieldset {
+  margin-bottom: 30px;
+}
+
+.plan-name .plan-name-input {
+  display: block;
+}
+
+.plan-start-year .plan-start-date-input {
+  display: block;
+}
+
+.plan-end-year .plan-end-date-input {
+  display: block;
+}
+
+.housing-requirement-total .plan-housing-req-total {
+  display: block;
+}
+
+.housing-requirement-range .housing-req-range-fieldset {
+  display: block;
+}
+
+.publication-date .publication-date-input {
+  display: block;
+}
+
+.proposed-reg-18-date .regulation-18-date-input {
+  display: block;
+}
+
+.proposed-publication-date .proposed-publication-date-input {
+  display: block;
+}
+
+.proposed-submission-date .proposed-submission-date-input {
+  display: block;
+}
+
+.proposed-main-modifications-date .proposed-main-modifications-date-input {
+  display: block;
+}
+
+.proposed-adoption-date .proposed-adoption-date-input {
+  display: block;
+}
+
 .url-list {
   padding-left: 0;
   list-style: none;
 }
 
 .url-item {
+  font-family: "nta", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 1.25;
   position: relative;
   margin-bottom: 10px;
+  transition: opacity .25s ease-out;
+  opacity: 1;
   line-height: 27px;
+}
+
+@media print {
+  .url-item {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .url-item {
+    font-size: 19px;
+    font-size: 1.1875rem;
+    line-height: 1.31579;
+  }
+}
+
+@media print {
+  .url-item {
+    font-size: 14pt;
+    line-height: 1.15;
+  }
+}
+
+.url-item.being-deleted {
+  opacity: 0;
 }
 
 .url-item .url-link {
@@ -6597,7 +6700,7 @@
 .url-item__controls {
   position: absolute;
   top: 0;
-  right: 0;
+  right: 15px;
   background: #f8f8f8;
 }
 
@@ -6612,17 +6715,39 @@
   text-decoration: none;
 }
 
+.document-facts {
+  padding: 0 15px;
+}
+
 .document-facts__table {
-  margin: 15px 0 5px;
+  margin: 0;
 }
 
 .document-facts__table .govuk-table__caption {
+  margin-top: 15px;
   margin-bottom: 5px;
 }
 
 .document-facts__table .govuk-table__row:first-of-type th,
 .document-facts__table .govuk-table__row:first-of-type td {
   border-top: 1px solid #bfc1c3;
+}
+
+.document-facts__table .govuk-table__row {
+  transition: background .2s ease-out, color .2s ease-out;
+}
+
+.document-facts__table .govuk-table__row.being-deleted {
+  color: #ffffff !important;
+  background: #b10e1e;
+}
+
+.document-facts__table th {
+  white-space: nowrap;
+}
+
+.govuk-details--facts {
+  margin-top: 5px;
 }
 
 .govuk-details--facts .govuk-details__summary {

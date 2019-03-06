@@ -5,7 +5,7 @@ import requests
 from flask.cli import with_appcontext
 from contextlib import closing
 from application.extensions import db
-from application.models import PlanningAuthority, LocalPlan, PlanDocument, EmergingPlanDocument
+from application.models import PlanningAuthority, LocalPlan, PlanDocument, EmergingPlanDocument, Fact, EmergingFact
 
 
 def create_other_data(pa, row):
@@ -76,6 +76,8 @@ def load():
 @with_appcontext
 def clear():
     db.session.execute('DELETE FROM planning_authority_plan');
+    db.session.query(Fact).delete()
+    db.session.query(EmergingFact).delete()
     db.session.query(EmergingPlanDocument).delete()
     db.session.query(PlanDocument).delete()
     db.session.query(LocalPlan).delete()

@@ -141,20 +141,45 @@ function displayPageDetails(pla_obj) {
   activePlan = pla_obj['plans'][0]['id'];
 }
 
-function populateFactsView(data) {
+function populatePlanView(data) {
+  const section = document.querySelector('.local-plan-facts-section');
   pla = data.local_plan.planning_authorities[0];
 
-  const urlEl = document.querySelector('.facts__doc-url');
-  urlEl.textContent = data.document.url;
-  urlEl.dataset.documentId = data.document['id'];
+  displayURLAsHeading(data.document.url, section, data.document['id']);
 
-  const planEl = document.querySelector('.facts__local-plan');
+  const form = section.querySelector(".add-fact-form");
+  form.action = data.add_fact_url;
+
+  const planEl = section.querySelector('.facts__local-plan');
   planEl.appendChild( createStageTag(data.local_plan, "selected") );
   activePlan = data.local_plan['id'];
 
-  const table = document.querySelector('.document-facts__table');
+  const table = section.querySelector(".document-facts__table");
+  const table_body = table.querySelector('tbody');
   if(data.document.facts.length > 0) {
-    data.document.facts.forEach((fact) => table.appendChild( createFactRow(fact) ));
+    data.document.facts.forEach((fact) => table_body.appendChild( createFactRow(fact) ));
+  } else {
+    table.classList.add('govuk-visually-hidden');
+  }
+}
+
+function displayURLAsHeading(url, section, docId) {
+  const urlEl = section.querySelector('.facts__doc-url');
+  urlEl.textContent = url;
+  urlEl.dataset.documentId = docId;
+}
+
+function populateEmergingPlanView(data) {
+  const section = document.querySelector('.emerging-plan-facts-section');
+  displayURLAsHeading(data.document.url, section, data.document['id']);
+
+  const form = section.querySelector(".add-fact-form");
+  form.action = data.add_fact_url;
+
+  const table = section.querySelector(".document-facts__table");
+  const table_body = table.querySelector('tbody');
+  if(data.document.facts.length > 0) {
+    data.document.facts.forEach((fact) => table_body.appendChild( createFactRow(fact) ));
   } else {
     table.classList.add('govuk-visually-hidden');
   }
@@ -173,14 +198,21 @@ function checkPageBelongsToAuthority(pageDetails) {
     })
     .then(response => response.json())
     .then( (resp_data) => {
+      document.body.classList.remove("not-recognised-view");
       //console.log(resp_data);
-      if(resp_data['type'] === 'document') {
+      if(resp_data['view-type'] === 'plan-document') {
         console.log(resp_data);
-        populateFactsView(resp_data)
-        document.body.classList.add("facts-view");
-      } else {
+        populatePlanView(resp_data);
+        document.body.classList.add("local-plan-view");
+      } else if (resp_data['view-type'] === 'emerging-plan-document') {
+        console.log(resp_data);
+        populateEmergingPlanView(resp_data);
+        document.body.classList.add("emerging-plan-view");
+      } else if (resp_data['view-type'] === 'urls') {
         displayPageDetails(resp_data.planning_authority);
         document.body.classList.add("url-view");
+      } else {
+        document.body.classList.add("not-recognised-view");
       }
     });
 
@@ -189,56 +221,106 @@ function checkPageBelongsToAuthority(pageDetails) {
 function createFactRow(fact) {
   const row = document.createElement('tr');
   row.classList.add('govuk-table__row');
-  const row_figure = document.createElement('th');
-  row_figure.classList.add('govuk-table__header');
-  row_figure.setAttribute('scope', 'row');
-  row_figure.textContent = fact.number;
+
+  const row_fact = document.createElement('th');
+  row_fact.classList.add('govuk-table__header');
+  row_fact.setAttribute('scope', 'row');
+  row_fact.textContent = fact.fact;
+
+  const row_type = document.createElement('td');
+  row_type.classList.add('govuk-table__cell');
+  row_type.textContent = fact.fact_type_display;
+
   const row_note = document.createElement('td');
   row_note.classList.add('govuk-table__cell');
   row_note.textContent = fact.notes;
 
-  row.appendChild( row_figure );
+  row.appendChild( row_fact );
+  row.appendChild( row_type );
   row.appendChild( row_note );
 
   return row;
 }
 
-function saveFact(url, fact, form) {
-  fetch( url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({'fact': fact})
-    })
-    .then(response => response.json())
-    .then( (resp_data) => {
-      if(resp_data['OK'] === 200) {
-        // Todo: show a success message
-        form.reset();
-        const table = document.querySelector('.document-facts__table');
-        table.classList.remove('govuk-visually-hidden');
-        table.appendChild( createFactRow( resp_data.fact ));
-      }
-    });
+function extractDate(fieldset) {
+  const month = fieldset.querySelector(".govuk-date-input__month");
+  const year = fieldset.querySelector(".govuk-date-input__year");
+  return `${year.value}-${month.value}`;
 }
 
-function saveFactHandler(e) {
+function extractRange(fieldset) {
+  var min = fieldset.querySelector(".housing-req-range-min");
+  var max = fieldset.querySelector(".housing-req-range-max");
+  return `${min.value} - ${max.value}`;
+}
+
+function factSubmitHandler(e) {
   e.preventDefault();
   const form = e.target;
-  const doc_id = document.querySelector('.facts__doc-url').dataset.documentId;
+  const url = form.action;
 
-  const url = `${localPlanUrl}/local-plans/${pla['id']}/${activePlan}/${doc_id}`;
+  // set up data obj to post
+  // serialise all parts of form
+  var fact = {};
+  fact["fact_type"] = form.querySelector("select").value;
+  fact["notes"] = form.querySelector("textarea").value;
+  fact["document_type"] = form.querySelector("input[type='hidden']").value;
 
-  const numberInput = form.querySelector('#document-number');
-  const notesInput = form.querySelector('#document-note');
-
-  const fact = {
-    'number': numberInput.value,
-    'notes': notesInput.value
+  if(form.classList.contains('plan-name')) {
+    fact["fact"] = form.querySelector(".plan-name-input input").value;
+  } else if (form.classList.contains('plan-start-year')) {
+    fact["fact"] = extractDate( form.querySelector(".plan-start-date-input fieldset") );
+  } else if (form.classList.contains('plan-end-year')) {
+    fact["fact"] = extractDate( form.querySelector(".plan-end-date-input fieldset") );
+  } else if (form.classList.contains('housing-requirement-total')) {
+    fact["fact"] = form.querySelector(".plan-housing-req-total input").value;
+  } else if (form.classList.contains('housing-requirement-range')) {
+    fact["fact"] = extractRange( form.querySelector(".housing-req-range-fieldset") );
+  } else if (form.classList.contains('publication-date')) {
+    fact["fact"] = extractDate( form.querySelector(".publication-date-input fieldset") );
+  } else if (form.classList.contains('proposed-reg-18-date')) {
+    fact["fact"] = extractDate( form.querySelector(".regulation-18-date-input fieldset") );
+  } else if (form.classList.contains('proposed-publication-date')) {
+    fact["fact"] = extractDate( form.querySelector(".proposed-publication-date-input fieldset") );
+  } else if (form.classList.contains('proposed-submission-date')) {
+    fact["fact"] = extractDate( form.querySelector(".proposed-submission-date-input fieldset") );
+  } else if (form.classList.contains('proposed-main-modifications-date')) {
+    fact["fact"] = extractDate( form.querySelector(".proposed-main-modifications-date-input fieldset") );
+  } else if (form.classList.contains('proposed-adoption-date')) {
+    fact["fact"] = extractDate( form.querySelector(".proposed-adoption-date-input fieldset") );
+  } else {
+    // situation where user has selected other
+    fact["fact"] = "";
   }
 
-  saveFact(url, fact, form);
+  console.log(fact, url);
+
+  // perform post
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ 'fact': fact })
+  })
+  .then(response => response.json())
+  .then( (resp_data) => {
+    if(resp_data['OK'] === 200) {
+      console.log(resp_data);
+      const factsEl = form.closest(".document-facts");
+      const table = factsEl.querySelector(".document-facts__table");
+      displayFact(resp_data, table);
+      table.classList.remove('govuk-visually-hidden');
+      resetFactForm(form);
+    }
+
+  });
+}
+
+function displayFact(data, table) {
+  const row = createFactRow(data.fact);
+  const table_body = table.querySelector('tbody');
+  table_body.appendChild( row );
 }
 
 function openNewTab(linkEl) {
@@ -251,6 +333,41 @@ function openNewTab(linkEl) {
   } else {
     console.log("href not set");
   }
+}
+
+function resetFactForm(form) {
+  form.reset();
+  const formType = form.querySelector("input[type='hidden']").value;
+
+  // remove all classes
+  removeAllClassesFromFactForm(form);
+  // add initial class relevant to type of fact
+  if(formType === "plan_document") {
+    form.classList.add('plan-name');
+  } else {
+    form.classList.add('publication-date');
+  }
+}
+
+function setUpAddFactForms() {
+  // handle changes to form when user changes select
+  const addFactForms = document.querySelectorAll(".add-fact-form");
+  const addFactSelects = Array.prototype.slice.call( addFactForms ).map((form) => form.querySelector(".fact-select-types"));
+  addFactSelects.forEach((select) => {
+    select.addEventListener('change', (e) => {
+      const form = e.target.closest('form');
+      const option = e.target.querySelector('option:checked');
+      // remove all these classes before adding selected class
+      removeAllClassesFromFactForm(form);
+      form.classList.add(option.dataset.typeClass);
+    });
+  });
+
+  addFactForms.forEach((form) => form.addEventListener('submit', factSubmitHandler));
+}
+
+function removeAllClassesFromFactForm(form) {
+  form.classList.remove("plan-name", "plan-start-year", "plan-end-year", "housing-requirement-total", "housing-requirement-range", "publication-date", "proposed-reg-18-date", "proposed-publication-date", "proposed-submission-date", "proposed-main-modifications-date", "proposed-adoption-date");
 }
 
 // Add links to allLinks and visibleLinks, sort and show them.  send_links.js is
@@ -287,11 +404,10 @@ var activePageDetails = {};
       }
     });
 
+    setUpAddFactForms();
+
     const docsSavedLink = document.querySelector(".ext-message__link");
     docsSavedLink.addEventListener('click', (e) => openNewTab(e.currentTarget));
-
-    const addFactForm = document.querySelector(".add-fact-form");
-    addFactForm.addEventListener('submit', saveFactHandler);
 
 
     chrome.windows.getCurrent(function (currentWindow) {

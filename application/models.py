@@ -1,6 +1,8 @@
 import uuid
 
 from datetime import datetime
+from enum import Enum
+
 from sqlalchemy.ext.mutable import Mutable
 from application.extensions import db
 from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSON
@@ -119,22 +121,50 @@ class PlanDocument(db.Model):
     local_plan_id = db.Column(db.String(64), db.ForeignKey('local_plan.local_plan'), nullable=False)
     local_plan = db.relationship('LocalPlan', back_populates='plan_documents')
 
-    facts = db.relationship('Fact', back_populates='plan_document', lazy=True)
+    facts = db.relationship('Fact', back_populates='plan_document', lazy=True, cascade="all, delete-orphan")
 
     def to_dict(self):
         data = {
             'id': self.id,
             'url': self.url,
-            'facts': [fact.to_dict() for fact in self.facts]
+            'facts': [fact.to_dict() for fact in self.facts],
+            'type': "plan_document"
         }
         return data
 
 
+class FactType(Enum):
+
+    PLAN_NAME = 'Plan name'
+    PLAN_START_YEAR = 'Plan period start year'
+    PLAN_END_YEAR = 'Plan period end year'
+    HOUSING_REQUIREMENT_TOTAL = 'Housing requirement total'
+    HOUSING_REQUIREMENT_RANGE = 'Housing requirement range'
+    OTHER = 'Other'
+
+
+class EmergingFactType(Enum):
+
+    PUBLICATION_DATE = 'Publication date'
+    PROPOSED_REG_18_DATE = 'Proposed Regulation 18 date'
+    PROPOSED_PUBLICATION_DATE = 'Proposed publication date'
+    PROPOSED_SUBMISSION_DATE = 'Proposed submission date'
+    PROPOSED_MAIN_MODIFICATIONS_DATE = 'Proposed main modifications date'
+    PROPOSED_ADOPTION_DATE = 'Proposed adoption date'
+    HOUSING_REQUIREMENT_TOTAL = 'Housing requirement total'
+    HOUSING_REQUIREMENT_RANGE = 'Housing requirement range'
+    OTHER = 'Other'
+
+
+
+# TODO - Note with facts and emerging facts the 'fact' field can contain strings, dates, numbers or ranges
+# so will put method to return right value based on fact_type
+
 class Fact(db.Model):
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=_generate_uuid)
-
-    number = db.Column(db.Integer())
+    fact = db.Column(db.String())
+    fact_type = db.Column(db.String())
     notes = db.Column(db.String())
 
     plan_document_id = db.Column(UUID(as_uuid=True), db.ForeignKey('plan_document.id'), nullable=False)
@@ -143,9 +173,33 @@ class Fact(db.Model):
     def to_dict(self):
         data = {
             'id': self.id,
-            'number': self.number,
+            'fact': self.fact,
+            'fact_type': self.fact_type,
+            'fact_type_display': FactType[self.fact_type].value,
             'notes': self.notes,
             'document_id': self.plan_document_id
+        }
+        return data
+
+
+class EmergingFact(db.Model):
+
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=_generate_uuid)
+    fact = db.Column(db.String())
+    fact_type = db.Column(db.String())
+    notes = db.Column(db.String())
+
+    emerging_plan_document_id = db.Column(UUID(as_uuid=True), db.ForeignKey('emerging_plan_document.id'), nullable=False)
+    emerging_plan_document = db.relationship('EmergingPlanDocument', back_populates='facts')
+
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'fact': self.fact,
+            'fact_type': self.fact_type,
+            'fact_type_display': EmergingFactType[self.fact_type].value,
+            'notes': self.notes,
+            'document_id': self.emerging_plan_document_id
         }
         return data
 
@@ -157,6 +211,17 @@ class EmergingPlanDocument(db.Model):
 
     planning_authority_id = db.Column(db.String(64), db.ForeignKey('planning_authority.id'), nullable=False)
     planning_authority = db.relationship('PlanningAuthority', back_populates='emerging_plan_documents')
+
+    facts = db.relationship('EmergingFact', back_populates='emerging_plan_document', lazy=True, cascade="all, delete-orphan")
+
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'url': self.url,
+            'facts': [fact.to_dict() for fact in self.facts],
+            'type': "emerging_plan_document"
+        }
+        return data
 
 
 class State:

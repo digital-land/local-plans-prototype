@@ -1,0 +1,106 @@
+// Styles for the various forms on the local plans pages
+// =====================================================
+
+.add-url-form {
+  box-sizing: border-box;
+  display: block;
+  margin-bottom: $govuk-gutter;
+  padding: 20px;
+  border: 1px solid govuk-colour("grey-2");
+  background: govuk-colour("grey-4");
+  text-decoration: none;
+
+  @include govuk-media-query($from: tablet) {
+    padding: $govuk-gutter;
+  }
+
+  & .govuk-form-group:last-child .govuk-button {
+    margin-bottom: 0;
+  }
+}
+
+.publication-date-input,
+.regulation-18-date-input,
+.proposed-publication-date-input,
+.proposed-submission-date-input,
+.proposed-main-modifications-date-input,
+.proposed-adoption-date-input,
+.plan-name-input,
+.plan-start-date-input,
+.plan-end-date-input,
+.plan-housing-req-total,
+.housing-req-range-fieldset {
+  display: none;
+}
+
+.housing-req-range-fieldset {
+  margin-bottom: $govuk-gutter;
+}
+
+.plan-name {
+  .plan-name-input {
+    display: block;
+  }
+}
+
+.plan-start-year {
+  .plan-start-date-input {
+    display: block;
+  }
+}
+
+.plan-end-year {
+  .plan-end-date-input {
+    display: block;
+  }
+}
+
+.housing-requirement-total {
+  .plan-housing-req-total {
+    display: block;
+  }
+}
+
+.housing-requirement-range {
+  .housing-req-range-fieldset {
+    display: block;
+  }
+}
+
+.publication-date {
+  .publication-date-input {
+    display: block;
+  }
+}
+
+.proposed-reg-18-date {
+  .regulation-18-date-input {
+    display: block;
+  }
+}
+
+.proposed-publication-date {
+  .proposed-publication-date-input {
+    display: block;
+  }
+}
+
+.proposed-submission-date {
+  .proposed-submission-date-input {
+    display: block;
+  }
+}
+
+.proposed-main-modifications-date {
+  .proposed-main-modifications-date-input {
+    display: block;
+  }
+}
+
+.proposed-adoption-date {
+  .proposed-adoption-date-input {
+    display: block;
+  }
+}
+
+//.other {}
