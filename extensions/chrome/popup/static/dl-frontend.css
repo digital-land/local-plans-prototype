@@ -6687,6 +6687,15 @@
   border-top: 1px solid #bfc1c3;
 }
 
+.document-facts__table .govuk-table__row {
+  transition: background .2s ease-out, color .2s ease-out;
+}
+
+.document-facts__table .govuk-table__row.being-deleted {
+  color: #ffffff !important;
+  background: #b10e1e;
+}
+
 .govuk-details--facts .govuk-details__summary {
   box-sizing: border-box;
   margin-bottom: 0;

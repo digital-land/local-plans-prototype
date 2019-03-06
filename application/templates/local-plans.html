@@ -517,6 +517,7 @@
   const factSaveBtns = document.querySelectorAll(".fact-save-btn");
   const factCancelBtns = document.querySelectorAll(".add-fact-form .cancel-btn");
   const factRemoveBtns = document.querySelectorAll(".remove-fact");
+  const factTables = document.querySelectorAll(".document-facts__table");
 
   var source   = document.getElementById("url-item-template").innerHTML;
   var urlTemplate = Handlebars.compile(source);
@@ -710,8 +711,14 @@
 
   // remove fact
   // ===========
-  factRemoveBtns.forEach((btn) => {
-    btn.addEventListener('click', (e) => removeBtnClickHandler(e, '.govuk-table__row'));
+  factTables.forEach((table) => {
+    table.addEventListener('click', (e) => {
+      e.preventDefault();
+      if(e.target.classList.contains("remove-fact")) {
+        console.log("Delete button clicked");
+        removeBtnClickHandler(e, '.govuk-table__row')
+      }
+    });
   });
 
   urlAddBtns.forEach((btn) => {
@@ -739,14 +746,16 @@
 
   function removeBtnClickHandler(e, selector) {
     e.preventDefault();
-    const currentTarget = e.currentTarget;
-    const url = e.currentTarget.href;
+    const elementToBeRemoved = e.target.closest(selector);
+
+    const url = e.target.href;
     fetch(url, {
       method: "DELETE"
     })
     .then(response => response.json())
     .then(data => {
-      currentTarget.closest(selector).remove();
+      elementToBeRemoved.addEventListener('transitionend', () => elementToBeRemoved.remove());
+      elementToBeRemoved.classList.add("being-deleted");
     });
   }
 

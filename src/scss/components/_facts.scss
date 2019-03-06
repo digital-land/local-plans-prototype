@@ -54,6 +54,15 @@ $url-btn-width: 100px;
       border-top: 1px solid govuk-colour("grey-2");
     }
   }
+
+  .govuk-table__row {
+    transition: background .2s ease-out, color .2s ease-out;
+
+    &.being-deleted {
+      color: govuk-colour("white") !important;
+      background: govuk-colour("red");
+    }
+  }
 }
 
 

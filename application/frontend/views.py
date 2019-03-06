@@ -65,10 +65,9 @@ def add_fact_to_document(planning_authority, document):
 
 @frontend.route('/local-plans/<document>/<fact>', methods=['GET', 'DELETE'])
 def remove_fact_from_document(document, fact):
-    document_type = request.args.get('document_type')
-    if document_type == 'plan_document':
+    if Fact.query.filter_by(id=fact, plan_document_id=document).first() is not None:
         fact = Fact.query.filter_by(id=fact, plan_document_id=document).one()
-    elif document_type == 'emerging_plan_document':
+    elif EmergingFact.query.filter_by(id=fact, emerging_plan_document_id=document).first() is not None:
         fact = EmergingFact.query.filter_by(id=fact, emerging_plan_document_id=document).one()
     if fact is not None:
         db.session.delete(fact)
