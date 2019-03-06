@@ -111,9 +111,14 @@ def remove_document_from_plan(local_plan, document):
     return jsonify({204: 'No Content'})
 
 
-@frontend.route('/local-plans/<planning_authority>/document/<document>', methods=['DELETE'])
+@frontend.route('/local-plans/planning-authority/<planning_authority>/document/<document>', methods=['DELETE'])
 def remove_emerging_document_from_planning_authority(planning_authority, document):
-    doc = EmergingPlanDocument.query.filter_by(local_authority_id=planning_authority, id=document).one()
+    doc = EmergingPlanDocument.query.filter_by(planning_authority_id=planning_authority, id=document).one()
+
+    # delete any associated facts
+    if len(doc.facts) > 0:
+        for fact in doc.facts:
+            db.session.delete(fact)
     db.session.delete(doc)
     db.session.commit()
     return jsonify({204: 'No Content'})

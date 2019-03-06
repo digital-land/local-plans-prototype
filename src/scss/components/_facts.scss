@@ -8,7 +8,13 @@ $url-btn-width: 100px;
 .url-item {
   position: relative;
   margin-bottom: 10px;
+  transition: opacity .25s ease-out;
+  opacity: 1;
   line-height: 27px;
+
+  &.being-deleted {
+    opacity: 0;
+  }
 
   .url-link {
     box-sizing: border-box;
