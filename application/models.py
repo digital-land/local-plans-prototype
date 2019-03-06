@@ -174,6 +174,7 @@ class Fact(db.Model):
             'id': self.id,
             'fact': self.fact,
             'fact_type': self.fact_type,
+            'fact_type_display': FactType[self.fact_type].value,
             'notes': self.notes,
             'document_id': self.plan_document_id
         }
@@ -195,6 +196,7 @@ class EmergingFact(db.Model):
             'id': self.id,
             'fact': self.fact,
             'fact_type': self.fact_type,
+            'fact_type_display': EmergingFactType[self.fact_type].value,
             'notes': self.notes,
             'document_id': self.emerging_plan_document_id
         }

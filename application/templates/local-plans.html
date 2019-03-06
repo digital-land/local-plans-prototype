@@ -72,9 +72,9 @@
 
                       {% for fact in doc.facts %}
                           <tr class="govuk-table__row">
-                            <th class="govuk-table__header" scope="row">{{ fact.fact_type | format_fact }}</th>
                             <th class="govuk-table__header" scope="row">{{ fact.fact }}</th>
-                            <td class="govuk-table__cell">{{ fact.notes }}</td>
+                            <td class="govuk-table__cell">{{ fact.fact_type | format_fact }}</td>
+                            <td class="govuk-table__cell">{% if fact.notes == "" %}-{% else %}{{ fact.notes }}{% endif %}</td>
                             <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact" href="{{ url_for('frontend.remove_fact_from_document', document=doc.id, fact=fact.id) }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
                           </tr>
                       {% endfor %}
@@ -305,9 +305,9 @@
                   <tbody class="govuk-table__body">
                       {% for fact in doc.facts %}
                           <tr class="govuk-table__row">
-                            <th class="govuk-table__header" scope="row">{{ fact.fact_type | format_fact }}</th>
                             <th class="govuk-table__header" scope="row">{{ fact.fact }}</th>
-                            <td class="govuk-table__cell">{{ fact.notes }}</td>
+                            <td class="govuk-table__cell">{{ fact.fact_type | format_fact }}</td>
+                            <td class="govuk-table__cell">{% if fact.notes == "" %}-{% else %}{{ fact.notes }}{% endif %}</td>
                             <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact" href="{{ url_for('frontend.remove_fact_from_document', document=doc.id, fact=fact.id) }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
                           </tr>
                       {% endfor %}
@@ -497,8 +497,9 @@
     </div>
 </script>
 <script id="fact-row-template" type="text/x-handlebars-template">
-  <th class="govuk-table__header" scope="row">{{ fact.number }}</th>
-  <td class="govuk-table__cell">{{ fact.notes }}</td>
+  <th class="govuk-table__header" scope="row">{{ fact.fact }}</th>
+  <td class="govuk-table__cell">{{ fact.fact_type_display }}</td>
+  <td class="govuk-table__cell">{{#if fact.notes }}{{ fact.notes }}{{else}}-{{/if}}</td>
   <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact" href="{{ remove_url }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
 </script>
 {% endraw %}
