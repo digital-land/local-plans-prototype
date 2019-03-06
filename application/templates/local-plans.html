@@ -629,9 +629,7 @@
       var fact = {};
       fact["fact_type"] = form.querySelector("select").value;
       fact["notes"] = form.querySelector("textarea").value;
-      fact["document_type"] = form.querySelector("input[type='hidden']").value
-
-"plan-name", "plan-start-year", "plan-end-year", "housing-requirement-total", "housing-requirement-range"
+      fact["document_type"] = form.querySelector("input[type='hidden']").value;
 
       if(form.classList.contains('plan-name')) {
         fact["fact"] = form.querySelector(".plan-name-input input").value;
@@ -643,7 +641,22 @@
         fact["fact"] = form.querySelector(".plan-housing-req-total input").value;
       } else if (form.classList.contains('housing-requirement-range')) {
         fact["fact"] = extractRange( form.querySelector(".housing-req-range-fieldset") );
-      } 
+      } else if (form.classList.contains('publication-date')) {
+        fact["fact"] = extractDate( form.querySelector(".publication-date-input fieldset") );
+      } else if (form.classList.contains('proposed-reg-18-date')) {
+        fact["fact"] = extractDate( form.querySelector(".regulation-18-date-input fieldset") );
+      } else if (form.classList.contains('proposed-publication-date')) {
+        fact["fact"] = extractDate( form.querySelector(".proposed-publication-date-input fieldset") );
+      } else if (form.classList.contains('proposed-submission-date')) {
+        fact["fact"] = extractDate( form.querySelector(".proposed-submission-date-input fieldset") );
+      } else if (form.classList.contains('proposed-main-modifications-date')) {
+        fact["fact"] = extractDate( form.querySelector(".proposed-main-modifications-date-input fieldset") );
+      } else if (form.classList.contains('proposed-adoption-date')) {
+        fact["fact"] = extractDate( form.querySelector(".proposed-adoption-date-input fieldset") );
+      } else {
+        // situation where user has selected other
+        fact["fact"] = "";
+      }
       
       // if serialising
       // fact["plan_name"] = form.querySelector(".plan-name-input input").value;
