@@ -237,10 +237,19 @@ def check_url():
         # first check for Emerging Plan document
         if EmergingPlanDocument.query.filter_by(url=website_location).first():
             document = EmergingPlanDocument.query.filter_by(url=website_location).one()
-            resp = {'OK': 200, 'view-type': 'emerging-plan-document', 'document': document.to_dict()}
+            add_fact_url = url_for('frontend.add_fact_to_document',
+                                 planning_authority=document.planning_authority_id,  
+                                 document=str(document.id),
+                                 _external=True)
+            resp = {'OK': 200, 'view-type': 'emerging-plan-document', 'document': document.to_dict(), 'add_fact_url': add_fact_url}
         else:
             document = PlanDocument.query.filter_by(url=website_location).first()
-            resp = {'OK': 200, 'view-type': 'plan-document', 'document': document.to_dict(), 'local_plan': document.local_plan.to_dict()}
+            add_fact_url = url_for('frontend.add_fact_to_document',
+                                 planning_authority=document.local_plan.planning_authorities[0].id, 
+                                 local_plan=document.local_plan_id, 
+                                 document=str(document.id),
+                                 _external=True)
+            resp = {'OK': 200, 'view-type': 'plan-document', 'document': document.to_dict(), 'local_plan': document.local_plan.to_dict(), 'add_fact_url': add_fact_url}
         
         print(document)
 

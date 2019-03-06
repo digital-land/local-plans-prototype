@@ -270,6 +270,25 @@ function openNewTab(linkEl) {
   }
 }
 
+function setUpFormChanges() {
+  // handle changes to form when user changes select
+  const addFactForms = document.querySelectorAll(".add-fact-form");
+  const addFactSelects = Array.prototype.slice.call( addFactForms ).map((form) => form.querySelector(".fact-select-types"));
+  addFactSelects.forEach((select) => {
+    select.addEventListener('change', (e) => {
+      const form = e.target.closest('form');
+      const option = e.target.querySelector('option:checked');
+      // remove all these classes before adding selected class
+      removeAllClassesFromFactForm(form);
+      form.classList.add(option.dataset.typeClass);
+    });
+  });
+}
+
+function removeAllClassesFromFactForm(form) {
+  form.classList.remove("plan-name", "plan-start-year", "plan-end-year", "housing-requirement-total", "housing-requirement-range", "publication-date", "proposed-reg-18-date", "proposed-publication-date", "proposed-submission-date", "proposed-main-modifications-date", "proposed-adoption-date");
+}
+
 // Add links to allLinks and visibleLinks, sort and show them.  send_links.js is
 // injected into all frames of the active tab, so this listener may be called
 // multiple times.
@@ -303,6 +322,8 @@ var activePageDetails = {};
         setActivePlan(target);
       }
     });
+
+    setUpFormChanges();
 
     const docsSavedLink = document.querySelector(".ext-message__link");
     docsSavedLink.addEventListener('click', (e) => openNewTab(e.currentTarget));
