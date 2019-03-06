@@ -8,3 +8,7 @@ class LocalDevelopmentSchemeURLForm(FlaskForm):
 
 class LocalPlanURLForm(FlaskForm):
 	url = StringField('Local plan URL')
+
+
+class DocumentURLForm(FlaskForm):
+	url = StringField('URL of plan, scheme or emerging plan document', [validators.DataRequired()])

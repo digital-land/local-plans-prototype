@@ -1,15 +1,20 @@
 {% extends "dlf-base.html" %}
 {%- set mainClasses = "govuk-main-wrapper--l" -%}
 
+{% macro render_field(field) %}
+  <div class="govuk-form-group">
+  {{ field.label(class_="govuk-label") }}
+  {{ field(class_="govuk-input",**kwargs)|safe }}
+  {% for error in field.errors %}
+  <span style="color: red;">[{{ error }}]</span>
+  {% endfor %}
+  </div>
+{% endmacro %}
+
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-m">Start collection information for</h1>
-        <p>
-            <a href="{{ url_for('frontend.local_plan', planning_authority=planning_authority.id) }}">
-                {{ planning_authority.name }}
-            </a>
-        </p>
+       {% block dip %}{% endblock %}
     </div>
   </div>
 {%  endblock %}

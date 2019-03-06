@@ -1,14 +1,32 @@
-import time
-import zipfile
-from io import BytesIO
 from pathlib import Path
 
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify, send_file
+from flask import (
+    Blueprint,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    jsonify,
+    send_file
+)
+
+from application.models import (
+    PlanningAuthority,
+    LocalPlan,
+    PlanDocument,
+    EmergingPlanDocument,
+    Fact,
+    FactType,
+    EmergingFactType,
+    EmergingFact
+)
+
+from application.frontend.forms import (
+    LocalDevelopmentSchemeURLForm,
+    LocalPlanURLForm,
+    DocumentURLForm)
 
 from application.extensions import db
-from application.models import PlanningAuthority, LocalPlan, PlanDocument, EmergingPlanDocument, Fact, FactType, \
-    EmergingFactType, EmergingFact
-from application.frontend.forms import LocalDevelopmentSchemeURLForm, LocalPlanURLForm
 
 frontend = Blueprint('frontend', __name__, template_folder='templates')
 
@@ -291,13 +309,37 @@ def check_url():
     return jsonify(resp)
 
 
-@frontend.route('/local-plans/check')
+@frontend.route('/local-plans/lucky-dip', methods=['GET', 'POST'])
 def lucky_dip():
     import random
-    query = db.session.query(PlanningAuthority)
+    from application.queries import query_map
+
+    form_map = {'lucky-dip-pla-no-lds-url.html': LocalDevelopmentSchemeURLForm,
+                'lucky-dip-pla-no-lds-docs.html': DocumentURLForm,
+                'lucky-dip-pla-no-local-plan.html':DocumentURLForm,
+                'lucky-dip-local-plan-no-docs.html': DocumentURLForm
+                }
+
+    choice = random.choice(list(query_map.keys()))
+    template = f'lucky-dip-{choice}.html'
+
+    form_class = form_map[template]
+    form = form_class()
+    query = query_map.get(choice)
     row_count = int(query.count())
-    pla = query.offset(int(row_count * random.random())).first()
-    return render_template('lucky-dip.html', planning_authority=pla)
+
+    record = query.offset(int(row_count * random.random())).first()
+
+    # TODO maybe post here? or forms post to exiting endpoints
+    # with addition params to indicate redirect back here after?
+
+    if isinstance(record, PlanningAuthority):
+        return render_template(template, planning_authority=record, form=form)
+    elif isinstance(record, LocalPlan):
+        return render_template(template, local_plan=record, form=form)
+    else:
+        return redirect(url_for('frontend.lucky_dip'))
+
 
 
 @frontend.route('/local-plans/<planning_authority>/check-plan-documents')

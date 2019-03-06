@@ -1,0 +1,16 @@
+{% extends "lucky-dip.html" %}
+
+{% block dip %}
+
+    <h1>{{ planning_authority.name }}</h1>
+
+    <h2 class="govuk-heading-m">We don't know the url for the this local authority's local development scheme</h2>
+
+    <form action="{{ url_for('frontend.update_local_scheme_url', planning_authority=planning_authority.id) }}" method="POST">
+      {{ render_field(form.url) }}
+      <div class="govuk-form-group">
+        <button class="govuk-button" type="submit">Save</button>
+      </div>
+    </form>
+
+{% endblock %}
