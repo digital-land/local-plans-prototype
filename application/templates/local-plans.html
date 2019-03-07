@@ -424,57 +424,6 @@
           </div>
         </form>
 
-
-
-
-      <!--<section class="lp-section-box lp-section-box__notes">
-        <h3 class="govuk-heading-m">Notes</h3>
-        {% if plan.notes == None %}
-        <p class="govuk-body note-contents"></p>
-        <p class="govuk-body secondary-text">-- no notes captured --</p>
-        {% else %}
-        <p class="govuk-body note-contents">{{ plan.notes }}</p>
-        {% endif %}
-        <button class="govuk-button dlf-secondary-button note-edit-btn lp-section-box__edit-btn">Edit<span class="govuk-visually-hidden">notes</span></button>
-        <form action="{{ url_for('frontend.add_document_to_plan', planning_authority=planning_authority.id, local_plan=plan.local_plan )}}" class="govuk-form note-edit-form">
-          <div class="govuk-form-group">
-            <label class="govuk-label" for="more-detail">
-              Provide some information about the local plan
-            </label>
-            <textarea class="govuk-textarea" id="more-detail" name="more-detail" rows="5" aria-describedby="more-detail-hint"></textarea>
-          </div>
-          <div class="govuk-form-group">
-            <button class="govuk-button notes-save-btn">Save</button>
-            <button class="cancel-btn">Cancel</button>
-          </div>
-        </form>
-      </section>
-
-      <section class="lp-section-box lp-section-box__number">
-        <h3 class="govuk-heading-m">Number of housing units</h3>
-        {% if plan.number_of_houses == None %}
-        <p class="govuk-body number-contents"></p>
-        <p class="govuk-body secondary-text">-- no number captured --</p>
-        {% else %}
-        <p class="govuk-body number-contents">{{ plan.number_of_houses }}</p>
-        {% endif %}
-        <p class="number-contents"></p>
-        <form action="{{ url_for('frontend.add_document_to_plan', planning_authority=planning_authority.id, local_plan=plan.local_plan )}}" class="govuk-form number-edit-form">
-          <div class="govuk-form-group">
-            <label class="govuk-label" for="number-input">
-              Homes to be built
-            </label>
-            <input class="govuk-input govuk-input--width-10" id="number-input" name="number-input" type="text">
-          </div>
-          <div class="govuk-form-group">
-            <button class="govuk-button number-save-btn">Save</button>
-            <button class="cancel-btn">Cancel</button>
-          </div>
-        </form>
-        
-        <button class="govuk-button dlf-secondary-button number-edit-btn lp-section-box__edit-btn">Add number</button>
-      </section>-->
-
     </section>
     {% endfor %}
 
@@ -516,14 +465,9 @@
 </script>
 {% endraw %}
 <script>
-  const noteEditBtns = document.querySelectorAll(".note-edit-btn");
-  const noteSaveBtns = document.querySelectorAll(".notes-save-btn");
-  const numberEditBtns = document.querySelectorAll(".number-edit-btn");
-  const numberSaveBtns = document.querySelectorAll(".number-save-btn");
   const urlAddBtns = document.querySelectorAll(".url-add-btn");
   const urlEditBtns = document.querySelectorAll(".url-edit-btn");
   const urlRemoveBtns = document.querySelectorAll(".url-remove-btn");
-  const cancelBtns = document.querySelectorAll(".cancel-btn");
 
   const addUrlForms = document.querySelectorAll(".add-url-form");
 
@@ -562,30 +506,6 @@
     }
     //console.log("this runs straight away");
   })();
-
-  noteEditBtns.forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      const noteSection = getNearestSection(e.currentTarget);
-      noteSection.classList.add("editing");
-      const note = noteSection.querySelector('.note-contents').textContent;
-      if(note !== "") {
-        noteSection.querySelector('textarea').value = note;
-      }
-    });
-  });
-
-  numberEditBtns.forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      const numberSection = getNearestSection(e.currentTarget);
-      numberSection.classList.add("editing");
-      const number = numberSection.querySelector('.number-contents').textContent;
-      if(number !== "") {
-        numberSection.querySelector('input[type=text]').value = number;
-      } else {
-        console.log("No number set");
-      }
-    });
-  });
 
   function getNearestSection(el) {
     return el.closest(".lp-section-box");
@@ -848,36 +768,6 @@
 
     return clonedFormContainer;
   };
-
-  numberSaveBtns.forEach((btn) => {
-    postDataFieldSaveEvent(btn, "housing_units", "input[type=text]", (data, section) => {
-      const numberEl = section.querySelector(".number-contents")
-      numberEl.textContent = data.housing_units;
-      section.classList.remove("editing");
-      if(section.querySelector('.secondary-text')) {
-        section.querySelector('.secondary-text').remove();
-      }
-    });
-  });
-
-  noteSaveBtns.forEach((btn) => {
-    postDataFieldSaveEvent(btn, "notes", "textarea", (data, section) => {
-      const notesEl = section.querySelector(".note-contents")
-      notesEl.textContent = data.notes;
-      section.classList.remove("editing");
-      if(section.querySelector('.secondary-text')) {
-        section.querySelector('.secondary-text').remove();
-      }
-    });
-  });
-
-  cancelBtns.forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const section = getNearestSection(e.currentTarget);
-      section.classList.remove('editing');
-    });
-  })
 
 </script>
 {% endblock %}
