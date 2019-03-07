@@ -6,7 +6,7 @@
 
     <h2 class="govuk-heading-m">We don't have any documents for this local plan</h2>
 
-     <form action="#" method="POST">
+     <form action="{{ url_for('frontend.lucky_dip', local_plan=local_plan.local_plan, action='add_plan_doc_url') }}" method="POST">
       {{ render_field(form.url) }}
       <div class="govuk-form-group">
         <button class="govuk-button" type="submit">Save</button>

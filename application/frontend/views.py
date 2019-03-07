@@ -325,6 +325,29 @@ def lucky_dip():
 
     form_class = form_map[template]
     form = form_class()
+
+    if form.validate_on_submit():
+        action = request.args.get('action')
+        if action == 'add_plan_doc_url':
+            plan = LocalPlan.query.get(request.args.get('local_plan'))
+            document = PlanDocument(url=form.url.data)
+            plan.plan_documents.append(document)
+            db.session.add(plan)
+            db.session.commit()
+        elif action == 'add_lds_url':
+            la = PlanningAuthority.query.get(request.args.get('planning_authority'))
+            la.local_scheme_url = form.url.data
+            db.session.add(la)
+            db.session.commit()
+        elif action == 'add_lds_doc_url':
+            la = PlanningAuthority.query.get(request.args.get('planning_authority'))
+            document = EmergingPlanDocument(url=form.url.data)
+            la.emerging_plan_documents.append(document)
+            db.session.add(la)
+            db.session.commit()
+
+        return redirect(url_for('frontend.lucky_dip'))
+
     query = query_map.get(choice)
     row_count = int(query.count())
 
@@ -339,6 +362,7 @@ def lucky_dip():
         return render_template(template, local_plan=record, form=form)
     else:
         return redirect(url_for('frontend.lucky_dip'))
+
 
 
 

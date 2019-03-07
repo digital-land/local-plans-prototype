@@ -8,7 +8,7 @@
 
     <a href="{{ planning_authority.local_scheme_url }}">{{ planning_authority.local_scheme_url }}</a>
 
-    <form action="#" method="POST">
+    <form action="{{ url_for('frontend.lucky_dip', planning_authority=planning_authority.id, action='add_lds_doc_url') }}" method="POST">
       {{ render_field(form.url) }}
       <div class="govuk-form-group">
         <button class="govuk-button" type="submit">Save</button>
