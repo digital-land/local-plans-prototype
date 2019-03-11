@@ -6,7 +6,8 @@
   "browser_action": {"default_popup": "popup.html"},
   "options_page": "options.html",
   "background": {
- 	"scripts": ["get-text-selection.js"]
+  	"persistent": false,
+ 	"scripts": ["background.js"]
   },
   "manifest_version": 2
 }
