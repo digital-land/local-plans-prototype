@@ -449,4 +449,15 @@ var activePageDetails = {};
     }
   });
 
+  // via script injection
+  chrome.tabs.executeScript(null, {
+    file: "get-text-selection.js"
+  });
+
+  chrome.runtime.onMessage.addListener(function (request, _sender) {
+    if (request.action == "getTextSelection") {
+      console.log("Request: ", request);
+    }
+  });
+
 }(jQuery));
