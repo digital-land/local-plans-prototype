@@ -2,6 +2,8 @@ import uuid
 
 from datetime import datetime
 from enum import Enum
+from functools import total_ordering
+
 from sqlalchemy.ext.mutable import Mutable
 from application.extensions import db
 from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSON
@@ -93,6 +95,7 @@ class LocalPlan(db.Model):
 class PlanningAuthority(db.Model):
 
     id = db.Column(db.String(64), primary_key=True)
+    ons_code = db.Column(db.String(9))
     name = db.Column(db.String(256))
     website = db.Column(db.String())
     local_scheme_url = db.Column(db.String())
@@ -101,6 +104,10 @@ class PlanningAuthority(db.Model):
                                   secondary=planning_authority_plan,
                                   lazy=True,
                                   back_populates='planning_authorities')
+
+    housing_delivery_tests = db.relationship('HousingDeliveryTest',
+                                             lazy=True,
+                                             back_populates='planning_authority')
 
     def to_dict(self):
         data = {
@@ -188,7 +195,9 @@ class EmergingFact(db.Model):
     fact = db.Column(db.String())
     fact_type = db.Column(db.String())
     notes = db.Column(db.String())
-    emerging_plan_document_id = db.Column(UUID(as_uuid=True), db.ForeignKey('emerging_plan_document.id'), nullable=False)
+    emerging_plan_document_id = db.Column(UUID(as_uuid=True),
+                                          db.ForeignKey('emerging_plan_document.id'),
+                                          nullable=False)
     emerging_plan_document = db.relationship('EmergingPlanDocument', back_populates='facts')
     created_date = db.Column(db.DateTime(), default=datetime.utcnow)
 
@@ -210,7 +219,10 @@ class EmergingPlanDocument(db.Model):
     url = db.Column(db.String())
     planning_authority_id = db.Column(db.String(64), db.ForeignKey('planning_authority.id'), nullable=False)
     planning_authority = db.relationship('PlanningAuthority', back_populates='emerging_plan_documents')
-    facts = db.relationship('EmergingFact', back_populates='emerging_plan_document', lazy=True, cascade="all, delete-orphan")
+    facts = db.relationship('EmergingFact',
+                            back_populates='emerging_plan_document',
+                            lazy=True,
+                            cascade="all, delete-orphan")
 
     def to_dict(self):
         data = {
@@ -220,6 +232,24 @@ class EmergingPlanDocument(db.Model):
             'type': "emerging_plan_document"
         }
         return data
+
+
+@total_ordering
+class HousingDeliveryTest(db.Model):
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=_generate_uuid)
+    from_year = db.Column(db.Date())
+    to_year = db.Column(db.Date())
+    homes_required = db.Column(db.Integer())
+    homes_delivered = db.Column(db.Integer())
+
+    planning_authority_id = db.Column(db.String(64), db.ForeignKey('planning_authority.id'), nullable=False)
+    planning_authority = db.relationship('PlanningAuthority', back_populates='housing_delivery_tests')
+
+    def __eq__(self, other):
+        return self.planning_authority_id == other.planning_authority_id and (self.from_year, self.to_year) == (other.from_year, other.to_year)
+
+    def __lt__(self, other):
+        return self.planning_authority_id == other.planning_authority_id and (self.from_year < other.from_year) and (self.to_year < other.to_year)
 
 
 class State:

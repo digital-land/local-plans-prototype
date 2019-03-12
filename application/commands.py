@@ -1,11 +1,15 @@
 import csv
+from datetime import datetime
+from pathlib import Path
+
 import click
 import requests
 
 from flask.cli import with_appcontext
 from contextlib import closing
 from application.extensions import db
-from application.models import PlanningAuthority, LocalPlan, PlanDocument, EmergingPlanDocument, Fact, EmergingFact
+from application.models import PlanningAuthority, LocalPlan, PlanDocument, EmergingPlanDocument, Fact, EmergingFact, \
+    HousingDeliveryTest
 
 
 def create_other_data(pa, row):
@@ -42,10 +46,10 @@ def create_other_data(pa, row):
 @click.command()
 @with_appcontext
 def load():
-    websites = 'https://raw.githubusercontent.com/digital-land/alpha-data/master/local-authority-websites.csv'
+    local_authorities = 'https://raw.githubusercontent.com/digital-land/alpha-data/master/local-authorities.csv'
     mapping = {}
-    print('Loading', websites)
-    with closing(requests.get(websites, stream=True)) as r:
+    print('Loading', local_authorities)
+    with closing(requests.get(local_authorities, stream=True)) as r:
         reader = csv.DictReader(r.iter_lines(decode_unicode=True), delimiter=',')
         for row in reader:
             mapping[row['local-authority'].strip()] = row['website'].strip()
@@ -70,6 +74,62 @@ def load():
                     print(id, 'already in db')
 
                 create_other_data(pa, row)
+
+
+@click.command()
+@with_appcontext
+def set_ons_codes():
+    local_authorities = 'https://raw.githubusercontent.com/digital-land/alpha-data/master/local-authorities.csv'
+    print('Loading', local_authorities)
+    with closing(requests.get(local_authorities, stream=True)) as r:
+        reader = csv.DictReader(r.iter_lines(decode_unicode=True), delimiter=',')
+        for row in reader:
+            pa = PlanningAuthority.query.get(row['local-authority'])
+            if pa is not None:
+                pa.ons_code = row['ons-code'].strip()
+                db.session.add(pa)
+                db.session.commit()
+
+
+@click.command()
+@with_appcontext
+def load_hdt():
+    import os
+    current_path = Path(os.path.abspath(__file__))
+    hdt_file = os.path.join(current_path.parent.parent, 'housing-delivery-test.csv')
+    with open(hdt_file, 'r') as f:
+        reader = csv.DictReader(f, delimiter=',')
+        print(reader.fieldnames)
+        for row in reader:
+            pla = PlanningAuthority.query.filter_by(ons_code=row['ons-code']).first()
+            if pla is not None:
+                hdt = HousingDeliveryTest()
+                hdt.homes_required = row['required-2015-16']
+                hdt.homes_delivered = row['delivered-2015-16']
+                hdt.from_year = datetime.strptime('2015', '%Y').date()
+                hdt.to_year = datetime.strptime('2016', '%Y').date()
+                pla.housing_delivery_tests.append(hdt)
+                db.session.add(pla)
+                db.session.commit()
+
+                hdt = HousingDeliveryTest()
+                hdt.homes_required = row['required-2016-17']
+                hdt.homes_delivered = row['delivered-2016-17']
+                hdt.from_year = datetime.strptime('2016', '%Y').date()
+                hdt.to_year = datetime.strptime('2017', '%Y').date()
+                pla.housing_delivery_tests.append(hdt)
+                db.session.add(pla)
+                db.session.commit()
+
+                hdt = HousingDeliveryTest()
+                hdt.homes_required = row['required-2017-18']
+                hdt.homes_delivered = row['delivered-2017-18']
+                hdt.from_year = datetime.strptime('2017', '%Y').date()
+                hdt.to_year = datetime.strptime('2018', '%Y').date()
+                pla.housing_delivery_tests.append(hdt)
+                db.session.add(pla)
+                db.session.commit()
+
 
 
 @click.command()
