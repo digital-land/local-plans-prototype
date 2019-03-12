@@ -6,6 +6,11 @@
 <link rel="stylesheet" href="/static/stylesheets/vendor/govuk-accessible-autocomplete.min.css" />
 {% endblock %}
 
+{% block beforeContent %}
+  {{ super() }}
+  <a href="{{ url_for('frontend.index') }}" class="govuk-back-link">Back to index</a>
+{% endblock %}
+
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
