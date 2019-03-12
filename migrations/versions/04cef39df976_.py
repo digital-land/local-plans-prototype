@@ -32,16 +32,15 @@ def upgrade():
     SessionMaker = sessionmaker(bind=connection.engine)
     session = SessionMaker(bind=connection)
     for plan in session.query(LocalPlan):
-        for s in plan.ordered_states():
-            print(s.state, '=>', s.date)
-            if s.state == 'published':
-                plan.published_date = s.date
-            elif s.state == 'submitted':
-                plan.submitted_date = s.date
-            elif s.state == 'sound':
-                plan.sound_date = s.date
-            elif s.state == 'adopted':
-                plan.adopted_date = s.date
+        for s in plan.states:
+            if s[0] == 'published':
+                plan.published_date = s[1]
+            elif s[0] == 'submitted':
+                plan.submitted_date = s[1]
+            elif s[0] == 'sound':
+                plan.sound_date = s[1]
+            elif s[0]== 'adopted':
+                plan.adopted_date = s[1]
         session.add(plan)
     session.commit()
 
