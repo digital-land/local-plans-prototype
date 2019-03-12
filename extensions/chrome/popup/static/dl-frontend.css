@@ -6877,3 +6877,12 @@
 .per-year-figure span:last-child {
   margin-left: auto;
 }
+
+.govuk-inset-text--info {
+  border-left-color: #005ea5;
+  background: #f8f8f8;
+}
+
+.govuk-inset-text--info.govuk-grid-column-two-thirds {
+  margin-left: 15px;
+}

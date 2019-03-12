@@ -13,8 +13,17 @@
 
 {% block content %}
   <div class="govuk-grid-row">
+
     <div class="govuk-grid-column-two-thirds">
        {% block dip %}{% endblock %}
     </div>
+
+    <div class="govuk-inset-text govuk-inset-text--info govuk-grid-column-two-thirds govuk-!-margin-top-0">
+      <h3 class="govuk-heading-m">Can't answer this at the moment?</h3>
+      <p class="govuk-body">Try a page <a href="{{ url_for('frontend.lucky_dip') }}">refresh</a> and see what else we need an answer for.</p>
+    </div>
+
   </div>
+
+  
 {%  endblock %}

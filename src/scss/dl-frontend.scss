@@ -45,3 +45,12 @@ a {
 @import "components/facts";
 
 @import "temporary";
+
+.govuk-inset-text--info {
+  border-left-color: govuk-colour("blue");
+  background: govuk-colour("grey-4");
+
+  &.govuk-grid-column-two-thirds {
+    margin-left: 15px;
+  }
+}
