@@ -109,6 +109,9 @@ class PlanningAuthority(db.Model):
                                              lazy=True,
                                              back_populates='planning_authority')
 
+    def sorted_hdt(self, reverse=False):
+        return sorted(self.housing_delivery_tests, reverse=reverse)
+
     def to_dict(self):
         data = {
             'id': self.id,
@@ -250,6 +253,9 @@ class HousingDeliveryTest(db.Model):
 
     def __lt__(self, other):
         return self.planning_authority_id == other.planning_authority_id and (self.from_year < other.from_year) and (self.to_year < other.to_year)
+
+    def percent_delivered(self):
+        return (self.homes_delivered / self.homes_required) * 100.0
 
 
 class State:

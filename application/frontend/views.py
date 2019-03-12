@@ -52,7 +52,6 @@ def start_collecting_data():
     return render_template('collecting-data-start-page.html')
 
 
-
 @frontend.route('/local-plans/<planning_authority>/document/<document>', methods=['POST'])
 def add_fact_to_document(planning_authority, document):
 
@@ -79,6 +78,7 @@ def add_fact_to_document(planning_authority, document):
         resp = {'OK': 200}
 
     return jsonify(resp)
+
 
 @frontend.route('/local-plans/<document>/<fact>', methods=['GET', 'DELETE'])
 def remove_fact_from_document(document, fact):

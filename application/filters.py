@@ -36,3 +36,7 @@ def format_fact(name):
 		return EmergingFactType[name].value
 	else:
 		return name
+
+
+def format_percent(value):
+	return f'{value}%'
