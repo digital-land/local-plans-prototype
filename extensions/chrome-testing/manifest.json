@@ -1,0 +1,12 @@
+{
+  "name": "Local Plans Test",
+  "description": "Test some extension features",
+  "version": "0.1",
+  "permissions": ["storage", "activeTab", "downloads", "<all_urls>", "contextMenus"],
+  "browser_action": {"default_popup": "popup.html"},
+  "background": {
+  	"persistent": false,
+ 	  "scripts": ["background.js"]
+  },
+  "manifest_version": 2
+}

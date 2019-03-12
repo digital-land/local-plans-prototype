@@ -421,6 +421,7 @@ var activePageDetails = {};
         }
       );
     });
+
   });
 
   // inject fetch-page-details.js and listen for 

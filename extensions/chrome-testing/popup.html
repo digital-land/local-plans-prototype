@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+    <head>
+        <link href="popup/static/dl-frontend.css" rel="stylesheet" />
+        <link href="popup/static/popup.css" rel="stylesheet" />
+        <style>
+            #screenshot-target {
+                max-width: 400px;
+                margin-bottom: 15px;
+            }
+        </style>
+        <script src="popup/vendor/jquery-3.3.1.min.js"></script>
+        <script src='popup.js'></script>
+    </head>
+    <body>
+        <p class="govuk-body">This is a test browser extension.</p>
+
+        <div class="govuk-form-group">
+            <img id="screenshot-target" src="" alt="">
+            <button class="govuk-button screenshot-btn">Take screenshot</button>
+        </div>
+
+    </body>
+</html>
