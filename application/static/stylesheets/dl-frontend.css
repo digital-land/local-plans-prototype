@@ -6817,3 +6817,63 @@
     line-height: 16px;
   }
 }
+
+.graph-placeholder {
+  display: flex;
+  height: 400px;
+  margin-bottom: 45px;
+  border-bottom: 2px solid #bfc1c3;
+  border-left: 2px solid #bfc1c3;
+  background: #f8f8f8;
+  align-items: center;
+  justify-content: center;
+}
+
+.graph-placeholder span {
+  color: #bfc1c3;
+}
+
+.hdt-figure-section {
+  margin-bottom: 30px;
+}
+
+.contribution-bar {
+  padding-top: 8px;
+}
+
+.contribution-bar:hover {
+  padding-top: 6px;
+}
+
+.bar--grey {
+  background: #6f777b;
+}
+
+.bar--blue {
+  background: #005ea5;
+}
+
+.bar--light-blue {
+  background: #2b8cc4;
+}
+
+.js-enabled .govuk-tabs__panel--no-bottom-padding {
+  padding-bottom: 0;
+}
+
+.dl-heading-link {
+  color: #0b0c0c;
+}
+
+.dl-heading-link:link {
+  color: #0b0c0c;
+}
+
+.per-year-figure {
+  display: flex;
+  width: 50%;
+}
+
+.per-year-figure span:last-child {
+  margin-left: auto;
+}

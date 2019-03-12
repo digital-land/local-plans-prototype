@@ -1,0 +1,62 @@
+.graph-placeholder {
+  display: flex;
+  height: 400px;
+  margin-bottom: 45px;
+  border-bottom: 2px solid govuk-colour("grey-2");
+  border-left: 2px solid govuk-colour("grey-2");
+  background: govuk-colour("grey-4");
+  align-items: center;
+  justify-content: center;
+
+  span {
+    color: govuk-colour("grey-2");
+  }
+}
+
+.hdt-figure-section {
+  margin-bottom: $govuk-gutter;
+}
+
+// tweaking the padding on the bars
+// when using helvetica over NTA then need to alter padding
+.contribution-bar {
+  padding-top: 8px;
+
+  &:hover {
+    padding-top: 6px;
+    //padding-top: 4px;
+  }
+}
+
+.bar--grey {
+  background: govuk-colour("grey-1");
+}
+
+.bar--blue {
+  background: govuk-colour("blue");
+}
+
+.bar--light-blue {
+  background: govuk-colour("light-blue");
+}
+
+.js-enabled .govuk-tabs__panel--no-bottom-padding {
+  padding-bottom: 0;
+}
+
+.dl-heading-link {
+  color: govuk-colour("black");
+
+  &:link {
+    color: govuk-colour("black");
+  }
+}
+
+.per-year-figure {
+  display: flex;
+  width: 50%;
+
+  span:last-child {
+    margin-left: auto;
+  }
+}
