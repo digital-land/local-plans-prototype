@@ -421,6 +421,15 @@ var activePageDetails = {};
         }
       );
     });
+
+    const screenshotBtn = document.querySelector(".screenshot-btn");
+    screenshotBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      chrome.tabs.captureVisibleTab(function(screenshotDataUrl) {
+        document.getElementById('screenshot-target').src = screenshotDataUrl;
+      });
+    });
+
   });
 
   // inject fetch-page-details.js and listen for 
