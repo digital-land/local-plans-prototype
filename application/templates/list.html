@@ -49,9 +49,9 @@
           <li>
             <div class="plan-details">
               <a class="plan-details__item local-plan-id" href="{{ url_for('frontend.local_plan', planning_authority= planning_authority.id, _anchor=plan.local_plan ) }}">{{ plan.local_plan }}</a>
-              {% set lastState = plan.states|last %}
-              <span class="stage-tag plan-details__item {% if plan.is_adopted() %}is-adopted{% endif %}">{{ lastState[0] }}</span>
-              <span class="plan-details__item">{{ lastState[1]|format_date_from_str }}</span>
+              {% set latest_state = plan.latest_state() %}
+              <span class="stage-tag plan-details__item {% if plan.is_adopted() %}is-adopted{% endif %}">{{ latest_state.state }}</span>
+              <span class="plan-details__item">{{ latest_state.date | format_month_and_year }}</span>
               <span class="plan-details__item plan-no-of-docs">{{ plan.plan_documents|length }} associated documents</span>
             </div>
           </li>

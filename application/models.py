@@ -2,7 +2,6 @@ import uuid
 
 from datetime import datetime
 from enum import Enum
-
 from sqlalchemy.ext.mutable import Mutable
 from application.extensions import db
 from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSON
@@ -51,29 +50,35 @@ class LocalPlan(db.Model):
 
     local_plan = db.Column(db.String(), primary_key=True)
     url = db.Column(db.String())
-
     title = db.Column(db.String())
-
     states = db.Column(MutableList.as_mutable(ARRAY(db.String())), server_default='{}')
-
+    published_date = db.Column(db.Date())
+    submitted_date = db.Column(db.Date())
+    sound_date = db.Column(db.Date())
+    adopted_date = db.Column(db.Date())
     plan_documents = db.relationship('PlanDocument', back_populates='local_plan', lazy=True)
-
     planning_authorities = db.relationship('PlanningAuthority',
                                            secondary=planning_authority_plan,
                                            lazy=True,
                                            back_populates='local_plans')
 
+    def latest_state(self):
+        return self.ordered_states()[-1]
+
     def is_adopted(self):
-        return 'adopted' in [s[0] for s in self.states]
+        return True if self.adopted_date is not None else False
         
     def ordered_states(self):
-        ordered = []
-        for s in self.states:
-            ordered.append(State(state=s[0], date=_parse_date(s[1])))
-        return sorted(ordered)
-
-    def __repr__(self):
-        return f'{self.local_plan} {self.states}'
+        states = []
+        if self.published_date is not None:
+            states.append(State(state='published', date=self.published_date))
+        if self.submitted_date is not None:
+            states.append(State(state='submitted', date=self.submitted_date))
+        if self.sound_date is not None:
+            states.append(State(state='sound', date=self.sound_date))
+        if self.adopted_date is not None:
+            states.append(State(state='adopted', date=self.adopted_date))
+        return states
 
     def to_dict(self):
         data = {
@@ -90,10 +95,8 @@ class PlanningAuthority(db.Model):
     id = db.Column(db.String(64), primary_key=True)
     name = db.Column(db.String(256))
     website = db.Column(db.String())
-
     local_scheme_url = db.Column(db.String())
     emerging_plan_documents = db.relationship('EmergingPlanDocument', back_populates='planning_authority', lazy=True)
-
     local_plans = db.relationship('LocalPlan',
                                   secondary=planning_authority_plan,
                                   lazy=True,
@@ -117,10 +120,8 @@ class PlanDocument(db.Model):
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=_generate_uuid)
     plan_document_type = db.Column(db.String)
     url = db.Column(db.String())
-
     local_plan_id = db.Column(db.String(64), db.ForeignKey('local_plan.local_plan'), nullable=False)
     local_plan = db.relationship('LocalPlan', back_populates='plan_documents')
-
     facts = db.relationship('Fact', back_populates='plan_document', lazy=True, cascade="all, delete-orphan")
 
     def to_dict(self):
@@ -156,7 +157,6 @@ class EmergingFactType(Enum):
     OTHER = 'Other'
 
 
-
 # TODO - Note with facts and emerging facts the 'fact' field can contain strings, dates, numbers or ranges
 # so will put method to return right value based on fact_type
 
@@ -166,9 +166,9 @@ class Fact(db.Model):
     fact = db.Column(db.String())
     fact_type = db.Column(db.String())
     notes = db.Column(db.String())
-
     plan_document_id = db.Column(UUID(as_uuid=True), db.ForeignKey('plan_document.id'), nullable=False)
     plan_document = db.relationship('PlanDocument', back_populates='facts')
+    created_date = db.Column(db.DateTime(), default=datetime.utcnow)
 
     def to_dict(self):
         data = {
@@ -188,9 +188,9 @@ class EmergingFact(db.Model):
     fact = db.Column(db.String())
     fact_type = db.Column(db.String())
     notes = db.Column(db.String())
-
     emerging_plan_document_id = db.Column(UUID(as_uuid=True), db.ForeignKey('emerging_plan_document.id'), nullable=False)
     emerging_plan_document = db.relationship('EmergingPlanDocument', back_populates='facts')
+    created_date = db.Column(db.DateTime(), default=datetime.utcnow)
 
     def to_dict(self):
         data = {
@@ -208,10 +208,8 @@ class EmergingPlanDocument(db.Model):
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=_generate_uuid)
     url = db.Column(db.String())
-
     planning_authority_id = db.Column(db.String(64), db.ForeignKey('planning_authority.id'), nullable=False)
     planning_authority = db.relationship('PlanningAuthority', back_populates='emerging_plan_documents')
-
     facts = db.relationship('EmergingFact', back_populates='emerging_plan_document', lazy=True, cascade="all, delete-orphan")
 
     def to_dict(self):

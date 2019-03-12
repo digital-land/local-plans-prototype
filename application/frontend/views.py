@@ -18,7 +18,7 @@ def index():
     return render_template('index.html')
 
 
-@frontend.route('/pla', methods=['GET', 'POST'])
+@frontend.route('/planning-authority', methods=['GET', 'POST'])
 def planning_authority_list():
     planning_authorities = PlanningAuthority.query.order_by(PlanningAuthority.name).all()
     if request.method == 'POST':
@@ -27,7 +27,7 @@ def planning_authority_list():
     return render_template('planning-authority-list.html', planning_authorities=planning_authorities)
 
 
-@frontend.route('/pla/<planning_authority>')
+@frontend.route('/planning-authority/<planning_authority>')
 def planning_authority(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
     return render_template('planning-authority.html', planning_authority=pla)

@@ -252,10 +252,10 @@
 
       <div class="pims-stages">
 
-        {% set lastState = plan.ordered_states()|last %}
+        {% set latest_state = plan.latest_state() %}
         <div class="current-stage">
-          <span class="stage-tag">{{ lastState.state }}</span>
-          <span class="stage-date">{{ lastState.date | format_month_and_year }}</span>
+          <span class="stage-tag">{{ latest_state.state }}</span>
+          <span class="stage-date">{{ latest_state.date | format_month_and_year }}</span>
         </div>
 
         <details class="govuk-details">
