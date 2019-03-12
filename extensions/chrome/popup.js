@@ -373,16 +373,19 @@ function removeAllClassesFromFactForm(form) {
 // Add links to allLinks and visibleLinks, sort and show them.  send_links.js is
 // injected into all frames of the active tab, so this listener may be called
 // multiple times.
-chrome.extension.onRequest.addListener(function(links) {
-  for (var index in links) {
+chrome.runtime.onMessage.addListener(function(request, _sender) {
+  if (request.action == "findLinks") {
+    const links = request.links;
+    for (var index in links) {
 
-    console.log(links[index]);
-    allLinks.push(links[index]);
+      console.log(links[index]);
+      allLinks.push(links[index]);
 
+    }
+    allLinks.sort();
+    visibleLinks = allLinks;
+    showLinks();
   }
-  allLinks.sort();
-  visibleLinks = allLinks;
-  showLinks();
 });
 
 var activePageDetails = {};
