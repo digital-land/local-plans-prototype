@@ -17,6 +17,7 @@ python-dotenv = "*"
 gunicorn = "*"
 pytest = "*"
 flask-wtf = "*"
+boto3 = "*"
 
 [requires]
 python_version = "3.7"

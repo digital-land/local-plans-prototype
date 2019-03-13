@@ -1,5 +1,8 @@
+import base64
 from pathlib import Path
 
+import boto3
+from boto3 import s3
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify, send_file
 
 from application.extensions import db
@@ -55,25 +58,37 @@ def start_collecting_data():
 @frontend.route('/local-plans/<planning_authority>/document/<document>', methods=['POST'])
 def add_fact_to_document(planning_authority, document):
 
-    fact = request.json.get('fact')
+    fact_json = request.json.get('fact')
 
-    if fact is not None :
-        document_type = fact.get('document_type')
+    if fact_json is not None :
+        document_type = fact_json.get('document_type')
 
         if document_type == 'plan_document':
             local_plan_id = request.args.get('local_plan')
             document = PlanDocument.query.filter_by(id=document, local_plan_id=local_plan_id).one()
-            fact = Fact(fact=fact.get('fact'), fact_type=fact.get('fact_type'), notes=fact.get('notes'))
+            fact = Fact(fact=fact_json.get('fact'), fact_type=fact_json.get('fact_type'), notes=fact_json.get('notes'))
 
         elif document_type == 'emerging_plan_document':
             document = EmergingPlanDocument.query.filter_by(id=document, planning_authority_id=planning_authority).one()
-            fact = EmergingFact(fact=fact.get('fact'), fact_type=fact.get('fact_type'), notes=fact.get('notes'))
+            fact = EmergingFact(fact=fact_json.get('fact'), fact_type=fact_json.get('fact_type'), notes=fact_json.get('notes'))
 
         document.facts.append(fact)
         db.session.add(document)
         db.session.commit()
         remove_url = url_for('frontend.remove_fact_from_document', document=str(document.id), fact=fact.id, document_type=document_type)
         resp = {'OK': 200, 'fact': fact.to_dict(), 'remove_url': remove_url}
+
+        if fact_json.get('screenshot') is not None:
+            data = fact_json['screenshot'].replace('data:image/jpeg;base64,', '')
+            bucket = 'local-plans'
+            key = f'images/{fact.id}.jpg'
+            s3 = boto3.resource('s3')
+            object = s3.Object(bucket, key)
+            object.put(ACL='public-read', Body=base64.b64decode(data), ContentType='image/jpeg')
+            image_url = f'{object.meta.client._endpoint.host}/{bucket}/{key}'
+            fact.image_url = image_url
+            db.session.add(fact)
+            db.session.commit()
     else:
         resp = {'OK': 200}
 

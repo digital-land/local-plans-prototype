@@ -170,6 +170,8 @@ class EmergingFactType(Enum):
 # TODO - Note with facts and emerging facts the 'fact' field can contain strings, dates, numbers or ranges
 # so will put method to return right value based on fact_type
 
+# TODO merge Fact models and document types
+
 class Fact(db.Model):
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=_generate_uuid)
@@ -179,6 +181,7 @@ class Fact(db.Model):
     plan_document_id = db.Column(UUID(as_uuid=True), db.ForeignKey('plan_document.id'), nullable=False)
     plan_document = db.relationship('PlanDocument', back_populates='facts')
     created_date = db.Column(db.DateTime(), default=datetime.utcnow)
+    image_url = db.Column(db.String())
 
     def to_dict(self):
         data = {
@@ -203,6 +206,7 @@ class EmergingFact(db.Model):
                                           nullable=False)
     emerging_plan_document = db.relationship('EmergingPlanDocument', back_populates='facts')
     created_date = db.Column(db.DateTime(), default=datetime.utcnow)
+    image_url = db.Column(db.String())
 
     def to_dict(self):
         data = {
