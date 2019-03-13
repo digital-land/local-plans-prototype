@@ -58,7 +58,7 @@ class LocalPlan(db.Model):
     submitted_date = db.Column(db.Date())
     sound_date = db.Column(db.Date())
     adopted_date = db.Column(db.Date())
-    plan_documents = db.relationship('PlanDocument', back_populates='local_plan', lazy=True)
+    plan_documents_old = db.relationship('PlanDocumentOld', back_populates='local_plan', lazy=True)
     planning_authorities = db.relationship('PlanningAuthority',
                                            secondary=planning_authority_plan,
                                            lazy=True,
@@ -125,14 +125,14 @@ def _parse_date(datestr):
     return datetime.strptime(datestr, '%Y-%m-%d')
 
 
-class PlanDocument(db.Model):
+class PlanDocumentOld(db.Model):
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=_generate_uuid)
     plan_document_type = db.Column(db.String)
     url = db.Column(db.String())
     local_plan_id = db.Column(db.String(64), db.ForeignKey('local_plan.local_plan'), nullable=False)
-    local_plan = db.relationship('LocalPlan', back_populates='plan_documents')
-    facts = db.relationship('Fact', back_populates='plan_document', lazy=True, cascade="all, delete-orphan")
+    local_plan = db.relationship('LocalPlan', back_populates='plan_documents_old')
+    facts = db.relationship('FactOld', back_populates='plan_document_old', lazy=True, cascade="all, delete-orphan")
 
     def to_dict(self):
         data = {
@@ -172,14 +172,14 @@ class EmergingFactType(Enum):
 
 # TODO merge Fact models and document types
 
-class Fact(db.Model):
+class FactOld(db.Model):
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=_generate_uuid)
     fact = db.Column(db.String())
     fact_type = db.Column(db.String())
     notes = db.Column(db.String())
-    plan_document_id = db.Column(UUID(as_uuid=True), db.ForeignKey('plan_document.id'), nullable=False)
-    plan_document = db.relationship('PlanDocument', back_populates='facts')
+    plan_document_old__id = db.Column(UUID(as_uuid=True), db.ForeignKey('plan_document_old.id'), nullable=False)
+    plan_document_old = db.relationship('PlanDocumentOld', back_populates='facts_old')
     created_date = db.Column(db.DateTime(), default=datetime.utcnow)
     image_url = db.Column(db.String())
 

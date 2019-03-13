@@ -6,7 +6,7 @@ from boto3 import s3
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify, send_file
 
 from application.extensions import db
-from application.models import PlanningAuthority, LocalPlan, PlanDocument, EmergingPlanDocument, Fact, FactType, \
+from application.models import PlanningAuthority, LocalPlan, PlanDocumentOld, EmergingPlanDocument, FactOld, FactType, \
     EmergingFactType, EmergingFact
 from application.frontend.forms import LocalDevelopmentSchemeURLForm, LocalPlanURLForm
 
@@ -66,7 +66,7 @@ def add_fact_to_document(planning_authority, document):
         if document_type == 'plan_document':
             local_plan_id = request.args.get('local_plan')
             document = PlanDocument.query.filter_by(id=document, local_plan_id=local_plan_id).one()
-            fact = Fact(fact=fact_json.get('fact'), fact_type=fact_json.get('fact_type'), notes=fact_json.get('notes'))
+            fact = FactOld(fact=fact_json.get('fact'), fact_type=fact_json.get('fact_type'), notes=fact_json.get('notes'))
 
         elif document_type == 'emerging_plan_document':
             document = EmergingPlanDocument.query.filter_by(id=document, planning_authority_id=planning_authority).one()
@@ -97,8 +97,8 @@ def add_fact_to_document(planning_authority, document):
 
 @frontend.route('/local-plans/<document>/<fact>', methods=['GET', 'DELETE'])
 def remove_fact_from_document(document, fact):
-    if Fact.query.filter_by(id=fact, plan_document_id=document).first() is not None:
-        fact = Fact.query.filter_by(id=fact, plan_document_id=document).one()
+    if FactOld.query.filter_by(id=fact, plan_document_id=document).first() is not None:
+        fact = FactOld.query.filter_by(id=fact, plan_document_id=document).one()
     elif EmergingFact.query.filter_by(id=fact, emerging_plan_document_id=document).first() is not None:
         fact = EmergingFact.query.filter_by(id=fact, emerging_plan_document_id=document).one()
     if fact is not None:
