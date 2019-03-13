@@ -40,3 +40,8 @@ def format_fact(name):
 
 def format_percent(value):
 	return f'{value}%'
+
+
+def return_percent(val1, denominator, precision=1):
+	percentage = (val1 / denominator) * 100
+	return round(percentage, precision)
