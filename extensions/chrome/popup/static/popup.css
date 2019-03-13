@@ -5323,6 +5323,82 @@
   }
 }
 
+* {
+  font-family: "HelveticaNeue", "Helvetica Neue", "Arial", "Helvetica", sans-serif;
+}
+
+.govuk-warning-text__icon {
+  line-height: 26px;
+}
+
+.govuk-button--start {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.mhclg .govuk-header__container {
+  border-color: #37836e;
+}
+
+.govuk-width-container-full {
+  max-width: 1280px;
+  margin: 0 15px;
+}
+
+@media (min-width: 40.0625em) {
+  .govuk-width-container-full {
+    margin: 0 30px;
+  }
+}
+
+@media (min-width: 1340px) {
+  .govuk-width-container-full {
+    margin: 0 auto;
+  }
+}
+
+.govuk-header__container.govuk-width-container-full {
+  margin-bottom: -10px;
+}
+
+.dlf-load-button,
+.dlf-filter-button {
+  color: #ffffff;
+  background-color: #005ea5;
+  box-shadow: 0 2px 0 #003259;
+  margin-top: 5px;
+}
+
+.dlf-load-button:link, .dlf-load-button:visited, .dlf-load-button:active, .dlf-load-button:hover,
+.dlf-filter-button:link,
+.dlf-filter-button:visited,
+.dlf-filter-button:active,
+.dlf-filter-button:hover {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.dlf-load-button:hover, .dlf-load-button:focus,
+.dlf-filter-button:hover,
+.dlf-filter-button:focus {
+  background-color: #004f8c;
+}
+
+.dlf-secondary-button {
+  color: #0b0c0c;
+  background-color: #dee0e2;
+  box-shadow: 0 2px 0 #b5babe;
+}
+
+.dlf-secondary-button:link, .dlf-secondary-button:visited, .dlf-secondary-button:active, .dlf-secondary-button:hover {
+  color: #0b0c0c;
+  text-decoration: none;
+}
+
+.dlf-secondary-button:hover, .dlf-secondary-button:focus {
+  background-color: #d0d3d6;
+}
+
 body {
   position: relative;
   min-width: 400px;
@@ -5480,4 +5556,14 @@ header p:first-child {
 
 .url-view .save-urls-section {
   display: block;
+}
+
+.screenshot-taker__details[open] .screenshot-taker__summary:before {
+  border: 0;
+}
+
+.screenshot-taker__viewer {
+  display: block;
+  max-width: 50%;
+  margin-bottom: 15px;
 }
