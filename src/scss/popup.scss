@@ -107,6 +107,10 @@ header p:first-child {
   }
 }
 
+.facts__doc-url {
+  overflow: scroll;
+}
+
 .document-facts {
   padding: 0;
 }

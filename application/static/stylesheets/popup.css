@@ -5525,6 +5525,10 @@ header p:first-child {
   opacity: 1;
 }
 
+.facts__doc-url {
+  overflow: scroll;
+}
+
 .document-facts {
   padding: 0;
 }
