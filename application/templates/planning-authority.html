@@ -64,7 +64,7 @@
       {% set delivered = hdt.homes_delivered | return_percent(denominator=max_figure) | format_percent %}
       {{ singleBarComponent("HDT delivered", hdt.homes_delivered, delivered, "bar--blue") }}
 
-      {{ singleBarComponent("Local plan commitment", 123, "70%", "bar--light-blue") }}
+      {{ singleBarComponent("Local plan commitment", "???", "70%", "bar--light-blue") }}
 {#      need to work out how to get local plan commitment - it will be attached to a plan and a document#}
 {#      specifically so we have to hope that they are recorded accoring to this breakdown of years#}
 {#      so that we can match with these figures - possibly a jump to far in terms of how this is currently#}
