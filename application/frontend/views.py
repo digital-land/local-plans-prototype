@@ -32,7 +32,10 @@ def planning_authority(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
 
     # TODO at the moment this is all facts, but will probably just filter for ones related to housing numbers
-    facts = pla.gather_facts()
+    facts = pla.gather_facts(filters=['HOUSING_DELIVERED',
+                                      'HOUSING_REQUIRED',
+                                      'HOUSING_REQUIREMENT_TOTAL',
+                                      'HOUSING_REQUIREMENT_RANGE'])
     return render_template('planning-authority.html', planning_authority=pla, facts=facts)
 
 

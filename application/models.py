@@ -84,17 +84,25 @@ class PlanningAuthority(db.Model):
     def sorted_hdt(self, reverse=False):
         return sorted(self.housing_delivery_tests, reverse=reverse)
 
-    def gather_facts(self):
+    def gather_facts(self, filters=[]):
 
         facts = []
         for doc in self.other_documents:
             for fact in doc.facts:
-                facts.append(fact)
+                if filter:
+                    if fact.fact_type in filters:
+                        facts.append(fact)
+                else:
+                    facts.append(fact)
 
         for plan in self.local_plans:
             for doc in plan.plan_documents:
                 for fact in doc.facts:
-                    facts.append(fact)
+                    if filter:
+                        if fact.fact_type in filters:
+                            facts.append(fact)
+                    else:
+                        facts.append(fact)
 
         return facts
 

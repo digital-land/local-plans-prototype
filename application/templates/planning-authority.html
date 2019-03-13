@@ -43,7 +43,6 @@
         but will be focussed on housing numbers.
      #}
 
-
 {#    {% if facts %}#}
 {##}
 {#        <div class="govuk-grid-row">#}
@@ -64,7 +63,7 @@
 {#                            <td class="govuk-table__cell">{{ fact.fact_type | format_fact }}</td>#}
 {#                            <td class="govuk-table__cell">{{ fact.fact }}</td>#}
 {#                            <td class="govuk-table__cell">{{ fact.notes }}</td>#}
-{#                            <td class="govuk-table__cell"><a href="{{ fact.document.url }}">{{ fact.document.url }}</a></td>#}
+{#                            <td class="govuk-table__cell"><a href="{{ fact.document.url }}">{{ fact.document.title }}</a></td>#}
 {#                            {% if fact.image_url %}#}
 {#                                <td class="govuk-table__cell">#}
 {#                                        <a href="{{ fact.image_url }}" target="_blank">#}
