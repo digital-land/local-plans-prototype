@@ -5,7 +5,8 @@ import boto3
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify, send_file
 
 from application.extensions import db
-from application.models import PlanningAuthority, LocalPlan, FactType, EmergingFactType, PlanDocument, OtherDocument, Fact
+from application.models import PlanningAuthority, LocalPlan, FactType, EmergingFactType, PlanDocument, OtherDocument, \
+    Fact, Document
 
 from application.frontend.forms import LocalDevelopmentSchemeURLForm, LocalPlanURLForm
 
@@ -29,7 +30,10 @@ def planning_authority_list():
 @frontend.route('/planning-authority/<planning_authority>')
 def planning_authority(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
-    return render_template('planning-authority.html', planning_authority=pla)
+
+    # TODO at the moment this is all facts, but will probably just filter for ones related to housing numbers
+    facts = pla.gather_facts()
+    return render_template('planning-authority.html', planning_authority=pla, facts=facts)
 
 
 @frontend.route('/local-plans', methods=['GET', 'POST'])

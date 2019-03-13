@@ -11,6 +11,8 @@ from application.extensions import db
 from application.models import PlanningAuthority, LocalPlan, PlanDocument, OtherDocument, Fact, HousingDeliveryTest, \
     Document
 
+HDT_URL = 'https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/779711/HDT_2018_measurement.xlsx'
+
 
 def create_other_data(pa, row):
     plan_id = row['local-plan'].strip()
@@ -96,6 +98,9 @@ def set_ons_codes():
 def load_hdt():
     import os
 
+    db.session.query(HousingDeliveryTest).delete()
+    db.session.commit()
+
     local_authorities = 'https://raw.githubusercontent.com/digital-land/alpha-data/master/local-authorities.csv'
     print('Loading', local_authorities)
     with closing(requests.get(local_authorities, stream=True)) as r:
@@ -134,9 +139,21 @@ def load_hdt():
                                               homes_delivered=homes_delivered)
 
                     pla.housing_delivery_tests.append(hdt)
-                    db.session.add(pla)
-                    db.session.commit()
+
+                    document = OtherDocument(url=HDT_URL, title='Housing Delivery Test: 2018 measurement')
+
+                    document.facts.append(Fact(fact=homes_required,
+                                               from_year=from_year,
+                                               to_year=to_year,
+                                               fact_type='HOUSING_REQUIRED'))
+
+                    document.facts.append(Fact(fact=homes_delivered,
+                                               from_year=from_year,
+                                               to_year=to_year,
+                                               fact_type='HOUSING_DELIVERED'))
+
                     print('Added hdt for years', hdt.from_year, hdt.from_year, 'to LA', pla.id)
+
                 else:
                     print('hdt for', pla.id, 'for years', hdt.from_year, hdt.from_year, 'already added')
 
@@ -158,8 +175,17 @@ def load_hdt():
                                               homes_delivered=homes_delivered)
 
                     pla.housing_delivery_tests.append(hdt)
-                    db.session.add(pla)
-                    db.session.commit()
+
+                    document.facts.append(Fact(fact=homes_required,
+                                               from_year=from_year,
+                                               to_year=to_year,
+                                               fact_type='HOUSING_REQUIRED'))
+
+                    document.facts.append(Fact(fact=homes_delivered,
+                                               from_year=from_year,
+                                               to_year=to_year,
+                                               fact_type='HOUSING_DELIVERED'))
+
                     print('Added hdt for years', hdt.from_year, hdt.from_year, 'to LA', pla.id)
                 else:
                     print('hdt for', pla.id, 'for years', hdt.from_year, hdt.from_year, 'already added')
@@ -182,11 +208,24 @@ def load_hdt():
                                               homes_delivered=homes_delivered)
 
                     pla.housing_delivery_tests.append(hdt)
-                    db.session.add(pla)
-                    db.session.commit()
+
+                    document.facts.append(Fact(fact=homes_required,
+                                               from_year=from_year,
+                                               to_year=to_year,
+                                               fact_type='HOUSING_REQUIRED'))
+
+                    document.facts.append(Fact(fact=homes_delivered,
+                                               from_year=from_year,
+                                               to_year=to_year,
+                                               fact_type='HOUSING_DELIVERED'))
+
                     print('Added hdt for years', hdt.from_year, hdt.from_year, 'to LA', pla.id)
                 else:
                     print('hdt for', pla.id, 'for years', hdt.from_year, hdt.from_year, 'already added')
+
+                pla.other_documents.append(document)
+                db.session.add(pla)
+                db.session.commit()
 
 
 @click.command()

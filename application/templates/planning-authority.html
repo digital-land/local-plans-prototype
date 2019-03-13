@@ -31,10 +31,56 @@
         combination of scheme and pins dates?
     #}
 
-  <h2 class="govuk-heading-l">Schedule</h2>
-  <div class="graph-placeholder">
-    <span class="govuk-body">Placeholder for schedule graph</span>
-  </div>
+{#      <h2 class="govuk-heading-l">Schedule</h2>#}
+{#      <div class="graph-placeholder">#}
+{#        <span class="govuk-body">Placeholder for schedule graph</span>#}
+{#      </div>#}
+
+
+
+    {#
+        TODO Colm, this list of facts is what I think is becoming more central - it's a list of all things we know
+        but will be focussed on housing numbers.
+     #}
+
+
+{#    {% if facts %}#}
+{##}
+{#        <div class="govuk-grid-row">#}
+{#            <div class="govuk-grid-column-full">#}
+{#                <table class="govuk-table document-facts__table">#}
+{#                    <thead>#}
+{#                    <tr>#}
+{#                        <th>Fact type</th>#}
+{#                        <th>Details</th>#}
+{#                        <th>Notes</th>#}
+{#                        <th>Source document</th>#}
+{#                        <th>Image</th>#}
+{#                    </tr>#}
+{#                    </thead>#}
+{#                    <tbody class="govuk-table__body">#}
+{#                    {% for fact in facts %}#}
+{#                        <tr class="govuk-table__row">#}
+{#                            <td class="govuk-table__cell">{{ fact.fact_type | format_fact }}</td>#}
+{#                            <td class="govuk-table__cell">{{ fact.fact }}</td>#}
+{#                            <td class="govuk-table__cell">{{ fact.notes }}</td>#}
+{#                            <td class="govuk-table__cell"><a href="{{ fact.document.url }}">{{ fact.document.url }}</a></td>#}
+{#                            {% if fact.image_url %}#}
+{#                                <td class="govuk-table__cell">#}
+{#                                        <a href="{{ fact.image_url }}" target="_blank">#}
+{#                                            <img style="height: 60px"src="{{ fact.image_url }}">#}
+{#                                        </a>#}
+{#                                </td>#}
+{#                            {% endif %}#}
+{#                        </tr>#}
+{#                    {% endfor %}#}
+{#                    </tbody>#}
+{#                </table>#}
+{#            </div>#}
+{#        </div>#}
+{##}
+{#    {% endif %}#}
+
 
   <h2 class="govuk-heading-l">Number of houses</h2>
   {% macro singleBarComponent(label, value, width, _classes) -%}
