@@ -293,6 +293,12 @@ function factSubmitHandler(e) {
     fact["fact"] = "";
   }
 
+  // if screenshot has been taken add to fact obj
+  const screenshotDataUrl = form.querySelector(".screenshot-taker__viewer").src;
+  if(screenshotDataUrl !== "") {
+    fact["screenshot"] = screenshotDataUrl;
+  }
+
   console.log(fact, url);
 
   // perform post
@@ -347,6 +353,8 @@ function resetFactForm(form) {
   } else {
     form.classList.add('publication-date');
   }
+  // reset screenshot taker
+  resetScreenshotTaker(form.querySelector(".screenshot-taker__details"));
 }
 
 function setUpAddFactForms() {
@@ -368,6 +376,39 @@ function setUpAddFactForms() {
 
 function removeAllClassesFromFactForm(form) {
   form.classList.remove("plan-name", "plan-start-year", "plan-end-year", "housing-requirement-total", "housing-requirement-range", "publication-date", "proposed-reg-18-date", "proposed-publication-date", "proposed-submission-date", "proposed-main-modifications-date", "proposed-adoption-date");
+}
+
+
+function resetScreenshotTaker(detailsEl) {
+  // remove dataURL as src
+  detailsEl.querySelector(".screenshot-taker__viewer").src = "";
+  // reset text changes
+  const textEls = detailsEl.querySelectorAll("[data-original-text]");
+  textEls.forEach((el) => {
+    el.textContent = el.dataset.originalText;
+  });
+}
+
+function screenshotTaker(screenshotEl) {
+  const summary = screenshotEl.closest('details').querySelector(".screenshot-taker__summary span");
+  const viewer = screenshotEl.querySelector(".screenshot-taker__viewer");
+  const btn = screenshotEl.querySelector(".screenshot-taker__btn");
+  let shotTaken = false;
+
+  function clickHandler(e) {
+    e.preventDefault();
+    chrome.tabs.captureVisibleTab(function(screenshotDataUrl) {
+      viewer.src = screenshotDataUrl;
+    });
+
+    if(!shotTaken) {
+      summary.textContent = "Check screenshot";
+      btn.textContent = "Retake";
+      shotTaken = true;
+    }
+  }
+
+  btn.addEventListener('click', clickHandler);
 }
 
 // Add links to allLinks and visibleLinks, sort and show them.  send_links.js is
@@ -421,6 +462,10 @@ var activePageDetails = {};
         }
       );
     });
+
+    // set up screenshot taking
+    const screenshotTakers = document.querySelectorAll(".screenshot-taker");
+    screenshotTakers.forEach(screenshotTaker);
 
   });
 

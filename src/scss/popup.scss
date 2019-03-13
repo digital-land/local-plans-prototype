@@ -1,5 +1,14 @@
 @import "all";
 
+// Import common Digital Land styles
+@import "common/colours";
+@import "common/helvetica-fixes";
+@import "common/mhclg-branding";
+@import "common/site-full-width-container";
+
+// import Digital Land components
+@import "components/buttons";
+
 body {
   position: relative;
   min-width: 400px;
@@ -98,6 +107,10 @@ header p:first-child {
   }
 }
 
+.facts__doc-url {
+  overflow: scroll;
+}
+
 .document-facts {
   padding: 0;
 }
@@ -137,5 +150,15 @@ header p:first-child {
   .save-urls-section {
     display: block;
   }
+}
+
+.screenshot-taker__details[open] .screenshot-taker__summary:before {
+  border: 0;
+}
+
+.screenshot-taker__viewer {
+  display: block;
+  max-width: 50%;
+  margin-bottom: $govuk-gutter-half;
 }
 
