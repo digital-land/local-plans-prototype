@@ -2,12 +2,11 @@ import base64
 from pathlib import Path
 
 import boto3
-from boto3 import s3
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify, send_file
 
 from application.extensions import db
-from application.models import PlanningAuthority, LocalPlan, PlanDocumentOld, EmergingPlanDocument, FactOld, FactType, \
-    EmergingFactType, EmergingFact
+from application.models import PlanningAuthority, LocalPlan, FactType, EmergingFactType, PlanDocument, OtherDocument, Fact
+
 from application.frontend.forms import LocalDevelopmentSchemeURLForm, LocalPlanURLForm
 
 frontend = Blueprint('frontend', __name__, template_folder='templates')
@@ -66,12 +65,10 @@ def add_fact_to_document(planning_authority, document):
         if document_type == 'plan_document':
             local_plan_id = request.args.get('local_plan')
             document = PlanDocument.query.filter_by(id=document, local_plan_id=local_plan_id).one()
-            fact = FactOld(fact=fact_json.get('fact'), fact_type=fact_json.get('fact_type'), notes=fact_json.get('notes'))
-
         elif document_type == 'emerging_plan_document':
-            document = EmergingPlanDocument.query.filter_by(id=document, planning_authority_id=planning_authority).one()
-            fact = EmergingFact(fact=fact_json.get('fact'), fact_type=fact_json.get('fact_type'), notes=fact_json.get('notes'))
+            document = OtherDocument.query.filter_by(id=document, planning_authority_id=planning_authority).one()
 
+        fact = Fact(fact=fact_json.get('fact'), fact_type=fact_json.get('fact_type'), notes=fact_json.get('notes'))
         document.facts.append(fact)
         db.session.add(document)
         db.session.commit()
@@ -97,10 +94,7 @@ def add_fact_to_document(planning_authority, document):
 
 @frontend.route('/local-plans/<document>/<fact>', methods=['GET', 'DELETE'])
 def remove_fact_from_document(document, fact):
-    if FactOld.query.filter_by(id=fact, plan_document_id=document).first() is not None:
-        fact = FactOld.query.filter_by(id=fact, plan_document_id=document).one()
-    elif EmergingFact.query.filter_by(id=fact, emerging_plan_document_id=document).first() is not None:
-        fact = EmergingFact.query.filter_by(id=fact, emerging_plan_document_id=document).one()
+    fact = Fact.query.filter_by(id=fact, document_id=document).first()
     if fact is not None:
         db.session.delete(fact)
         db.session.commit()
@@ -145,8 +139,8 @@ def remove_document_from_plan(local_plan, document):
 
 
 @frontend.route('/local-plans/planning-authority/<planning_authority>/document/<document>', methods=['DELETE'])
-def remove_emerging_document_from_planning_authority(planning_authority, document):
-    doc = EmergingPlanDocument.query.filter_by(planning_authority_id=planning_authority, id=document).first()
+def remove_document_from_planning_authority(planning_authority, document):
+    doc = OtherDocument.query.filter_by(planning_authority_id=planning_authority, id=document).first()
     if doc is not None:
         db.session.delete(doc)
         db.session.commit()
@@ -186,25 +180,26 @@ def add_document_to_plan(planning_authority):
                                  document=str(document.id),
                                  local_plan=add_to.local_plan)
             add_fact_url = url_for('frontend.add_fact_to_document',
-                                 planning_authority=planning_authority, 
-                                 local_plan=add_to.local_plan, 
-                                 document=str(document.id))
+                                   planning_authority=planning_authority,
+                                   local_plan=add_to.local_plan,
+                                   document=str(document.id))
 
         elif document_type == 'emerging_plan_document':
-            document = EmergingPlanDocument.query.filter_by(url=url).first()
+            # TODO - update this to other_document
+            document = OtherDocument.query.filter_by(url=url).first()
             if document is None:
-                document = EmergingPlanDocument(url=url)
+                document = OtherDocument(url=url, title='Local Development Scheme')
                 add_to = PlanningAuthority.query.get(planning_authority)
-                add_to.emerging_plan_documents.append(document)
+                add_to.other_documents.append(document)
                 db.session.add(add_to)
                 db.session.commit()
 
-            remove_url = url_for('frontend.remove_emerging_document_from_planning_authority',
+            remove_url = url_for('frontend.remove_document_from_planning_authority',
                                  document=str(document.id),
                                  planning_authority=add_to.id)
             add_fact_url = url_for('frontend.add_fact_to_document',
-                                 planning_authority=planning_authority,  
-                                 document=str(document.id))
+                                   planning_authority=planning_authority,
+                                   document=str(document.id))
 
         resp = {'OK': 200, 'url': url, 'document': document.to_dict(), 'remove_url': remove_url, 'add_fact_url': add_fact_url}
     else:
@@ -223,8 +218,8 @@ def add_document():
 
         pla = PlanningAuthority.query.filter_by(website=website).one()
         for doc in documents:
-            if EmergingPlanDocument.query.filter_by(url=doc).first() is None:
-                pla.emerging_plan_documents.append(EmergingPlanDocument(url=doc))
+            if OtherDocument.query.filter_by(url=doc).first() is None:
+                pla.other_documents.append(OtherDocument(url=doc, title='Local Development Scheme'))
 
         db.session.add(pla)
         db.session.commit()
@@ -264,20 +259,20 @@ def check_url():
     # handle documents differently
     if website_location.endswith(('.pdf')):
         # first check for Emerging Plan document
-        if EmergingPlanDocument.query.filter_by(url=website_location).first():
-            document = EmergingPlanDocument.query.filter_by(url=website_location).one()
+        if OtherDocument.query.filter_by(url=website_location).first() is not None:
+            document = OtherDocument.query.filter_by(url=website_location).one()
             add_fact_url = url_for('frontend.add_fact_to_document',
-                                 planning_authority=document.planning_authority_id,  
-                                 document=str(document.id),
-                                 _external=True)
+                                   planning_authority=document.planning_authority_id,
+                                   document=str(document.id),
+                                   _external=True)
             resp = {'OK': 200, 'view-type': 'emerging-plan-document', 'document': document.to_dict(), 'add_fact_url': add_fact_url}
         else:
             document = PlanDocument.query.filter_by(url=website_location).first()
             add_fact_url = url_for('frontend.add_fact_to_document',
-                                 planning_authority=document.local_plan.planning_authorities[0].id, 
-                                 local_plan=document.local_plan_id, 
-                                 document=str(document.id),
-                                 _external=True)
+                                   planning_authority=document.local_plan.planning_authorities[0].id,
+                                   local_plan=document.local_plan_id,
+                                   document=str(document.id),
+                                   _external=True)
             resp = {'OK': 200, 'view-type': 'plan-document', 'document': document.to_dict(), 'local_plan': document.local_plan.to_dict(), 'add_fact_url': add_fact_url}
         
         print(document)

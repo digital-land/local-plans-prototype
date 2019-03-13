@@ -13,35 +13,6 @@ def _generate_uuid():
     return uuid.uuid4()
 
 
-class MutableList(Mutable, list):
-
-    def __setitem__(self, key, value):
-        list.__setitem__(self, key, value)
-        self.changed()
-
-    def __delitem__(self, key):
-        list.__delitem__(self, key)
-        self.changed()
-
-    def append(self, value):
-        list.append(self, value)
-        self.changed()
-
-    def pop(self, index=0):
-        value = list.pop(self, index)
-        self.changed()
-        return value
-
-    @classmethod
-    def coerce(cls, key, value):
-        if not isinstance(value, MutableList):
-            if isinstance(value, list):
-                return MutableList(value)
-            return Mutable.coerce(key, value)
-        else:
-            return value
-
-
 planning_authority_plan = db.Table('planning_authority_plan',
     db.Column('planning_authority_id', db.String(64), db.ForeignKey('planning_authority.id'), primary_key=True),
     db.Column('local_plan_id', db.String, db.ForeignKey('local_plan.local_plan'), primary_key=True)
@@ -53,16 +24,16 @@ class LocalPlan(db.Model):
     local_plan = db.Column(db.String(), primary_key=True)
     url = db.Column(db.String())
     title = db.Column(db.String())
-    states = db.Column(MutableList.as_mutable(ARRAY(db.String())), server_default='{}')
     published_date = db.Column(db.Date())
     submitted_date = db.Column(db.Date())
     sound_date = db.Column(db.Date())
     adopted_date = db.Column(db.Date())
-    plan_documents_old = db.relationship('PlanDocumentOld', back_populates='local_plan', lazy=True)
     planning_authorities = db.relationship('PlanningAuthority',
                                            secondary=planning_authority_plan,
                                            lazy=True,
                                            back_populates='local_plans')
+
+    plan_documents = db.relationship('PlanDocument', back_populates='local_plan', lazy=True)
 
     def latest_state(self):
         return self.ordered_states()[-1]
@@ -99,7 +70,6 @@ class PlanningAuthority(db.Model):
     name = db.Column(db.String(256))
     website = db.Column(db.String())
     local_scheme_url = db.Column(db.String())
-    emerging_plan_documents = db.relationship('EmergingPlanDocument', back_populates='planning_authority', lazy=True)
     local_plans = db.relationship('LocalPlan',
                                   secondary=planning_authority_plan,
                                   lazy=True,
@@ -108,6 +78,8 @@ class PlanningAuthority(db.Model):
     housing_delivery_tests = db.relationship('HousingDeliveryTest',
                                              lazy=True,
                                              back_populates='planning_authority')
+
+    other_documents = db.relationship('OtherDocument', back_populates="planning_authority")
 
     def sorted_hdt(self, reverse=False):
         return sorted(self.housing_delivery_tests, reverse=reverse)
@@ -124,24 +96,6 @@ class PlanningAuthority(db.Model):
 def _parse_date(datestr):
     return datetime.strptime(datestr, '%Y-%m-%d')
 
-
-class PlanDocumentOld(db.Model):
-
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=_generate_uuid)
-    plan_document_type = db.Column(db.String)
-    url = db.Column(db.String())
-    local_plan_id = db.Column(db.String(64), db.ForeignKey('local_plan.local_plan'), nullable=False)
-    local_plan = db.relationship('LocalPlan', back_populates='plan_documents_old')
-    facts = db.relationship('FactOld', back_populates='plan_document_old', lazy=True, cascade="all, delete-orphan")
-
-    def to_dict(self):
-        data = {
-            'id': self.id,
-            'url': self.url,
-            'facts': [fact.to_dict() for fact in self.facts],
-            'type': "plan_document"
-        }
-        return data
 
 
 class FactType(Enum):
@@ -169,76 +123,6 @@ class EmergingFactType(Enum):
 
 # TODO - Note with facts and emerging facts the 'fact' field can contain strings, dates, numbers or ranges
 # so will put method to return right value based on fact_type
-
-# TODO merge Fact models and document types
-
-class FactOld(db.Model):
-
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=_generate_uuid)
-    fact = db.Column(db.String())
-    fact_type = db.Column(db.String())
-    notes = db.Column(db.String())
-    plan_document_old__id = db.Column(UUID(as_uuid=True), db.ForeignKey('plan_document_old.id'), nullable=False)
-    plan_document_old = db.relationship('PlanDocumentOld', back_populates='facts_old')
-    created_date = db.Column(db.DateTime(), default=datetime.utcnow)
-    image_url = db.Column(db.String())
-
-    def to_dict(self):
-        data = {
-            'id': self.id,
-            'fact': self.fact,
-            'fact_type': self.fact_type,
-            'fact_type_display': FactType[self.fact_type].value,
-            'notes': self.notes,
-            'document_id': self.plan_document_id
-        }
-        return data
-
-
-class EmergingFact(db.Model):
-
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=_generate_uuid)
-    fact = db.Column(db.String())
-    fact_type = db.Column(db.String())
-    notes = db.Column(db.String())
-    emerging_plan_document_id = db.Column(UUID(as_uuid=True),
-                                          db.ForeignKey('emerging_plan_document.id'),
-                                          nullable=False)
-    emerging_plan_document = db.relationship('EmergingPlanDocument', back_populates='facts')
-    created_date = db.Column(db.DateTime(), default=datetime.utcnow)
-    image_url = db.Column(db.String())
-
-    def to_dict(self):
-        data = {
-            'id': self.id,
-            'fact': self.fact,
-            'fact_type': self.fact_type,
-            'fact_type_display': EmergingFactType[self.fact_type].value,
-            'notes': self.notes,
-            'document_id': self.emerging_plan_document_id
-        }
-        return data
-
-
-class EmergingPlanDocument(db.Model):
-
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=_generate_uuid)
-    url = db.Column(db.String())
-    planning_authority_id = db.Column(db.String(64), db.ForeignKey('planning_authority.id'), nullable=False)
-    planning_authority = db.relationship('PlanningAuthority', back_populates='emerging_plan_documents')
-    facts = db.relationship('EmergingFact',
-                            back_populates='emerging_plan_document',
-                            lazy=True,
-                            cascade="all, delete-orphan")
-
-    def to_dict(self):
-        data = {
-            'id': self.id,
-            'url': self.url,
-            'facts': [fact.to_dict() for fact in self.facts],
-            'type': "emerging_plan_document"
-        }
-        return data
 
 
 @total_ordering
@@ -270,3 +154,89 @@ class State:
 
     def __lt__(self, other):
         return self.date < other.date
+
+
+class Document(db.Model):
+
+    __tablename__ = 'document'
+
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=_generate_uuid)
+    url = db.Column(db.String())
+    title = db.Column(db.String())
+    type = db.Column(db.String(64))
+
+    facts = db.relationship('Fact', back_populates='document',lazy=True, cascade='all, delete, delete-orphan')
+
+    __mapper_args__ = {
+        'polymorphic_on':type,
+        'polymorphic_identity':'document'
+    }
+
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'url': self.url,
+            'facts': [fact.to_dict() for fact in self.facts],
+            'type': self.type
+        }
+        return data
+
+
+
+class PlanDocument(Document):
+
+    __mapper_args__ = {
+        'polymorphic_identity':'plan_document'
+    }
+
+    local_plan_id = db.Column(db.String(64), db.ForeignKey('local_plan.local_plan'))
+    local_plan = db.relationship('LocalPlan', back_populates='plan_documents')
+
+
+
+class OtherDocument(Document):
+
+    __mapper_args__ = {
+        'polymorphic_identity':'other_document'
+    }
+
+    planning_authority_id = db.Column(db.String(64), db.ForeignKey('planning_authority.id'))
+    planning_authority = db.relationship('PlanningAuthority', back_populates='other_documents')
+
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'url': self.url,
+            'facts': [fact.to_dict() for fact in self.facts],
+            'type': "emerging_plan_document"
+        }
+        # TODO remove these over rides and use base to_dict method. this is only here as some code
+        # expects emerging_plan_document so once updated then base object method does the right thing.
+        return data
+
+
+
+class Fact(db.Model):
+
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=_generate_uuid)
+    fact = db.Column(db.String())
+    fact_type = db.Column(db.String())
+    notes = db.Column(db.String())
+    from_year = db.Column(db.Date())
+    to_year = db.Column(db.Date())
+
+    created_date = db.Column(db.DateTime(), default=datetime.utcnow)
+    image_url = db.Column(db.String())
+
+    document_id = db.Column(UUID(as_uuid=True), db.ForeignKey('document.id'), nullable=False)
+    document = db.relationship('Document', back_populates='facts')
+
+    def to_dict(self):
+        data = {
+            'id': str(self.id),
+            'fact': self.fact,
+            'fact_type': self.fact_type,
+            'notes': self.notes,
+            'document_id': str(self.document_id)
+        }
+        return data

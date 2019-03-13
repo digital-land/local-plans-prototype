@@ -8,8 +8,8 @@ import requests
 from flask.cli import with_appcontext
 from contextlib import closing
 from application.extensions import db
-from application.models import PlanningAuthority, LocalPlan, PlanDocumentOld, EmergingPlanDocument, FactOld, EmergingFact, \
-    HousingDeliveryTest
+from application.models import PlanningAuthority, LocalPlan, PlanDocument, OtherDocument, Fact, HousingDeliveryTest, \
+    Document
 
 
 def create_other_data(pa, row):
@@ -36,7 +36,7 @@ def create_other_data(pa, row):
     print('loaded local plan', plan_id)
 
     if row['status'].strip() == 'adopted' and row.get('plan-document-url') and row.get('plan-document-url') != '?':
-        pd = PlanDocumentOld(url=row.get('plan-document-url'))
+        pd = PlanDocument(url=row.get('plan-document-url'))
         plan.plan_documents.append(pd)
         db.session.add(pa)
         db.session.commit()
@@ -137,7 +137,6 @@ def load_hdt():
                     db.session.add(pla)
                     db.session.commit()
                     print('Added hdt for years', hdt.from_year, hdt.from_year, 'to LA', pla.id)
-
                 else:
                     print('hdt for', pla.id, 'for years', hdt.from_year, hdt.from_year, 'already added')
 
@@ -195,10 +194,8 @@ def load_hdt():
 def clear():
     db.session.execute('DELETE FROM planning_authority_plan');
     db.session.query(HousingDeliveryTest).delete()
-    db.session.query(FactOld).delete()
-    db.session.query(EmergingFact).delete()
-    db.session.query(EmergingPlanDocument).delete()
-    db.session.query(PlanDocumentOld).delete()
+    db.session.query(Fact).delete()
+    db.session.query(Document).delete()
     db.session.query(LocalPlan).delete()
     db.session.query(PlanningAuthority).delete()
     db.session.commit()
