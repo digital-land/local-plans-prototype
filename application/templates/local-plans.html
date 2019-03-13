@@ -51,8 +51,8 @@
 
       <h3 class="govuk-heading-m">Local scheme documents</h3>
         <ul class="url-list" data-url-list-type="lds-url-list">
-          {% if planning_authority.other_documents|length > 0 %}
-            {% for doc in planning_authority.other_documents %}
+          {% if planning_authority.get_local_scheme_documents()|length > 0 %}
+            {% for doc in planning_authority.get_local_scheme_documents() %}
             <li class="url-item govuk-grid-row">
               <section class="document-link govuk-grid-column-full">
                 <a class="url-link" href="{{ doc.url }}" target="_blank">{{ doc.url }}</a>

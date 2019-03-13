@@ -84,6 +84,11 @@ class PlanningAuthority(db.Model):
     def sorted_hdt(self, reverse=False):
         return sorted(self.housing_delivery_tests, reverse=reverse)
 
+    def get_local_scheme_documents(self):
+        # TODO add a subtype on other documents to filter on rather than title
+        docs = [doc for doc in self.other_documents if doc.title is not None and 'local development scheme' == doc.title.lower()]
+        return docs
+
     def gather_facts(self, filters=[]):
 
         facts = []
