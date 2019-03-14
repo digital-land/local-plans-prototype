@@ -6987,3 +6987,184 @@
     line-height: 1.2;
   }
 }
+
+.fact-list {
+  font-family: "nta", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 1.25;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media print {
+  .fact-list {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .fact-list {
+    font-size: 19px;
+    font-size: 1.1875rem;
+    line-height: 1.31579;
+  }
+}
+
+@media print {
+  .fact-list {
+    font-size: 14pt;
+    line-height: 1.15;
+  }
+}
+
+.fact-list__item {
+  padding-top: 30px;
+}
+
+.fact-list__item:after {
+  content: "";
+  width: calc(100% - 30px);
+  height: 1px;
+  margin: auto;
+  background: #bfc1c3;
+}
+
+.fact-list__item__fact {
+  font-family: "nta", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 700;
+  font-size: 18px;
+  font-size: 1.125rem;
+  line-height: 1.11111;
+  margin-bottom: 15px;
+}
+
+@media print {
+  .fact-list__item__fact {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .fact-list__item__fact {
+    font-size: 24px;
+    font-size: 1.5rem;
+    line-height: 1.25;
+  }
+}
+
+@media print {
+  .fact-list__item__fact {
+    font-size: 18pt;
+    line-height: 1.15;
+  }
+}
+
+.fact-list__item-type__label,
+.fact-list__item-source__label {
+  font-family: "nta", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 1.25;
+  display: block;
+  margin: 0;
+  color: #6f777b;
+}
+
+@media print {
+  .fact-list__item-type__label,
+  .fact-list__item-source__label {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .fact-list__item-type__label,
+  .fact-list__item-source__label {
+    font-size: 19px;
+    font-size: 1.1875rem;
+    line-height: 1.31579;
+  }
+}
+
+@media print {
+  .fact-list__item-type__label,
+  .fact-list__item-source__label {
+    font-size: 14pt;
+    line-height: 1.15;
+  }
+}
+
+.fact-list__item-type__label {
+  margin-bottom: 30px;
+}
+
+.fact-list__item__img {
+  max-width: 100px;
+}
+
+.fact-list__item .govuk-details__summary:before {
+  display: block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-color: transparent;
+  clip-path: polygon(0% 0%, 100% 50%, 0% 100%);
+  border-width: 5.5px 0 5.5px 9.526px;
+  border-left-color: inherit;
+}
+
+.fact-list__item .govuk-details[open] > .govuk-details__summary:before {
+  display: block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-color: transparent;
+  clip-path: polygon(0% 0%, 50% 100%, 100% 0%);
+  border-width: 9.526px 5.5px 0 5.5px;
+  border-top-color: inherit;
+}
+
+.fact-list__item .govuk-details__summary-text,
+.fact-list__item .govuk-details__text {
+  font-family: "nta", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 14px;
+  font-size: 0.875rem;
+  line-height: 1.14286;
+}
+
+@media print {
+  .fact-list__item .govuk-details__summary-text,
+  .fact-list__item .govuk-details__text {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .fact-list__item .govuk-details__summary-text,
+  .fact-list__item .govuk-details__text {
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+}
+
+@media print {
+  .fact-list__item .govuk-details__summary-text,
+  .fact-list__item .govuk-details__text {
+    font-size: 14pt;
+    line-height: 1.2;
+  }
+}

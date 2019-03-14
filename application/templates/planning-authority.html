@@ -103,44 +103,61 @@
 
     {% if facts %}
 
-  <h2 id="other-data" class="govuk-heading-l contents-list__section">Other facts / data</h2>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h2 id="other-data" class="govuk-heading-l contents-list__section">Other facts / data</h2>
 
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-                <table class="govuk-table document-facts__table">
-                    <thead>
-                    <tr>
-                        <th>Fact type</th>
-                        <th>Details</th>
-                        <th>Notes</th>
-                        <th>Source document</th>
-                        <th>Image</th>
-                    </tr>
-                    </thead>
-                    <tbody class="govuk-table__body">
-                    {% for fact in facts %}
-                      {% if fact.fact_type != "HOUSING_REQUIRED" and fact.fact_type != "HOUSING_DELIVERED" %}
-                        <tr class="govuk-table__row">
-                            <td class="govuk-table__cell">{{ fact.fact_type | format_fact }}</td>
-                            <td class="govuk-table__cell">{{ fact.fact }}</td>
-                            <td class="govuk-table__cell">{{ fact.notes }}</td>
-                            <td class="govuk-table__cell"><a href="{{ fact.document.url }}">{{ fact.document.title }}</a></td>
-                            {% if fact.image_url %}
-                                <td class="govuk-table__cell">
-                                        <a href="{{ fact.image_url }}" target="_blank">
-                                            <img style="height: 60px"src="{{ fact.image_url }}">
-                                        </a>
-                                </td>
-                            {% endif %}
-                        </tr>
-                      {% endif %}
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+        <p class="govuk-body">Other facts and data that has been collected about {{ planning_authority.name }}.</p>
+      </div>
+    </div>
+
+    <ul class="fact-list">
+    {% for fact in facts %}
+      {% if fact.fact_type != "HOUSING_REQUIRED" and fact.fact_type != "HOUSING_DELIVERED" %}
+      <li class="fact-list__item govuk-grid-row">
+        <div class="govuk-grid-column-one-half">
+          <h4 class="govuk-heading-s fact-list__item__fact">{{ fact.fact }}</h4>
+          <span class="fact-list__item-type">
+            {{ fact.fact_type | format_fact }}
+            <span class="fact-list__item-type__label">Fact Type</span>
+          </span>
         </div>
+        <div class="govuk-grid-column-one-half">
+          <div class="fact-list__item-source">
+            <h5 class="fact-list__item-source__label">Source</h5>
+            <span class="fact-list__item-source__url">{% if fact.document.title %}{{ fact.document.title }}{% else %}unknown{% endif %}</span>
+            {% if fact.image_url %}
+            <details class="govuk-details">
+              <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                  Has source screenshot
+                </span>
+              </summary>
+              <div class="govuk-details__text">
+                <img class="fact-list__item__img" src="{{ fact.image_url }}">
+              </div>
+            </details>
+            {% endif %}
+            {% if fact.notes %}
+            <details class="govuk-details">
+              <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                  Notes on fact
+                </span>
+              </summary>
+              <div class="govuk-details__text">
+                <p class="govuk-body">{{ fact.notes }}</p>
+              </div>
+            </details>
+            {% endif %}
+          </div>
+        </div>
+      </li>
+      {% endif %}
+    {% endfor %}
 
     {% endif %}
+    </ul>
 
 
 <h2 id="local-plans" class="govuk-heading-l contents-list__section">Local plans</h2>
