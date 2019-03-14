@@ -1,3 +1,15 @@
+.top-content {
+  margin-bottom: $govuk-gutter;
+
+  &:after {
+    content: "";
+    width: calc(100% - 30px);
+    height: 1px;
+    margin: 0 auto;
+    background: govuk-colour("grey-2");
+  }
+}
+
 .graph-placeholder {
   display: flex;
   height: 400px;

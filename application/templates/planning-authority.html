@@ -23,9 +23,24 @@
 
 {% block content %}
 
-  <span class="govuk-caption-xl">Local plan</span>
-  <h1 class="govuk-heading-xl">{{ planning_authority.name }}</h1>
+  <div class="govuk-grid-row top-content">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-xl">Local plan</span>
+      <h1 class="govuk-heading-xl">{{ planning_authority.name }}</h1>
+    </div>
+    <div class="govuk-grid-column-two-thirds">
+      <p class="govuk-body-l">MHCLG collects housing data about each Planning authority. Data is gathered from the planning authority and other sources.</p>
+    </div>
+  </div>
 
+  <nav role="navigation" class="contents-list contents-section">
+    <h3 class="contents-list__title">Contents</h3>
+    <ol class="contents-list__list">
+      <li class="contents-list__list-item"><a href="#housing-numbers" class="contents-list__link">Housing numbers</a></li>
+      <li class="contents-list__list-item"><a href="#other-data" class="contents-list__link">Other data / facts</a></li>
+      <li class="contents-list__list-item"><a href="#local-plans" class="contents-list__link">Local plans</a></li>
+    </ol>
+  </nav>
 
  {#    Not sure how we're going to construct this schedule are we hoping to find this from scheme? or
         combination of scheme and pins dates?
@@ -37,7 +52,7 @@
 {#      </div>#}
 
 
-  <h2 class="govuk-heading-l">Number of houses</h2>
+  <h2 id="housing-numbers" class="govuk-heading-l contents-list__section">Number of houses</h2>
   {% macro singleBarComponent(label, value, width, _classes) -%}
     <div class="govuk-grid-row contribution-category-row">
       <div class="govuk-grid-column-two-thirds contribution-bar-container">
@@ -86,6 +101,8 @@
 
     {% if facts %}
 
+  <h2 id="other-data" class="govuk-heading-l contents-list__section">Other facts / data</h2>
+
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
                 <table class="govuk-table document-facts__table">
@@ -122,7 +139,7 @@
     {% endif %}
 
 
-<h2 class="govuk-heading-l govuk-!-margin-top-9">Local plans</h2>
+<h2 id="local-plans" class="govuk-heading-l contents-list__section">Local plans</h2>
 
 
 <div class="govuk-tabs" data-module="tabs">
