@@ -23,20 +23,97 @@
 
 {% block content %}
 
-  <span class="govuk-caption-xl">Local plan</span>
-  <h1 class="govuk-heading-xl">{{ planning_authority.name }}</h1>
+  <div class="govuk-grid-row top-content">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-xl">Local plan</span>
+      <h1 class="govuk-heading-xl">{{ planning_authority.name }}</h1>
+    </div>
+    <div class="govuk-grid-column-two-thirds">
+      <p class="govuk-body-l">MHCLG collects housing data about each Planning authority. Data is gathered from the planning authority and other sources.</p>
+    </div>
+  </div>
 
+  <nav role="navigation" class="contents-list contents-section">
+    <h3 class="contents-list__title">Contents</h3>
+    <ol class="contents-list__list">
+      <li class="contents-list__list-item"><a href="#housing-numbers" class="contents-list__link">Housing numbers</a></li>
+      {% if facts -%}
+      <li class="contents-list__list-item"><a href="#other-data" class="contents-list__link">Other data / facts</a></li>
+      {%- endif -%}
+      <!--<li class="contents-list__list-item"><a href="#local-plans" class="contents-list__link">Local plans</a></li>-->
+    </ol>
+  </nav>
 
  {#    Not sure how we're going to construct this schedule are we hoping to find this from scheme? or
         combination of scheme and pins dates?
     #}
 
-  <h2 class="govuk-heading-l">Schedule</h2>
-  <div class="graph-placeholder">
-    <span class="govuk-body">Placeholder for schedule graph</span>
+{#      <h2 class="govuk-heading-l">Schedule</h2>#}
+{#      <div class="graph-placeholder">#}
+{#        <span class="govuk-body">Placeholder for schedule graph</span>#}
+{#      </div>#}
+
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 id="other-data" class="govuk-heading-l contents-list__section">Other facts / data</h2>
+
+      <p class="govuk-body">Other facts and data that has been collected about {{ planning_authority.name }}.</p>
+    </div>
   </div>
 
-  <h2 class="govuk-heading-l">Number of houses</h2>
+  {% if facts %}
+
+  <ul class="fact-list">
+  {% for fact in facts %}
+    {% if fact.fact_type != "HOUSING_REQUIRED" and fact.fact_type != "HOUSING_DELIVERED" %}
+    <li class="fact-list__item govuk-grid-row">
+      <div class="govuk-grid-column-one-half">
+        <h4 class="govuk-heading-s fact-list__item__fact">{{ fact.fact }}</h4>
+        <span class="fact-list__item-type">
+          {{ fact.fact_type | format_fact }}
+          <span class="fact-list__item-type__label">Fact Type</span>
+        </span>
+      </div>
+      <div class="govuk-grid-column-one-half">
+        <div class="fact-list__item-source">
+          <h5 class="fact-list__item-source__label">Source</h5>
+          <span class="fact-list__item-source__url"><a href="{{ fact.document.url }}" target="_blank">{% if fact.document.title %}{{ fact.document.title }}{% else %}{{ fact.document.url }}{% endif %}</a></span>
+          {% if fact.image_url %}
+          <details class="govuk-details">
+            <summary class="govuk-details__summary">
+              <span class="govuk-details__summary-text">
+                Has source screenshot
+              </span>
+            </summary>
+            <div class="govuk-details__text">
+              <a href="{{ fact.image_url }}" target="_blank"><img class="fact-list__item__img" src="{{ fact.image_url }}"></a>
+            </div>
+          </details>
+          {% endif %}
+          {% if fact.notes %}
+          <details class="govuk-details">
+            <summary class="govuk-details__summary">
+              <span class="govuk-details__summary-text">
+                Notes on fact
+              </span>
+            </summary>
+            <div class="govuk-details__text">
+              <p class="govuk-body">{{ fact.notes }}</p>
+            </div>
+          </details>
+          {% endif %}
+        </div>
+      </div>
+    </li>
+    {% endif %}
+  {% endfor %}
+  </ul>
+
+  {% endif %}
+
+
+  <h2 id="housing-numbers" class="govuk-heading-l contents-list__section">Number of houses</h2>
   {% macro singleBarComponent(label, value, width, _classes) -%}
     <div class="govuk-grid-row contribution-category-row">
       <div class="govuk-grid-column-two-thirds contribution-bar-container">
@@ -55,7 +132,9 @@
     {% set max_figure = [hdt.homes_required, hdt.homes_delivered]|max %}
 
     <section class="hdt-figure-section">
-      <h3 class="govuk-heading-m">{{ hdt.from_year.year }} - {{ hdt.to_year.year }}</h3>
+      <h3 class="govuk-heading-m">{{ hdt.from_year.year }} - {{ hdt.to_year.year }}
+        <span class="data-source">Source: <a href="https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/779711/HDT_2018_measurement.xlsx">Housing Delivery Test: 2018 measurement</a></span>
+      </h3>
       {% set required = hdt.homes_required | return_percent(denominator=max_figure) | format_percent %}
       {{ singleBarComponent("HDT required", hdt.homes_required, required) }}
 
@@ -64,17 +143,18 @@
       {% set delivered = hdt.homes_delivered | return_percent(denominator=max_figure) | format_percent %}
       {{ singleBarComponent("HDT delivered", hdt.homes_delivered, delivered, "bar--blue") }}
 
-      {{ singleBarComponent("Local plan commitment", "???", "70%", "bar--light-blue") }}
+      {{ singleBarComponent("Local plan commitment", "???", "70%", "bar--blank") }}
 {#      need to work out how to get local plan commitment - it will be attached to a plan and a document#}
 {#      specifically so we have to hope that they are recorded accoring to this breakdown of years#}
 {#      so that we can match with these figures - possibly a jump to far in terms of how this is currently#}
 {#      modelled?#}
+
     </section>
 
   {% endfor %}
+    
 
-
-<h2 class="govuk-heading-l govuk-!-margin-top-9">Local plans</h2>
+<!--<h2 id="local-plans" class="govuk-heading-l contents-list__section">Local plans</h2>
 
 
 <div class="govuk-tabs" data-module="tabs">
@@ -123,6 +203,6 @@
     </section>
     {% endfor %}
 
-  </div>
+  </div>-->
 
 {% endblock %}

@@ -1,3 +1,15 @@
+.top-content {
+  margin-bottom: $govuk-gutter;
+
+  &:after {
+    content: "";
+    width: calc(100% - 30px);
+    height: 1px;
+    margin: 0 auto;
+    background: govuk-colour("grey-2");
+  }
+}
+
 .graph-placeholder {
   display: flex;
   height: 400px;
@@ -40,6 +52,14 @@
   background: govuk-colour("light-blue");
 }
 
+.bar--blank {
+  background: transparent;
+
+  .data-item {
+    color: govuk-colour("grey-2");
+  }
+}
+
 .js-enabled .govuk-tabs__panel--no-bottom-padding {
   padding-bottom: 0;
 }
@@ -60,3 +80,77 @@
     margin-left: auto;
   }
 }
+
+.data-source {
+  display: block;
+  @include govuk-font($size: 14);
+  color: govuk-colour("grey-1");
+}
+
+.no-title-given {
+  @include govuk-font($size: 16);
+  color: govuk-colour("grey-1");
+}
+
+// **************************************
+// Fact list
+// **************************************
+
+.fact-list {
+  @include govuk-font($size: 19);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fact-list__item {
+  padding-top: $govuk-gutter;
+
+  &:after {
+    content: "";
+    width: calc(100% - 30px);
+    height: 1px;
+    margin: auto;
+    background: govuk-colour("grey-2");
+  }
+}
+
+.fact-list__item__fact {
+  @include govuk-font($size: 24, $weight: bold);
+  margin-bottom: 15px;
+}
+
+.fact-list__item-type__label,
+.fact-list__item-source__label {
+  @include govuk-font($size: 19);
+  display: block;
+  margin: 0;
+  color: govuk-colour("grey-1");
+}
+
+.fact-list__item-type__label {
+  margin-bottom: 30px; // weird spacing to make the border work, change it 
+}
+
+.fact-list__item__img {
+  max-width: 100px;
+}
+
+.fact-list__item {
+  .govuk-details__summary {
+    &:before {
+      @include govuk-shape-arrow($direction: right, $base: 11px);
+    }
+
+  }
+
+  .govuk-details[open] > .govuk-details__summary:before {
+    @include govuk-shape-arrow($direction: down, $base: 11px);
+  }
+
+  .govuk-details__summary-text,
+  .govuk-details__text {
+    @include govuk-font($size: 16);
+  }
+}
+

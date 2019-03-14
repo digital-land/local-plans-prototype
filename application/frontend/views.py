@@ -5,7 +5,8 @@ import boto3
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify, send_file
 
 from application.extensions import db
-from application.models import PlanningAuthority, LocalPlan, FactType, EmergingFactType, PlanDocument, OtherDocument, Fact
+from application.models import PlanningAuthority, LocalPlan, FactType, EmergingFactType, PlanDocument, OtherDocument, \
+    Fact, Document
 
 from application.frontend.forms import LocalDevelopmentSchemeURLForm, LocalPlanURLForm
 
@@ -29,7 +30,13 @@ def planning_authority_list():
 @frontend.route('/planning-authority/<planning_authority>')
 def planning_authority(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
-    return render_template('planning-authority.html', planning_authority=pla)
+
+    # TODO at the moment this is all facts, but will probably just filter for ones related to housing numbers
+    facts = pla.gather_facts(filters=['HOUSING_DELIVERED',
+                                      'HOUSING_REQUIRED',
+                                      'HOUSING_REQUIREMENT_TOTAL',
+                                      'HOUSING_REQUIREMENT_RANGE'])
+    return render_template('planning-authority.html', planning_authority=pla, facts=facts)
 
 
 @frontend.route('/local-plans', methods=['GET', 'POST'])
@@ -82,7 +89,7 @@ def add_fact_to_document(planning_authority, document):
             s3 = boto3.resource('s3')
             object = s3.Object(bucket, key)
             object.put(ACL='public-read', Body=base64.b64decode(data), ContentType='image/jpeg')
-            image_url = f'{object.meta.client._endpoint.host}/{bucket}/{key}'
+            image_url = f'https://s3.eu-west-2.amazonaws.com/{bucket}/{key}'
             fact.image_url = image_url
             db.session.add(fact)
             db.session.commit()
@@ -172,7 +179,7 @@ def add_document_to_plan(planning_authority):
             add_to = LocalPlan.query.get(local_plan)
             document = PlanDocument.query.filter_by(url=url).first()
             if document is None:
-                document = PlanDocument(url=url)
+                document = PlanDocument(url=url, title=request.json['doc_title'])
                 add_to.plan_documents.append(document)
                 db.session.add(add_to)
                 db.session.commit()
@@ -188,7 +195,10 @@ def add_document_to_plan(planning_authority):
             # TODO - update this to other_document
             document = OtherDocument.query.filter_by(url=url).first()
             if document is None:
-                document = OtherDocument(url=url, title='Local Development Scheme')
+                if request.json.get('doc_title') is not None:
+                    document = OtherDocument(url=url, title=request.json.get('doc_title'))
+                else:
+                    document = OtherDocument(url=url, title='Local Development Scheme')
                 add_to = PlanningAuthority.query.get(planning_authority)
                 add_to.other_documents.append(document)
                 db.session.add(add_to)

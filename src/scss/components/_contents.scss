@@ -22,7 +22,8 @@ $list-indent: 25px;
     }
   }
 
-  ul {
+  ul,
+  ol {
     margin-top: 5px !important;
     padding-left: $list-indent;
   }
@@ -59,4 +60,27 @@ $list-indent: 25px;
       margin-top: 0;
     }
   }
+}
+
+.contents-list {
+  margin-bottom: $govuk-gutter;
+}
+
+.contents-list__title {
+  @include govuk-font($size: 16);
+  margin: 0;
+}
+
+.contents-list__list {
+  margin-left: 0;
+}
+
+.contents-list__list-item {
+  @include govuk-media-query($from: tablet) {
+    padding-top: 7.5px;
+  }
+}
+
+.contents-list__section {
+  @include govuk-responsive-margin(9, "top");
 }

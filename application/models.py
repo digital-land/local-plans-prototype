@@ -84,6 +84,33 @@ class PlanningAuthority(db.Model):
     def sorted_hdt(self, reverse=False):
         return sorted(self.housing_delivery_tests, reverse=reverse)
 
+    def get_local_scheme_documents(self):
+        # TODO add a subtype on other documents to filter on rather than title
+        docs = [doc for doc in self.other_documents if doc.title is not None and 'local development scheme' == doc.title.lower()]
+        return docs
+
+    def gather_facts(self, filters=[]):
+
+        facts = []
+        for doc in self.other_documents:
+            for fact in doc.facts:
+                if filter:
+                    if fact.fact_type in filters:
+                        facts.append(fact)
+                else:
+                    facts.append(fact)
+
+        for plan in self.local_plans:
+            for doc in plan.plan_documents:
+                for fact in doc.facts:
+                    if filter:
+                        if fact.fact_type in filters:
+                            facts.append(fact)
+                    else:
+                        facts.append(fact)
+
+        return facts
+
     def to_dict(self):
         data = {
             'id': self.id,
@@ -192,6 +219,15 @@ class PlanDocument(Document):
     local_plan_id = db.Column(db.String(64), db.ForeignKey('local_plan.local_plan'))
     local_plan = db.relationship('LocalPlan', back_populates='plan_documents')
 
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'url': self.url,
+            'title': self.title,
+            'facts': [fact.to_dict() for fact in self.facts],
+            'type': "plan_document"
+        }
+        return data
 
 
 class OtherDocument(Document):
@@ -207,6 +243,7 @@ class OtherDocument(Document):
         data = {
             'id': self.id,
             'url': self.url,
+            'title': self.title,
             'facts': [fact.to_dict() for fact in self.facts],
             'type': "emerging_plan_document"
         }
