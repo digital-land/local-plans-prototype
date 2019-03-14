@@ -179,7 +179,7 @@ def add_document_to_plan(planning_authority):
             add_to = LocalPlan.query.get(local_plan)
             document = PlanDocument.query.filter_by(url=url).first()
             if document is None:
-                document = PlanDocument(url=url)
+                document = PlanDocument(url=url, title=request.json['doc_title'])
                 add_to.plan_documents.append(document)
                 db.session.add(add_to)
                 db.session.commit()
@@ -195,7 +195,10 @@ def add_document_to_plan(planning_authority):
             # TODO - update this to other_document
             document = OtherDocument.query.filter_by(url=url).first()
             if document is None:
-                document = OtherDocument(url=url, title='Local Development Scheme')
+                if request.json.get('doc_title') is not None:
+                    document = OtherDocument(url=url, title=request.json.get('doc_title'))
+                else:
+                    document = OtherDocument(url=url, title='Local Development Scheme')
                 add_to = PlanningAuthority.query.get(planning_authority)
                 add_to.other_documents.append(document)
                 db.session.add(add_to)

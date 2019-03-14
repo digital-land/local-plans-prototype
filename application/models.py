@@ -219,6 +219,15 @@ class PlanDocument(Document):
     local_plan_id = db.Column(db.String(64), db.ForeignKey('local_plan.local_plan'))
     local_plan = db.relationship('LocalPlan', back_populates='plan_documents')
 
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'url': self.url,
+            'title': self.title,
+            'facts': [fact.to_dict() for fact in self.facts],
+            'type': "plan_document"
+        }
+        return data
 
 
 class OtherDocument(Document):
@@ -234,6 +243,7 @@ class OtherDocument(Document):
         data = {
             'id': self.id,
             'url': self.url,
+            'title': self.title,
             'facts': [fact.to_dict() for fact in self.facts],
             'type': "emerging_plan_document"
         }

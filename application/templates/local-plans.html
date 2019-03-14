@@ -206,6 +206,12 @@
           <input class="govuk-input" id="url-input" name="url-input" type="text">
         </div>
         <div class="govuk-form-group">
+          <label class="govuk-label" for="doc-title-input">
+            Does the document have a title?
+          </label>
+          <input class="govuk-input govuk-input--width-20" id="doc-title-input" name="doc-title-input" type="text">
+        </div>
+        <div class="govuk-form-group">
           <button class="govuk-button dlf-secondary-button url-save-btn">Add URL</button>
         </div>
       </form>
@@ -288,6 +294,9 @@
             {% for doc in plan.plan_documents %}
             <li class="url-item govuk-grid-row">
               <section class="document-link govuk-grid-column-full">
+                {% if doc.title %}
+                <span>{{ doc.title }}</span>
+                {% endif %}
                 <a class="url-link" href="{{ doc.url }}" target="_blank">{{ doc.url }}</a>
                 <div class="url-item__controls">
                   <a href="" class="url-item__btn url-edit-btn govuk-visually-hidden">Edit</a>
@@ -427,6 +436,12 @@
             <input class="govuk-input" id="url-input" name="url-input" type="text">
           </div>
           <div class="govuk-form-group">
+            <label class="govuk-label" for="doc-title-input">
+              Does the document have a title?
+            </label>
+            <input class="govuk-input govuk-input--width-20" id="doc-title-input" name="doc-title-input" type="text">
+          </div>
+          <div class="govuk-form-group">
             <button class="govuk-button dlf-secondary-button url-save-btn">Add URL</button>
           </div>
         </form>
@@ -449,7 +464,8 @@
 <script src="/static/javascripts/vendor/handlebars-v4.1.0.js"></script>
 {% raw %}
 <script id="url-item-template" type="text/x-handlebars-template">
-  <section class="document-link govuk-grid-column-full">      
+  <section class="document-link govuk-grid-column-full">
+    <span class="document-title"></span>   
     <a class="url-link" href="{{ url }}">{{ url }}</a>
     <div class="url-item__controls">
       <a href="" class="url-item__btn url-edit-btn govuk-visually-hidden">Edit</a>
@@ -710,22 +726,23 @@
   addUrlForms.forEach((form) => {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const input = form.querySelector("input[type=text]");
+      const input = form.querySelector("input[name='url-input']");
 
       if(input.value === "") {
         alert("The URL field is empty. Please add a URL before saving.")
       } else {
         const urlList = document.querySelector(`[data-url-list-type='${form.dataset.associatedList}']`);
-        saveURL(form.action, input.value, urlList);
+        saveURL(form.action, form, urlList);
       }
       console.log(e);
     });
   });
 
-  function saveURL(endpoint, url, listEl) {
+  function saveURL(endpoint, form, listEl) {
     // set up data obj
     var data = {
-      'url': url
+      'url': form.querySelector("input[name='url-input']").value,
+      'doc_title': form.querySelector("input[name='doc-title-input']").value
     };
 
     // perform post
@@ -745,6 +762,11 @@
       const detailsContainer = item.querySelector(".document-facts");
       const detailsEl = cloneAddFactForm(resp_data.document['type'], resp_data.add_fact_url);
       detailsContainer.appendChild( detailsEl );
+
+      // add title to URL template
+      if(resp_data.document['title'] !== "") {
+        item.querySelector(".document-title").textContent = resp_data.document['title'];
+      }
 
       listEl.appendChild( item );
 
