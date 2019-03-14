@@ -40,7 +40,7 @@
       {% if facts -%}
       <li class="contents-list__list-item"><a href="#other-data" class="contents-list__link">Other data / facts</a></li>
       {%- endif -%}
-      <li class="contents-list__list-item"><a href="#local-plans" class="contents-list__link">Local plans</a></li>
+      <!--<li class="contents-list__list-item"><a href="#local-plans" class="contents-list__link">Local plans</a></li>-->
     </ol>
   </nav>
 
@@ -52,6 +52,65 @@
 {#      <div class="graph-placeholder">#}
 {#        <span class="govuk-body">Placeholder for schedule graph</span>#}
 {#      </div>#}
+
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 id="other-data" class="govuk-heading-l contents-list__section">Other facts / data</h2>
+
+      <p class="govuk-body">Other facts and data that has been collected about {{ planning_authority.name }}.</p>
+    </div>
+  </div>
+
+  {% if facts %}
+
+  <ul class="fact-list">
+  {% for fact in facts %}
+    {% if fact.fact_type != "HOUSING_REQUIRED" and fact.fact_type != "HOUSING_DELIVERED" %}
+    <li class="fact-list__item govuk-grid-row">
+      <div class="govuk-grid-column-one-half">
+        <h4 class="govuk-heading-s fact-list__item__fact">{{ fact.fact }}</h4>
+        <span class="fact-list__item-type">
+          {{ fact.fact_type | format_fact }}
+          <span class="fact-list__item-type__label">Fact Type</span>
+        </span>
+      </div>
+      <div class="govuk-grid-column-one-half">
+        <div class="fact-list__item-source">
+          <h5 class="fact-list__item-source__label">Source</h5>
+          <span class="fact-list__item-source__url">{% if fact.document.title %}{{ fact.document.title }}{% else %}unknown{% endif %}</span>
+          {% if fact.image_url %}
+          <details class="govuk-details">
+            <summary class="govuk-details__summary">
+              <span class="govuk-details__summary-text">
+                Has source screenshot
+              </span>
+            </summary>
+            <div class="govuk-details__text">
+              <img class="fact-list__item__img" src="{{ fact.image_url }}">
+            </div>
+          </details>
+          {% endif %}
+          {% if fact.notes %}
+          <details class="govuk-details">
+            <summary class="govuk-details__summary">
+              <span class="govuk-details__summary-text">
+                Notes on fact
+              </span>
+            </summary>
+            <div class="govuk-details__text">
+              <p class="govuk-body">{{ fact.notes }}</p>
+            </div>
+          </details>
+          {% endif %}
+        </div>
+      </div>
+    </li>
+    {% endif %}
+  {% endfor %}
+  </ul>
+
+  {% endif %}
 
 
   <h2 id="housing-numbers" class="govuk-heading-l contents-list__section">Number of houses</h2>
@@ -93,74 +152,9 @@
     </section>
 
   {% endfor %}
+    
 
-
-
-    {#
-        TODO Colm, this list of facts is what I think is becoming more central - it's a list of all things we know
-        but will be focussed on housing numbers.
-     #}
-
-    {% if facts %}
-
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
-        <h2 id="other-data" class="govuk-heading-l contents-list__section">Other facts / data</h2>
-
-        <p class="govuk-body">Other facts and data that has been collected about {{ planning_authority.name }}.</p>
-      </div>
-    </div>
-
-    <ul class="fact-list">
-    {% for fact in facts %}
-      {% if fact.fact_type != "HOUSING_REQUIRED" and fact.fact_type != "HOUSING_DELIVERED" %}
-      <li class="fact-list__item govuk-grid-row">
-        <div class="govuk-grid-column-one-half">
-          <h4 class="govuk-heading-s fact-list__item__fact">{{ fact.fact }}</h4>
-          <span class="fact-list__item-type">
-            {{ fact.fact_type | format_fact }}
-            <span class="fact-list__item-type__label">Fact Type</span>
-          </span>
-        </div>
-        <div class="govuk-grid-column-one-half">
-          <div class="fact-list__item-source">
-            <h5 class="fact-list__item-source__label">Source</h5>
-            <span class="fact-list__item-source__url">{% if fact.document.title %}{{ fact.document.title }}{% else %}unknown{% endif %}</span>
-            {% if fact.image_url %}
-            <details class="govuk-details">
-              <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">
-                  Has source screenshot
-                </span>
-              </summary>
-              <div class="govuk-details__text">
-                <img class="fact-list__item__img" src="{{ fact.image_url }}">
-              </div>
-            </details>
-            {% endif %}
-            {% if fact.notes %}
-            <details class="govuk-details">
-              <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">
-                  Notes on fact
-                </span>
-              </summary>
-              <div class="govuk-details__text">
-                <p class="govuk-body">{{ fact.notes }}</p>
-              </div>
-            </details>
-            {% endif %}
-          </div>
-        </div>
-      </li>
-      {% endif %}
-    {% endfor %}
-
-    {% endif %}
-    </ul>
-
-
-<h2 id="local-plans" class="govuk-heading-l contents-list__section">Local plans</h2>
+<!--<h2 id="local-plans" class="govuk-heading-l contents-list__section">Local plans</h2>
 
 
 <div class="govuk-tabs" data-module="tabs">
@@ -209,6 +203,6 @@
     </section>
     {% endfor %}
 
-  </div>
+  </div>-->
 
 {% endblock %}
