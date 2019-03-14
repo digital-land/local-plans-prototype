@@ -2,7 +2,7 @@ import base64
 from pathlib import Path
 
 import boto3
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify, send_file
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify, send_file, current_app
 
 from application.extensions import db
 from application.models import PlanningAuthority, LocalPlan, FactType, EmergingFactType, PlanDocument, OtherDocument, \
@@ -84,15 +84,20 @@ def add_fact_to_document(planning_authority, document):
 
         if fact_json.get('screenshot') is not None:
             data = fact_json['screenshot'].replace('data:image/jpeg;base64,', '')
-            bucket = 'local-plans'
-            key = f'images/{fact.id}.jpg'
-            s3 = boto3.resource('s3')
-            object = s3.Object(bucket, key)
-            object.put(ACL='public-read', Body=base64.b64decode(data), ContentType='image/jpeg')
-            image_url = f'https://s3.eu-west-2.amazonaws.com/{bucket}/{key}'
-            fact.image_url = image_url
-            db.session.add(fact)
-            db.session.commit()
+            try:
+                body = base64.b64decode(data)
+                bucket = 'local-plans'
+                key = f'images/{fact.id}.jpg'
+                s3 = boto3.resource('s3')
+                object = s3.Object(bucket, key)
+                object.put(ACL='public-read', Body=body, ContentType='image/jpeg')
+                image_url = f'https://s3.eu-west-2.amazonaws.com/{bucket}/{key}'
+                fact.image_url = image_url
+                db.session.add(fact)
+                db.session.commit()
+            except Exception as e:
+                current_app.logger.error(e)
+                resp['error'] = 'Could not save image'
     else:
         resp = {'OK': 200}
 
