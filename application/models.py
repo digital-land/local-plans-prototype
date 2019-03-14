@@ -94,7 +94,7 @@ class PlanningAuthority(db.Model):
         facts = []
         for doc in self.other_documents:
             for fact in doc.facts:
-                if filter:
+                if filters:
                     if fact.fact_type in filters:
                         facts.append(fact)
                 else:
@@ -103,7 +103,7 @@ class PlanningAuthority(db.Model):
         for plan in self.local_plans:
             for doc in plan.plan_documents:
                 for fact in doc.facts:
-                    if filter:
+                    if filters:
                         if fact.fact_type in filters:
                             facts.append(fact)
                     else:
