@@ -306,9 +306,15 @@
                               <th class="govuk-table__header" scope="row">{{ fact.fact }}</th>
                               <td class="govuk-table__cell">{{ fact.fact_type | format_fact }}</td>
                               <td class="govuk-table__cell">{% if fact.notes == "" %}-{% else %}{{ fact.notes }}{% endif %}</td>
-                              <td class="govuk-table__cell">{% if fact.image_url %}<a href="{{ fact.image_url }}" target="_blank"><img style="height: 60px" src="{{ fact.image_url }}"></a>{% endif %}</td>
+                              <td class="govuk-table__cell">
+                                {% if fact.image_url -%}
+                                  <a href="{{ fact.image_url }}" target="_blank">
+                                    <img style="height: 60px" src="{{ fact.image_url }}">
+                                  </a>
+                                {% endif -%}</td>
                               <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact" href="{{ url_for('frontend.remove_fact_from_document', document=doc.id, fact=fact.id) }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
                             </tr>
+                            <a href="{{ fact.image_url }}" target="_blank"><img style="height: 60px" src="{{ fact.image_url }}"></a>
                         {% endfor %}
                     </tbody>
                   </table>
