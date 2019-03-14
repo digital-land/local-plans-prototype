@@ -87,6 +87,10 @@
   color: govuk-colour("grey-1");
 }
 
+.no-title-given {
+  @include govuk-font($size: 16);
+  color: govuk-colour("grey-1");
+}
 
 // **************************************
 // Fact list

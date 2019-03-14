@@ -6988,6 +6988,38 @@
   }
 }
 
+.no-title-given {
+  font-family: "nta", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 14px;
+  font-size: 0.875rem;
+  line-height: 1.14286;
+  color: #6f777b;
+}
+
+@media print {
+  .no-title-given {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .no-title-given {
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+}
+
+@media print {
+  .no-title-given {
+    font-size: 14pt;
+    line-height: 1.2;
+  }
+}
+
 .fact-list {
   font-family: "nta", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
