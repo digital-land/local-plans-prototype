@@ -6857,6 +6857,14 @@
   background: #2b8cc4;
 }
 
+.bar--blank {
+  background: transparent;
+}
+
+.bar--blank .data-item {
+  color: #bfc1c3;
+}
+
 .js-enabled .govuk-tabs__panel--no-bottom-padding {
   padding-bottom: 0;
 }
@@ -6876,4 +6884,37 @@
 
 .per-year-figure span:last-child {
   margin-left: auto;
+}
+
+.data-source {
+  display: block;
+  font-family: "nta", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 12px;
+  font-size: 0.75rem;
+  line-height: 1.25;
+  color: #6f777b;
+}
+
+@media print {
+  .data-source {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .data-source {
+    font-size: 14px;
+    font-size: 0.875rem;
+    line-height: 1.42857;
+  }
+}
+
+@media print {
+  .data-source {
+    font-size: 12pt;
+    line-height: 1.2;
+  }
 }

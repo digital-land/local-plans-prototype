@@ -37,50 +37,6 @@
 {#      </div>#}
 
 
-
-    {#
-        TODO Colm, this list of facts is what I think is becoming more central - it's a list of all things we know
-        but will be focussed on housing numbers.
-     #}
-
-{#    {% if facts %}#}
-{##}
-{#        <div class="govuk-grid-row">#}
-{#            <div class="govuk-grid-column-full">#}
-{#                <table class="govuk-table document-facts__table">#}
-{#                    <thead>#}
-{#                    <tr>#}
-{#                        <th>Fact type</th>#}
-{#                        <th>Details</th>#}
-{#                        <th>Notes</th>#}
-{#                        <th>Source document</th>#}
-{#                        <th>Image</th>#}
-{#                    </tr>#}
-{#                    </thead>#}
-{#                    <tbody class="govuk-table__body">#}
-{#                    {% for fact in facts %}#}
-{#                        <tr class="govuk-table__row">#}
-{#                            <td class="govuk-table__cell">{{ fact.fact_type | format_fact }}</td>#}
-{#                            <td class="govuk-table__cell">{{ fact.fact }}</td>#}
-{#                            <td class="govuk-table__cell">{{ fact.notes }}</td>#}
-{#                            <td class="govuk-table__cell"><a href="{{ fact.document.url }}">{{ fact.document.title }}</a></td>#}
-{#                            {% if fact.image_url %}#}
-{#                                <td class="govuk-table__cell">#}
-{#                                        <a href="{{ fact.image_url }}" target="_blank">#}
-{#                                            <img style="height: 60px"src="{{ fact.image_url }}">#}
-{#                                        </a>#}
-{#                                </td>#}
-{#                            {% endif %}#}
-{#                        </tr>#}
-{#                    {% endfor %}#}
-{#                    </tbody>#}
-{#                </table>#}
-{#            </div>#}
-{#        </div>#}
-{##}
-{#    {% endif %}#}
-
-
   <h2 class="govuk-heading-l">Number of houses</h2>
   {% macro singleBarComponent(label, value, width, _classes) -%}
     <div class="govuk-grid-row contribution-category-row">
@@ -100,7 +56,9 @@
     {% set max_figure = [hdt.homes_required, hdt.homes_delivered]|max %}
 
     <section class="hdt-figure-section">
-      <h3 class="govuk-heading-m">{{ hdt.from_year.year }} - {{ hdt.to_year.year }}</h3>
+      <h3 class="govuk-heading-m">{{ hdt.from_year.year }} - {{ hdt.to_year.year }}
+        <span class="data-source">Source: <a href="https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/779711/HDT_2018_measurement.xlsx">Housing Delivery Test: 2018 measurement</a></span>
+      </h3>
       {% set required = hdt.homes_required | return_percent(denominator=max_figure) | format_percent %}
       {{ singleBarComponent("HDT required", hdt.homes_required, required) }}
 
@@ -109,14 +67,59 @@
       {% set delivered = hdt.homes_delivered | return_percent(denominator=max_figure) | format_percent %}
       {{ singleBarComponent("HDT delivered", hdt.homes_delivered, delivered, "bar--blue") }}
 
-      {{ singleBarComponent("Local plan commitment", "???", "70%", "bar--light-blue") }}
+      {{ singleBarComponent("Local plan commitment", "???", "70%", "bar--blank") }}
 {#      need to work out how to get local plan commitment - it will be attached to a plan and a document#}
 {#      specifically so we have to hope that they are recorded accoring to this breakdown of years#}
 {#      so that we can match with these figures - possibly a jump to far in terms of how this is currently#}
 {#      modelled?#}
+
     </section>
 
   {% endfor %}
+
+
+
+    {#
+        TODO Colm, this list of facts is what I think is becoming more central - it's a list of all things we know
+        but will be focussed on housing numbers.
+     #}
+
+    {% if facts %}
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <table class="govuk-table document-facts__table">
+                    <thead>
+                    <tr>
+                        <th>Fact type</th>
+                        <th>Details</th>
+                        <th>Notes</th>
+                        <th>Source document</th>
+                        <th>Image</th>
+                    </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                    {% for fact in facts %}
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">{{ fact.fact_type | format_fact }}</td>
+                            <td class="govuk-table__cell">{{ fact.fact }}</td>
+                            <td class="govuk-table__cell">{{ fact.notes }}</td>
+                            <td class="govuk-table__cell"><a href="{{ fact.document.url }}">{{ fact.document.title }}</a></td>
+                            {% if fact.image_url %}
+                                <td class="govuk-table__cell">
+                                        <a href="{{ fact.image_url }}" target="_blank">
+                                            <img style="height: 60px"src="{{ fact.image_url }}">
+                                        </a>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    {% endif %}
 
 
 <h2 class="govuk-heading-l govuk-!-margin-top-9">Local plans</h2>

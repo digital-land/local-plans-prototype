@@ -40,6 +40,14 @@
   background: govuk-colour("light-blue");
 }
 
+.bar--blank {
+  background: transparent;
+
+  .data-item {
+    color: govuk-colour("grey-2");
+  }
+}
+
 .js-enabled .govuk-tabs__panel--no-bottom-padding {
   padding-bottom: 0;
 }
@@ -59,4 +67,10 @@
   span:last-child {
     margin-left: auto;
   }
+}
+
+.data-source {
+  display: block;
+  @include govuk-font($size: 14);
+  color: govuk-colour("grey-1");
 }
