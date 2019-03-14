@@ -37,7 +37,9 @@
     <h3 class="contents-list__title">Contents</h3>
     <ol class="contents-list__list">
       <li class="contents-list__list-item"><a href="#housing-numbers" class="contents-list__link">Housing numbers</a></li>
+      {% if facts -%}
       <li class="contents-list__list-item"><a href="#other-data" class="contents-list__link">Other data / facts</a></li>
+      {%- endif -%}
       <li class="contents-list__list-item"><a href="#local-plans" class="contents-list__link">Local plans</a></li>
     </ol>
   </nav>
@@ -117,6 +119,7 @@
                     </thead>
                     <tbody class="govuk-table__body">
                     {% for fact in facts %}
+                      {% if fact.fact_type != "HOUSING_REQUIRED" and fact.fact_type != "HOUSING_DELIVERED" %}
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell">{{ fact.fact_type | format_fact }}</td>
                             <td class="govuk-table__cell">{{ fact.fact }}</td>
@@ -130,6 +133,7 @@
                                 </td>
                             {% endif %}
                         </tr>
+                      {% endif %}
                     {% endfor %}
                     </tbody>
                 </table>
