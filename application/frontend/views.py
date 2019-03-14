@@ -89,7 +89,7 @@ def add_fact_to_document(planning_authority, document):
             s3 = boto3.resource('s3')
             object = s3.Object(bucket, key)
             object.put(ACL='public-read', Body=base64.b64decode(data), ContentType='image/jpeg')
-            image_url = f'{object.meta.client._endpoint.host}/{bucket}/{key}'
+            image_url = f'https://s3.eu-west-2.amazonaws.com/{bucket}/{key}'
             fact.image_url = image_url
             db.session.add(fact)
             db.session.commit()
