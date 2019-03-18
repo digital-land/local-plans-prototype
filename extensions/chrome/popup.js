@@ -187,7 +187,7 @@ function populateEmergingPlanView(data) {
 
 function checkPageBelongsToAuthority(pageDetails) {
 
-  fetch( localPlanUrl + '/local-plans/check-url', {
+  fetch( localPlanUrl + '/local-plans/planning-authority', {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

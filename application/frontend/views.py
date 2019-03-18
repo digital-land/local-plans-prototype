@@ -1,12 +1,30 @@
 import base64
+import boto3
+
 from pathlib import Path
 
-import boto3
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify, send_file, current_app
+from flask import (
+    Blueprint,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    jsonify,
+    send_file,
+    current_app
+)
 
 from application.extensions import db
-from application.models import PlanningAuthority, LocalPlan, FactType, EmergingFactType, PlanDocument, OtherDocument, \
-    Fact, Document
+
+from application.models import (
+    PlanningAuthority,
+    LocalPlan,
+    FactType,
+    EmergingFactType,
+    PlanDocument,
+    OtherDocument,
+    Fact
+)
 
 from application.frontend.forms import LocalDevelopmentSchemeURLForm, LocalPlanURLForm
 
@@ -44,13 +62,13 @@ def list_all():
     planning_authorities = PlanningAuthority.query.order_by(PlanningAuthority.name).all()
     if request.method == 'POST':
         return redirect(url_for('frontend.local_plan', planning_authority=request.form['local-authority-select']))
-    return render_template('list.html', planning_authorities=planning_authorities)
+    return render_template('local-plans.html', planning_authorities=planning_authorities)
 
 
 @frontend.route('/local-plans/<planning_authority>')
 def local_plan(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
-    return render_template('local-plans.html',
+    return render_template('local-plan.html',
                            planning_authority=pla,
                            fact_types=FactType,
                            emerging_fact_types=EmergingFactType)
@@ -263,8 +281,8 @@ def add_document():
     return jsonify(resp)
 
 
-@frontend.route('/local-plans/check-url', methods=['POST'])
-def check_url():
+@frontend.route('/local-plans/planning-authority', methods=['POST'])
+def planning_authority_from_document():
 
     # Maybe best do this on origin only? the reason is that the plan policy urls
     # are sort of unknown provenance. The LA website urls I got from LGA
@@ -304,7 +322,6 @@ def check_url():
     elif website_location is not None:
         try:
             pla = PlanningAuthority.query.filter_by(plan_policy_url=website_location).one()
-            print("FOUND BASED ON PLANNING POLICY DOC")
             resp = {'OK': 200, 'view-type': 'urls', 'planning_authority': pla.to_dict() }
         except Exception as e:
             print(e)
@@ -313,7 +330,7 @@ def check_url():
     return jsonify(resp)
 
 
-@frontend.route('/local-plans/check')
+@frontend.route('/local-plans/lucky-dip')
 def lucky_dip():
     import random
     query = db.session.query(PlanningAuthority)

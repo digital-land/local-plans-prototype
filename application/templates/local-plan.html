@@ -1,0 +1,815 @@
+{% extends "dlf-base.html" %}
+{% from "govuk-jinja-components/warning-text/macro.jinja" import govukWarningText %}
+{% from "dl-macros/date-input.html" import renderDateInput %}
+
+{% block beforeContent %}
+ {{ super() }}
+
+ {{ govukBreadcrumbs({
+   "items": [
+    {
+       "text": "Home",
+       "href": url_for("frontend.index")
+     },
+     {
+       "text": "Planning Authority",
+       "href": url_for("frontend.list_all")
+     },
+     {
+       "text": planning_authority.name
+     }
+   ]
+ }) }}
+
+{% endblock %}
+
+{% block content %}
+
+  <span class="govuk-caption-xl">Local plan data</span>
+  <h1 class="govuk-heading-xl">{{ planning_authority.name }}</h1>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-l">Local development scheme</h2>
+      <p class="govuk-body">
+        Each planning authority is expected to publish a local development scheme. For {{ planning_authority.name }} you should be able to view it at:
+      </p>
+    </div>
+  </div>
+  
+  {% if planning_authority.local_scheme_url %}
+
+      <!--
+      TODO we need to be able to add documents to this as well. in the same was as we add docs to plans
+      except these are stored against local authority but in table emerging_plan_documents
+      -->
+
+      <p class="govuk-body">
+        <a id="policy-url" class="govuk-link" href="{{ planning_authority.local_scheme_url }}">{{ planning_authority.local_scheme_url }}</a>
+      </p>
+      <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="{{ url_for('frontend.update_local_scheme_url', planning_authority=planning_authority.id) }}" class="govuk-link">Update the url</a>.</p>
+
+      <h3 class="govuk-heading-m">Local scheme documents</h3>
+        <ul class="url-list" data-url-list-type="lds-url-list">
+          {% if planning_authority.other_documents|length > 0 %}
+            {% for doc in planning_authority.other_documents %}
+            <li class="url-item govuk-grid-row">
+              <section class="document-link govuk-grid-column-full">
+                {% if doc.title %}
+                <span>{{ doc.title }}</span>
+                {% else %}
+                <span class="no-title-given">no title given</span>
+                {% endif %}
+                <a class="url-link" href="{{ doc.url }}" target="_blank">{{ doc.url }}</a>
+                <div class="url-item__controls">
+                  <a href="" class="url-item__btn url-edit-btn govuk-visually-hidden">Edit</a>
+                  <a href="{{ url_for('frontend.remove_document_from_planning_authority', document=doc.id, planning_authority=planning_authority.id ) }}" class="url-item__btn url-remove-btn">Remove</a>
+                </div>
+              </section>
+
+              <section class="document-facts govuk-clearfix">
+
+                <div class="govuk-grid-column-full">
+                <!-- TODO need some facts for emerging plan docs -->
+                  <table class="govuk-table document-facts__table">
+                    {% if doc.facts|length > 0 %}<caption class="govuk-table__caption">Facts from document</caption>{% endif %}
+                    <tbody class="govuk-table__body">
+                    {% for fact in doc.facts %}
+                      <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">{{ fact.fact }}</th>
+                        <td class="govuk-table__cell">{{ fact.fact_type | format_fact }}</td>
+                        <td class="govuk-table__cell">{% if fact.notes == "" %}-{% else %}{{ fact.notes }}{% endif %}</td>
+                        <td class="govuk-table__cell">{% if fact.image_url %}<a href="{{ fact.image_url }}" target="_blank"><img style="height: 60px" src="{{ fact.image_url }}"></a>{% endif %}</td>
+                        <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact" href="{{ url_for('frontend.remove_fact_from_document', document=doc.id, fact=fact.id) }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+
+                <details class="govuk-details govuk-details--facts govuk-details--facts-emerging-plan-doc govuk-grid-column-two-thirds">
+                  <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text document-facts__add">
+                      Add fact from document
+                    </span>
+                  </summary>
+
+                  <form action="{{ url_for('frontend.add_fact_to_document', planning_authority=planning_authority.id, document=doc.id) }}" class="govuk-form add-fact-form govuk-details__text publication-date">
+
+                    <input type="hidden" id="document-type" value="emerging_plan_document">
+
+                    <h4 class="govuk-heading-s govuk-visually-hidden">Add fact from document</h4>
+
+                    <div class="govuk-form-group">
+                      <label class="govuk-label" for="document-note-{{loop.index}}">
+                        Specify the type of fact
+                      </label>
+                      <select class="govuk-select fact-select-types" id="fact-type-{{loop.index}}" name="fact-type-{{loop.index}}">
+                      {% for fact_type in emerging_fact_types %}
+                         <option value="{{ fact_type.name }}" data-type-class="{{ fact_type.name|lower|replace('_', '-') }}">{{ fact_type.value }}</option>
+                      {% endfor %}
+                      </select>
+                    </div>
+
+                    <!-- for Publication date -->
+                    {{ renderDateInput({
+                      "text":"Publication date",
+                      "classes":"publication-date-input",
+                      "prefix":"publication-date-" + loop.index|string
+                    }) }}
+
+                    <!-- for Regulation 18 date -->
+                    {{ renderDateInput({
+                      "text":"Proposed regulation 18 date",
+                      "classes":"regulation-18-date-input",
+                      "prefix":"regulation-18-date-" + loop.index|string
+                    }) }}
+
+                    <!-- for Proposed publication date -->
+                    {{ renderDateInput({
+                      "text":"Proposed publication date",
+                      "classes":"proposed-publication-date-input",
+                      "prefix":"proposed-publication-date-" + loop.index|string
+                    }) }}
+
+                    <!-- for Proposed submission date -->
+                    {{ renderDateInput({
+                      "text":"Proposed submission date",
+                      "classes":"proposed-submission-date-input",
+                      "prefix":"proposed-submission-date-" + loop.index|string
+                    }) }}
+
+                    <!-- for Main modifications date -->
+                    {{ renderDateInput({
+                      "text":"Proposed main modifications date",
+                      "classes":"proposed-main-modifications-date-input",
+                      "prefix":"proposed-main-modifications-date-" + loop.index|string
+                    }) }}
+
+                    <!-- for Proposed adoption date -->
+                    {{ renderDateInput({
+                      "text":"Proposed adoption date",
+                      "classes":"proposed-adoption-date-input",
+                      "prefix":"proposed-adoption-date-" + loop.index|string
+                    }) }}
+
+                    <!-- for Housing requirement total -->
+                    <div class="govuk-form-group plan-housing-req-total">
+                      <label class="govuk-label" for="housing-req-total-{{ loop.index }}">
+                        Housing requirement total
+                      </label>
+                      <input class="govuk-input govuk-input--width-10" id="housing-req-total-{{ loop.index }}" name="housing-req-total-{{ loop.index }}" type="text">
+                    </div>
+
+                    <!-- for Housing requirement range -->
+                    <fieldset class="govuk-fieldset housing-req-range-fieldset">
+                      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                        <h1 class="govuk-fieldset__heading">
+                          Housing requirement range
+                        </h1>
+                      </legend>
+
+                      <div class="govuk-form-group">
+                        <label class="govuk-label" for="housing-req-range-min-{{ loop.index }}">
+                          Min
+                        </label>
+                        <input class="govuk-input govuk-input--width-10 housing-req-range-min" id="housing-req-range-min-{{ loop.index }}" name="housing-req-range-min-{{ loop.index }}" type="text">
+                      </div>
+
+                      <div class="govuk-form-group">
+                        <label class="govuk-label" for="housing-req-range-max-{{ loop.index }}">
+                          Max
+                        </label>
+                        <input class="govuk-input govuk-input--width-10 housing-req-range-max" id="housing-req-range-max-{{ loop.index }}" name="housing-req-range-max-{{ loop.index }}" type="text">
+                      </div>
+                    </fieldset>
+
+                    <div class="govuk-form-group">
+                      <label class="govuk-label" for="document-note-{{loop.index}}">
+                        Provide some information about the fact
+                      </label>
+                      <textarea class="govuk-textarea" id="document-note-{{loop.index}}" name="document-note-{{loop.index}}" rows="5"></textarea>
+                    </div>
+                    <div class="govuk-form-group">
+                      <button class="govuk-button fact-save-btn">Save</button>
+                      <button class="cancel-btn">Cancel</button>
+                    </div>
+                  </form>
+                </details>
+
+              </section>
+            </li>
+            {% endfor %}
+          {% endif %}
+        </ul>
+
+      <form action="{{ url_for('frontend.add_document_to_plan', planning_authority=planning_authority.id,  document_type='emerging_plan_document' )}}" data-associated-list="lds-url-list" class="govuk-form add-url-form">
+        <div class="govuk-form-group">
+          <label class="govuk-label label-add" for="url-input">
+          Add URL to a local development scheme or emerging plan document
+          </label>
+          <input class="govuk-input" id="url-input" name="url-input" type="text">
+        </div>
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="doc-title-input">
+            Does the document have a title?
+          </label>
+          <input class="govuk-input govuk-input--width-20" id="doc-title-input" name="doc-title-input" type="text">
+        </div>
+        <div class="govuk-form-group">
+          <button class="govuk-button dlf-secondary-button url-save-btn">Add URL</button>
+        </div>
+      </form>
+
+  {% else %}
+      <a class="highlight-box highlight-box--gap highlight-box--flush" href="{{ url_for('frontend.update_local_scheme_url', planning_authority=planning_authority.id) }}">
+        <h3 class="govuk-heading-s highlight-box__title">URL unavailable</h3>
+        <p class="govuk-body govuk-!-margin-bottom-0">We do not have a link to the local development scheme. Can you add one?</p>
+      </a>
+  {% endif %}
+
+  <h2 class="govuk-heading-l govuk-!-margin-top-9">Local plans</h2>
+
+  <div class="govuk-tabs" data-module="tabs">
+    <h2 class="govuk-tabs__title">
+      Contents
+    </h2>
+
+    <ul class="govuk-tabs__list">
+      {% for plan in planning_authority.local_plans|sort_plans %}
+      <li class="govuk-tabs__list-item {% if plan.is_adopted() %}adopted-plan{% endif %}">
+        <a class="govuk-tabs__tab govuk-tabs__tab--selected" href="#{{ plan.local_plan }}">
+          {{ plan.local_plan }}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+
+    {% for plan in planning_authority.local_plans|sort_plans %}
+    <section class="govuk-tabs__panel {% if plan.is_adopted() %}adopted-plan{% endif %}" id="{{ plan.local_plan }}">
+      <h2 class="govuk-heading-l">{{ plan.local_plan }}</h2>
+
+       {% if plan.url %}
+          <h3 class="govuk-heading-m">Local plan URL</h3>
+          <p class="govuk-body">
+            <a id="policy-url" class="govuk-link" href="{{ plan.url }}">{{ plan.url }}</a>
+          </p>
+          <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="{{ url_for('frontend.update_local_plan_url', planning_authority=planning_authority.id, local_plan=plan.local_plan) }}" class="govuk-link">Update the url</a>.</p>
+          {% else %}
+          <a class="highlight-box highlight-box--gap highlight-box--flush" href="{{ url_for('frontend.update_local_plan_url', planning_authority=planning_authority.id, local_plan=plan.local_plan) }}">
+            <h3 class="govuk-heading-s highlight-box__title">URL unavailable</h3>
+            <p class="govuk-body govuk-!-margin-bottom-0">We do not have a link to the local plan. Can you add one?</p>
+          </a>
+       {% endif %}
+
+      <div class="pims-stages">
+
+        {% set latest_state = plan.latest_state() %}
+        <div class="current-stage">
+          <span class="stage-tag">{{ latest_state.state }}</span>
+          <span class="stage-date">{{ latest_state.date | format_month_and_year }}</span>
+        </div>
+
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+             PINS Timeline
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <table class="govuk-table">
+              <tbody class="govuk-table__body">
+                {% for state in plan.ordered_states() %}
+                <tr class="govuk-table__row">
+                  <th class="govuk-table__cell" scope="row">{{ state.state }}</th>
+                  <td class="govuk-table__cell">{{ state.date | format_month_and_year }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </details>
+
+      </div>
+
+      
+        <h3 class="govuk-heading-m">Local plan documents</h3>
+        <ul class="url-list" data-url-list-type="{{ plan.local_plan }}-url-list">
+          {% if plan.plan_documents|length > 0 %}
+            {% for doc in plan.plan_documents %}
+            <li class="url-item govuk-grid-row">
+              <section class="document-link govuk-grid-column-full">
+                {% if doc.title %}
+                <span>{{ doc.title }}</span>
+                {% endif %}
+                <a class="url-link" href="{{ doc.url }}" target="_blank">{{ doc.url }}</a>
+                <div class="url-item__controls">
+                  <a href="" class="url-item__btn url-edit-btn govuk-visually-hidden">Edit</a>
+                  <a href="{{ url_for('frontend.remove_document_from_plan', document=doc.id, local_plan=plan.local_plan) }}" class="url-item__btn url-remove-btn">Remove</a>
+                </div>
+              </section>
+
+              <section class="document-facts govuk-clearfix">
+
+                <div class="govuk-grid-column-full">
+                  <table class="govuk-table document-facts__table">
+                    {% if doc.facts|length > 0 %}<caption class="govuk-table__caption">Facts from document</caption>{% endif %}
+                    <tbody class="govuk-table__body">
+                        {% for fact in doc.facts %}
+                            <tr class="govuk-table__row">
+                              <th class="govuk-table__header" scope="row">{{ fact.fact }}</th>
+                              <td class="govuk-table__cell">{{ fact.fact_type | format_fact }}</td>
+                              <td class="govuk-table__cell">{% if fact.notes == "" %}-{% else %}{{ fact.notes }}{% endif %}</td>
+                              <td class="govuk-table__cell">
+                                {% if fact.image_url -%}
+                                  <a href="{{ fact.image_url }}" target="_blank">
+                                    <img style="height: 60px" src="{{ fact.image_url }}">
+                                  </a>
+                                {% endif -%}</td>
+                              <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact" href="{{ url_for('frontend.remove_fact_from_document', document=doc.id, fact=fact.id) }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+
+                <details class="govuk-details govuk-details--facts govuk-details--facts-plan-doc govuk-grid-column-two-thirds">
+                  <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text document-facts__add">
+                      Add fact from document
+                    </span>
+                  </summary>
+
+                  <form action="{{ url_for('frontend.add_fact_to_document', planning_authority=planning_authority.id, local_plan=plan.local_plan, document=doc.id) }}" class="govuk-form add-fact-form govuk-details__text plan-name">
+                    <input type="hidden" value="plan_document">
+                    <h4 class="govuk-heading-s govuk-visually-hidden">Add fact from document</h4>
+
+                    <div class="govuk-form-group">
+                       <label class="govuk-label" for="document-note-{{loop.index}}">
+                           Specify the type of fact
+                       </label>
+                        <select class="govuk-select fact-select-types" id="fact-type-{{loop.index}}" name="fact-type-{{loop.index}}">
+                          {% for fact_type in fact_types %}
+                             <option value="{{ fact_type.name }}" data-type-class="{{ fact_type.name|lower|replace('_', '-') }}">{{ fact_type.value }}</option>
+                          {% endfor %}
+                      </select>
+                    </div>
+
+                     <!-- TODO depending on type of fact chosen render input for fact
+                     e.g. if plan name just an text input note we know some of the names already,
+                     if plan start or end date chose render input for date in format YYYY-MM - or submits that at least which I think input type month does?
+                     if total housing number just integer of range then two inputs 'from' integer to 'integer'
+                     -->
+
+                    <!-- for Plan Name -->
+                    <div class="govuk-form-group plan-name-input">
+                      <label class="govuk-label" for="plan-name-{{ loop.index }}">
+                        Plan name
+                      </label>
+                      <input class="govuk-input govuk-input--width-20" id="plan-name-{{ loop.index }}" name="plan-name-{{ loop.index }}" type="text">
+                    </div>
+
+                    <!-- for Plan start date -->
+                    {{ renderDateInput({
+                      "text":"Plan period start date",
+                      "classes":"plan-start-date-input",
+                      "prefix":"plan-start-date-" + loop.index|string
+                    }) }}
+
+                    <!-- for Plan end date -->
+                    {{ renderDateInput({
+                      "text":"Plan period end date",
+                      "classes":"plan-end-date-input",
+                      "prefix":"plan-end-date-" + loop.index|string
+                    }) }}
+
+                    <!-- for Housing requirement total -->
+                    <div class="govuk-form-group plan-housing-req-total">
+                      <label class="govuk-label" for="housing-req-total-{{ loop.index }}">
+                        Housing requirement total
+                      </label>
+                      <input class="govuk-input govuk-input--width-10" id="housing-req-total-{{ loop.index }}" name="housing-req-total-{{ loop.index }}" type="text">
+                    </div>
+
+                    <!-- for Housing requirement range -->
+                    <fieldset class="govuk-fieldset housing-req-range-fieldset">
+                      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                        <h1 class="govuk-fieldset__heading">
+                          Housing requirement range
+                        </h1>
+                      </legend>
+
+                      <div class="govuk-form-group">
+                        <label class="govuk-label" for="housing-req-range-min-{{ loop.index }}">
+                          Min
+                        </label>
+                        <input class="govuk-input govuk-input--width-10 housing-req-range-min" id="housing-req-range-min-{{ loop.index }}" name="housing-req-range-min-{{ loop.index }}" type="text">
+                      </div>
+
+                      <div class="govuk-form-group">
+                        <label class="govuk-label" for="housing-req-range-max-{{ loop.index }}">
+                          Max
+                        </label>
+                        <input class="govuk-input govuk-input--width-10 housing-req-range-max" id="housing-req-range-max-{{ loop.index }}" name="housing-req-range-max-{{ loop.index }}" type="text">
+                      </div>
+                    </fieldset>
+
+                    {#
+                        TODO - need two more inputs 1) housing yearly average - single numeric input 2) housing yearly range - needs a min and max
+                        these are similar to existing housing numbers above which apply to total or range for entire plan period.
+
+                        These need to be replicated in extension form as well.
+                    #}
+
+
+                    <div class="govuk-form-group">
+                      <label class="govuk-label" for="document-note-{{loop.index}}">
+                        Provide any additional information about the fact
+                      </label>
+                      <textarea class="govuk-textarea" id="document-note-{{loop.index}}" name="document-note-{{loop.index}}" rows="5"></textarea>
+                    </div>
+                    <div class="govuk-form-group">
+                      <button class="govuk-button fact-save-btn">Save</button>
+                      <button class="cancel-btn">Cancel</button>
+                    </div>
+                  </form>
+                </details>
+                
+              </section>
+            </li>
+            {% endfor %}
+          {% endif %}
+        </ul>
+
+        <form action="{{ url_for('frontend.add_document_to_plan', planning_authority=planning_authority.id, local_plan=plan.local_plan, document_type='plan_document' )}}" data-associated-list="{{ plan.local_plan }}-url-list" class="govuk-form add-url-form">
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="url-input">
+              Add URL to a local plan document
+            </label>
+            <input class="govuk-input" id="url-input" name="url-input" type="text">
+          </div>
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="doc-title-input">
+              Does the document have a title?
+            </label>
+            <input class="govuk-input govuk-input--width-20" id="doc-title-input" name="doc-title-input" type="text">
+          </div>
+          <div class="govuk-form-group">
+            <button class="govuk-button dlf-secondary-button url-save-btn">Add URL</button>
+          </div>
+        </form>
+
+    </section>
+    {% endfor %}
+
+  </div>
+{% endblock %}
+
+{% block bodyEnd %}
+<div class="govuk-visually-hidden emerging-plan-details-template">
+  {% include "partials/emerging-plan-details.html" ignore missing %}
+</div>
+
+<div class="govuk-visually-hidden local-plan-details-template">
+  {% include "partials/local-plan-details.html" ignore missing %}
+</div>
+
+<script src="/static/javascripts/vendor/handlebars-v4.1.0.js"></script>
+{% raw %}
+<script id="url-item-template" type="text/x-handlebars-template">
+  <section class="document-link govuk-grid-column-full">
+    <span class="document-title"></span>   
+    <a class="url-link" href="{{ url }}">{{ url }}</a>
+    <div class="url-item__controls">
+      <a href="" class="url-item__btn url-edit-btn govuk-visually-hidden">Edit</a>
+      <a href="{{ remove_url }}" class="url-item__btn url-remove-btn">Remove</a>
+    </div>
+  </section>
+  <section class="document-facts govuk-clearfix">
+    <div class="govuk-grid-column-full">
+      <table class="govuk-table document-facts__table">
+        <tbody class="govuk-table__body"></tbody>
+      </table>
+    </div>
+  </section>
+</script>
+<script id="fact-row-template" type="text/x-handlebars-template">
+  <th class="govuk-table__header" scope="row">{{ fact.fact }}</th>
+  <td class="govuk-table__cell">{{ fact.fact_type_display }}</td>
+  <td class="govuk-table__cell">{{#if fact.notes }}{{ fact.notes }}{{else}}-{{/if}}</td>
+  <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact" href="{{ remove_url }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
+</script>
+{% endraw %}
+<script>
+  const urlAddBtns = document.querySelectorAll(".url-add-btn");
+  const urlEditBtns = document.querySelectorAll(".url-edit-btn");
+  const urlRemoveBtns = document.querySelectorAll(".url-remove-btn");
+
+  const addUrlForms = document.querySelectorAll(".add-url-form");
+
+  const factSaveBtns = document.querySelectorAll(".fact-save-btn");
+  const factCancelBtns = document.querySelectorAll(".add-fact-form .cancel-btn");
+  const factTables = document.querySelectorAll(".document-facts__table");
+
+  var source   = document.getElementById("url-item-template").innerHTML;
+  var urlTemplate = Handlebars.compile(source);
+
+  var factTemplateSource = document.getElementById("fact-row-template").innerHTML;
+  var factTemplate = Handlebars.compile(factTemplateSource);
+
+  // handle changes to form when user changes select
+  const addFactForms = document.querySelectorAll(".add-fact-form");
+  const addFactSelects = Array.prototype.slice.call( addFactForms ).map((form) => form.querySelector(".fact-select-types"));
+  addFactSelects.forEach((select) => {
+    select.addEventListener('change', (e) => {
+      const form = e.target.closest('form');
+      const option = e.target.querySelector('option:checked');
+      // remove all these classes before adding selected class
+      removeAllClassesFromFactForm(form);
+      form.classList.add(option.dataset.typeClass);
+    });
+  });
+
+  function removeAllClassesFromFactForm(form) {
+    form.classList.remove("plan-name", "plan-start-year", "plan-end-year", "housing-requirement-total", "housing-requirement-range", "publication-date", "proposed-reg-18-date", "proposed-publication-date", "proposed-submission-date", "proposed-main-modifications-date", "proposed-adoption-date");
+  }
+  
+  const htmlStringToElement = (function () {
+    const parser = new DOMParser();
+    return function(htmlStr) {
+      const generatedDoc = parser.parseFromString(htmlStr, "text/xml");
+      return generatedDoc.childNodes[0];
+    }
+    //console.log("this runs straight away");
+  })();
+
+  function getNearestSection(el) {
+    return el.closest(".lp-section-box");
+  }
+
+  function switchClasses(el, toAdd, toRemove) {
+    el.classList.remove(toRemove);
+    el.classList.add(toAdd);
+  }
+
+  function postDataFieldSaveEvent(btn, dataKey, inputSelector, callback) {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const form = e.currentTarget.closest("form");
+      const url = form.getAttribute("action");
+      const section = getNearestSection(e.currentTarget);
+
+      // set up data obj to post
+      var data = {};
+      data[dataKey] = form.querySelector(inputSelector).value;
+
+      // perform post
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then( (resp_data) => callback(resp_data, section) );
+    });
+  }
+
+  function extractDate(fieldset) {
+    const month = fieldset.querySelector(".govuk-date-input__month");
+    const year = fieldset.querySelector(".govuk-date-input__year");
+    return `${year.value}-${month.value}`;
+  }
+
+  function extractRange(fieldset) {
+    var min = fieldset.querySelector(".housing-req-range-min");
+    var max = fieldset.querySelector(".housing-req-range-max");
+    return `${min.value} - ${max.value}`;
+  }
+
+  // save a fact
+  // ===========
+  factSaveBtns.forEach((btn) => {
+    btn.addEventListener('click', factSubmitHandler);
+  });
+
+  function factSubmitHandler(e) {
+    e.preventDefault();
+    const form = e.target.closest("form");
+    const url = form.getAttribute("action");
+
+    // set up data obj to post
+    // serialise all parts of form
+    var fact = {};
+    fact["fact_type"] = form.querySelector("select").value;
+    fact["notes"] = form.querySelector("textarea").value;
+    fact["document_type"] = form.querySelector("input[type='hidden']").value;
+
+    if(form.classList.contains('plan-name')) {
+      fact["fact"] = form.querySelector(".plan-name-input input").value;
+    } else if (form.classList.contains('plan-start-year')) {
+      fact["fact"] = extractDate( form.querySelector(".plan-start-date-input fieldset") );
+    } else if (form.classList.contains('plan-end-year')) {
+      fact["fact"] = extractDate( form.querySelector(".plan-end-date-input fieldset") );
+    } else if (form.classList.contains('housing-requirement-total')) {
+      fact["fact"] = form.querySelector(".plan-housing-req-total input").value;
+    } else if (form.classList.contains('housing-requirement-range')) {
+      fact["fact"] = extractRange( form.querySelector(".housing-req-range-fieldset") );
+    } else if (form.classList.contains('publication-date')) {
+      fact["fact"] = extractDate( form.querySelector(".publication-date-input fieldset") );
+    } else if (form.classList.contains('proposed-reg-18-date')) {
+      fact["fact"] = extractDate( form.querySelector(".regulation-18-date-input fieldset") );
+    } else if (form.classList.contains('proposed-publication-date')) {
+      fact["fact"] = extractDate( form.querySelector(".proposed-publication-date-input fieldset") );
+    } else if (form.classList.contains('proposed-submission-date')) {
+      fact["fact"] = extractDate( form.querySelector(".proposed-submission-date-input fieldset") );
+    } else if (form.classList.contains('proposed-main-modifications-date')) {
+      fact["fact"] = extractDate( form.querySelector(".proposed-main-modifications-date-input fieldset") );
+    } else if (form.classList.contains('proposed-adoption-date')) {
+      fact["fact"] = extractDate( form.querySelector(".proposed-adoption-date-input fieldset") );
+    } else {
+      // situation where user has selected other
+      fact["fact"] = "";
+    }
+    
+    // if serialising
+    // fact["plan_name"] = form.querySelector(".plan-name-input input").value;
+    // fact["plan_start_date"] = extractDate( form.querySelector(".plan-start-date-input fieldset") );
+    // fact["plan_end_date"] = extractDate( form.querySelector(".plan-end-date-input fieldset") );
+    // fact["housing_req_total"] = form.querySelector(".plan-housing-req-total input").value;
+    // fact["housing_req_range_min"] = form.querySelector(".housing-req-range-fieldset .housing-req-range-min").value;
+    // fact["housing_req_range_max"] = form.querySelector(".housing-req-range-fieldset .housing-req-range-max").value;
+    
+    console.log(fact);
+
+    // perform post
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ 'fact': fact })
+    })
+    .then(response => response.json())
+    .then( (resp_data) => factAddedCallback(resp_data, form) );
+  }
+
+  function factAddedCallback(resp_data, form) {
+    if(resp_data['OK'] === 200) {
+      console.log(factTemplate(resp_data));
+      const factsEl = form.closest(".document-facts");
+      const table = factsEl.querySelector(".document-facts__table tbody");
+
+      var row = document.createElement("tr");
+      row.classList.add('govuk-table__row');
+      row.innerHTML = factTemplate(resp_data);
+      table.appendChild( row );
+
+      resetFactForm(form);
+    }
+  }
+
+  // resets the form
+  // - deletes any added content
+  // - sets form to initial display config
+  function resetFactForm(form) {
+    form.reset();
+    const formType = form.querySelector("input[type='hidden']").value;
+
+    // remove all classes
+    removeAllClassesFromFactForm(form);
+    // add initial class relevant to type of fact
+    if(formType === "plan_document") {
+      form.classList.add('plan-name');
+    } else {
+      form.classList.add('publication-date');
+    }
+  }
+
+  // close fact form
+  // ===============
+  factCancelBtns.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const form = btn.closest('.govuk-form');
+      resetFactForm(form);
+      const details = btn.closest('.govuk-details');
+      //console.log(details);
+      details.open = false;
+    })
+  });
+
+  // remove fact
+  // ===========
+  factTables.forEach((table) => {
+    table.addEventListener('click', (e) => {
+      e.preventDefault();
+      if(e.target.classList.contains("remove-fact")) {
+        console.log("Delete button clicked");
+        removeBtnClickHandler(e, '.govuk-table__row')
+      }
+    });
+  });
+
+  function removeBtnClickHandler(e, selector) {
+    e.preventDefault();
+    const elementToBeRemoved = e.target.closest(selector);
+
+    const url = e.target.href;
+    fetch(url, {
+      method: "DELETE"
+    })
+    .then(response => response.json())
+    .then(data => {
+      // element needs to have a tranistion in it's css
+      // brittle!
+      elementToBeRemoved.addEventListener('transitionend', () => elementToBeRemoved.remove());
+      elementToBeRemoved.classList.add("being-deleted");
+    });
+  }
+
+  urlRemoveBtns.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      removeBtnClickHandler(e, '.url-item');
+    });
+  });
+
+  addUrlForms.forEach((form) => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const input = form.querySelector("input[name='url-input']");
+
+      if(input.value === "") {
+        alert("The URL field is empty. Please add a URL before saving.")
+      } else {
+        const urlList = document.querySelector(`[data-url-list-type='${form.dataset.associatedList}']`);
+        saveURL(form.action, form, urlList);
+      }
+      console.log(e);
+    });
+  });
+
+  function saveURL(endpoint, form, listEl) {
+    // set up data obj
+    var data = {
+      'url': form.querySelector("input[name='url-input']").value,
+      'doc_title': form.querySelector("input[name='doc-title-input']").value
+    };
+
+    // perform post
+    fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then( (resp_data) => {
+      console.log(resp_data);
+      const item = document.createElement("li");
+      item.classList.add('url-item', 'govuk-grid-row');
+      item.innerHTML = urlTemplate(resp_data);
+      const detailsContainer = item.querySelector(".document-facts");
+      const detailsEl = cloneAddFactForm(resp_data.document['type'], resp_data.add_fact_url);
+      detailsContainer.appendChild( detailsEl );
+
+      // add title to URL template
+      if(resp_data.document['title'] !== "") {
+        item.querySelector(".document-title").textContent = resp_data.document['title'];
+      }
+
+      listEl.appendChild( item );
+
+      // add submit handler
+      const formBtn = detailsEl.querySelector('form .fact-save-btn');
+      formBtn.addEventListener('click', factSubmitHandler);
+
+      // hook up remove button
+      item.querySelector(".url-remove-btn").addEventListener('click', (e) => {
+        e.preventDefault();
+        removeBtnClickHandler(e, '.url-item')
+      });
+    });
+  }
+
+  function cloneAddFactForm(docType, add_fact_url) {
+    let template;
+    if(docType === "plan_document") {
+      template = document.querySelector(".local-plan-details-template");
+    } else {
+      template = document.querySelector(".emerging-plan-details-template");
+    }
+    const detailsElement = template.querySelector('details');
+    const clonedFormContainer = detailsElement.cloneNode(true);
+    // update the action attribute
+    const form = clonedFormContainer.querySelector('form');
+    form.action = add_fact_url;
+
+    return clonedFormContainer;
+  };
+
+</script>
+{% endblock %}

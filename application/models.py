@@ -124,7 +124,6 @@ def _parse_date(datestr):
     return datetime.strptime(datestr, '%Y-%m-%d')
 
 
-
 class FactType(Enum):
 
     PLAN_NAME = 'Plan name'
@@ -132,6 +131,8 @@ class FactType(Enum):
     PLAN_END_YEAR = 'Plan period end year'
     HOUSING_REQUIREMENT_TOTAL = 'Housing requirement total'
     HOUSING_REQUIREMENT_RANGE = 'Housing requirement range'
+    HOUSING_REQUIREMENT_YEARLY_AVERAGE = 'Housing requirement yearly average'
+    HOUSING_REQUIREMENT_YEARLY_RANGE = 'Housing requirement yearly range'
     OTHER = 'Other'
 
 
@@ -250,7 +251,6 @@ class OtherDocument(Document):
         # TODO remove these over rides and use base to_dict method. this is only here as some code
         # expects emerging_plan_document so once updated then base object method does the right thing.
         return data
-
 
 
 class Fact(db.Model):
