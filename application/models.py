@@ -127,6 +127,7 @@ def _parse_date(datestr):
 class FactType(Enum):
 
     PLAN_NAME = 'Plan name'
+    PLAN_PERIOD = 'Plan period'
     PLAN_START_YEAR = 'Plan period start year'
     PLAN_END_YEAR = 'Plan period end year'
     HOUSING_REQUIREMENT_TOTAL = 'Housing requirement total'

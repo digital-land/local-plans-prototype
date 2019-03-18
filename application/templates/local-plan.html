@@ -250,9 +250,9 @@
       <h2 class="govuk-heading-l">{{ plan.local_plan }}</h2>
 
        {% if plan.url %}
-          <h3 class="govuk-heading-m">Local plan URL</h3>
+          <h3 class="govuk-heading-m">Planning policy url</h3>
           <p class="govuk-body">
-            <a id="policy-url" class="govuk-link" href="{{ plan.url }}">{{ plan.url }}</a>
+            <a id="policy-url" class="govuk-link" href="{{ plan.url }}" target="_blank">{{ plan.url }}</a>
           </p>
           <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="{{ url_for('frontend.update_local_plan_url', planning_authority=planning_authority.id, local_plan=plan.local_plan) }}" class="govuk-link">Update the url</a>.</p>
           {% else %}
@@ -369,6 +369,13 @@
                       <input class="govuk-input govuk-input--width-20" id="plan-name-{{ loop.index }}" name="plan-name-{{ loop.index }}" type="text">
                     </div>
 
+
+
+                    {#
+                        TODO i'm wondering if we change this to a single drop down - called Plan Period and have
+                        a from and to year - not date, just year - again same in extension
+                    #}
+
                     <!-- for Plan start date -->
                     {{ renderDateInput({
                       "text":"Plan period start date",
@@ -382,6 +389,8 @@
                       "classes":"plan-end-date-input",
                       "prefix":"plan-end-date-" + loop.index|string
                     }) }}
+
+
 
                     <!-- for Housing requirement total -->
                     <div class="govuk-form-group plan-housing-req-total">
