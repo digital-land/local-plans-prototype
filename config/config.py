@@ -11,13 +11,10 @@ class Config:
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 
-    WTF_CSRF_ENABLED = False
-
-
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    WTF_CSRF_ENABLED = False
+    WTF_CSRF_ENABLED = True
 
 
 class TestConfig(Config):

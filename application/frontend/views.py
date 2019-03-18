@@ -113,7 +113,7 @@ def remove_fact_from_document(document, fact):
     return jsonify({204: 'No Content'})
 
 
-@frontend.route('/local-plans/<planning_authority>/update-local-scheme-url', methods=['GET', 'POST'])
+@frontend.route('/local-plans/<planning_authority>/update-scheme-url', methods=['GET', 'POST'])
 def update_local_scheme_url(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
     form = LocalDevelopmentSchemeURLForm(url=pla.local_scheme_url)
@@ -138,7 +138,7 @@ def update_local_plan_url(planning_authority, local_plan):
         db.session.commit()
         return redirect(url_for('frontend.local_plan', planning_authority=pla.id))
 
-    return render_template('update-local-plan-url.html', planning_authority=pla, local_plan=plan, form=form)
+    return render_template('update-plan-url.html', planning_authority=pla, local_plan=plan, form=form)
 
 
 @frontend.route('/local-plans/<local_plan>/document/<document>', methods=['DELETE'])
