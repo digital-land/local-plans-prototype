@@ -299,16 +299,26 @@ def planning_authority_from_document():
                                    document=str(document.id),
                                    _external=True)
             resp = {'OK': 200, 'view-type': 'emerging-plan-document', 'document': document.to_dict(), 'add_fact_url': add_fact_url}
-        else:
-            document = PlanDocument.query.filter_by(url=website_location).first()
+        elif PlanDocument.query.filter_by(url=website_location).first() is not None:
+            document = PlanDocument.query.filter_by(url=website_location).one()
             add_fact_url = url_for('frontend.add_fact_to_document',
                                    planning_authority=document.local_plan.planning_authorities[0].id,
                                    local_plan=document.local_plan_id,
                                    document=str(document.id),
                                    _external=True)
             resp = {'OK': 200, 'view-type': 'plan-document', 'document': document.to_dict(), 'local_plan': document.local_plan.to_dict(), 'add_fact_url': add_fact_url}
-        
-        print(document)
+
+        else:
+            try:
+                pla = PlanningAuthority.query.filter_by(website=website_origin).one()
+
+                # TODO this is a new document, we could add item to response json to indicate to caller that
+                # this can be added to local planning_authority or plan?
+
+                resp = {'OK': 200, 'view-type': 'urls', 'planning_authority': pla.to_dict()}
+            except Exception as e:
+                print(e)
+                resp = {'OK': 404}
 
     elif website_origin is not None:
 
