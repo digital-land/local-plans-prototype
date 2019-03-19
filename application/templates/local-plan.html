@@ -94,107 +94,14 @@
                     </span>
                   </summary>
 
-                  <form action="{{ url_for('frontend.add_fact_to_document', planning_authority=planning_authority.id, document=doc.id) }}" class="govuk-form add-fact-form govuk-details__text publication-date">
+                  {% from "partials/emerging-plan-fact-form.html" import renderEmergingPlanFactForm %}
 
-                    <input type="hidden" id="document-type" value="emerging_plan_document">
-
-                    <h4 class="govuk-heading-s govuk-visually-hidden">Add fact from document</h4>
-
-                    <div class="govuk-form-group">
-                      <label class="govuk-label" for="document-note-{{loop.index}}">
-                        Specify the type of fact
-                      </label>
-                      <select class="govuk-select fact-select-types" id="fact-type-{{loop.index}}" name="fact-type-{{loop.index}}">
-                      {% for fact_type in emerging_fact_types %}
-                         <option value="{{ fact_type.name }}" data-type-class="{{ fact_type.name|lower|replace('_', '-') }}">{{ fact_type.value }}</option>
-                      {% endfor %}
-                      </select>
-                    </div>
-
-                    <!-- for Publication date -->
-                    {{ renderDateInput({
-                      "text":"Publication date",
-                      "classes":"publication-date-input",
-                      "prefix":"publication-date-" + loop.index|string
+                  {{ renderEmergingPlanFactForm({
+                      "action_url": url_for('frontend.add_fact_to_document', planning_authority=planning_authority.id, document=doc.id),
+                      "fact_types": emerging_fact_types,
+                      "form_number": loop.index
                     }) }}
 
-                    <!-- for Regulation 18 date -->
-                    {{ renderDateInput({
-                      "text":"Proposed regulation 18 date",
-                      "classes":"regulation-18-date-input",
-                      "prefix":"regulation-18-date-" + loop.index|string
-                    }) }}
-
-                    <!-- for Proposed publication date -->
-                    {{ renderDateInput({
-                      "text":"Proposed publication date",
-                      "classes":"proposed-publication-date-input",
-                      "prefix":"proposed-publication-date-" + loop.index|string
-                    }) }}
-
-                    <!-- for Proposed submission date -->
-                    {{ renderDateInput({
-                      "text":"Proposed submission date",
-                      "classes":"proposed-submission-date-input",
-                      "prefix":"proposed-submission-date-" + loop.index|string
-                    }) }}
-
-                    <!-- for Main modifications date -->
-                    {{ renderDateInput({
-                      "text":"Proposed main modifications date",
-                      "classes":"proposed-main-modifications-date-input",
-                      "prefix":"proposed-main-modifications-date-" + loop.index|string
-                    }) }}
-
-                    <!-- for Proposed adoption date -->
-                    {{ renderDateInput({
-                      "text":"Proposed adoption date",
-                      "classes":"proposed-adoption-date-input",
-                      "prefix":"proposed-adoption-date-" + loop.index|string
-                    }) }}
-
-                    <!-- for Housing requirement total -->
-                    <div class="govuk-form-group plan-housing-req-total">
-                      <label class="govuk-label" for="housing-req-total-{{ loop.index }}">
-                        Housing requirement total
-                      </label>
-                      <input class="govuk-input govuk-input--width-10" id="housing-req-total-{{ loop.index }}" name="housing-req-total-{{ loop.index }}" type="text">
-                    </div>
-
-                    <!-- for Housing requirement range -->
-                    <fieldset class="govuk-fieldset housing-req-range-fieldset">
-                      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                        <h1 class="govuk-fieldset__heading">
-                          Housing requirement range
-                        </h1>
-                      </legend>
-
-                      <div class="govuk-form-group">
-                        <label class="govuk-label" for="housing-req-range-min-{{ loop.index }}">
-                          Min
-                        </label>
-                        <input class="govuk-input govuk-input--width-10 housing-req-range-min" id="housing-req-range-min-{{ loop.index }}" name="housing-req-range-min-{{ loop.index }}" type="text">
-                      </div>
-
-                      <div class="govuk-form-group">
-                        <label class="govuk-label" for="housing-req-range-max-{{ loop.index }}">
-                          Max
-                        </label>
-                        <input class="govuk-input govuk-input--width-10 housing-req-range-max" id="housing-req-range-max-{{ loop.index }}" name="housing-req-range-max-{{ loop.index }}" type="text">
-                      </div>
-                    </fieldset>
-
-                    <div class="govuk-form-group">
-                      <label class="govuk-label" for="document-note-{{loop.index}}">
-                        Provide some information about the fact
-                      </label>
-                      <textarea class="govuk-textarea" id="document-note-{{loop.index}}" name="document-note-{{loop.index}}" rows="5"></textarea>
-                    </div>
-                    <div class="govuk-form-group">
-                      <button class="govuk-button fact-save-btn">Save</button>
-                      <button class="cancel-btn">Cancel</button>
-                    </div>
-                  </form>
                 </details>
 
               </section>
@@ -340,108 +247,14 @@
                     </span>
                   </summary>
 
-                  <form action="{{ url_for('frontend.add_fact_to_document', planning_authority=planning_authority.id, local_plan=plan.local_plan, document=doc.id) }}" class="govuk-form add-fact-form govuk-details__text plan-name">
-                    <input type="hidden" value="plan_document">
-                    <h4 class="govuk-heading-s govuk-visually-hidden">Add fact from document</h4>
+                  {% from "partials/local-plan-fact-form.html" import renderLocalPlanFactForm %}
 
-                    <div class="govuk-form-group">
-                       <label class="govuk-label" for="document-note-{{loop.index}}">
-                           Specify the type of fact
-                       </label>
-                        <select class="govuk-select fact-select-types" id="fact-type-{{loop.index}}" name="fact-type-{{loop.index}}">
-                          {% for fact_type in fact_types %}
-                             <option value="{{ fact_type.name }}" data-type-class="{{ fact_type.name|lower|replace('_', '-') }}">{{ fact_type.value }}</option>
-                          {% endfor %}
-                      </select>
-                    </div>
-
-                     <!-- TODO depending on type of fact chosen render input for fact
-                     e.g. if plan name just an text input note we know some of the names already,
-                     if plan start or end date chose render input for date in format YYYY-MM - or submits that at least which I think input type month does?
-                     if total housing number just integer of range then two inputs 'from' integer to 'integer'
-                     -->
-
-                    <!-- for Plan Name -->
-                    <div class="govuk-form-group plan-name-input">
-                      <label class="govuk-label" for="plan-name-{{ loop.index }}">
-                        Plan name
-                      </label>
-                      <input class="govuk-input govuk-input--width-20" id="plan-name-{{ loop.index }}" name="plan-name-{{ loop.index }}" type="text">
-                    </div>
-
-
-
-                    {#
-                        TODO i'm wondering if we change this to a single drop down - called Plan Period and have
-                        a from and to year - not date, just year - again same in extension
-                    #}
-
-                    <!-- for Plan start date -->
-                    {{ renderDateInput({
-                      "text":"Plan period start date",
-                      "classes":"plan-start-date-input",
-                      "prefix":"plan-start-date-" + loop.index|string
+                  {{ renderLocalPlanFactForm({
+                      "action_url": url_for('frontend.add_fact_to_document', planning_authority=planning_authority.id, local_plan=plan.local_plan, document=doc.id),
+                      "fact_types": fact_types,
+                      "form_number": loop.index
                     }) }}
 
-                    <!-- for Plan end date -->
-                    {{ renderDateInput({
-                      "text":"Plan period end date",
-                      "classes":"plan-end-date-input",
-                      "prefix":"plan-end-date-" + loop.index|string
-                    }) }}
-
-
-
-                    <!-- for Housing requirement total -->
-                    <div class="govuk-form-group plan-housing-req-total">
-                      <label class="govuk-label" for="housing-req-total-{{ loop.index }}">
-                        Housing requirement total
-                      </label>
-                      <input class="govuk-input govuk-input--width-10" id="housing-req-total-{{ loop.index }}" name="housing-req-total-{{ loop.index }}" type="text">
-                    </div>
-
-                    <!-- for Housing requirement range -->
-                    <fieldset class="govuk-fieldset housing-req-range-fieldset">
-                      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                        <h1 class="govuk-fieldset__heading">
-                          Housing requirement range
-                        </h1>
-                      </legend>
-
-                      <div class="govuk-form-group">
-                        <label class="govuk-label" for="housing-req-range-min-{{ loop.index }}">
-                          Min
-                        </label>
-                        <input class="govuk-input govuk-input--width-10 housing-req-range-min" id="housing-req-range-min-{{ loop.index }}" name="housing-req-range-min-{{ loop.index }}" type="text">
-                      </div>
-
-                      <div class="govuk-form-group">
-                        <label class="govuk-label" for="housing-req-range-max-{{ loop.index }}">
-                          Max
-                        </label>
-                        <input class="govuk-input govuk-input--width-10 housing-req-range-max" id="housing-req-range-max-{{ loop.index }}" name="housing-req-range-max-{{ loop.index }}" type="text">
-                      </div>
-                    </fieldset>
-
-                    {#
-                        TODO - need two more inputs 1) housing yearly average - single numeric input 2) housing yearly range - needs a min and max
-                        these are similar to existing housing numbers above which apply to total or range for entire plan period.
-
-                        These need to be replicated in extension form as well.
-                    #}
-
-
-                    <div class="govuk-form-group">
-                      <label class="govuk-label" for="document-note-{{loop.index}}">
-                        Provide any additional information about the fact
-                      </label>
-                      <textarea class="govuk-textarea" id="document-note-{{loop.index}}" name="document-note-{{loop.index}}" rows="5"></textarea>
-                    </div>
-                    <div class="govuk-form-group">
-                      <button class="govuk-button fact-save-btn">Save</button>
-                      <button class="cancel-btn">Cancel</button>
-                    </div>
-                  </form>
                 </details>
                 
               </section>
