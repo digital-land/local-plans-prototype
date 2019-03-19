@@ -412,13 +412,11 @@
       return `${year.value}-${month.value}`;
     }
     return `${year.value}`;
-    
   }
 
   function extractRange(fieldset) {
     var min = fieldset.querySelector("[data-range-type='start']");
     var max = fieldset.querySelector("[data-range-type='end']");
-    console.log(min, max);
     return `${min.value} - ${max.value}`;
   }
 

@@ -1,9 +1,13 @@
 'use strict';
 
 const gulp = require("gulp"),
+      fs = require('fs'),
       sass = require("gulp-sass"),
       sassLint = require('gulp-sass-lint'),
-      clean = require('gulp-clean');
+      clean = require('gulp-clean'),
+      rename = require("gulp-rename"),
+      data = require("gulp-data"),
+      nunjucks = require('gulp-nunjucks');
 
 // set paths ...
 const config = {
@@ -11,7 +15,8 @@ const config = {
   jsDestPath: "application/static/javascripts",
   destPath: "application/static/stylesheets",
   govukAssetPath: "application/static/govuk-frontend/assets",
-  chromeExtDest: "extensions/chrome/popup/static"
+  chromeExtDest: "extensions/chrome/",
+  chromeExtStaticDest: "extensions/chrome/popup/static"
 }
 
 
@@ -69,8 +74,30 @@ const copyGovukJS = () =>
 const copyCompiledCSS = () =>
   gulp
     .src([`${config.destPath}/dl-frontend.css`, `${config.destPath}/popup.css`])
+    .pipe(gulp.dest(`${config.chromeExtStaticDest}`));
+
+
+// Generate extension popup
+// ========================
+const generateExtensionPopup = () =>
+  gulp
+    .src("application/templates/browser-ext-popup.html")
+    .pipe(data(getDataForExtTemplate))
+    .pipe(nunjucks.compile('.', {}))
+    .pipe(rename("popup.html"))
     .pipe(gulp.dest(`${config.chromeExtDest}`));
 
+function getDataForExtTemplate(file) {
+  var fact_type_json = 'data/fact-types.json';
+  var fact_types = null;
+  if(fs.existsSync(fact_type_json)) {
+    fact_types = JSON.parse(fs.readFileSync(fact_type_json, "utf8"));
+  }
+  //console.log(fact_types);
+  return {
+    fact_types: fact_types
+  }
+}
 
 // Tasks to expose to CLI
 // ======================
@@ -101,3 +128,4 @@ watch.description = `Watch all project .scss for changes, then rebuild styleshee
 exports.default = watch;
 exports.stylesheets = latestStylesheets;
 exports.copyAssets = copyAllAssets;
+exports.generatePopup = generateExtensionPopup;

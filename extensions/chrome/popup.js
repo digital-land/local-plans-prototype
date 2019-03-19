@@ -245,12 +245,15 @@ function createFactRow(fact) {
 function extractDate(fieldset) {
   const month = fieldset.querySelector(".govuk-date-input__month");
   const year = fieldset.querySelector(".govuk-date-input__year");
-  return `${year.value}-${month.value}`;
+  if(month) {
+    return `${year.value}-${month.value}`;
+  }
+  return `${year.value}`;
 }
 
 function extractRange(fieldset) {
-  var min = fieldset.querySelector(".housing-req-range-min");
-  var max = fieldset.querySelector(".housing-req-range-max");
+  var min = fieldset.querySelector("[data-range-type='start']");
+  var max = fieldset.querySelector("[data-range-type='end']");
   return `${min.value} - ${max.value}`;
 }
 
@@ -268,6 +271,8 @@ function factSubmitHandler(e) {
 
   if(form.classList.contains('plan-name')) {
     fact["fact"] = form.querySelector(".plan-name-input input").value;
+  } else if (form.classList.contains('plan-period')) {
+    fact["fact"] = extractRange( form.querySelector(".plan-period-fieldset") );
   } else if (form.classList.contains('plan-start-year')) {
     fact["fact"] = extractDate( form.querySelector(".plan-start-date-input fieldset") );
   } else if (form.classList.contains('plan-end-year')) {
@@ -276,6 +281,10 @@ function factSubmitHandler(e) {
     fact["fact"] = form.querySelector(".plan-housing-req-total input").value;
   } else if (form.classList.contains('housing-requirement-range')) {
     fact["fact"] = extractRange( form.querySelector(".housing-req-range-fieldset") );
+  } else if (form.classList.contains('housing-requirement-yearly-average')) {
+    fact["fact"] = form.querySelector(".housing-req-yearly-average-input").value;
+  } else if (form.classList.contains('housing-requirement-yearly-range')) {
+    fact["fact"] = extractRange( form.querySelector(".housing-req-yearly-range-fieldset") );
   } else if (form.classList.contains('publication-date')) {
     fact["fact"] = extractDate( form.querySelector(".publication-date-input fieldset") );
   } else if (form.classList.contains('proposed-reg-18-date')) {
@@ -374,10 +383,15 @@ function setUpAddFactForms() {
   addFactForms.forEach((form) => form.addEventListener('submit', factSubmitHandler));
 }
 
-function removeAllClassesFromFactForm(form) {
-  form.classList.remove("plan-name", "plan-start-year", "plan-end-year", "housing-requirement-total", "housing-requirement-range", "publication-date", "proposed-reg-18-date", "proposed-publication-date", "proposed-submission-date", "proposed-main-modifications-date", "proposed-adoption-date");
-}
+const localPlanFactTypeClasses = ["plan-name", "plan-period", "plan-start-year", "plan-end-year", "housing-requirement-total", "housing-requirement-range", "housing-requirement-yearly-average", "housing-requirement-yearly-range"];
+const emergingPlanFactTypeClasses = ["publication-date", "proposed-reg-18-date", "proposed-publication-date", "proposed-submission-date", "proposed-main-modifications-date", "proposed-adoption-date" ];
+// using the spread operator in prototype
+// in prod need to either change or use Babel
+const allFactTypeClasses = [...localPlanFactTypeClasses, ...emergingPlanFactTypeClasses];
 
+function removeAllClassesFromFactForm(form) {
+  form.classList.remove( ...allFactTypeClasses );
+}
 
 function resetScreenshotTaker(detailsEl) {
   // remove dataURL as src

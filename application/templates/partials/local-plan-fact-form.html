@@ -155,6 +155,22 @@
       </label>
       <textarea class="govuk-textarea" id="document-note-{{counter}}" name="document-note-{{counter}}" rows="5"></textarea>
     </div>
+
+	{%- if params.allowScreenshots %}
+	<details class="govuk-details govuk-details--facts screenshot-taker__details" role="group">
+		<summary class="govuk-details__summary screenshot-taker__summary" role="button">
+            <span class="govuk-details__summary-text" data-original-text="Add screenshot">
+                Add screenshot
+            </span>
+        </summary>
+        <div class="govuk-details__text screenshot-taker">
+            <p class="govuk-body">A screenshot will help people know where the fact came from.</p>
+            <img src="" alt="" class="screenshot-taker__viewer">
+            <button class="govuk-button dlf-secondary-button screenshot-taker__btn" data-original-text="Take a screenshot">Take a screenshot</button>
+        </div>
+    </details>
+    {% endif -%}
+
     <div class="govuk-form-group">
       <button class="govuk-button fact-save-btn">Save</button>
       <button class="cancel-btn">Cancel</button>
