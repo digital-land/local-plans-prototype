@@ -273,7 +273,7 @@ class Fact(db.Model):
     def get_fact_type(self):
         if self.fact_type in FactType.__members__:
             return FactType[self.fact_type]
-        elif fact_type in EmergingFactType.__members__:
+        elif self.fact_type in EmergingFactType.__members__:
             return EmergingFactType[self.fact_type]
 
 
