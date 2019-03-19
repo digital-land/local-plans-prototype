@@ -76,7 +76,7 @@
                     <tbody class="govuk-table__body">
                     {% for fact in doc.facts %}
                       <tr class="govuk-table__row">
-                        <th class="govuk-table__header" scope="row">{{ fact.fact }}</th>
+                        <th class="govuk-table__header" scope="row">{% if fact.from_ and fact.to  %}{{ fact.from_ }} to {{fact.to }}{% else %}{{ fact.fact }}{%  endif %}</th>
                         <td class="govuk-table__cell">{{ fact.fact_type | format_fact }}</td>
                         <td class="govuk-table__cell">{% if fact.notes == "" %}-{% else %}{{ fact.notes }}{% endif %}</td>
                         <td class="govuk-table__cell">{% if fact.image_url %}<a href="{{ fact.image_url }}" target="_blank"><img style="height: 60px" src="{{ fact.image_url }}"></a>{% endif %}</td>
@@ -224,7 +224,7 @@
                     <tbody class="govuk-table__body">
                         {% for fact in doc.facts %}
                             <tr class="govuk-table__row">
-                              <th class="govuk-table__header" scope="row">{{ fact.fact }}</th>
+                              <th class="govuk-table__header" scope="row">{% if fact.from_ and fact.to  %}{{ fact.from_ }} to {{fact.to }}{% else %}{{ fact.fact }}{%  endif %}</th>
                               <td class="govuk-table__cell">{{ fact.fact_type | format_fact }}</td>
                               <td class="govuk-table__cell">{% if fact.notes == "" %}-{% else %}{{ fact.notes }}{% endif %}</td>
                               <td class="govuk-table__cell">
@@ -409,7 +409,7 @@
     const month = fieldset.querySelector(".govuk-date-input__month");
     const year = fieldset.querySelector(".govuk-date-input__year");
     if(month) {
-      return `${year.value}-${month.value}`;
+      return `${year.value},${month.value}`;
     }
     return `${year.value}`;
   }
@@ -417,7 +417,7 @@
   function extractRange(fieldset) {
     var min = fieldset.querySelector("[data-range-type='start']");
     var max = fieldset.querySelector("[data-range-type='end']");
-    return `${min.value} - ${max.value}`;
+    return `${min.value},${max.value}`;
   }
 
   // save a fact
@@ -451,7 +451,7 @@
     } else if (form.classList.contains('housing-requirement-range')) {
       fact["fact"] = extractRange( form.querySelector(".housing-req-range-fieldset") );
     } else if (form.classList.contains('housing-requirement-yearly-average')) {
-      fact["fact"] = form.querySelector(".housing-req-yearly-average-input").value;
+      fact["fact"] = form.querySelector(".housing-req-yearly-average-input input").value;
     } else if (form.classList.contains('housing-requirement-yearly-range')) {
       fact["fact"] = extractRange( form.querySelector(".housing-req-yearly-range-fieldset") );
     } else if (form.classList.contains('publication-date')) {

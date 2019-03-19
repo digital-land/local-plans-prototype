@@ -69,7 +69,12 @@
     {% if fact.fact_type != "HOUSING_REQUIRED" and fact.fact_type != "HOUSING_DELIVERED" %}
     <li class="fact-list__item govuk-grid-row">
       <div class="govuk-grid-column-one-half">
-        <h4 class="govuk-heading-s fact-list__item__fact">{{ fact.fact }}</h4>
+
+        {% if fact.from_ and fact.to %}
+            <h4 class="govuk-heading-s fact-list__item__fact">{{ fact.from_ }} to {{ fact.to }}</h4>
+        {% else %}
+            <h4 class="govuk-heading-s fact-list__item__fact">{{ fact.fact }}</h4>
+        {% endif %}
         <span class="fact-list__item-type">
           {{ fact.fact_type | format_fact }}
           <span class="fact-list__item-type__label">Fact Type</span>

@@ -20,10 +20,11 @@
                 <th>Local plan</th>
                 <th>Type</th>
                 <th>Fact</th>
+                <th>From</th>
+                <th>To</th>
                 <th>Source document</th>
                 <th>Notes</th>
                 <th>Created date</th>
-
             </tr>
           </thead>
           <tbody class="govuk-table__body">
@@ -32,7 +33,9 @@
                     <td class="govuk-table__cell">{{ fact.planning_authority }}</td>
                     <td class="govuk-table__cell">{{ fact.plan }}</td>
                     <td class="govuk-table__cell">{{ fact.fact_type }}</td>
-                    <td class="govuk-table__cell">{{ fact.fact }}</td>
+                    <td class="govuk-table__cell">{% if not fact.from and not fact.to %}{{ fact.fact }}{% else %} - {% endif %}</td>
+                    <td class="govuk-table__cell">{% if fact.from %}{{ fact.from }}{% else %} - {% endif %}</td>
+                    <td class="govuk-table__cell">{% if fact.to %}{{ fact.to }}{% else %} - {% endif %}</td>
                     <td class="govuk-table__cell">{{ fact.document_url }}</td>
                     <td class="govuk-table__cell">{{ fact.notes }}</td>
                     <td class="govuk-table__cell">{{ fact.created_date }}</td>

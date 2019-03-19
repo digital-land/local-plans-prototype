@@ -52,12 +52,7 @@ def planning_authority_list():
 @frontend.route('/planning-authority/<planning_authority>')
 def planning_authority(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
-
-    # TODO at the moment this is all facts, but will probably just filter for ones related to housing numbers
-    facts = pla.gather_facts(filters=['HOUSING_DELIVERED',
-                                      'HOUSING_REQUIRED',
-                                      'HOUSING_REQUIREMENT_TOTAL',
-                                      'HOUSING_REQUIREMENT_RANGE'])
+    facts = pla.gather_facts()
     return render_template('planning-authority.html', planning_authority=pla, facts=facts)
 
 
@@ -98,6 +93,10 @@ def add_fact_to_document(planning_authority, document):
             document = OtherDocument.query.filter_by(id=document, planning_authority_id=planning_authority).one()
 
         fact = Fact(fact=fact_json.get('fact'), fact_type=fact_json.get('fact_type'), notes=fact_json.get('notes'))
+
+        if 'RANGE' in fact_json.get('fact_type') or 'PERIOD' in fact_json.get('fact_type'):
+            fact.from_, fact.to = fact_json.get('fact').split(',')
+
         document.facts.append(fact)
         db.session.add(document)
         db.session.commit()
@@ -375,7 +374,7 @@ def data():
     planning_authorities = PlanningAuthority.query.all()
     data = []
     for pla in planning_authorities:
-        for fact in pla.gather_facts():
+        for fact in pla.gather_facts(as_dict=True):
             data.append(fact)
     return render_template('data.html', data=data)
 
@@ -385,12 +384,15 @@ def data_as_csv():
     planning_authorities = PlanningAuthority.query.all()
     data = []
     for pla in planning_authorities:
-        for fact in pla.gather_facts():
+        for fact in pla.gather_facts(as_dict=True):
             fact.pop('id')
-            fact.pop('document_id')
+            fact.pop('document')
+            fact.pop('fact_type_display')
+            if fact.get('from') is not None and fact.get('to') is not None:
+                fact.pop('fact')
             data.append(fact)
 
-    fieldnames = ['planning_authority', 'plan', 'fact_type', 'fact', 'document_url', 'notes', 'created_date']
+    fieldnames = ['planning_authority', 'plan', 'fact_type', 'fact', 'from', 'to', 'document_url', 'notes', 'created_date']
 
     with io.StringIO() as output:
         writer = csv.DictWriter(output, fieldnames=fieldnames, quoting=csv.QUOTE_ALL, lineterminator="\n")

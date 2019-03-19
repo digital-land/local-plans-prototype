@@ -88,25 +88,23 @@ class PlanningAuthority(db.Model):
         docs = [doc for doc in self.other_documents if doc.title is not None and 'local development scheme' == doc.title.lower()]
         return docs
 
-    def gather_facts(self, filters=[]):
+    def gather_facts(self, as_dict=False):
 
         facts = []
         for doc in self.other_documents:
             for fact in doc.facts:
-                if filters:
-                    if fact.fact_type in filters:
-                        facts.append(fact.to_dict())
-                else:
+                if as_dict:
                     facts.append(fact.to_dict())
+                else:
+                    facts.append(fact)
 
         for plan in self.local_plans:
             for doc in plan.plan_documents:
                 for fact in doc.facts:
-                    if filters:
-                        if fact.fact_type in filters:
-                            facts.append(fact.to_dict())
-                    else:
+                    if as_dict:
                         facts.append(fact.to_dict())
+                    else:
+                        facts.append(fact)
 
         return facts
 
@@ -193,7 +191,11 @@ class Document(db.Model):
     title = db.Column(db.String())
     type = db.Column(db.String(64))
 
-    facts = db.relationship('Fact', back_populates='document',lazy=True, cascade='all, delete, delete-orphan')
+    facts = db.relationship('Fact',
+                            back_populates='document',
+                            lazy=True,
+                            cascade='all, delete, delete-orphan',
+                            order_by='Fact.created_date')
 
     __mapper_args__ = {
         'polymorphic_on':type,
@@ -259,8 +261,8 @@ class Fact(db.Model):
     fact = db.Column(db.String())
     fact_type = db.Column(db.String())
     notes = db.Column(db.String())
-    from_year = db.Column(db.Date())
-    to_year = db.Column(db.Date())
+    from_ = db.Column(db.String())
+    to = db.Column(db.String())
 
     created_date = db.Column(db.DateTime(), default=datetime.utcnow)
     image_url = db.Column(db.String())
@@ -268,13 +270,11 @@ class Fact(db.Model):
     document_id = db.Column(UUID(as_uuid=True), db.ForeignKey('document.id'), nullable=False)
     document = db.relationship('Document', back_populates='facts')
 
-
     def get_fact_type(self):
         if self.fact_type in FactType.__members__:
             return FactType[self.fact_type]
         elif self.fact_type in EmergingFactType.__members__:
             return EmergingFactType[self.fact_type]
-
 
     def to_dict(self):
         data = {
@@ -283,9 +283,11 @@ class Fact(db.Model):
             'fact_type': self.fact_type,
             'fact_type_display': self.get_fact_type().value,
             'notes': self.notes,
-            'document_id': str(self.document_id),
+            'document': str(self.document_id),
             'document_url': self.document.url,
-            'created_date': self.created_date.date()
+            'created_date': self.created_date.date(),
+            'from': self.from_,
+            'to': self.to
         }
 
         if isinstance(self.document, OtherDocument):
