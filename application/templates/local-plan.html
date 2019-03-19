@@ -352,8 +352,14 @@
     });
   });
 
+  const localPlanFactTypeClasses = ["plan-name", "plan-period", "plan-start-year", "plan-end-year", "housing-requirement-total", "housing-requirement-range", "housing-requirement-yearly-average", "housing-requirement-yearly-range"];
+  const emergingPlanFactTypeClasses = ["publication-date", "proposed-reg-18-date", "proposed-publication-date", "proposed-submission-date", "proposed-main-modifications-date", "proposed-adoption-date" ];
+  // using the spread operator in prototype
+  // in prod need to either change or use Babel
+  const allFactTypeClasses = [...localPlanFactTypeClasses, ...emergingPlanFactTypeClasses];
+
   function removeAllClassesFromFactForm(form) {
-    form.classList.remove("plan-name", "plan-start-year", "plan-end-year", "housing-requirement-total", "housing-requirement-range", "publication-date", "proposed-reg-18-date", "proposed-publication-date", "proposed-submission-date", "proposed-main-modifications-date", "proposed-adoption-date");
+    form.classList.remove( ...allFactTypeClasses );
   }
   
   const htmlStringToElement = (function () {

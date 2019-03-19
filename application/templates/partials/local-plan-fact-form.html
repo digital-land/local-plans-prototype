@@ -36,10 +36,32 @@
       <input class="govuk-input govuk-input--width-20" id="plan-name-{{ counter }}" name="plan-name-{{ counter }}" type="text">
     </div>
 
+	<!-- for Plan period -->
+    <fieldset class="govuk-fieldset fieldset-range plan-period-fieldset">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+        <h1 class="govuk-fieldset__heading">
+          Plan period
+        </h1>
+      </legend>
 
-    {#
-        TODO i'm wondering if we change this to a single drop down - called Plan Period and have
-        a from and to year - not date, just year - again same in extension
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="plan-period-start-{{ counter }}">
+          Start year
+        </label>
+        <input class="govuk-input govuk-input--width-4 plan-period-start" id="plan-period-start-{{ counter }}" name="plan-period-start-{{ counter }}" type="text">
+      </div>
+
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="plan-period-end-{{ counter }}">
+          End year
+        </label>
+        <input class="govuk-input govuk-input--width-4 plan-period-end" id="plan-period-end-{{ counter }}" name="plan-period-end-{{ counter }}" type="text">
+      </div>
+    </fieldset>
+
+	{#
+        TODO Do we remove the individual start and end options?
+        replicate choice in extension
     #}
 
     <!-- for Plan start date -->
@@ -67,7 +89,7 @@
     </div>
 
     <!-- for Housing requirement range -->
-    <fieldset class="govuk-fieldset housing-req-range-fieldset">
+    <fieldset class="govuk-fieldset fieldset-range housing-req-range-fieldset">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
         <h1 class="govuk-fieldset__heading">
           Housing requirement range
@@ -89,11 +111,39 @@
       </div>
     </fieldset>
 
-    {#
-        TODO - need two more inputs 1) housing yearly average - single numeric input 2) housing yearly range - needs a min and max
-        these are similar to existing housing numbers above which apply to total or range for entire plan period.
+	<!-- for Housing requirement yearly average -->
+    <div class="govuk-form-group housing-req-yearly-average-input">
+      <label class="govuk-label" for="housing-req-total-{{ counter }}">
+        Housing requirement yearly average
+      </label>
+      <input class="govuk-input govuk-input--width-10" id="housing-req-yearly-avg-{{ counter }}" name="housing-req-yearly-avg-{{ counter }}" type="text">
+    </div>
 
-        These need to be replicated in extension form as well.
+	<!-- for Housing requirement yearly range -->
+    <fieldset class="govuk-fieldset fieldset-range housing-req-yearly-range-fieldset">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+        <h1 class="govuk-fieldset__heading">
+          Housing requirement yearly range
+        </h1>
+      </legend>
+
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="housing-req-yearly-range-min-{{ counter }}">
+          Min
+        </label>
+        <input class="govuk-input govuk-input--width-10 housing-req-yearly-range-min" id="housing-req-yearly-range-min-{{ counter }}" name="housing-req-yearly-range-min-{{ counter }}" type="text">
+      </div>
+
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="housing-req-yearly-range-max-{{ counter }}">
+          Max
+        </label>
+        <input class="govuk-input govuk-input--width-10 housing-req-yearly-range-max" id="housing-req-yearly-range-max-{{ counter }}" name="housing-req-yearly-range-max-{{ counter }}" type="text">
+      </div>
+    </fieldset>
+
+    {#
+        TODO - replicated in extension form.
     #}
 
 
