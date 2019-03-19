@@ -269,11 +269,20 @@ class Fact(db.Model):
     document_id = db.Column(UUID(as_uuid=True), db.ForeignKey('document.id'), nullable=False)
     document = db.relationship('Document', back_populates='facts')
 
+
+    def get_fact_type(self):
+        if self.fact_type in FactType.__members__:
+            return FactType[self.fact_type]
+        elif fact_type in EmergingFactType.__members__:
+            return EmergingFactType[self.fact_type]
+
+
     def to_dict(self):
         data = {
             'id': str(self.id),
             'fact': self.fact,
             'fact_type': self.fact_type,
+            'fact_type_display': self.get_fact_type().value,
             'notes': self.notes,
             'document_id': str(self.document_id)
         }

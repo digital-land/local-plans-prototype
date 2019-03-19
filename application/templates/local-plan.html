@@ -319,6 +319,7 @@
   <th class="govuk-table__header" scope="row">{{ fact.fact }}</th>
   <td class="govuk-table__cell">{{ fact.fact_type_display }}</td>
   <td class="govuk-table__cell">{{#if fact.notes }}{{ fact.notes }}{{else}}-{{/if}}</td>
+  <td class="govuk-table__cell"></td>
   <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact" href="{{ remove_url }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
 </script>
 {% endraw %}
