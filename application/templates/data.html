@@ -13,9 +13,9 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <table class="govuk-table">
-          <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
+      <table>
+          <thead>
+            <tr>
                 <th>Planning authority</th>
                 <th>Local plan</th>
                 <th>Type</th>
@@ -27,23 +27,22 @@
                 <th>Created date</th>
             </tr>
           </thead>
-          <tbody class="govuk-table__body">
-           {% for fact in data  %}
-                <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">{{ fact.planning_authority }}</td>
-                    <td class="govuk-table__cell">{{ fact.plan }}</td>
-                    <td class="govuk-table__cell">{{ fact.fact_type }}</td>
-                    <td class="govuk-table__cell">{% if not fact.from and not fact.to %}{{ fact.fact }}{% else %} - {% endif %}</td>
-                    <td class="govuk-table__cell">{% if fact.from %}{{ fact.from }}{% else %} - {% endif %}</td>
-                    <td class="govuk-table__cell">{% if fact.to %}{{ fact.to }}{% else %} - {% endif %}</td>
-                    <td class="govuk-table__cell">{{ fact.document_url }}</td>
-                    <td class="govuk-table__cell">{{ fact.notes }}</td>
-                    <td class="govuk-table__cell">{{ fact.created_date }}</td>
+          <tbody>
+           {% for fact in data %}
+                <tr>
+                    <td>{{ fact.planning_authority }}</td>
+                    <td>{{ fact.plan }}</td>
+                    <td>{{ fact.fact_type }}</td>
+                    <td>{% if not fact.from and not fact.to %}{{ fact.fact }}{% else %} - {% endif %}</td>
+                    <td>{% if fact.from %}{{ fact.from }}{% else %} - {% endif %}</td>
+                    <td>{% if fact.to %}{{ fact.to }}{% else %} - {% endif %}</td>
+                    <td>{{ fact.document_url }}</td>
+                    <td>{{ fact.notes }}</td>
+                    <td>{{ fact.created_date }}</td>
                 </tr>
            {% endfor %}
           </tbody>
       </table>
-      </ul>
     </div>
   </div>
 
