@@ -1,0 +1,38 @@
+[
+	{
+		"name": "PLAN_NAME",
+		"value": "Plan name"
+	},
+	{
+		"name": "PLAN_PERIOD",
+		"value": "Plan period"
+	},
+	{
+		"name": "PLAN_START_YEAR",
+		"value": "Plan period start year"
+	},
+	{
+		"name": "PLAN_END_YEAR",
+		"value": "Plan period end year"
+	},
+	{
+		"name": "HOUSING_REQUIREMENT_TOTAL",
+		"value": "Housing requirement total"
+	},
+	{
+		"name": "HOUSING_REQUIREMENT_RANGE",
+		"value": "Housing requirement range"
+	},
+	{
+		"name": "HOUSING_REQUIREMENT_YEARLY_AVERAGE",
+		"value": "Housing requirement yearly average"
+	},
+	{
+		"name": "HOUSING_REQUIREMENT_YEARLY_RANGE",
+		"value": "Housing requirement yearly range"
+	},
+	{
+		"name": "OTHER",
+		"value": "Other"
+	}
+]

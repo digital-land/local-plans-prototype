@@ -4,7 +4,6 @@ from datetime import datetime
 from enum import Enum
 from functools import total_ordering
 
-from sqlalchemy.ext.mutable import Mutable
 from application.extensions import db
 from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSON
 
@@ -89,23 +88,21 @@ class PlanningAuthority(db.Model):
         docs = [doc for doc in self.other_documents if doc.title is not None and 'local development scheme' == doc.title.lower()]
         return docs
 
-    def gather_facts(self, filters=[]):
+    def gather_facts(self, as_dict=False):
 
         facts = []
         for doc in self.other_documents:
             for fact in doc.facts:
-                if filters:
-                    if fact.fact_type in filters:
-                        facts.append(fact)
+                if as_dict:
+                    facts.append(fact.to_dict())
                 else:
                     facts.append(fact)
 
         for plan in self.local_plans:
             for doc in plan.plan_documents:
                 for fact in doc.facts:
-                    if filters:
-                        if fact.fact_type in filters:
-                            facts.append(fact)
+                    if as_dict:
+                        facts.append(fact.to_dict())
                     else:
                         facts.append(fact)
 
@@ -124,14 +121,16 @@ def _parse_date(datestr):
     return datetime.strptime(datestr, '%Y-%m-%d')
 
 
-
 class FactType(Enum):
 
     PLAN_NAME = 'Plan name'
+    PLAN_PERIOD = 'Plan period'
     PLAN_START_YEAR = 'Plan period start year'
     PLAN_END_YEAR = 'Plan period end year'
     HOUSING_REQUIREMENT_TOTAL = 'Housing requirement total'
     HOUSING_REQUIREMENT_RANGE = 'Housing requirement range'
+    HOUSING_REQUIREMENT_YEARLY_AVERAGE = 'Housing requirement yearly average'
+    HOUSING_REQUIREMENT_YEARLY_RANGE = 'Housing requirement yearly range'
     OTHER = 'Other'
 
 
@@ -192,7 +191,11 @@ class Document(db.Model):
     title = db.Column(db.String())
     type = db.Column(db.String(64))
 
-    facts = db.relationship('Fact', back_populates='document',lazy=True, cascade='all, delete, delete-orphan')
+    facts = db.relationship('Fact',
+                            back_populates='document',
+                            lazy=True,
+                            cascade='all, delete, delete-orphan',
+                            order_by='Fact.created_date')
 
     __mapper_args__ = {
         'polymorphic_on':type,
@@ -252,15 +255,14 @@ class OtherDocument(Document):
         return data
 
 
-
 class Fact(db.Model):
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=_generate_uuid)
     fact = db.Column(db.String())
     fact_type = db.Column(db.String())
     notes = db.Column(db.String())
-    from_year = db.Column(db.Date())
-    to_year = db.Column(db.Date())
+    from_ = db.Column(db.String())
+    to = db.Column(db.String())
 
     created_date = db.Column(db.DateTime(), default=datetime.utcnow)
     image_url = db.Column(db.String())
@@ -268,12 +270,38 @@ class Fact(db.Model):
     document_id = db.Column(UUID(as_uuid=True), db.ForeignKey('document.id'), nullable=False)
     document = db.relationship('Document', back_populates='facts')
 
+    def get_fact_type(self):
+        if self.fact_type in FactType.__members__:
+            return FactType[self.fact_type]
+        elif self.fact_type in EmergingFactType.__members__:
+            return EmergingFactType[self.fact_type]
+
     def to_dict(self):
         data = {
             'id': str(self.id),
             'fact': self.fact,
             'fact_type': self.fact_type,
+            'fact_type_display': self.get_fact_type().value,
             'notes': self.notes,
-            'document_id': str(self.document_id)
+            'document': str(self.document_id),
+            'document_url': self.document.url,
+            'created_date': self.created_date.date(),
+            'from': self.from_,
+            'to': self.to
         }
+
+        if isinstance(self.document, OtherDocument):
+            data['planning_authority'] = self.document.planning_authority
+        else:
+            data['planning_authority'] = None
+
+        if isinstance(self.document, PlanDocument):
+            data['plan'] = self.document.local_plan.local_plan
+            if len(self.document.local_plan.planning_authorities) > 1:
+                data['planning_authority'] = [pla.id for pla in self.document.local_plan.planning_authorities]
+            else:
+                data['planning_authority'] = self.document.local_plan.planning_authorities[0].id
+        else:
+            data['plan'] = None
+
         return data

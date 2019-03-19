@@ -13,35 +13,35 @@ def format_month_and_year(date_time):
 
 
 def format_date_from_str(date_str):
-	newdate = datetime.strptime(date_str, '%Y-%m-%d')
-	return format_month_and_year(newdate)
+    newdate = datetime.strptime(date_str, '%Y-%m-%d')
+    return format_month_and_year(newdate)
 
 
 def last_state_date(plan):
-	states = plan.ordered_states()
-	return states[-1]
+    states = plan.ordered_states()
+    return states[-1]
 
 
 def sort_plans(plans):
-	if plans is None or isinstance(plans, Undefined) or len(plans) == 1:
-		return plans
+    if plans is None or isinstance(plans, Undefined) or len(plans) == 1:
+        return plans
 
-	return sorted(plans, key=last_state_date, reverse=True)
+    return sorted(plans, key=last_state_date, reverse=True)
 
 
 def format_fact(name):
-	if name in FactType.__members__:
-		return FactType[name].value
-	elif name in EmergingFactType.__members__:
-		return EmergingFactType[name].value
-	else:
-		return name
+    if name in FactType.__members__:
+        return FactType[name].value
+    elif name in EmergingFactType.__members__:
+        return EmergingFactType[name].value
+    else:
+        return name
 
 
 def format_percent(value):
-	return f'{value}%'
+    return f'{value}%'
 
 
 def return_percent(val1, denominator, precision=1):
-	percentage = (val1 / denominator) * 100
-	return round(percentage, precision)
+    percentage = (val1 / denominator) * 100
+    return round(percentage, precision)

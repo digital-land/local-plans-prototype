@@ -1,0 +1,118 @@
+{% from "dl-macros/date-input.html" import renderDateInput %}
+
+{% macro renderEmergingPlanFactForm(params) %}
+  {% if params.form_number %}
+    {% set counter = params.form_number %}
+  {% else %}
+    {% set counter = 1 %}
+  {% endif %}
+
+  <form action="{{ params.action_url }}" class="govuk-form add-fact-form govuk-details__text publication-date">
+
+    <input type="hidden" id="document-type" value="emerging_plan_document">
+
+    <h4 class="govuk-heading-s govuk-visually-hidden">Add fact from document</h4>
+
+    <div class="govuk-form-group">
+      <label class="govuk-label" for="document-note-{{ counter }}">
+        Specify the type of fact
+      </label>
+      <select class="govuk-select fact-select-types" id="fact-type-{{counter}}" name="fact-type-{{counter}}">
+      {% for fact_type in params.fact_types %}
+         <option value="{{ fact_type.name }}" data-type-class="{{ fact_type.name|lower|replace('_', '-') }}">{{ fact_type.value }}</option>
+      {% endfor %}
+      </select>
+    </div>
+
+    <!-- for Publication date -->
+    {{ renderDateInput({
+      "text":"Publication date",
+      "classes":"publication-date-input",
+      "prefix":"publication-date-" + counter|string,
+      "includeMonth": false
+    }) }}
+
+    <!-- for Regulation 18 date -->
+    {{ renderDateInput({
+      "text":"Proposed regulation 18 date",
+      "classes":"regulation-18-date-input",
+      "prefix":"regulation-18-date-" + counter|string,
+      "includeMonth": false
+    }) }}
+
+    <!-- for Proposed publication date -->
+    {{ renderDateInput({
+      "text":"Proposed publication date",
+      "classes":"proposed-publication-date-input",
+      "prefix":"proposed-publication-date-" + counter|string,
+      "includeMonth": false
+    }) }}
+
+    <!-- for Proposed submission date -->
+    {{ renderDateInput({
+      "text":"Proposed submission date",
+      "classes":"proposed-submission-date-input",
+      "prefix":"proposed-submission-date-" + counter|string,
+      "includeMonth": false
+    }) }}
+
+    <!-- for Main modifications date -->
+    {{ renderDateInput({
+      "text":"Proposed main modifications date",
+      "classes":"proposed-main-modifications-date-input",
+      "prefix":"proposed-main-modifications-date-" + counter|string,
+      "includeMonth": false
+    }) }}
+
+    <!-- for Proposed adoption date -->
+    {{ renderDateInput({
+      "text":"Proposed adoption date",
+      "classes":"proposed-adoption-date-input",
+      "prefix":"proposed-adoption-date-" + counter|string,
+      "includeMonth": false
+    }) }}
+
+    <!-- for Housing requirement total -->
+    <div class="govuk-form-group plan-housing-req-total">
+      <label class="govuk-label" for="housing-req-total-{{ counter }}">
+        Housing requirement total
+      </label>
+      <input class="govuk-input govuk-input--width-10" id="housing-req-total-{{ counter }}" name="housing-req-total-{{ counter }}" type="text">
+    </div>
+
+    <!-- for Housing requirement range -->
+    <fieldset class="govuk-fieldset housing-req-range-fieldset">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+        <h1 class="govuk-fieldset__heading">
+          Housing requirement range
+        </h1>
+      </legend>
+
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="housing-req-range-min-{{ counter }}">
+          Min
+        </label>
+        <input class="govuk-input govuk-input--width-10 housing-req-range-min" id="housing-req-range-min-{{ counter }}" name="housing-req-range-min-{{ counter }}" data-range-type="start" type="text">
+      </div>
+
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="housing-req-range-max-{{ counter }}">
+          Max
+        </label>
+        <input class="govuk-input govuk-input--width-10 housing-req-range-max" id="housing-req-range-max-{{ counter }}" name="housing-req-range-max-{{ counter }}" data-range-type="end" type="text">
+      </div>
+    </fieldset>
+
+    <div class="govuk-form-group">
+      <label class="govuk-label" for="document-note-{{counter}}">
+        Provide some information about the fact
+      </label>
+      <textarea class="govuk-textarea" id="document-note-{{counter}}" name="document-note-{{counter}}" rows="5"></textarea>
+    </div>
+    <div class="govuk-form-group">
+      <button class="govuk-button fact-save-btn">Save</button>
+      <button class="cancel-btn">Cancel</button>
+    </div>
+  </form>
+
+{% endmacro %}

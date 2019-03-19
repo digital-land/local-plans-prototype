@@ -1,12 +1,34 @@
 import base64
-from pathlib import Path
+import csv
+import io
 
 import boto3
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify, send_file, current_app
+
+from pathlib import Path
+
+from flask import (
+    Blueprint,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    jsonify,
+    send_file,
+    current_app,
+    make_response
+)
 
 from application.extensions import db
-from application.models import PlanningAuthority, LocalPlan, FactType, EmergingFactType, PlanDocument, OtherDocument, \
-    Fact, Document
+
+from application.models import (
+    PlanningAuthority,
+    LocalPlan,
+    FactType,
+    EmergingFactType,
+    PlanDocument,
+    OtherDocument,
+    Fact
+)
 
 from application.frontend.forms import LocalDevelopmentSchemeURLForm, LocalPlanURLForm
 
@@ -30,12 +52,7 @@ def planning_authority_list():
 @frontend.route('/planning-authority/<planning_authority>')
 def planning_authority(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
-
-    # TODO at the moment this is all facts, but will probably just filter for ones related to housing numbers
-    facts = pla.gather_facts(filters=['HOUSING_DELIVERED',
-                                      'HOUSING_REQUIRED',
-                                      'HOUSING_REQUIREMENT_TOTAL',
-                                      'HOUSING_REQUIREMENT_RANGE'])
+    facts = pla.gather_facts()
     return render_template('planning-authority.html', planning_authority=pla, facts=facts)
 
 
@@ -44,13 +61,13 @@ def list_all():
     planning_authorities = PlanningAuthority.query.order_by(PlanningAuthority.name).all()
     if request.method == 'POST':
         return redirect(url_for('frontend.local_plan', planning_authority=request.form['local-authority-select']))
-    return render_template('list.html', planning_authorities=planning_authorities)
+    return render_template('local-plans.html', planning_authorities=planning_authorities)
 
 
 @frontend.route('/local-plans/<planning_authority>')
 def local_plan(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
-    return render_template('local-plans.html',
+    return render_template('local-plan.html',
                            planning_authority=pla,
                            fact_types=FactType,
                            emerging_fact_types=EmergingFactType)
@@ -76,6 +93,10 @@ def add_fact_to_document(planning_authority, document):
             document = OtherDocument.query.filter_by(id=document, planning_authority_id=planning_authority).one()
 
         fact = Fact(fact=fact_json.get('fact'), fact_type=fact_json.get('fact_type'), notes=fact_json.get('notes'))
+
+        if 'RANGE' in fact_json.get('fact_type') or 'PERIOD' in fact_json.get('fact_type'):
+            fact.from_, fact.to = fact_json.get('fact').split(',')
+
         document.facts.append(fact)
         db.session.add(document)
         db.session.commit()
@@ -263,8 +284,8 @@ def add_document():
     return jsonify(resp)
 
 
-@frontend.route('/local-plans/check-url', methods=['POST'])
-def check_url():
+@frontend.route('/local-plans/planning-authority', methods=['POST'])
+def planning_authority_from_document():
 
     # Maybe best do this on origin only? the reason is that the plan policy urls
     # are sort of unknown provenance. The LA website urls I got from LGA
@@ -281,16 +302,26 @@ def check_url():
                                    document=str(document.id),
                                    _external=True)
             resp = {'OK': 200, 'view-type': 'emerging-plan-document', 'document': document.to_dict(), 'add_fact_url': add_fact_url}
-        else:
-            document = PlanDocument.query.filter_by(url=website_location).first()
+        elif PlanDocument.query.filter_by(url=website_location).first() is not None:
+            document = PlanDocument.query.filter_by(url=website_location).one()
             add_fact_url = url_for('frontend.add_fact_to_document',
                                    planning_authority=document.local_plan.planning_authorities[0].id,
                                    local_plan=document.local_plan_id,
                                    document=str(document.id),
                                    _external=True)
             resp = {'OK': 200, 'view-type': 'plan-document', 'document': document.to_dict(), 'local_plan': document.local_plan.to_dict(), 'add_fact_url': add_fact_url}
-        
-        print(document)
+
+        else:
+            try:
+                pla = PlanningAuthority.query.filter_by(website=website_origin).one()
+
+                # TODO this is a new document, we could add item to response json to indicate to caller that
+                # this can be added to local planning_authority or plan?
+
+                resp = {'OK': 200, 'view-type': 'urls', 'planning_authority': pla.to_dict()}
+            except Exception as e:
+                print(e)
+                resp = {'OK': 404}
 
     elif website_origin is not None:
 
@@ -304,7 +335,6 @@ def check_url():
     elif website_location is not None:
         try:
             pla = PlanningAuthority.query.filter_by(plan_policy_url=website_location).one()
-            print("FOUND BASED ON PLANNING POLICY DOC")
             resp = {'OK': 200, 'view-type': 'urls', 'planning_authority': pla.to_dict() }
         except Exception as e:
             print(e)
@@ -313,7 +343,7 @@ def check_url():
     return jsonify(resp)
 
 
-@frontend.route('/local-plans/check')
+@frontend.route('/local-plans/lucky-dip')
 def lucky_dip():
     import random
     query = db.session.query(PlanningAuthority)
@@ -338,3 +368,39 @@ def get_extension():
     zip_path = shutil.make_archive('local-plan-extension', 'zip', extension_dir)
     return send_file(zip_path, attachment_filename='local-plan-extension.zip', as_attachment=True)
 
+
+@frontend.route('/local-plans/data')
+def data():
+    planning_authorities = PlanningAuthority.query.all()
+    data = []
+    for pla in planning_authorities:
+        for fact in pla.gather_facts(as_dict=True):
+            data.append(fact)
+    return render_template('data.html', data=data)
+
+
+@frontend.route('/local-plans/data.csv')
+def data_as_csv():
+    planning_authorities = PlanningAuthority.query.all()
+    data = []
+    for pla in planning_authorities:
+        for fact in pla.gather_facts(as_dict=True):
+            fact.pop('id')
+            fact.pop('document')
+            fact.pop('fact_type_display')
+            if fact.get('from') is not None and fact.get('to') is not None:
+                fact.pop('fact')
+            data.append(fact)
+
+    fieldnames = ['planning_authority', 'plan', 'fact_type', 'fact', 'from', 'to', 'document_url', 'notes', 'created_date']
+
+    with io.StringIO() as output:
+        writer = csv.DictWriter(output, fieldnames=fieldnames, quoting=csv.QUOTE_ALL, lineterminator="\n")
+        writer.writeheader()
+        for row in data:
+            writer.writerow(row)
+        out = make_response(output.getvalue())
+
+    out.headers["Content-Disposition"] = "attachment; filename=local-plan-data.csv"
+    out.headers["Content-type"] = "text/csv"
+    return out

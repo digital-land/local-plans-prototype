@@ -54,226 +54,15 @@
                 <caption class="govuk-table__caption">Facts from document</caption>
                 <tbody class="govuk-table__body"></tbody>
             </table>
-  
-    
-  
 
-  <form action="" class="govuk-form add-fact-form govuk-details__text plan-name">
-    <input type="hidden" value="plan_document">
-    <h4 class="govuk-heading-s govuk-visually-hidden">Add fact from document</h4>
+          {%- from "partials/local-plan-fact-form.html" import renderLocalPlanFactForm -%}
 
-    <div class="govuk-form-group">
-       <label class="govuk-label" for="document-note-0">
-           Specify the type of fact
-       </label>
-        <select class="govuk-select fact-select-types" id="fact-type-0" name="fact-type-0">
-          
-             <option value="PLAN_NAME" data-type-class="plan-name">Plan name</option>
-          
-             <option value="PLAN_PERIOD" data-type-class="plan-period">Plan period</option>
-          
-             <option value="PLAN_START_YEAR" data-type-class="plan-start-year">Plan period start year</option>
-          
-             <option value="PLAN_END_YEAR" data-type-class="plan-end-year">Plan period end year</option>
-          
-             <option value="HOUSING_REQUIREMENT_TOTAL" data-type-class="housing-requirement-total">Housing requirement total</option>
-          
-             <option value="HOUSING_REQUIREMENT_RANGE" data-type-class="housing-requirement-range">Housing requirement range</option>
-          
-             <option value="HOUSING_REQUIREMENT_YEARLY_AVERAGE" data-type-class="housing-requirement-yearly-average">Housing requirement yearly average</option>
-          
-             <option value="HOUSING_REQUIREMENT_YEARLY_RANGE" data-type-class="housing-requirement-yearly-range">Housing requirement yearly range</option>
-          
-             <option value="OTHER" data-type-class="other">Other</option>
-          
-      </select>
-    </div>
-
-     <!-- TODO depending on type of fact chosen render input for fact
-     e.g. if plan name just an text input note we know some of the names already,
-     if plan start or end date chose render input for date in format YYYY-MM - or submits that at least which I think input type month does?
-     if total housing number just integer of range then two inputs 'from' integer to 'integer'
-     -->
-
-    <!-- for Plan Name -->
-    <div class="govuk-form-group plan-name-input">
-      <label class="govuk-label" for="plan-name-0">
-        Plan name
-      </label>
-      <input class="govuk-input govuk-input--width-20" id="plan-name-0" name="plan-name-0" type="text">
-    </div>
-
-	<!-- for Plan period -->
-    <fieldset class="govuk-fieldset fieldset-range plan-period-fieldset">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-        <h1 class="govuk-fieldset__heading">
-          Plan period
-        </h1>
-      </legend>
-
-      <div class="govuk-form-group">
-        <label class="govuk-label" for="plan-period-start-0">
-          Start year
-        </label>
-        <input class="govuk-input govuk-input--width-4 plan-period-start" id="plan-period-start-0" name="plan-period-start-0" data-range-type="start" type="text">
-      </div>
-
-      <div class="govuk-form-group">
-        <label class="govuk-label" for="plan-period-end-0">
-          End year
-        </label>
-        <input class="govuk-input govuk-input--width-4 plan-period-end" id="plan-period-end-0" name="plan-period-end-0" data-range-type="end" type="text">
-      </div>
-    </fieldset>
-
-	
-
-    <!-- for Plan start date -->
-    
-<div class="govuk-form-group plan-start-date-input">
-  <fieldset class="govuk-fieldset" aria-describedby="plan-start-date-0-hint" role="group">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-      <h1 class="govuk-fieldset__heading">
-        Plan period start date
-      </h1>
-    </legend>
-    <span id="plan-start-date-0-hint" class="govuk-hint">
-      For example, 2007
-    </span>
-    <div class="govuk-date-input" id="plan-start-date-0">
-      
-      <div class="govuk-date-input__item">
-        <div class="govuk-form-group">
-          <label class="govuk-label govuk-date-input__label" for="plan-start-date-0-year">
-            Year
-          </label>
-          <input class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4" id="plan-start-date-0-year" name="plan-start-date-0-year" type="number" pattern="[0-9]*">
-        </div>
-      </div>
-    </div>
-  </fieldset>
-</div>
-
-
-    <!-- for Plan end date -->
-    
-<div class="govuk-form-group plan-end-date-input">
-  <fieldset class="govuk-fieldset" aria-describedby="plan-end-date-0-hint" role="group">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-      <h1 class="govuk-fieldset__heading">
-        Plan period end date
-      </h1>
-    </legend>
-    <span id="plan-end-date-0-hint" class="govuk-hint">
-      For example, 2007
-    </span>
-    <div class="govuk-date-input" id="plan-end-date-0">
-      
-      <div class="govuk-date-input__item">
-        <div class="govuk-form-group">
-          <label class="govuk-label govuk-date-input__label" for="plan-end-date-0-year">
-            Year
-          </label>
-          <input class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4" id="plan-end-date-0-year" name="plan-end-date-0-year" type="number" pattern="[0-9]*">
-        </div>
-      </div>
-    </div>
-  </fieldset>
-</div>
-
-
-
-
-    <!-- for Housing requirement total -->
-    <div class="govuk-form-group plan-housing-req-total">
-      <label class="govuk-label" for="housing-req-total-0">
-        Housing requirement total
-      </label>
-      <input class="govuk-input govuk-input--width-10" id="housing-req-total-0" name="housing-req-total-0" type="text">
-    </div>
-
-    <!-- for Housing requirement range -->
-    <fieldset class="govuk-fieldset fieldset-range housing-req-range-fieldset">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-        <h1 class="govuk-fieldset__heading">
-          Housing requirement range
-        </h1>
-      </legend>
-
-      <div class="govuk-form-group">
-        <label class="govuk-label" for="housing-req-range-min-0">
-          Min
-        </label>
-        <input class="govuk-input govuk-input--width-10 housing-req-range-min" id="housing-req-range-min-0" name="housing-req-range-min-0" data-range-type="start" type="text">
-      </div>
-
-      <div class="govuk-form-group">
-        <label class="govuk-label" for="housing-req-range-max-0">
-          Max
-        </label>
-        <input class="govuk-input govuk-input--width-10 housing-req-range-max" id="housing-req-range-max-0" name="housing-req-range-max-0" data-range-type="end" type="text">
-      </div>
-    </fieldset>
-
-	<!-- for Housing requirement yearly average -->
-    <div class="govuk-form-group housing-req-yearly-average-input">
-      <label class="govuk-label" for="housing-req-total-0">
-        Housing requirement yearly average
-      </label>
-      <input class="govuk-input govuk-input--width-10" id="housing-req-yearly-avg-0" name="housing-req-yearly-avg-0" type="text">
-    </div>
-
-	<!-- for Housing requirement yearly range -->
-    <fieldset class="govuk-fieldset fieldset-range housing-req-yearly-range-fieldset">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-        <h1 class="govuk-fieldset__heading">
-          Housing requirement yearly range
-        </h1>
-      </legend>
-
-      <div class="govuk-form-group">
-        <label class="govuk-label" for="housing-req-yearly-range-min-0">
-          Min
-        </label>
-        <input class="govuk-input govuk-input--width-10 housing-req-yearly-range-min" id="housing-req-yearly-range-min-0" name="housing-req-yearly-range-min-0" data-range-type="start" type="text">
-      </div>
-
-      <div class="govuk-form-group">
-        <label class="govuk-label" for="housing-req-yearly-range-max-0">
-          Max
-        </label>
-        <input class="govuk-input govuk-input--width-10 housing-req-yearly-range-max" id="housing-req-yearly-range-max-0" name="housing-req-yearly-range-max-0" data-range-type="end" type="text">
-      </div>
-    </fieldset>
-
-    
-
-
-    <div class="govuk-form-group">
-      <label class="govuk-label" for="document-note-0">
-        Provide any additional information about the fact
-      </label>
-      <textarea class="govuk-textarea" id="document-note-0" name="document-note-0" rows="5"></textarea>
-    </div>
-	<details class="govuk-details govuk-details--facts screenshot-taker__details" role="group">
-		<summary class="govuk-details__summary screenshot-taker__summary" role="button">
-            <span class="govuk-details__summary-text" data-original-text="Add screenshot">
-                Add screenshot
-            </span>
-        </summary>
-        <div class="govuk-details__text screenshot-taker">
-            <p class="govuk-body">A screenshot will help people know where the fact came from.</p>
-            <img src="" alt="" class="screenshot-taker__viewer">
-            <button class="govuk-button dlf-secondary-button screenshot-taker__btn" data-original-text="Take a screenshot">Take a screenshot</button>
-        </div>
-    </details>
-    <div class="govuk-form-group">
-      <button class="govuk-button fact-save-btn">Save</button>
-      <button class="cancel-btn">Cancel</button>
-    </div>
-  </form>
-
- 
+          {{ renderLocalPlanFactForm({
+              "action_url": "",
+              "fact_types": fact_types,
+              "form_number": "0",
+              "allowScreenshots": true
+            }) }}
 
             </section>
         </section>
@@ -575,9 +364,9 @@
         </div>
 
     <script id="checkbox-template" type="text/x-handlebars-template">
-    <input class="govuk-checkboxes__input" id="url-" name="urls" type="checkbox" value="">
-    <label class="govuk-label govuk-checkboxes__label" for="waste-">
-      
+    <input class="govuk-checkboxes__input" id="url-{{ count }}" name="urls" type="checkbox" value="{{ link }}">
+    <label class="govuk-label govuk-checkboxes__label" for="waste-{{ count }}">
+      {{ link }}
     </label>
     </script>
     </body>
