@@ -4,7 +4,6 @@ from datetime import datetime
 from enum import Enum
 from functools import total_ordering
 
-from sqlalchemy.ext.mutable import Mutable
 from application.extensions import db
 from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSON
 
@@ -96,18 +95,18 @@ class PlanningAuthority(db.Model):
             for fact in doc.facts:
                 if filters:
                     if fact.fact_type in filters:
-                        facts.append(fact)
+                        facts.append(fact.to_dict())
                 else:
-                    facts.append(fact)
+                    facts.append(fact.to_dict())
 
         for plan in self.local_plans:
             for doc in plan.plan_documents:
                 for fact in doc.facts:
                     if filters:
                         if fact.fact_type in filters:
-                            facts.append(fact)
+                            facts.append(fact.to_dict())
                     else:
-                        facts.append(fact)
+                        facts.append(fact.to_dict())
 
         return facts
 
@@ -284,6 +283,23 @@ class Fact(db.Model):
             'fact_type': self.fact_type,
             'fact_type_display': self.get_fact_type().value,
             'notes': self.notes,
-            'document_id': str(self.document_id)
+            'document_id': str(self.document_id),
+            'document_url': self.document.url,
+            'created_date': self.created_date.date()
         }
+
+        if isinstance(self.document, OtherDocument):
+            data['planning_authority'] = self.document.planning_authority
+        else:
+            data['planning_authority'] = None
+
+        if isinstance(self.document, PlanDocument):
+            data['plan'] = self.document.local_plan.local_plan
+            if len(self.document.local_plan.planning_authorities) > 1:
+                data['planning_authority'] = [pla.id for pla in self.document.local_plan.planning_authorities]
+            else:
+                data['planning_authority'] = self.document.local_plan.planning_authorities[0].id
+        else:
+            data['plan'] = None
+
         return data
