@@ -1,4 +1,7 @@
 import base64
+import csv
+import io
+
 import boto3
 
 from pathlib import Path
@@ -11,7 +14,8 @@ from flask import (
     url_for,
     jsonify,
     send_file,
-    current_app
+    current_app,
+    make_response
 )
 
 from application.extensions import db
@@ -365,3 +369,36 @@ def get_extension():
     zip_path = shutil.make_archive('local-plan-extension', 'zip', extension_dir)
     return send_file(zip_path, attachment_filename='local-plan-extension.zip', as_attachment=True)
 
+
+@frontend.route('/local-plans/data')
+def data():
+    planning_authorities = PlanningAuthority.query.all()
+    data = []
+    for pla in planning_authorities:
+        for fact in pla.gather_facts():
+            data.append(fact)
+    return render_template('data.html', data=data)
+
+
+@frontend.route('/local-plans/data.csv')
+def data_as_csv():
+    planning_authorities = PlanningAuthority.query.all()
+    data = []
+    for pla in planning_authorities:
+        for fact in pla.gather_facts():
+            fact.pop('id')
+            fact.pop('document_id')
+            data.append(fact)
+
+    fieldnames = ['planning_authority', 'plan', 'fact_type', 'fact', 'document_url', 'notes', 'created_date']
+
+    with io.StringIO() as output:
+        writer = csv.DictWriter(output, fieldnames=fieldnames, quoting=csv.QUOTE_ALL, lineterminator="\n")
+        writer.writeheader()
+        for row in data:
+            writer.writerow(row)
+        out = make_response(output.getvalue())
+
+    out.headers["Content-Disposition"] = "attachment; filename=local-plan-data.csv"
+    out.headers["Content-type"] = "text/csv"
+    return out
