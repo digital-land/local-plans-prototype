@@ -408,7 +408,11 @@
   function extractDate(fieldset) {
     const month = fieldset.querySelector(".govuk-date-input__month");
     const year = fieldset.querySelector(".govuk-date-input__year");
-    return `${year.value}-${month.value}`;
+    if(month) {
+      return `${year.value}-${month.value}`;
+    }
+    return `${year.value}`;
+    
   }
 
   function extractRange(fieldset) {

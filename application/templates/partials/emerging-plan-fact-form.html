@@ -28,42 +28,48 @@
     {{ renderDateInput({
       "text":"Publication date",
       "classes":"publication-date-input",
-      "prefix":"publication-date-" + counter|string
+      "prefix":"publication-date-" + counter|string,
+      "includeMonth": false
     }) }}
 
     <!-- for Regulation 18 date -->
     {{ renderDateInput({
       "text":"Proposed regulation 18 date",
       "classes":"regulation-18-date-input",
-      "prefix":"regulation-18-date-" + counter|string
+      "prefix":"regulation-18-date-" + counter|string,
+      "includeMonth": false
     }) }}
 
     <!-- for Proposed publication date -->
     {{ renderDateInput({
       "text":"Proposed publication date",
       "classes":"proposed-publication-date-input",
-      "prefix":"proposed-publication-date-" + counter|string
+      "prefix":"proposed-publication-date-" + counter|string,
+      "includeMonth": false
     }) }}
 
     <!-- for Proposed submission date -->
     {{ renderDateInput({
       "text":"Proposed submission date",
       "classes":"proposed-submission-date-input",
-      "prefix":"proposed-submission-date-" + counter|string
+      "prefix":"proposed-submission-date-" + counter|string,
+      "includeMonth": false
     }) }}
 
     <!-- for Main modifications date -->
     {{ renderDateInput({
       "text":"Proposed main modifications date",
       "classes":"proposed-main-modifications-date-input",
-      "prefix":"proposed-main-modifications-date-" + counter|string
+      "prefix":"proposed-main-modifications-date-" + counter|string,
+      "includeMonth": false
     }) }}
 
     <!-- for Proposed adoption date -->
     {{ renderDateInput({
       "text":"Proposed adoption date",
       "classes":"proposed-adoption-date-input",
-      "prefix":"proposed-adoption-date-" + counter|string
+      "prefix":"proposed-adoption-date-" + counter|string,
+      "includeMonth": false
     }) }}
 
     <!-- for Housing requirement total -->

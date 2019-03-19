@@ -68,14 +68,16 @@
     {{ renderDateInput({
       "text":"Plan period start date",
       "classes":"plan-start-date-input",
-      "prefix":"plan-start-date-" + counter|string
+      "prefix":"plan-start-date-" + counter|string,
+      "includeMonth": false
     }) }}
 
     <!-- for Plan end date -->
     {{ renderDateInput({
       "text":"Plan period end date",
       "classes":"plan-end-date-input",
-      "prefix":"plan-end-date-" + counter|string
+      "prefix":"plan-end-date-" + counter|string,
+      "includeMonth": false
     }) }}
 
 
