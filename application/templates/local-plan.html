@@ -139,7 +139,7 @@
 
 {#  TODO Colm change this to whatever you think best      #}
   <section>
-    <details class="govuk-details">
+    <details class="govuk-details" {% if form.errors %}open{% endif %}>
       <summary class="govuk-details__summary">
         <span class="govuk-details__summary-text">
           Add new plan
@@ -151,8 +151,13 @@
           <span class="govuk-hint">
               The local authority code and start year will be the plan id e.g. ADU-2022
           </span>
+          <span class="govuk-error-message">
+            {% for error in form.start_year.errors  %}
+                <span>{{ error }}</span>
+            {% endfor %}
+          </span>
           <span>{{ planning_authority.code() }}-</span>{{ form.start_year(class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4", pattern="[0-9]*") }}
-         </div>
+          </div>
           <div class="govuk-form-group">
             <button class="govuk-button dlf-secondary-button">Add plan</button>
           </div>

@@ -1,5 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, validators, IntegerField
+from wtforms import StringField, validators, IntegerField, ValidationError, HiddenField
+
+from application.models import LocalPlan
 
 
 class LocalDevelopmentSchemeURLForm(FlaskForm):
@@ -12,5 +14,10 @@ class LocalPlanURLForm(FlaskForm):
 
 class AddPlanForm(FlaskForm):
 	start_year = IntegerField('Start year of plan', [validators.DataRequired()])
+	planning_authority = HiddenField()
 
-	# TODO need to add validator that checks if this id in use already
+	def validate_start_year(form, field):
+		plan_id = f'{form.planning_authority.data}-{field.data}'
+		plan = LocalPlan.query.get(plan_id)
+		if plan is not None:
+			raise ValidationError(f'Plan with id {plan_id} already exists.')

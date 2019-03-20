@@ -68,7 +68,7 @@ def list_all():
 @frontend.route('/local-plans/<planning_authority>', methods=['GET', 'POST'])
 def local_plan(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
-    form = AddPlanForm()
+    form = AddPlanForm(planning_authority=pla.code())
     if form.validate_on_submit():
         local_plan_id = f'{pla.code()}-{form.start_year.data}'
         start_year = datetime.datetime(year=form.start_year.data, month=1, day=1)
