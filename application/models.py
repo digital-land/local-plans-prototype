@@ -18,11 +18,13 @@ planning_authority_plan = db.Table('planning_authority_plan',
 )
 
 
+@total_ordering
 class LocalPlan(db.Model):
 
     local_plan = db.Column(db.String(), primary_key=True)
     url = db.Column(db.String())
     title = db.Column(db.String())
+    start_year = db.Column(db.Date())
     published_date = db.Column(db.Date())
     submitted_date = db.Column(db.Date())
     sound_date = db.Column(db.Date())
@@ -34,14 +36,23 @@ class LocalPlan(db.Model):
 
     plan_documents = db.relationship('PlanDocument', back_populates='local_plan', lazy=True)
 
+    def __eq__(self, other):
+        return self.ordered_states() == other.ordered_states()
+
+    def __lt__(self, other):
+        return len(self.ordered_states()) < len(other.ordered_states())
+
+
     def latest_state(self):
-        return self.ordered_states()[-1]
+        return sorted(self.ordered_states(), reverse=True)[0]
 
     def is_adopted(self):
         return True if self.adopted_date is not None else False
         
     def ordered_states(self):
         states = []
+        if self.start_year is not None:
+            states.append(State(state='emerging', date=self.start_year))
         if self.published_date is not None:
             states.append(State(state='published', date=self.published_date))
         if self.submitted_date is not None:
@@ -60,6 +71,9 @@ class LocalPlan(db.Model):
             'planning_authorities': [{'name': authority.name, 'id':authority.id} for authority in self.planning_authorities]
         }
         return data
+
+    def is_emerging(self):
+        return self.start_year is not None and all(d is None for d in [self.published_date, self.submitted_date, self.sound_date, self.adopted_date])
 
 
 class PlanningAuthority(db.Model):
@@ -82,6 +96,11 @@ class PlanningAuthority(db.Model):
 
     def sorted_hdt(self, reverse=False):
         return sorted(self.housing_delivery_tests, reverse=reverse)
+
+    def sorted_plans(self):
+        if len(self.local_plans) == 1:
+            return self.local_plans
+        return sorted(self.local_plans)
 
     def get_local_scheme_documents(self):
         # TODO add a subtype on other documents to filter on rather than title
@@ -107,6 +126,9 @@ class PlanningAuthority(db.Model):
                         facts.append(fact)
 
         return facts
+
+    def code(self):
+        return self.id.split(':')[-1]
 
     def to_dict(self):
         data = {
@@ -173,13 +195,15 @@ class HousingDeliveryTest(db.Model):
 
 
 class State:
-
     def __init__(self, state, date):
         self.state = state
         self.date = date
 
     def __lt__(self, other):
         return self.date < other.date
+
+    def __eq__(self, other):
+        return self.state == other. state and self.date == other.date
 
 
 class Document(db.Model):
