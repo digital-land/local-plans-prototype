@@ -8,8 +8,15 @@ import requests
 from flask.cli import with_appcontext
 from contextlib import closing
 from application.extensions import db
-from application.models import PlanningAuthority, LocalPlan, PlanDocument, OtherDocument, Fact, HousingDeliveryTest, \
+from application.models import (
+    PlanningAuthority,
+    LocalPlan,
+    PlanDocument,
+    OtherDocument,
+    Fact,
+    HousingDeliveryTest,
     Document
+)
 
 HDT_URL = 'https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/779711/HDT_2018_measurement.xlsx'
 
@@ -139,19 +146,7 @@ def load_hdt():
                                               homes_delivered=homes_delivered)
 
                     pla.housing_delivery_tests.append(hdt)
-
                     document = OtherDocument(url=HDT_URL, title='Housing Delivery Test: 2018 measurement')
-
-                    document.facts.append(Fact(fact=homes_required,
-                                               from_year=from_year,
-                                               to_year=to_year,
-                                               fact_type='HOUSING_REQUIRED'))
-
-                    document.facts.append(Fact(fact=homes_delivered,
-                                               from_year=from_year,
-                                               to_year=to_year,
-                                               fact_type='HOUSING_DELIVERED'))
-
                     print('Added hdt for years', hdt.from_year, hdt.from_year, 'to LA', pla.id)
 
                 else:
@@ -175,17 +170,6 @@ def load_hdt():
                                               homes_delivered=homes_delivered)
 
                     pla.housing_delivery_tests.append(hdt)
-
-                    document.facts.append(Fact(fact=homes_required,
-                                               from_year=from_year,
-                                               to_year=to_year,
-                                               fact_type='HOUSING_REQUIRED'))
-
-                    document.facts.append(Fact(fact=homes_delivered,
-                                               from_year=from_year,
-                                               to_year=to_year,
-                                               fact_type='HOUSING_DELIVERED'))
-
                     print('Added hdt for years', hdt.from_year, hdt.from_year, 'to LA', pla.id)
                 else:
                     print('hdt for', pla.id, 'for years', hdt.from_year, hdt.from_year, 'already added')
@@ -208,17 +192,6 @@ def load_hdt():
                                               homes_delivered=homes_delivered)
 
                     pla.housing_delivery_tests.append(hdt)
-
-                    document.facts.append(Fact(fact=homes_required,
-                                               from_year=from_year,
-                                               to_year=to_year,
-                                               fact_type='HOUSING_REQUIRED'))
-
-                    document.facts.append(Fact(fact=homes_delivered,
-                                               from_year=from_year,
-                                               to_year=to_year,
-                                               fact_type='HOUSING_DELIVERED'))
-
                     print('Added hdt for years', hdt.from_year, hdt.from_year, 'to LA', pla.id)
                 else:
                     print('hdt for', pla.id, 'for years', hdt.from_year, hdt.from_year, 'already added')
