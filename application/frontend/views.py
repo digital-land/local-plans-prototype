@@ -364,7 +364,8 @@ def lucky_dip():
     query = db.session.query(PlanningAuthority)
     row_count = int(query.count())
     pla = query.offset(int(row_count * random.random())).first()
-    return render_template('lucky-dip.html', planning_authority=pla)
+    facts = pla.gather_facts()
+    return render_template('lucky-dip.html', planning_authority=pla, facts=facts)
 
 
 @frontend.route('/local-plans/<planning_authority>/check-plan-documents')

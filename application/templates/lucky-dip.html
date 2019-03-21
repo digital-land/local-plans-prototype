@@ -3,13 +3,44 @@
 
 {% block content %}
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-full">
         <h1 class="govuk-heading-m">Start collection information for</h1>
-        <p>
+        <p class="govuk-body">
             <a href="{{ url_for('frontend.local_plan', planning_authority=planning_authority.id) }}">
                 {{ planning_authority.name }}
             </a>
         </p>
-    </div>
-  </div>
+        {% if facts %}
+            <h2 class="govuk-heading-s">This is what we know about this planning authority</h2>
+            <table class="govuk-table">
+                <thead>
+                    <tr>
+                        <th>Fact type</th>
+                        <th>Fact</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Notes</th>
+                        <th>Plan</th>
+                    </tr>
+                </thead>
+                {% for fact in facts %}
+                    <tr>
+                       <td>{{ fact.fact_type | format_fact }}</td>
+                       <td>{% if not fact.from_ and not fact.to %}{{ fact.fact }}{% endif %}</td>
+                       <td>{% if fact.from_ %}{{ fact.from_ }}{% endif %}</td>
+                       <td>{% if fact.to %}{{ fact.to }}{% endif %}</td>
+                       <td>{% if fact.notes %}{{ fact.notes }}{% endif %}</td>
+                       <td>{{ fact.document.local_plan.local_plan }}</td>
+                    </tr>
+                {% endfor %}
+              </table>
+
+            <p class="govuk-body-m">If this looks complete then try another</p>
+            <div class="govuk-form-group">
+                <a href="{{ url_for('frontend.lucky_dip') }}" class="govuk-button">Lucky dip</a>
+            </div>
+         {% endif %}
+     </div>
+   </div>
+
 {%  endblock %}
