@@ -1,5 +1,6 @@
 import base64
 import csv
+import datetime
 import io
 
 import boto3
@@ -30,7 +31,7 @@ from application.models import (
     Fact
 )
 
-from application.frontend.forms import LocalDevelopmentSchemeURLForm, LocalPlanURLForm
+from application.frontend.forms import LocalDevelopmentSchemeURLForm, LocalPlanURLForm, AddPlanForm
 
 frontend = Blueprint('frontend', __name__, template_folder='templates')
 
@@ -64,13 +65,24 @@ def list_all():
     return render_template('local-plans.html', planning_authorities=planning_authorities)
 
 
-@frontend.route('/local-plans/<planning_authority>')
+@frontend.route('/local-plans/<planning_authority>', methods=['GET', 'POST'])
 def local_plan(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
+    form = AddPlanForm(planning_authority=pla.code())
+    if form.validate_on_submit():
+        local_plan_id = f'{pla.code()}-{form.start_year.data}'
+        start_year = datetime.datetime(year=form.start_year.data, month=1, day=1)
+        plan = LocalPlan(local_plan=local_plan_id, start_year=start_year)
+        plan.planning_authorities.append(pla)
+        db.session.add(pla)
+        db.session.commit()
+        return redirect(url_for('frontend.local_plan', planning_authority=pla.id))
+
     return render_template('local-plan.html',
                            planning_authority=pla,
                            fact_types=FactType,
-                           emerging_fact_types=EmergingFactType)
+                           emerging_fact_types=EmergingFactType,
+                           form=form)
 
 
 @frontend.route('/start-collecting-data')
@@ -318,7 +330,7 @@ def planning_authority_from_document():
                 # TODO this is a new document, we could add item to response json to indicate to caller that
                 # this can be added to local planning_authority or plan?
 
-                resp = {'OK': 200, 'view-type': 'urls', 'planning_authority': pla.to_dict()}
+                resp = {'OK': 200, 'view-type': 'new-document', 'planning_authority': pla.to_dict(), 'document_url': website_location }
             except Exception as e:
                 print(e)
                 resp = {'OK': 404}

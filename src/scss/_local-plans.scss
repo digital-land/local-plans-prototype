@@ -173,3 +173,21 @@
 .request-for-update {
   color: govuk-colour("grey-1");
 }
+
+// used for tab that adds a new 'thing'
+.govuk-tabs__tab--add-new:not(.govuk-tabs__tab--selected) {
+  @include govuk-font($size: 16);
+  margin-top: govuk-em(13, 16);
+  padding-top: govuk-em(5, 16);
+  padding-bottom: govuk-em(4, 16);
+  border: 1px dashed govuk-colour("grey-2");
+  color: govuk-colour("grey-1") !important;
+  line-height: govuk-em(21, 16) !important;
+
+  &:hover {
+    border-color: govuk-colour("blue");
+    color: govuk-colour("black") !important;
+  }
+}
+
+

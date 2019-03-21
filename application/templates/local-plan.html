@@ -143,16 +143,19 @@
     </h2>
 
     <ul class="govuk-tabs__list">
-      {% for plan in planning_authority.local_plans|sort_plans %}
+      {% for plan in planning_authority.sorted_plans()  %}
       <li class="govuk-tabs__list-item {% if plan.is_adopted() %}adopted-plan{% endif %}">
         <a class="govuk-tabs__tab govuk-tabs__tab--selected" href="#{{ plan.local_plan }}">
           {{ plan.local_plan }}
         </a>
       </li>
       {% endfor %}
+      <li class="govuk-tabs__list-item">
+        <a href="#new-plan-tab" class="govuk-tabs__tab govuk-tabs__tab--add-new">Add new plan</a>
+      </li>
     </ul>
 
-    {% for plan in planning_authority.local_plans|sort_plans %}
+    {% for plan in planning_authority.sorted_plans() %}
     <section class="govuk-tabs__panel {% if plan.is_adopted() %}adopted-plan{% endif %}" id="{{ plan.local_plan }}">
       <h2 class="govuk-heading-l">{{ plan.local_plan }}</h2>
 
@@ -169,35 +172,34 @@
           </a>
        {% endif %}
 
-      <div class="pims-stages">
-
-        {% set latest_state = plan.latest_state() %}
-        <div class="current-stage">
-          <span class="stage-tag">{{ latest_state.state }}</span>
-          <span class="stage-date">{{ latest_state.date | format_month_and_year }}</span>
+    {% if not plan.is_emerging() %}
+        <div class="pims-stages">
+            {% set latest_state = plan.latest_state() %}
+            <div class="current-stage">
+                <span class="stage-tag">{{ latest_state.state }}</span>
+                <span class="stage-date">{{ latest_state.date | format_month_and_year }}</span>
+            </div>
+            <details class="govuk-details">
+                <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                 PINS Timeline
+                </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <table class="govuk-table">
+                        <tbody class="govuk-table__body">
+                        {% for state in plan.ordered_states() %}
+                            <tr class="govuk-table__row">
+                                <th class="govuk-table__cell" scope="row">{{ state.state }}</th>
+                                <td class="govuk-table__cell">{{ state.date | format_month_and_year }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </details>
         </div>
-
-        <details class="govuk-details">
-          <summary class="govuk-details__summary">
-            <span class="govuk-details__summary-text">
-             PINS Timeline
-            </span>
-          </summary>
-          <div class="govuk-details__text">
-            <table class="govuk-table">
-              <tbody class="govuk-table__body">
-                {% for state in plan.ordered_states() %}
-                <tr class="govuk-table__row">
-                  <th class="govuk-table__cell" scope="row">{{ state.state }}</th>
-                  <td class="govuk-table__cell">{{ state.date | format_month_and_year }}</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </details>
-
-      </div>
+    {% endif %}
 
       
         <h3 class="govuk-heading-m">Local plan documents</h3>
@@ -283,6 +285,27 @@
 
     </section>
     {% endfor %}
+    <section id="new-plan-tab" class="govuk-tabs__panel">
+      <h3 class="govuk-heading-m">Add a local plan</h3>
+      <form class="govuk-form" method="post" action="{{ url_for('frontend.local_plan', planning_authority=planning_authority.id) }}">
+         <div class="govuk-form-group">
+          {{ form.start_year.label(class="govuk-label govuk-!-font-weight-bold") }}
+          <span class="govuk-hint">
+              The local authority code and start year will be the plan id e.g. ADU-2022
+          </span>
+          <span class="govuk-error-message">
+            {% for error in form.start_year.errors  %}
+                <span>{{ error }}</span>
+            {% endfor %}
+          </span>
+          <span>{{ planning_authority.code() }}-</span>{{ form.start_year(class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4", pattern="[0-9]*") }}
+          </div>
+          <div class="govuk-form-group">
+            <button class="govuk-button dlf-secondary-button">Add plan</button>
+          </div>
+         {{ form.csrf_token }}
+      </form>
+    </section>
 
   </div>
 {% endblock %}

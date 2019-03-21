@@ -22,13 +22,6 @@ def last_state_date(plan):
     return states[-1]
 
 
-def sort_plans(plans):
-    if plans is None or isinstance(plans, Undefined) or len(plans) == 1:
-        return plans
-
-    return sorted(plans, key=last_state_date, reverse=True)
-
-
 def format_fact(name):
     if name in FactType.__members__:
         return FactType[name].value

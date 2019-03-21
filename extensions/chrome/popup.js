@@ -101,6 +101,53 @@ function saveDocuments() {
   }
 }
 
+function saveSingleDocument(doc_url, plan_id, pla_id) {
+  let dataToSend = {
+    'documents': [doc_url],
+    'active_page_origin': activePageDetails["currentOrigin"] || "",
+    'active_page_location': activePageDetails["currentLocation"] || "",
+    'active_plan': plan_id,
+    'pla_id': pla_id
+  };
+
+  const extMessageContainer = document.querySelector('.ext-message');
+
+  fetch( localPlanUrl + '/local-plans/add-document', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(dataToSend)
+    })
+    .then(response => response.json())
+    .then( (resp_data) => {
+      if(resp_data['OK'] === 200) {
+        extMessageContainer.classList.add("success");
+        var linkEl = extMessageContainer.querySelector(".ext-message__link");
+        var message = extMessageContainer.querySelector(".ext-message__content");
+        linkEl.href = resp_data['check_page'];
+        message.innerHTML = "Document saved successfully. ";
+      }
+    });
+}
+
+function saveSingleDocumentHandler(e) {
+  const section = e.target.closest(".save-doc-section"),
+        authorityId = section.querySelector(".pla-name").dataset.plaId,
+        list = section.querySelector(".plan-list"),
+        url = section.querySelector(".facts__doc-url").textContent;
+
+  const selectedPlan = list.querySelector(".selected");
+  let selectedPlanId;
+  if(selectedPlan) {
+    selectedPlanId = selectedPlan.dataset.planId;
+    saveSingleDocument(url, selectedPlanId, authorityId);
+  } else {
+    // handle situation when user has now selected a plan
+    section.querySelector(".plans-selectable").classList.add("error");
+  }
+}
+
 function createStageTag(plan, _class) {
   let classes = _class || undefined;
   //<span class="stage-tag plan-details__item is-adopted">adopted</span>
@@ -112,19 +159,44 @@ function createStageTag(plan, _class) {
   return tagElement;
 }
 
-function setActivePlan(selectedTag) {
+function setActivePlan(selectedTag, theList) {
   activePlan = selectedTag.dataset.planId;
-  const tags = planList.querySelectorAll(".stage-tag");
+  const tags = theList.querySelectorAll(".stage-tag");
   tags.forEach((tag) => tag.classList.remove("selected"));
   selectedTag.classList.add("selected");
 }
 
+// Will display document URL in the appropriate
+// view
+function displayURLAsHeading(url, section, docId) {
+  const urlEl = section.querySelector('.facts__doc-url');
+  urlEl.textContent = url;
+  if(docId) {
+    urlEl.dataset.documentId = docId;
+  }
+}
+
+// Will display the Authority name in the section
+// being made visible
+function displayAuthorityName(section, pla_name, pla_id) {
+  var nameElement = section.querySelector(".pla-name");
+  nameElement.textContent = pla_name;
+  nameElement.dataset.plaId = pla_id;
+}
+
+// 
+// View functions
+// ==============
+// This display the returned content depending on the 
+// type of page the extension is opened on
+
+
+// Populates extension when collecting links from webpage
 function displayPageDetails(pla_obj) {
   pla = pla_obj;
   var pageDetailsContainer = document.querySelector(".page-details");
-  var nameElement = pageDetailsContainer.querySelector(".pla-name");
-  console.log(pla_obj.name);
-  nameElement.textContent = pla_obj.name;
+
+  displayAuthorityName(pageDetailsContainer, pla_obj.name, pla_obj.id)
 
   const ldsTag = document.querySelector('.stage-tag--lds').classList.remove('selected');
 
@@ -141,6 +213,7 @@ function displayPageDetails(pla_obj) {
   activePlan = pla_obj['plans'][0]['id'];
 }
 
+// populates extension when viewing a document associated with a plan
 function populatePlanView(data) {
   const section = document.querySelector('.local-plan-facts-section');
   pla = data.local_plan.planning_authorities[0];
@@ -163,12 +236,7 @@ function populatePlanView(data) {
   }
 }
 
-function displayURLAsHeading(url, section, docId) {
-  const urlEl = section.querySelector('.facts__doc-url');
-  urlEl.textContent = url;
-  urlEl.dataset.documentId = docId;
-}
-
+// populates extension when viewing a document associated with an emerging plan
 function populateEmergingPlanView(data) {
   const section = document.querySelector('.emerging-plan-facts-section');
   displayURLAsHeading(data.document.url, section, data.document['id']);
@@ -185,7 +253,35 @@ function populateEmergingPlanView(data) {
   }
 }
 
-function checkPageBelongsToAuthority(pageDetails) {
+// populates extension when looking at a document service does not recognise
+function populateNewDocumentView(data) {
+  const section = document.querySelector(".save-doc-section");
+  console.log(data);
+  displayURLAsHeading(data.document_url, section);
+  displayAuthorityName(section, data.planning_authority.name, data.planning_authority.id);
+
+  // add planning authority plans
+  const planList = section.querySelector(".plan-list");
+  data.planning_authority['plans'].forEach((plan) => {
+    planList.appendChild( createStageTag(plan) );
+  });
+  // make list of plans selectable
+  planList.addEventListener('click', (e) => {
+    const target = e.target;
+    if(target.classList.contains('stage-tag')) {
+      section.querySelector(".plans-selectable").classList.remove("error");
+      setActivePlan(target, planList);
+    }
+  });
+}
+
+// Extension assesses what user is looking at, it it:
+// - a planning authority page with links we are interested in
+// - - a key url for a local plan
+// - - a key url for an emerging plan
+// - a document belonging a plan
+// - a document we don't recognise but on a planning authority url
+function checkActivePageType(pageDetails) {
 
   fetch( localPlanUrl + '/local-plans/planning-authority', {
       method: "POST",
@@ -211,12 +307,15 @@ function checkPageBelongsToAuthority(pageDetails) {
       } else if (resp_data['view-type'] === 'urls') {
         displayPageDetails(resp_data.planning_authority);
         document.body.classList.add("url-view");
+      } else if (resp_data['view-type'] === 'new-document') {
+        document.body.classList.add("new-document-view");
+        populateNewDocumentView(resp_data);
       } else {
         document.body.classList.add("not-recognised-view");
       }
     });
-
 }
+
 
 function createFactRow(fact) {
   const row = document.createElement('tr');
@@ -322,14 +421,31 @@ function factSubmitHandler(e) {
   .then( (resp_data) => {
     if(resp_data['OK'] === 200) {
       console.log(resp_data);
+      displaySuccessMessage("Fact saved.", true);
       const factsEl = form.closest(".document-facts");
       const table = factsEl.querySelector(".document-facts__table");
       displayFact(resp_data, table);
       table.classList.remove('govuk-visually-hidden');
       resetFactForm(form);
     }
-
   });
+}
+
+function displaySuccessMessage(messageContent, fade=false) {
+  const extMessageContainer = document.querySelector('.ext-message');
+
+  if (fade) {
+    extMessageContainer.classList.add("message--fadeout");
+  } else {
+    extMessageContainer.classList.remove("message--fadeout");
+  }
+
+  extMessageContainer.addEventListener('transitionend', (e) => {
+    extMessageContainer.classList.remove( "success" );
+  });
+
+  extMessageContainer.innerHTML = messageContent;
+  extMessageContainer.classList.add( "success" );  
 }
 
 function displayFact(data, table) {
@@ -458,7 +574,7 @@ var activePageDetails = {};
     planList.addEventListener('click', (e) => {
       const target = e.target;
       if(target.classList.contains('stage-tag')) {
-        setActivePlan(target);
+        setActivePlan(target, planList);
       }
     });
 
@@ -467,6 +583,8 @@ var activePageDetails = {};
     const docsSavedLink = document.querySelector(".ext-message__link");
     docsSavedLink.addEventListener('click', (e) => openNewTab(e.currentTarget));
 
+    const singleDocSaveBtn = document.querySelector(".save-doc-section .save-btn");
+    singleDocSaveBtn.addEventListener('click', saveSingleDocumentHandler);
 
     chrome.windows.getCurrent(function (currentWindow) {
       chrome.tabs.query(
@@ -498,7 +616,7 @@ var activePageDetails = {};
         "currentPathname": request.currentPathname,
         "windowHeight": request.windowHeight
       }
-      checkPageBelongsToAuthority(activePageDetails);
+      checkActivePageType(activePageDetails);
       console.log(activePageDetails);
     }
   });

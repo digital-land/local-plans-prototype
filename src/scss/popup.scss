@@ -9,6 +9,8 @@
 // import Digital Land components
 @import "components/buttons";
 
+@import "local-plans-forms";
+
 body {
   position: relative;
   min-width: 400px;
@@ -46,6 +48,30 @@ header p:first-child {
   .stage-tag {
     display: inline-block;
     margin-bottom: 2px;
+  }
+}
+
+.plans-selectable {
+  margin-bottom: 30px;
+
+  .plan-list {
+    margin-bottom: 0;
+  }
+
+  .govuk-inset-text {
+    display: none;
+    margin-top: 5px;
+    border-width: 5px;
+  }
+
+  &.error {
+    .plans-selectable__label {
+      color: govuk-colour("red");
+    }
+
+    .govuk-inset-text {
+      display: block;
+    }
   }
 }
 
@@ -105,6 +131,10 @@ header p:first-child {
   &.success {
     opacity: 1;
   }
+
+  &.message--fadeout {
+    transition: opacity .8s ease-in-out;
+  }
 }
 
 .facts__doc-url {
@@ -124,7 +154,8 @@ header p:first-child {
 .page-not-recognised-section,
 .local-plan-facts-section,
 .emerging-plan-facts-section,
-.save-urls-section {
+.save-urls-section,
+.save-doc-section {
   display: none;
 }
 
@@ -152,6 +183,12 @@ header p:first-child {
   }
 }
 
+.new-document-view {
+  .save-doc-section {
+    display: block;
+  }
+}
+
 .screenshot-taker__details[open] .screenshot-taker__summary:before {
   border: 0;
 }
@@ -160,5 +197,10 @@ header p:first-child {
   display: block;
   max-width: 50%;
   margin-bottom: $govuk-gutter-half;
+}
+
+.govuk-inset-text--error {
+  border-color: govuk-colour("red");
+  color: govuk-colour("red");
 }
 
