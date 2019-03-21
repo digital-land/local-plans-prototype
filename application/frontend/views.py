@@ -2,6 +2,7 @@ import base64
 import csv
 import datetime
 import io
+from urllib.parse import urlparse
 
 import boto3
 
@@ -338,7 +339,8 @@ def planning_authority_from_document():
     elif website_origin is not None:
 
         try:
-            pla = PlanningAuthority.query.filter_by(website=website_origin).one()
+            origin = urlparse(website_origin)
+            pla = PlanningAuthority.query.filter(PlanningAuthority.website.like(f'%{origin.netloc}%')).one()
             resp = {'OK': 200, 'view-type': 'urls', 'planning_authority': pla.to_dict()}
         except Exception as e:
             print(e)
@@ -346,7 +348,8 @@ def planning_authority_from_document():
 
     elif website_location is not None:
         try:
-            pla = PlanningAuthority.query.filter_by(plan_policy_url=website_location).one()
+            origin = urlparse(website_origin)
+            pla = PlanningAuthority.query.filter_by(PlanningAuthority.plan_policy_url.like(f'%{origin.netloc}%')).one()
             resp = {'OK': 200, 'view-type': 'urls', 'planning_authority': pla.to_dict() }
         except Exception as e:
             print(e)
