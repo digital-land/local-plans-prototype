@@ -47,7 +47,6 @@ class LocalPlan(db.Model):
         else:
             return len(self_states) < len(other_states)
 
-
     def latest_state(self):
         return self.ordered_states()[-1]
 
@@ -241,7 +240,6 @@ class Document(db.Model):
         return data
 
 
-
 class PlanDocument(Document):
 
     __mapper_args__ = {
@@ -320,7 +318,7 @@ class Fact(db.Model):
         }
 
         if isinstance(self.document, OtherDocument):
-            data['planning_authority'] = self.document.planning_authority
+            data['planning_authority'] = self.document.planning_authority.id
         else:
             data['planning_authority'] = None
 

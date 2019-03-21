@@ -405,7 +405,6 @@ def data_as_json():
     return jsonify(data=data)
 
 
-
 @frontend.route('/local-plans/data.csv')
 def data_as_csv():
     planning_authorities = PlanningAuthority.query.all()
