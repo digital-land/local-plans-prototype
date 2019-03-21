@@ -105,6 +105,10 @@ header p:first-child {
   &.success {
     opacity: 1;
   }
+
+  &.message--fadeout {
+    transition: opacity .8s ease-in-out;
+  }
 }
 
 .facts__doc-url {

@@ -5525,6 +5525,10 @@ header p:first-child {
   opacity: 1;
 }
 
+.ext-message.message--fadeout {
+  transition: opacity .8s ease-in-out;
+}
+
 .facts__doc-url {
   overflow: scroll;
 }

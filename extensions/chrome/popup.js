@@ -322,14 +322,31 @@ function factSubmitHandler(e) {
   .then( (resp_data) => {
     if(resp_data['OK'] === 200) {
       console.log(resp_data);
+      displaySuccessMessage("Fact saved.", true);
       const factsEl = form.closest(".document-facts");
       const table = factsEl.querySelector(".document-facts__table");
       displayFact(resp_data, table);
       table.classList.remove('govuk-visually-hidden');
       resetFactForm(form);
     }
-
   });
+}
+
+function displaySuccessMessage(messageContent, fade=false) {
+  const extMessageContainer = document.querySelector('.ext-message');
+
+  if (fade) {
+    extMessageContainer.classList.add("message--fadeout");
+  } else {
+    extMessageContainer.classList.remove("message--fadeout");
+  }
+
+  extMessageContainer.addEventListener('transitionend', (e) => {
+    extMessageContainer.classList.remove( "success" );
+  });
+
+  extMessageContainer.innerHTML = messageContent;
+  extMessageContainer.classList.add( "success" );  
 }
 
 function displayFact(data, table) {
