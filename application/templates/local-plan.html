@@ -137,35 +137,6 @@
 
   <h2 class="govuk-heading-l govuk-!-margin-top-9">Local plans</h2>
 
-{#  TODO Colm change this to whatever you think best      #}
-  <section>
-    <details class="govuk-details" {% if form.errors %}open{% endif %}>
-      <summary class="govuk-details__summary">
-        <span class="govuk-details__summary-text">
-          Add new plan
-        </span>
-      </summary>
-      <form class="govuk-form" method="post" action="{{ url_for('frontend.local_plan', planning_authority=planning_authority.id) }}">
-         <div class="govuk-form-group">
-          {{ form.start_year.label(class="govuk-label") }}
-          <span class="govuk-hint">
-              The local authority code and start year will be the plan id e.g. ADU-2022
-          </span>
-          <span class="govuk-error-message">
-            {% for error in form.start_year.errors  %}
-                <span>{{ error }}</span>
-            {% endfor %}
-          </span>
-          <span>{{ planning_authority.code() }}-</span>{{ form.start_year(class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4", pattern="[0-9]*") }}
-          </div>
-          <div class="govuk-form-group">
-            <button class="govuk-button dlf-secondary-button">Add plan</button>
-          </div>
-         {{ form.csrf_token }}
-      </form>
-    </details>
-  </section>
-
   <div class="govuk-tabs" data-module="tabs">
     <h2 class="govuk-tabs__title">
       Contents
@@ -179,6 +150,9 @@
         </a>
       </li>
       {% endfor %}
+      <li class="govuk-tabs__list-item">
+        <a href="#new-plan-tab" class="govuk-tabs__tab govuk-tabs__tab--add-new">Add new plan</a>
+      </li>
     </ul>
 
     {% for plan in planning_authority.sorted_plans() %}
@@ -311,6 +285,27 @@
 
     </section>
     {% endfor %}
+    <section id="new-plan-tab" class="govuk-tabs__panel">
+      <h3 class="govuk-heading-m">Add a local plan</h3>
+      <form class="govuk-form" method="post" action="{{ url_for('frontend.local_plan', planning_authority=planning_authority.id) }}">
+         <div class="govuk-form-group">
+          {{ form.start_year.label(class="govuk-label govuk-!-font-weight-bold") }}
+          <span class="govuk-hint">
+              The local authority code and start year will be the plan id e.g. ADU-2022
+          </span>
+          <span class="govuk-error-message">
+            {% for error in form.start_year.errors  %}
+                <span>{{ error }}</span>
+            {% endfor %}
+          </span>
+          <span>{{ planning_authority.code() }}-</span>{{ form.start_year(class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4", pattern="[0-9]*") }}
+          </div>
+          <div class="govuk-form-group">
+            <button class="govuk-button dlf-secondary-button">Add plan</button>
+          </div>
+         {{ form.csrf_token }}
+      </form>
+    </section>
 
   </div>
 {% endblock %}
