@@ -40,11 +40,16 @@ class LocalPlan(db.Model):
         return self.ordered_states() == other.ordered_states()
 
     def __lt__(self, other):
-        return len(self.ordered_states()) < len(other.ordered_states())
+        self_states = self.ordered_states()
+        other_states = other.ordered_states()
+        if len(self_states) == 1 and len(other_states) == 1 and self_states[0].date > other_states[0].date:
+            return True
+        else:
+            return len(self_states) < len(other_states)
 
 
     def latest_state(self):
-        return sorted(self.ordered_states(), reverse=True)[0]
+        return self.ordered_states()[-1]
 
     def is_adopted(self):
         return True if self.adopted_date is not None else False
