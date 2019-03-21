@@ -395,6 +395,17 @@ def data():
     return render_template('data.html', data=data)
 
 
+@frontend.route('/local-plans/data.json')
+def data_as_json():
+    planning_authorities = PlanningAuthority.query.all()
+    data = []
+    for pla in planning_authorities:
+        for fact in pla.gather_facts(as_dict=True):
+            data.append(fact)
+    return jsonify(data=data)
+
+
+
 @frontend.route('/local-plans/data.csv')
 def data_as_csv():
     planning_authorities = PlanningAuthority.query.all()
