@@ -5438,6 +5438,28 @@ header p:first-child {
   margin-bottom: 2px;
 }
 
+.plans-selectable {
+  margin-bottom: 30px;
+}
+
+.plans-selectable .plan-list {
+  margin-bottom: 0;
+}
+
+.plans-selectable .govuk-inset-text {
+  display: none;
+  margin-top: 5px;
+  border-width: 5px;
+}
+
+.plans-selectable.error .plans-selectable__label {
+  color: #b10e1e;
+}
+
+.plans-selectable.error .govuk-inset-text {
+  display: block;
+}
+
 .stage-tag {
   padding-top: 1px;
   padding-bottom: 3px;
@@ -5579,4 +5601,9 @@ header p:first-child {
   display: block;
   max-width: 50%;
   margin-bottom: 15px;
+}
+
+.govuk-inset-text--error {
+  border-color: #b10e1e;
+  color: #b10e1e;
 }

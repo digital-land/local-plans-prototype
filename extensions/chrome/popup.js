@@ -141,12 +141,11 @@ function saveSingleDocumentHandler(e) {
   let selectedPlanId;
   if(selectedPlan) {
     selectedPlanId = selectedPlan.dataset.planId;
+    saveSingleDocument(url, selectedPlanId, authorityId);
   } else {
     // handle situation when user has now selected a plan
-    console.log("No plan selected");
+    section.querySelector(".plans-selectable").classList.add("error");
   }
-
-  saveSingleDocument(url, selectedPlanId, authorityId);
 }
 
 function createStageTag(plan, _class) {
@@ -256,6 +255,7 @@ function populateNewDocumentView(data) {
   planList.addEventListener('click', (e) => {
     const target = e.target;
     if(target.classList.contains('stage-tag')) {
+      section.querySelector(".plans-selectable").classList.remove("error");
       setActivePlan(target, planList);
     }
   });

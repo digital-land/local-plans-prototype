@@ -49,6 +49,30 @@ header p:first-child {
   }
 }
 
+.plans-selectable {
+  margin-bottom: 30px;
+
+  .plan-list {
+    margin-bottom: 0;
+  }
+
+  .govuk-inset-text {
+    display: none;
+    margin-top: 5px;
+    border-width: 5px;
+  }
+
+  &.error {
+    .plans-selectable__label {
+      color: govuk-colour("red");
+    }
+
+    .govuk-inset-text {
+      display: block;
+    }
+  }
+}
+
 .stage-tag {
   padding-top: 1px;
   padding-bottom: 3px;
@@ -171,5 +195,10 @@ header p:first-child {
   display: block;
   max-width: 50%;
   margin-bottom: $govuk-gutter-half;
+}
+
+.govuk-inset-text--error {
+  border-color: govuk-colour("red");
+  color: govuk-colour("red");
 }
 
