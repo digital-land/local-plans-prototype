@@ -128,7 +128,8 @@ header p:first-child {
 .page-not-recognised-section,
 .local-plan-facts-section,
 .emerging-plan-facts-section,
-.save-urls-section {
+.save-urls-section,
+.save-doc-section {
   display: none;
 }
 
@@ -152,6 +153,12 @@ header p:first-child {
 
 .url-view {
   .save-urls-section {
+    display: block;
+  }
+}
+
+.new-document-view {
+  .save-doc-section {
     display: block;
   }
 }

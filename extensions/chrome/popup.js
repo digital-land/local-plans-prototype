@@ -101,6 +101,54 @@ function saveDocuments() {
   }
 }
 
+function saveSingleDocument(doc_url, plan_id, pla_id) {
+  let dataToSend = {
+    'documents': [doc_url],
+    'active_page_origin': activePageDetails["currentOrigin"] || "",
+    'active_page_location': activePageDetails["currentLocation"] || "",
+    'active_plan': plan_id,
+    'pla_id': pla_id
+  };
+
+  const extMessageContainer = document.querySelector('.ext-message');
+
+  fetch( localPlanUrl + '/local-plans/add-document', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(dataToSend)
+    })
+    .then(response => response.json())
+    .then( (resp_data) => {
+      if(resp_data['OK'] === 200) {
+        extMessageContainer.classList.add("success");
+        var linkEl = extMessageContainer.querySelector(".ext-message__link");
+        var message = extMessageContainer.querySelector(".ext-message__content");
+        linkEl.href = resp_data['check_page'];
+        message.innerHTML = "Document saved successfully. ";
+      }
+    });
+}
+
+function saveSingleDocumentHandler(e) {
+  const section = e.target.closest(".save-doc-section"),
+        authorityId = section.querySelector(".pla-name").dataset.plaId,
+        list = section.querySelector(".plan-list"),
+        url = section.querySelector(".facts__doc-url").textContent;
+
+  const selectedPlan = list.querySelector(".selected");
+  let selectedPlanId;
+  if(selectedPlan) {
+    selectedPlanId = selectedPlan.dataset.planId;
+  } else {
+    // handle situation when user has now selected a plan
+    console.log("No plan selected");
+  }
+
+  saveSingleDocument(url, selectedPlanId, authorityId);
+}
+
 function createStageTag(plan, _class) {
   let classes = _class || undefined;
   //<span class="stage-tag plan-details__item is-adopted">adopted</span>
@@ -112,9 +160,9 @@ function createStageTag(plan, _class) {
   return tagElement;
 }
 
-function setActivePlan(selectedTag) {
+function setActivePlan(selectedTag, theList) {
   activePlan = selectedTag.dataset.planId;
-  const tags = planList.querySelectorAll(".stage-tag");
+  const tags = theList.querySelectorAll(".stage-tag");
   tags.forEach((tag) => tag.classList.remove("selected"));
   selectedTag.classList.add("selected");
 }
@@ -166,7 +214,15 @@ function populatePlanView(data) {
 function displayURLAsHeading(url, section, docId) {
   const urlEl = section.querySelector('.facts__doc-url');
   urlEl.textContent = url;
-  urlEl.dataset.documentId = docId;
+  if(docId) {
+    urlEl.dataset.documentId = docId;
+  }
+}
+
+function displayPLAName(section, pla_name, pla_id) {
+  var nameElement = section.querySelector(".pla-name");
+  nameElement.textContent = pla_name;
+  nameElement.dataset.plaId = pla_id;
 }
 
 function populateEmergingPlanView(data) {
@@ -183,6 +239,26 @@ function populateEmergingPlanView(data) {
   } else {
     table.classList.add('govuk-visually-hidden');
   }
+}
+
+function populateNewDocumentView(data) {
+  const section = document.querySelector(".save-doc-section");
+  console.log(data);
+  displayURLAsHeading(data.document_url, section);
+  displayPLAName(section, data.planning_authority.name, data.planning_authority.id);
+
+  // add planning authority plans
+  const planList = section.querySelector(".plan-list");
+  data.planning_authority['plans'].forEach((plan) => {
+    planList.appendChild( createStageTag(plan) );
+  });
+  // make list of plans selectable
+  planList.addEventListener('click', (e) => {
+    const target = e.target;
+    if(target.classList.contains('stage-tag')) {
+      setActivePlan(target, planList);
+    }
+  });
 }
 
 function checkPageBelongsToAuthority(pageDetails) {
@@ -211,6 +287,9 @@ function checkPageBelongsToAuthority(pageDetails) {
       } else if (resp_data['view-type'] === 'urls') {
         displayPageDetails(resp_data.planning_authority);
         document.body.classList.add("url-view");
+      } else if (resp_data['view-type'] === 'new-document') {
+        document.body.classList.add("new-document-view");
+        populateNewDocumentView(resp_data);
       } else {
         document.body.classList.add("not-recognised-view");
       }
@@ -475,7 +554,7 @@ var activePageDetails = {};
     planList.addEventListener('click', (e) => {
       const target = e.target;
       if(target.classList.contains('stage-tag')) {
-        setActivePlan(target);
+        setActivePlan(target, planList);
       }
     });
 
@@ -484,6 +563,8 @@ var activePageDetails = {};
     const docsSavedLink = document.querySelector(".ext-message__link");
     docsSavedLink.addEventListener('click', (e) => openNewTab(e.currentTarget));
 
+    const singleDocSaveBtn = document.querySelector(".save-doc-section .save-btn");
+    singleDocSaveBtn.addEventListener('click', saveSingleDocumentHandler);
 
     chrome.windows.getCurrent(function (currentWindow) {
       chrome.tabs.query(

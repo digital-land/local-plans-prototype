@@ -330,7 +330,7 @@ def planning_authority_from_document():
                 # TODO this is a new document, we could add item to response json to indicate to caller that
                 # this can be added to local planning_authority or plan?
 
-                resp = {'OK': 200, 'view-type': 'urls', 'planning_authority': pla.to_dict()}
+                resp = {'OK': 200, 'view-type': 'new-document', 'planning_authority': pla.to_dict(), 'document_url': website_location }
             except Exception as e:
                 print(e)
                 resp = {'OK': 404}
