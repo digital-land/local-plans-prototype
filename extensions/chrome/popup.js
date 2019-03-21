@@ -166,12 +166,37 @@ function setActivePlan(selectedTag, theList) {
   selectedTag.classList.add("selected");
 }
 
+// Will display document URL in the appropriate
+// view
+function displayURLAsHeading(url, section, docId) {
+  const urlEl = section.querySelector('.facts__doc-url');
+  urlEl.textContent = url;
+  if(docId) {
+    urlEl.dataset.documentId = docId;
+  }
+}
+
+// Will display the Authority name in the section
+// being made visible
+function displayAuthorityName(section, pla_name, pla_id) {
+  var nameElement = section.querySelector(".pla-name");
+  nameElement.textContent = pla_name;
+  nameElement.dataset.plaId = pla_id;
+}
+
+// 
+// View functions
+// ==============
+// This display the returned content depending on the 
+// type of page the extension is opened on
+
+
+// Populates extension when collecting links from webpage
 function displayPageDetails(pla_obj) {
   pla = pla_obj;
   var pageDetailsContainer = document.querySelector(".page-details");
-  var nameElement = pageDetailsContainer.querySelector(".pla-name");
-  console.log(pla_obj.name);
-  nameElement.textContent = pla_obj.name;
+
+  displayAuthorityName(pageDetailsContainer, pla_obj.name, pla_obj.id)
 
   const ldsTag = document.querySelector('.stage-tag--lds').classList.remove('selected');
 
@@ -188,6 +213,7 @@ function displayPageDetails(pla_obj) {
   activePlan = pla_obj['plans'][0]['id'];
 }
 
+// populates extension when viewing a document associated with a plan
 function populatePlanView(data) {
   const section = document.querySelector('.local-plan-facts-section');
   pla = data.local_plan.planning_authorities[0];
@@ -210,20 +236,7 @@ function populatePlanView(data) {
   }
 }
 
-function displayURLAsHeading(url, section, docId) {
-  const urlEl = section.querySelector('.facts__doc-url');
-  urlEl.textContent = url;
-  if(docId) {
-    urlEl.dataset.documentId = docId;
-  }
-}
-
-function displayPLAName(section, pla_name, pla_id) {
-  var nameElement = section.querySelector(".pla-name");
-  nameElement.textContent = pla_name;
-  nameElement.dataset.plaId = pla_id;
-}
-
+// populates extension when viewing a document associated with an emerging plan
 function populateEmergingPlanView(data) {
   const section = document.querySelector('.emerging-plan-facts-section');
   displayURLAsHeading(data.document.url, section, data.document['id']);
@@ -240,11 +253,12 @@ function populateEmergingPlanView(data) {
   }
 }
 
+// populates extension when looking at a document service does not recognise
 function populateNewDocumentView(data) {
   const section = document.querySelector(".save-doc-section");
   console.log(data);
   displayURLAsHeading(data.document_url, section);
-  displayPLAName(section, data.planning_authority.name, data.planning_authority.id);
+  displayAuthorityName(section, data.planning_authority.name, data.planning_authority.id);
 
   // add planning authority plans
   const planList = section.querySelector(".plan-list");
@@ -261,7 +275,13 @@ function populateNewDocumentView(data) {
   });
 }
 
-function checkPageBelongsToAuthority(pageDetails) {
+// Extension assesses what user is looking at, it it:
+// - a planning authority page with links we are interested in
+// - - a key url for a local plan
+// - - a key url for an emerging plan
+// - a document belonging a plan
+// - a document we don't recognise but on a planning authority url
+function checkActivePageType(pageDetails) {
 
   fetch( localPlanUrl + '/local-plans/planning-authority', {
       method: "POST",
@@ -294,8 +314,8 @@ function checkPageBelongsToAuthority(pageDetails) {
         document.body.classList.add("not-recognised-view");
       }
     });
-
 }
+
 
 function createFactRow(fact) {
   const row = document.createElement('tr');
@@ -596,7 +616,7 @@ var activePageDetails = {};
         "currentPathname": request.currentPathname,
         "windowHeight": request.windowHeight
       }
-      checkPageBelongsToAuthority(activePageDetails);
+      checkActivePageType(activePageDetails);
       console.log(activePageDetails);
     }
   });
