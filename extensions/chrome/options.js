@@ -1,18 +1,38 @@
 'use strict';
 
-let currentUrl = document.getElementById('local-plan-url');
-let button = document.getElementById('set');
+let toggle = document.getElementById('local-plan-database');
+let environment = document.getElementById('environment');
 
-button.addEventListener('click', function() {
-    let setUrlTo = document.getElementById('local-plan-url-to-set');
-    chrome.storage.sync.set({localPlanUrl: setUrlTo.value}, function() {
-        console.log('set url to', setUrlTo.value);
-        currentUrl.innerHTML = setUrlTo.value;
-    });
+function changeState(state) {
+  if(state === 'live') {
+      toggle.checked = true;
+      environment.innerHTML = 'live';
+  } else {
+      toggle.checked = false;
+      environment.innerHTML = 'test local';
+  }
+}
+
+chrome.storage.onChanged.addListener(function(data) {
+  if (data.localPlanUrl.newValue.indexOf('herokuapp') !== -1) {
+    changeState('live');
+  } else {
+    changeState('test');
+  }
 });
+
+toggle.onchange = function() {
+  if(toggle.checked) {
+    chrome.storage.sync.set({ localPlanUrl: 'https://local-plans-prototype.herokuapp.com/' });
+  } else {
+    chrome.storage.sync.set({ localPlanUrl: 'https://localhost:5000/' });
+  }
+}
 
 chrome.storage.sync.get(['localPlanUrl'], function(data) {
-    console.log('Currently set url is', data);
-    currentUrl.innerHTML = data.localPlanUrl;
+  if(typeof data.localPlanUrl === 'undefined' || data.localPlanUrl.indexOf('herokuapp') !== -1) {
+    changeState('live');
+  } else {
+    changeState('test');
+  }
 });
-
