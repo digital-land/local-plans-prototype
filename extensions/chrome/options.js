@@ -1,38 +1,24 @@
 'use strict';
 
-let toggle = document.getElementById('local-plan-database');
-let environment = document.getElementById('environment');
+const toggle = document.getElementById('local-plan-database');
+const environment = document.getElementById('environment');
 
-function changeState(state) {
-  if(state === 'live') {
-      toggle.checked = true;
-      environment.innerHTML = 'live';
-  } else {
-      toggle.checked = false;
-      environment.innerHTML = 'test local';
-  }
-}
-
-chrome.storage.onChanged.addListener(function(data) {
-  if (data.localPlanUrl.newValue.indexOf('herokuapp') !== -1) {
-    changeState('live');
-  } else {
-    changeState('test');
-  }
-});
-
-toggle.onchange = function() {
-  if(toggle.checked) {
+function changeState(event) {
+  if(event.target.checked) {
     chrome.storage.sync.set({ localPlanUrl: 'https://local-plans-prototype.herokuapp.com/' });
+    environment.innerHTML = 'live';
   } else {
     chrome.storage.sync.set({ localPlanUrl: 'https://localhost:5000/' });
+    environment.innerHTML = 'test local';
   }
 }
 
-chrome.storage.sync.get(['localPlanUrl'], function(data) {
-  if(typeof data.localPlanUrl === 'undefined' || data.localPlanUrl.indexOf('herokuapp') !== -1) {
-    changeState('live');
-  } else {
-    changeState('test');
+toggle.onchange = changeState;
+
+chrome.storage.sync.get(['localPlanUrl'], data => {
+  const event = new Event('change');
+  if(typeof data.localPlanUrl === 'undefined' || data.localPlanUrl.includes('herokuapp')) {
+    toggle.checked = true;
   }
+  toggle.dispatchEvent(event);
 });
