@@ -430,3 +430,22 @@ def data_as_csv():
     out.headers["Content-Disposition"] = "attachment; filename=local-plan-data.csv"
     out.headers["Content-type"] = "text/csv"
     return out
+
+
+@frontend.route('/local-plans/state-of-play')
+def state_of_play():
+    state = {}
+    planning_authorities = PlanningAuthority.query.all()
+    for pla in planning_authorities:
+        ps = []
+        for p in pla.local_plans:
+            plan = {'documents': 0, 'facts': 0, 'plan_id': p.local_plan, 'has_housing_figures': False, 'status': p.latest_state().to_dict()}
+            for doc in p.plan_documents:
+                plan['documents'] = plan['documents'] + 1
+                for fact in doc.facts:
+                    plan['facts'] = plan['facts'] + 1
+                    if 'HOUSING_REQUIREMENT' in fact.fact_type:
+                        plan['has_housing_figures'] = True
+            ps.append(plan)
+        state[pla.id] = ps
+    return jsonify({'planning_authorities': state})
