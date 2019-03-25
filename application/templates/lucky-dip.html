@@ -30,7 +30,7 @@
                        <td>{% if fact.from_ %}{{ fact.from_ }}{% endif %}</td>
                        <td>{% if fact.to %}{{ fact.to }}{% endif %}</td>
                        <td>{% if fact.notes %}{{ fact.notes }}{% endif %}</td>
-                       <td>{{ fact.document.local_plan.local_plan }}</td>
+                       <td>{% if fact.document.local_plan %}{{ fact.document.local_plan.local_plan }}{% endif %}</td>
                     </tr>
                 {% endfor %}
               </table>
