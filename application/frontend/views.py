@@ -224,10 +224,10 @@ def add_document_to_plan(planning_authority):
                 db.session.commit()
             remove_url = url_for('frontend.remove_document_from_plan',
                                  document=str(document.id),
-                                 local_plan=add_to.local_plan)
+                                 local_plan=add_to.id)
             add_fact_url = url_for('frontend.add_fact_to_document',
                                    planning_authority=planning_authority,
-                                   local_plan=add_to.local_plan,
+                                   local_plan=add_to.id,
                                    document=str(document.id))
 
         elif document_type == 'emerging_plan_document':
