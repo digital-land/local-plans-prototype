@@ -164,9 +164,9 @@
           <p class="govuk-body">
             <a id="policy-url" class="govuk-link" href="{{ plan.url }}" target="_blank">{{ plan.url }}</a>
           </p>
-          <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="{{ url_for('frontend.update_local_plan_url', planning_authority=planning_authority.id, local_plan=plan.local_plan) }}" class="govuk-link">Update the url</a>.</p>
+          <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="{{ url_for('frontend.update_local_plan_url', planning_authority=planning_authority.id, local_plan=plan.id) }}" class="govuk-link">Update the url</a>.</p>
           {% else %}
-          <a class="highlight-box highlight-box--gap highlight-box--flush" href="{{ url_for('frontend.update_local_plan_url', planning_authority=planning_authority.id, local_plan=plan.local_plan) }}">
+          <a class="highlight-box highlight-box--gap highlight-box--flush" href="{{ url_for('frontend.update_local_plan_url', planning_authority=planning_authority.id, local_plan=plan.id) }}">
             <h3 class="govuk-heading-s highlight-box__title">URL unavailable</h3>
             <p class="govuk-body govuk-!-margin-bottom-0">We do not have a link to the local plan. Can you add one?</p>
           </a>
@@ -203,7 +203,7 @@
 
       
         <h3 class="govuk-heading-m">Local plan documents</h3>
-        <ul class="url-list" data-url-list-type="{{ plan.local_plan }}-url-list">
+        <ul class="url-list" data-url-list-type="{{ plan.id }}-url-list">
           {% if plan.plan_documents|length > 0 %}
             {% for doc in plan.plan_documents %}
             <li class="url-item govuk-grid-row">
@@ -214,7 +214,7 @@
                 <a class="url-link" href="{{ doc.url }}" target="_blank">{{ doc.url }}</a>
                 <div class="url-item__controls">
                   <a href="" class="url-item__btn url-edit-btn govuk-visually-hidden">Edit</a>
-                  <a href="{{ url_for('frontend.remove_document_from_plan', document=doc.id, local_plan=plan.local_plan) }}" class="url-item__btn url-remove-btn">Remove</a>
+                  <a href="{{ url_for('frontend.remove_document_from_plan', document=doc.id, local_plan=plan.id) }}" class="url-item__btn url-remove-btn">Remove</a>
                 </div>
               </section>
 
@@ -252,7 +252,7 @@
                   {% from "partials/local-plan-fact-form.html" import renderLocalPlanFactForm %}
 
                   {{ renderLocalPlanFactForm({
-                      "action_url": url_for('frontend.add_fact_to_document', planning_authority=planning_authority.id, local_plan=plan.local_plan, document=doc.id),
+                      "action_url": url_for('frontend.add_fact_to_document', planning_authority=planning_authority.id, local_plan=plan.id, document=doc.id),
                       "fact_types": fact_types,
                       "form_number": loop.index
                     }) }}
@@ -265,7 +265,7 @@
           {% endif %}
         </ul>
 
-        <form action="{{ url_for('frontend.add_document_to_plan', planning_authority=planning_authority.id, local_plan=plan.local_plan, document_type='plan_document' )}}" data-associated-list="{{ plan.local_plan }}-url-list" class="govuk-form add-url-form">
+        <form action="{{ url_for('frontend.add_document_to_plan', planning_authority=planning_authority.id, local_plan=plan.id, document_type='plan_document' )}}" data-associated-list="{{ plan.id }}-url-list" class="govuk-form add-url-form">
           <div class="govuk-form-group">
             <label class="govuk-label" for="url-input">
               Add URL to a local plan document
@@ -291,7 +291,7 @@
          <div class="govuk-form-group">
           {{ form.start_year.label(class="govuk-label govuk-!-font-weight-bold") }}
           <span class="govuk-hint">
-              The local authority code and start year will be the plan id e.g. ADU-2022
+              The local authority code and start year will be used as a short plan title in this system e.g. ADU-2022
           </span>
           <span class="govuk-error-message">
             {% for error in form.start_year.errors  %}

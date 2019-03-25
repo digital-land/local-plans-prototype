@@ -37,7 +37,7 @@
   <h1 class="govuk-heading-l">Update Local Plan url</h1>
 
   <div class="govuk-grid-row">
-    <form action="{{ url_for('frontend.update_local_plan_url', planning_authority=planning_authority.id, local_plan=local_plan.local_plan) }}" class="govuk-form govuk-grid-column-one-half" method="POST">
+    <form action="{{ url_for('frontend.update_local_plan_url', planning_authority=planning_authority.id, local_plan=local_plan.id) }}" class="govuk-form govuk-grid-column-one-half" method="POST">
       {{ render_field(form.url) }}
       <div class="govuk-form-group">
         <button class="govuk-button" type="submit">Save</button>
