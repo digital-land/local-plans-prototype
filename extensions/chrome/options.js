@@ -1,18 +1,24 @@
 'use strict';
 
-let currentUrl = document.getElementById('local-plan-url');
-let button = document.getElementById('set');
+const toggle = document.getElementById('local-plan-database');
+const environment = document.getElementById('environment');
 
-button.addEventListener('click', function() {
-    let setUrlTo = document.getElementById('local-plan-url-to-set');
-    chrome.storage.sync.set({localPlanUrl: setUrlTo.value}, function() {
-        console.log('set url to', setUrlTo.value);
-        currentUrl.innerHTML = setUrlTo.value;
-    });
+function changeState(event) {
+  if(event.target.checked) {
+    chrome.storage.sync.set({ localPlanUrl: 'https://local-plans-prototype.herokuapp.com/' });
+    environment.innerHTML = 'live';
+  } else {
+    chrome.storage.sync.set({ localPlanUrl: 'https://localhost:5000/' });
+    environment.innerHTML = 'test local';
+  }
+}
+
+toggle.onchange = changeState;
+
+chrome.storage.sync.get(['localPlanUrl'], data => {
+  const event = new Event('change');
+  if(typeof data.localPlanUrl === 'undefined' || data.localPlanUrl.includes('herokuapp')) {
+    toggle.checked = true;
+  }
+  toggle.dispatchEvent(event);
 });
-
-chrome.storage.sync.get(['localPlanUrl'], function(data) {
-    console.log('Currently set url is', data);
-    currentUrl.innerHTML = data.localPlanUrl;
-});
-
