@@ -190,9 +190,12 @@ def update_local_plan_url(planning_authority, local_plan):
 @frontend.route('/local-plans/<planning_authority>/<local_plan>/update', methods=['POST'])
 def update_plan(planning_authority, local_plan):
     plan_identifier = request.json['new_identifier'].strip()
+    original_identifier = request.json['original_identifier'].strip()
     plan = LocalPlan.query.filter_by(local_plan=plan_identifier).first()
     if plan is not None:
-        return jsonify({'error': plan_identifier, 'message': 'A plan with that title already exists'})
+        return jsonify({'error': 'A plan with that title already exists',
+                        'new_identifier': plan_identifier,
+                        'original_identifier': original_identifier })
     plan = LocalPlan.query.get(local_plan)
     plan.local_plan = plan_identifier
     db.session.add(plan)
