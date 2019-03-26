@@ -36,7 +36,7 @@ class LocalPlan(db.Model):
                                            lazy=True,
                                            back_populates='local_plans')
 
-    plan_documents = db.relationship('PlanDocument', back_populates='local_plan', lazy=True)
+    plan_documents = db.relationship('PlanDocument', back_populates='local_plan', lazy=True, order_by='PlanDocument.created_date')
 
     def __eq__(self, other):
         return self.ordered_states() == other.ordered_states()
@@ -226,6 +226,8 @@ class Document(db.Model):
                             lazy=True,
                             cascade='all, delete, delete-orphan',
                             order_by='Fact.created_date')
+
+    created_date = db.Column(db.DateTime(), default=datetime.utcnow)
 
     __mapper_args__ = {
         'polymorphic_on':type,
