@@ -79,6 +79,18 @@ def local_plan(planning_authority):
         db.session.commit()
         return redirect(url_for('frontend.local_plan', planning_authority=pla.id))
 
+    elif request.method == 'POST':
+        req_data = request.get_json()
+        print(req_data)
+        if 'original_title' in req_data and 'new_title' in req_data:
+            #
+            # TODO save the change to the plan title
+            #
+            resp = {"OK": 200, "original_title": req_data['original_title'], "new_title": req_data['new_title']}
+        else:
+            resp = {"OK": 204}
+        return jsonify(resp)
+
     return render_template('local-plan.html',
                            planning_authority=pla,
                            fact_types=FactType,
@@ -175,6 +187,22 @@ def update_local_plan_url(planning_authority, local_plan):
     return render_template('update-plan-url.html', planning_authority=pla, local_plan=plan, form=form)
 
 
+@frontend.route('/local-plans/<planning_authority>/<local_plan>/update', methods=['POST'])
+def update_plan(planning_authority, local_plan):
+    plan_identifier = request.json['new_identifier'].strip()
+    original_identifier = request.json['original_identifier'].strip()
+    plan = LocalPlan.query.filter_by(local_plan=plan_identifier).first()
+    if plan is not None:
+        return jsonify({'error': 'A plan with that title already exists',
+                        'new_identifier': plan_identifier,
+                        'original_identifier': original_identifier })
+    plan = LocalPlan.query.get(local_plan)
+    plan.local_plan = plan_identifier
+    db.session.add(plan)
+    db.session.commit()
+    return jsonify({'message': 'plan identifier updated'})
+
+
 @frontend.route('/local-plans/<local_plan>/document/<document>', methods=['DELETE'])
 def remove_document_from_plan(local_plan, document):
     doc = PlanDocument.query.filter_by(local_plan_id=local_plan, id=document).first()
@@ -224,10 +252,10 @@ def add_document_to_plan(planning_authority):
                 db.session.commit()
             remove_url = url_for('frontend.remove_document_from_plan',
                                  document=str(document.id),
-                                 local_plan=add_to.local_plan)
+                                 local_plan=add_to.id)
             add_fact_url = url_for('frontend.add_fact_to_document',
                                    planning_authority=planning_authority,
-                                   local_plan=add_to.local_plan,
+                                   local_plan=add_to.id,
                                    document=str(document.id))
 
         elif document_type == 'emerging_plan_document':

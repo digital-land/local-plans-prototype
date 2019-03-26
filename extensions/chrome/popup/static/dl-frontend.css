@@ -6657,6 +6657,66 @@
   color: #0b0c0c !important;
 }
 
+.plan-title__container .editable-title__container {
+  display: none;
+}
+
+.plan-title__container.edit-mode .editable-plan-title {
+  display: none;
+}
+
+.plan-title__container.edit-mode .editable-title__container {
+  display: block;
+}
+
+.editable-plan-title {
+  box-sizing: content-box;
+}
+
+.editable-plan-title:hover {
+  margin-top: -1px;
+  margin-left: -1px;
+  border: 1px dashed #005ea5;
+  background: #f8f8f8;
+  cursor: pointer;
+}
+
+.editable-title__container {
+  font-family: "nta", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 700;
+  font-size: 24px;
+  font-size: 1.5rem;
+  line-height: 1.04167;
+}
+
+@media print {
+  .editable-title__container {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .editable-title__container {
+    font-size: 36px;
+    font-size: 2.25rem;
+    line-height: 1.11111;
+  }
+}
+
+@media print {
+  .editable-title__container {
+    font-size: 24pt;
+    line-height: 1.05;
+  }
+}
+
+.editable-title__container input {
+  margin-right: 5px;
+  vertical-align: top;
+}
+
 .add-url-form {
   box-sizing: border-box;
   display: block;

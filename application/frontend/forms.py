@@ -18,6 +18,6 @@ class AddPlanForm(FlaskForm):
 
 	def validate_start_year(form, field):
 		plan_id = f'{form.planning_authority.data}-{field.data}'
-		plan = LocalPlan.query.get(plan_id)
+		plan = LocalPlan.query.filter_by(local_plan=plan_id).first()
 		if plan is not None:
 			raise ValidationError(f'Plan with id {plan_id} already exists.')
