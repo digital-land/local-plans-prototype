@@ -204,13 +204,13 @@ class HousingDeliveryTest(db.Model):
         return (self.homes_delivered / self.homes_required) * 100.0
 
     def get_housing_average_for_plan(self):
-        housing_average = None
+        housing_average = {'housing': '???', 'source': None}
         for plan in self.planning_authority.local_plans:
             if plan.covers_years(self.from_year, self.to_year):
                 for doc in plan.plan_documents:
                     for fact in doc.facts:
                         if fact.fact_type == 'HOUSING_REQUIREMENT_YEARLY_AVERAGE':
-                            housing_average = fact.fact
+                            housing_average = {'housing': fact.fact, 'source': doc.url}
         return housing_average
 
 
