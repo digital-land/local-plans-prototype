@@ -64,8 +64,8 @@ def register_extensions(app):
     from application.extensions import migrate
     migrate.init_app(app=app)
 
-    from application.extensions import talisman
-    talisman.init_app(app)
+    from application.extensions import sslify
+    sslify.init_app(app)
 
 
 def register_commands(app):
