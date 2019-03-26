@@ -334,7 +334,8 @@ class Fact(db.Model):
             'document_url': self.document.url,
             'created_date': self.created_date.date(),
             'from': self.from_,
-            'to': self.to
+            'to': self.to,
+            'screenshot': self.image_url
         }
 
         if isinstance(self.document, OtherDocument):
