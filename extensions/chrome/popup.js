@@ -365,7 +365,7 @@ function factSubmitHandler(e) {
   // serialise all parts of form
   var fact = {};
   fact["fact_type"] = form.querySelector("select").value;
-  fact["notes"] = form.querySelector("textarea").value;
+  fact["notes"] = form.querySelector(".document-note-input").value;
   fact["document_type"] = form.querySelector("input[type='hidden']").value;
 
   if(form.classList.contains('plan-name')) {
@@ -403,7 +403,7 @@ function factSubmitHandler(e) {
 
   // if screenshot has been taken add to fact obj
   const screenshotDataUrl = form.querySelector(".screenshot-taker__viewer").src;
-  if(screenshotDataUrl !== "") {
+  if(screenshotDataUrl !== "" && !screenshotDataUrl.startsWith("chrome-extension")) {
     fact["screenshot"] = screenshotDataUrl;
   }
 
