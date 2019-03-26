@@ -81,6 +81,10 @@ class LocalPlan(db.Model):
     def is_emerging(self):
         return self.start_year is not None and all(d is None for d in [self.published_date, self.submitted_date, self.sound_date, self.adopted_date])
 
+    def covers_years(self, from_, to):
+        dates = [s.date for s in self.ordered_states()]
+        return from_ >= dates[0] or to <= dates[-1]
+
 
 class PlanningAuthority(db.Model):
 
@@ -198,6 +202,16 @@ class HousingDeliveryTest(db.Model):
 
     def percent_delivered(self):
         return (self.homes_delivered / self.homes_required) * 100.0
+
+    def get_housing_average_for_plan(self):
+        housing_average = None
+        for plan in self.planning_authority.local_plans:
+            if plan.covers_years(self.from_year, self.to_year):
+                for doc in plan.plan_documents:
+                    for fact in doc.facts:
+                        if fact.fact_type == 'HOUSING_REQUIREMENT_YEARLY_AVERAGE':
+                            housing_average = fact.fact
+        return housing_average
 
 
 class State:
