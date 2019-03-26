@@ -2,6 +2,7 @@ import base64
 import csv
 import datetime
 import io
+import json
 from urllib.parse import urlparse
 
 import boto3
@@ -19,6 +20,8 @@ from flask import (
     current_app,
     make_response
 )
+from sqlalchemy import func
+from sqlalchemy.orm import Load
 
 from application.extensions import db
 
@@ -460,14 +463,19 @@ def data_as_csv():
     return out
 
 
-@frontend.route('/local-plans/state-of-play')
-def state_of_play():
-    state = {}
+@frontend.route('/local-plans/map-of-data')
+def map_of_data():
+    data = {}
     planning_authorities = PlanningAuthority.query.all()
     for pla in planning_authorities:
+        data[pla.id] = {}
         ps = []
         for p in pla.local_plans:
-            plan = {'documents': 0, 'facts': 0, 'plan_id': p.local_plan, 'has_housing_figures': False, 'status': p.latest_state().to_dict()}
+            plan = {'documents': 0,
+                    'facts': 0,
+                    'plan_id': p.local_plan,
+                    'has_housing_figures': False,
+                    'status': p.latest_state().to_dict()}
             for doc in p.plan_documents:
                 plan['documents'] = plan['documents'] + 1
                 for fact in doc.facts:
@@ -475,5 +483,14 @@ def state_of_play():
                     if 'HOUSING_REQUIREMENT' in fact.fact_type:
                         plan['has_housing_figures'] = True
             ps.append(plan)
-        state[pla.id] = ps
-    return jsonify({'planning_authorities': state})
+        data[pla.id]['plans'] = ps
+        query = "SELECT ST_AsGeoJSON(ST_SimplifyVW('%s', 0.00001))" % pla.geometry
+        if pla.geometry is not None:
+            geojson = db.session.execute(query).fetchone()[0]
+            data[pla.id]['geojson'] = json.loads(geojson)
+        else:
+            geojson = None
+
+    return jsonify({'planning_authorities': data})
+
+

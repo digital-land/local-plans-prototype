@@ -15,8 +15,10 @@ flask-sqlalchemy==2.3.2
 flask-sslify==0.1.5
 flask-wtf==0.14.2
 flask==1.0.2
+geoalchemy2==0.6.1
 gunicorn==19.9.0
 idna==2.8
+ijson==2.3
 itsdangerous==1.1.0
 jinja2==2.10
 jmespath==0.9.4

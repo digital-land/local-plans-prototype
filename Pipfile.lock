@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "141dfb1b4d6280fef14738dc93f303f997f75e803b5e444b12c2b27ef02fbdd8"
+            "sha256": "224cc2e747265160189edc586a4e0648b6ae843cd5f952812a2c93996bb4d571"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -133,6 +133,14 @@
             "index": "pypi",
             "version": "==0.14.2"
         },
+        "geoalchemy2": {
+            "hashes": [
+                "sha256:0ac39298635bf4d62977b20eb949862e93e08db3fdb54dab36de3df1df4ff52f",
+                "sha256:e26a3f6ee8b26be81fd5d68c5c0819116e3495e2f9b1f7bc10db4195f7cfd8a1"
+            ],
+            "index": "pypi",
+            "version": "==0.6.1"
+        },
         "gunicorn": {
             "hashes": [
                 "sha256:aa8e0b40b4157b36a5df5e599f45c9c76d6af43845ba3b3b0efe2c70473c2471",
@@ -147,6 +155,14 @@
                 "sha256:ea8b7f6188e6fa117537c3df7da9fc686d485087abf6ac197f9c46432f7e4a3c"
             ],
             "version": "==2.8"
+        },
+        "ijson": {
+            "hashes": [
+                "sha256:ef5f9f6bf9e44f2e1721e72bcc82c7ac6bb012b525e0f8642dedf7ddc44cf474",
+                "sha256:eff9ce137698dcb565420497050955cb811892eb073ea1c09d92ecaf671bd7f7"
+            ],
+            "index": "pypi",
+            "version": "==2.3"
         },
         "itsdangerous": {
             "hashes": [

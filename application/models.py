@@ -4,6 +4,9 @@ from datetime import datetime
 from enum import Enum
 from functools import total_ordering
 
+from geoalchemy2 import Geometry
+from sqlalchemy import func
+
 from application.extensions import db
 from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSON
 
@@ -103,6 +106,7 @@ class PlanningAuthority(db.Model):
                                              back_populates='planning_authority')
 
     other_documents = db.relationship('OtherDocument', back_populates="planning_authority")
+    geometry = db.Column(Geometry(srid=4326))
 
     def sorted_hdt(self, reverse=False):
         return sorted(self.housing_delivery_tests, reverse=reverse)
