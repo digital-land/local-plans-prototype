@@ -19,6 +19,7 @@ pytest = "*"
 flask-wtf = "*"
 boto3 = "*"
 sentry-sdk = {extras = ["flask"],version = "==0.7.7"}
+flask-sslify = "*"
 
 [requires]
 python_version = "3.7"

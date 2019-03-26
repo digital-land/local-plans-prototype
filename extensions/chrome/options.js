@@ -5,10 +5,10 @@ const environment = document.getElementById('environment');
 
 function changeState(event) {
   if(event.target.checked) {
-    chrome.storage.sync.set({ localPlanUrl: 'https://local-plans-prototype.herokuapp.com/' });
+    chrome.storage.sync.set({ localPlanUrl: 'https://local-plans-prototype.herokuapp.com' });
     environment.innerHTML = 'live';
   } else {
-    chrome.storage.sync.set({ localPlanUrl: 'https://localhost:5000/' });
+    chrome.storage.sync.set({ localPlanUrl: 'http://localhost:5000' });
     environment.innerHTML = 'test local';
   }
 }

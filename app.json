@@ -1,0 +1,46 @@
+{
+  "addons": [
+    "heroku-postgresql",
+    "sentry"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ],
+  "env": {
+    "AWS_ACCESS_KEY_ID": {
+      "required": true
+    },
+    "AWS_SECRET_ACCESS_KEY": {
+      "required": true
+    },
+    "FLASK_APP": {
+      "required": true
+    },
+    "FLASK_CONFIG": {
+      "required": true
+    },
+    "FLASK_ENV": {
+      "required": true
+    },
+    "HEROKU_POSTGRESQL_BLACK_URL": {
+      "required": true
+    },
+    "SECRET_KEY": {
+      "required": true
+    },
+    "SENTRY_DSN": {
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "name": "local-plans-prototype",
+  "scripts": {
+  },
+  "stack": "heroku-18"
+}

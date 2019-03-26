@@ -13,15 +13,17 @@ def _generate_uuid():
 
 
 planning_authority_plan = db.Table('planning_authority_plan',
-    db.Column('planning_authority_id', db.String(64), db.ForeignKey('planning_authority.id'), primary_key=True),
-    db.Column('local_plan_id', db.String, db.ForeignKey('local_plan.local_plan'), primary_key=True)
+    db.Column('planning_authority_id', db.String(64), db.ForeignKey('planning_authority.id', name='planning_authority_plan_planning_authority_id_fkey'), primary_key=True),
+    db.Column('local_plan_id_old', db.String),
+    db.Column('local_plan_id', UUID(as_uuid=True), db.ForeignKey('local_plan.id', name='planning_authority_plan_local_plan_id_fkey'), primary_key=True)
 )
 
 
 @total_ordering
 class LocalPlan(db.Model):
 
-    local_plan = db.Column(db.String(), primary_key=True)
+    id = db.Column(UUID(as_uuid=True), default=_generate_uuid, primary_key=True, nullable=False)
+    local_plan = db.Column(db.String())
     url = db.Column(db.String())
     title = db.Column(db.String())
     start_year = db.Column(db.Date())
@@ -34,7 +36,7 @@ class LocalPlan(db.Model):
                                            lazy=True,
                                            back_populates='local_plans')
 
-    plan_documents = db.relationship('PlanDocument', back_populates='local_plan', lazy=True)
+    plan_documents = db.relationship('PlanDocument', back_populates='local_plan', lazy=True, order_by='PlanDocument.created_date')
 
     def __eq__(self, other):
         return self.ordered_states() == other.ordered_states()
@@ -78,6 +80,10 @@ class LocalPlan(db.Model):
 
     def is_emerging(self):
         return self.start_year is not None and all(d is None for d in [self.published_date, self.submitted_date, self.sound_date, self.adopted_date])
+
+    def covers_years(self, from_, to):
+        dates = [s.date for s in self.ordered_states()]
+        return from_ >= dates[0] or to <= dates[-1]
 
 
 class PlanningAuthority(db.Model):
@@ -197,6 +203,16 @@ class HousingDeliveryTest(db.Model):
     def percent_delivered(self):
         return (self.homes_delivered / self.homes_required) * 100.0
 
+    def get_housing_average_for_plan(self):
+        housing_average = {'housing': '???', 'source': None}
+        for plan in self.planning_authority.local_plans:
+            if plan.covers_years(self.from_year, self.to_year):
+                for doc in plan.plan_documents:
+                    for fact in doc.facts:
+                        if fact.fact_type == 'HOUSING_REQUIREMENT_YEARLY_AVERAGE':
+                            housing_average = {'housing': fact.fact, 'source': doc.url}
+        return housing_average
+
 
 class State:
     def __init__(self, state, date):
@@ -228,6 +244,8 @@ class Document(db.Model):
                             cascade='all, delete, delete-orphan',
                             order_by='Fact.created_date')
 
+    created_date = db.Column(db.DateTime(), default=datetime.utcnow)
+
     __mapper_args__ = {
         'polymorphic_on':type,
         'polymorphic_identity':'document'
@@ -249,8 +267,10 @@ class PlanDocument(Document):
         'polymorphic_identity':'plan_document'
     }
 
-    local_plan_id = db.Column(db.String(64), db.ForeignKey('local_plan.local_plan'))
+    local_plan_id = db.Column(UUID(as_uuid=True), db.ForeignKey('local_plan.id', name='document_local_plan_id_fkey'))
+    local_plan_id_old = db.Column(db.String(64))
     local_plan = db.relationship('LocalPlan', back_populates='plan_documents')
+
 
     def to_dict(self):
         data = {
@@ -317,7 +337,8 @@ class Fact(db.Model):
             'document_url': self.document.url,
             'created_date': self.created_date.date(),
             'from': self.from_,
-            'to': self.to
+            'to': self.to,
+            'screenshot': self.image_url
         }
 
         if isinstance(self.document, OtherDocument):

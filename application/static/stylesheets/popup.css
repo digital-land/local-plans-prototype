@@ -5510,7 +5510,7 @@ body {
   position: relative;
   min-width: 400px;
   margin: 15px 0 0;
-  padding: 30px 15px;
+  padding: 10px 15px 30px;
   border-top: 5px solid #005ea5;
 }
 
@@ -5526,6 +5526,40 @@ body::before {
   width: 100%;
   height: 15px;
   background: #0b0c0c;
+}
+
+.ext-version {
+  display: block;
+  font-family: "nta", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 12px;
+  font-size: 0.75rem;
+  line-height: 1.25;
+  margin-bottom: 20px;
+  text-align: right;
+}
+
+@media print {
+  .ext-version {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .ext-version {
+    font-size: 14px;
+    font-size: 0.875rem;
+    line-height: 1.42857;
+  }
+}
+
+@media print {
+  .ext-version {
+    font-size: 12pt;
+    line-height: 1.2;
+  }
 }
 
 header p:first-child {

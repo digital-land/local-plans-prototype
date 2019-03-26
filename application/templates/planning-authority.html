@@ -119,7 +119,7 @@
 
 
   <h2 id="housing-numbers" class="govuk-heading-l contents-list__section">Number of houses</h2>
-  {% macro singleBarComponent(label, value, width, _classes) -%}
+  {% macro singleBarComponent(label, value, width, _classes, source_url) -%}
     <div class="govuk-grid-row contribution-category-row">
       <div class="govuk-grid-column-two-thirds contribution-bar-container">
         <div class="contribution-bar{% if _classes %} {{ _classes }}{% endif %}" style="width: {{ width }};">
@@ -128,7 +128,13 @@
         <div class="govuk-!-font-size-24 data-item cb-floating-figure">{{ value }}</div>
       </div>
       <div class="govuk-grid-column-one-third">
-        <h4 class="govuk-heading-s contribution-category-heading">{{ label }}</h4>
+        <h4 class="govuk-heading-s contribution-category-heading">
+            {% if source_url %}
+                <a href="{{ source_url }}" target="_blank">{{ label }} source document</a>
+            {% else %}
+                {{ label }} commitment
+            {% endif %}
+        </h4>
       </div>
     </div>
   {%- endmacro %}
@@ -148,7 +154,8 @@
       {% set delivered = hdt.homes_delivered | return_percent(denominator=max_figure) | format_percent %}
       {{ singleBarComponent("HDT delivered", hdt.homes_delivered, delivered, "bar--blue") }}
 
-      {{ singleBarComponent("Local plan commitment", "???", "70%", "bar--blank") }}
+      {% set average = hdt.get_housing_average_for_plan() %}
+      {{ singleBarComponent("Local plan", average.housing, "70%", "bar--blank", average.source) }}
 {#      need to work out how to get local plan commitment - it will be attached to a plan and a document#}
 {#      specifically so we have to hope that they are recorded accoring to this breakdown of years#}
 {#      so that we can match with these figures - possibly a jump to far in terms of how this is currently#}
