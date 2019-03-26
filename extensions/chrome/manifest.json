@@ -2,8 +2,18 @@
   "name": "Local Plans",
   "description": "Find local plan pdf and post to backend",
   "version": "0.1.1",
-  "permissions": ["storage", "activeTab", "downloads", "<all_urls>"],
+  "permissions": [
+    "activeTab",
+    "storage",
+    "<all_urls>",
+    "downloads",
+    "webRequest",
+    "webRequestBlocking"
+  ],
   "browser_action": {"default_popup": "popup.html"},
   "options_page": "options.html",
-  "manifest_version": 2
+  "manifest_version": 2,
+  "background": {
+  	"scripts": ["background.js"]
+  }
 }
