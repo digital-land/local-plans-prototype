@@ -64,9 +64,8 @@ def register_extensions(app):
     from application.extensions import migrate
     migrate.init_app(app=app)
 
-    from application.extensions import sslify
-    sslify.init_app(app)
-
+    from flask_sslify import SSLify
+    sslify = SSLify(app)
 
 def register_commands(app):
     from application.commands import load, clear, set_ons_codes, load_hdt
