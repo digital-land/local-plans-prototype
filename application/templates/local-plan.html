@@ -157,8 +157,9 @@
 
     {% for plan in planning_authority.sorted_plans() %}
     <section class="govuk-tabs__panel local-plan {% if plan.is_adopted() %}adopted-plan{% endif %}" id="{{ plan.local_plan }}">
-      <h2 class="govuk-heading-l editable-plan-title">{{ plan.local_plan }}</h2>
-
+      <h2 class="govuk-heading-l editable-plan-title" data-update-plan-url="{{ url_for('frontend.update_plan', planning_authority=planning_authority.id, local_plan=plan.id) }}">
+          {{ plan.local_plan }}
+      </h2>
        {% if plan.url %}
           <h3 class="govuk-heading-m">Planning policy url</h3>
           <p class="govuk-body">
@@ -172,7 +173,7 @@
           </a>
        {% endif %}
 
-    {% if not plan.is_emerging() %}
+     {% if not plan.is_emerging() %}
         <div class="pims-stages">
             {% set latest_state = plan.latest_state() %}
             <div class="current-stage">
@@ -753,7 +754,7 @@
 
   function makeTitleEditable(titleEl) {
     const localPlanEl = titleEl.closest(".local-plan");
-    const editTitleEndpoint = document.querySelector(".new-plan-form").action;
+    const editTitleEndpoint = titleEl.dataset.updatePlanUrl;
 
     const planTitleContainer = createElementWithClasses("div", "plan-title__container");
     wrapElement( titleEl, planTitleContainer );
@@ -787,8 +788,8 @@
       const newTitle = `${original.split("-")[0]}-${input.value}`;
       updateWithNewPlanTitle(newTitle);
       postJSONRequest(editTitleEndpoint,
-        {'original_title': original,
-         'new_title': newTitle
+        {'original_identifier': original,
+         'new_identifier': newTitle
         });
     });
   }

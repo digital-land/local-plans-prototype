@@ -187,6 +187,19 @@ def update_local_plan_url(planning_authority, local_plan):
     return render_template('update-plan-url.html', planning_authority=pla, local_plan=plan, form=form)
 
 
+@frontend.route('/local-plans/<planning_authority>/<local_plan>/update', methods=['POST'])
+def update_plan(planning_authority, local_plan):
+    plan_identifier = request.json['new_identifier'].strip()
+    plan = LocalPlan.query.filter_by(local_plan=plan_identifier).first()
+    if plan is not None:
+        return jsonify({'error': plan_identifier, 'message': 'A plan with that title already exists'})
+    plan = LocalPlan.query.get(local_plan)
+    plan.local_plan = plan_identifier
+    db.session.add(plan)
+    db.session.commit()
+    return jsonify({'message': 'plan identifier updated'})
+
+
 @frontend.route('/local-plans/<local_plan>/document/<document>', methods=['DELETE'])
 def remove_document_from_plan(local_plan, document):
     doc = PlanDocument.query.filter_by(local_plan_id=local_plan, id=document).first()

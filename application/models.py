@@ -13,16 +13,16 @@ def _generate_uuid():
 
 
 planning_authority_plan = db.Table('planning_authority_plan',
-    db.Column('planning_authority_id', db.String(64), db.ForeignKey('planning_authority.id'), primary_key=True),
+    db.Column('planning_authority_id', db.String(64), db.ForeignKey('planning_authority.id', name='planning_authority_plan_planning_authority_id_fkey'), primary_key=True),
     db.Column('local_plan_id_old', db.String),
-    db.Column('local_plan_id', UUID(as_uuid=True), db.ForeignKey('local_plan.id'), primary_key=True)
+    db.Column('local_plan_id', UUID(as_uuid=True), db.ForeignKey('local_plan.id', name='planning_authority_plan_local_plan_id_fkey'), primary_key=True)
 )
 
 
 @total_ordering
 class LocalPlan(db.Model):
 
-    id = db.Column(UUID(as_uuid=True), default=_generate_uuid, primary_key=True)
+    id = db.Column(UUID(as_uuid=True), default=_generate_uuid, primary_key=True, nullable=False)
     local_plan = db.Column(db.String())
     url = db.Column(db.String())
     title = db.Column(db.String())
@@ -248,7 +248,7 @@ class PlanDocument(Document):
         'polymorphic_identity':'plan_document'
     }
 
-    local_plan_id = db.Column(UUID(as_uuid=True), db.ForeignKey('local_plan.id'))
+    local_plan_id = db.Column(UUID(as_uuid=True), db.ForeignKey('local_plan.id', name='document_local_plan_id_fkey'))
     local_plan_id_old = db.Column(db.String(64))
     local_plan = db.relationship('LocalPlan', back_populates='plan_documents')
 
