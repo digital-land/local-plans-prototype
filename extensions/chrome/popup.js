@@ -341,6 +341,11 @@ function createFactRow(fact) {
   return row;
 }
 
+function cleanNumber(str) {
+  // strip any commas user may have added
+  return str.replace(/\,/g, "");
+}
+
 function extractDate(fieldset) {
   const month = fieldset.querySelector(".govuk-date-input__month");
   const year = fieldset.querySelector(".govuk-date-input__year");
@@ -351,9 +356,9 @@ function extractDate(fieldset) {
 }
 
 function extractRange(fieldset) {
-  var min = fieldset.querySelector("[data-range-type='start']");
-  var max = fieldset.querySelector("[data-range-type='end']");
-  return `${min.value},${max.value}`;
+  var min = cleanNumber( fieldset.querySelector("[data-range-type='start']").value );
+  var max = cleanNumber( fieldset.querySelector("[data-range-type='end']").value );
+  return `${min},${max}`;
 }
 
 function factSubmitHandler(e) {
@@ -377,11 +382,11 @@ function factSubmitHandler(e) {
   } else if (form.classList.contains('plan-end-year')) {
     fact["fact"] = extractDate( form.querySelector(".plan-end-date-input fieldset") );
   } else if (form.classList.contains('housing-requirement-total')) {
-    fact["fact"] = form.querySelector(".plan-housing-req-total input").value;
+    fact["fact"] = cleanNumber( form.querySelector(".plan-housing-req-total input").value );
   } else if (form.classList.contains('housing-requirement-range')) {
     fact["fact"] = extractRange( form.querySelector(".housing-req-range-fieldset") );
   } else if (form.classList.contains('housing-requirement-yearly-average')) {
-    fact["fact"] = form.querySelector(".housing-req-yearly-average-input input").value;
+    fact["fact"] = cleanNumber( form.querySelector(".housing-req-yearly-average-input input").value );
   } else if (form.classList.contains('housing-requirement-yearly-range')) {
     fact["fact"] = extractRange( form.querySelector(".housing-req-yearly-range-fieldset") );
   } else if (form.classList.contains('publication-date')) {
