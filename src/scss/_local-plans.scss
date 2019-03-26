@@ -190,4 +190,40 @@
   }
 }
 
+.plan-title__container {
+  .editable-title__container {
+    display: none;
+  }
+
+  &.edit-mode {
+    .editable-plan-title {
+      display: none;
+    }
+
+    .editable-title__container {
+      display: block;
+    }
+  }
+}
+
+.editable-plan-title {
+  box-sizing: content-box;
+
+  &:hover {
+    margin-top: -1px;
+    margin-left: -1px;
+    border: 1px dashed govuk-colour("blue");
+    background: govuk-colour("grey-4");
+    cursor: pointer;
+  }
+}
+
+.editable-title__container {
+  @include govuk-font($size: 36, $weight: bold);
+
+  input {
+    margin-right: 5px;
+    vertical-align: top;
+  }
+}
 

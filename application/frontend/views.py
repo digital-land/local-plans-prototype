@@ -79,6 +79,18 @@ def local_plan(planning_authority):
         db.session.commit()
         return redirect(url_for('frontend.local_plan', planning_authority=pla.id))
 
+    elif request.method == 'POST':
+        req_data = request.get_json()
+        print(req_data)
+        if 'original_title' in req_data and 'new_title' in req_data:
+            #
+            # TODO save the change to the plan title
+            #
+            resp = {"OK": 200, "original_title": req_data['original_title'], "new_title": req_data['new_title']}
+        else:
+            resp = {"OK": 204}
+        return jsonify(resp)
+
     return render_template('local-plan.html',
                            planning_authority=pla,
                            fact_types=FactType,
