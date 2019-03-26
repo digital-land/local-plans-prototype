@@ -9,3 +9,6 @@ db = SQLAlchemy()
 
 from flask_migrate import Migrate
 migrate = Migrate(db=db)
+
+from flask_talisman import Talisman
+talisman = Talisman()
