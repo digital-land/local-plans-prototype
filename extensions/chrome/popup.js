@@ -559,9 +559,15 @@ chrome.runtime.onMessage.addListener(function(request, _sender) {
   }
 });
 
+function displayVersionNumber(el) {
+  el.textContent = `Extension version: ${chrome.app.getDetails().version}`;
+}
+
 var activePageDetails = {};
 (function($) {
   $(function () {
+
+    displayVersionNumber( document.querySelector(".ext-version") );
 
     planList = document.querySelector(".plan-list");
 
