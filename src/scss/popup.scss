@@ -15,7 +15,7 @@ body {
   position: relative;
   min-width: 400px;
   margin: 15px 0 0;
-  padding: 30px 15px;
+  padding: 10px $govuk-gutter-half $govuk-gutter;
   border-top: 5px solid govuk-colour("blue");
 
   &.local-plan-view,
@@ -32,6 +32,13 @@ body::before {
   width: 100%;
   height: 15px;
   background: govuk-colour("black");
+}
+
+.ext-version {
+  display: block;
+  @include govuk-font($size: 14);
+  margin-bottom: 20px;
+  text-align: right;
 }
 
 header p:first-child {

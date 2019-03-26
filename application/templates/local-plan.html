@@ -156,8 +156,8 @@
     </ul>
 
     {% for plan in planning_authority.sorted_plans() %}
-    <section class="govuk-tabs__panel {% if plan.is_adopted() %}adopted-plan{% endif %}" id="{{ plan.local_plan }}">
-      <h2 class="govuk-heading-l">{{ plan.local_plan }}</h2>
+    <section class="govuk-tabs__panel local-plan {% if plan.is_adopted() %}adopted-plan{% endif %}" id="{{ plan.local_plan }}">
+      <h2 class="govuk-heading-l editable-plan-title">{{ plan.local_plan }}</h2>
 
        {% if plan.url %}
           <h3 class="govuk-heading-m">Planning policy url</h3>
@@ -287,7 +287,7 @@
     {% endfor %}
     <section id="new-plan-tab" class="govuk-tabs__panel">
       <h3 class="govuk-heading-m">Add a local plan</h3>
-      <form class="govuk-form" method="post" action="{{ url_for('frontend.local_plan', planning_authority=planning_authority.id) }}">
+      <form class="govuk-form new-plan-form" method="post" action="{{ url_for('frontend.local_plan', planning_authority=planning_authority.id) }}">
          <div class="govuk-form-group">
           {{ form.start_year.label(class="govuk-label govuk-!-font-weight-bold") }}
           <span class="govuk-hint">
@@ -428,6 +428,12 @@
     });
   }
 
+
+  function cleanNumber(str) {
+    // strip any commas user may have added
+    return str.replace(/\,/g, "");
+  }
+
   function extractDate(fieldset) {
     const month = fieldset.querySelector(".govuk-date-input__month");
     const year = fieldset.querySelector(".govuk-date-input__year");
@@ -438,9 +444,9 @@
   }
 
   function extractRange(fieldset) {
-    var min = fieldset.querySelector("[data-range-type='start']");
-    var max = fieldset.querySelector("[data-range-type='end']");
-    return `${min.value},${max.value}`;
+    var min = cleanNumber( fieldset.querySelector("[data-range-type='start']").value );
+    var max = cleanNumber( fieldset.querySelector("[data-range-type='end']").value );
+    return `${min},${max}`;
   }
 
   // save a fact
@@ -470,11 +476,11 @@
     } else if (form.classList.contains('plan-end-year')) {
       fact["fact"] = extractDate( form.querySelector(".plan-end-date-input fieldset") );
     } else if (form.classList.contains('housing-requirement-total')) {
-      fact["fact"] = form.querySelector(".plan-housing-req-total input").value;
+      fact["fact"] = cleanNumber( form.querySelector(".plan-housing-req-total input").value );
     } else if (form.classList.contains('housing-requirement-range')) {
       fact["fact"] = extractRange( form.querySelector(".housing-req-range-fieldset") );
     } else if (form.classList.contains('housing-requirement-yearly-average')) {
-      fact["fact"] = form.querySelector(".housing-req-yearly-average-input input").value;
+      fact["fact"] = cleanNumber( form.querySelector(".housing-req-yearly-average-input input").value );
     } else if (form.classList.contains('housing-requirement-yearly-range')) {
       fact["fact"] = extractRange( form.querySelector(".housing-req-yearly-range-fieldset") );
     } else if (form.classList.contains('publication-date')) {
@@ -671,6 +677,121 @@
 
     return clonedFormContainer;
   };
+
+
+  // ------------
+  // make plan titles editable
+  // -------------
+  const planTitles = document.querySelectorAll(".editable-plan-title");
+  planTitles.forEach(makeTitleEditable);
+
+  function postJSONRequest(endpoint, data, callback) {
+    fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(resp_data => {
+      console.log(resp_data);
+    });
+  }
+
+  function wrapElement(el, wrapper) {
+    el.parentNode.insertBefore(wrapper, el);
+    wrapper.appendChild(el);
+}
+
+  function insertAfter(el, referenceNode) {
+    referenceNode.parentNode.insertBefore(el, referenceNode.nextSibling);
+  }
+
+  function splitPlanTitle(title) {
+    return title.split("-");
+  }
+
+  function createElementWithClasses(tag, classes) {
+    const element = document.createElement(tag);
+    if(Array.isArray(classes)) {
+      element.classList.add(...classes);
+    } else {
+      element.classList.add(classes);
+    }
+    return element;
+  }
+
+  function createEditableUI(currentValue) {
+    const parts = splitPlanTitle(currentValue);
+
+    const container = createElementWithClasses("div", "editable-title__container");
+
+    const fixedPart = createElementWithClasses("span", "editable-title__fixed");
+    fixedPart.textContent = `${parts[0]}-`;
+
+    const input = createElementWithClasses("input", ["govuk-input", "govuk-input--width-4"]);
+    input.setAttribute("type", "text");
+    input.value = parts[1];
+    input.dataset.currentSavedValue = currentValue;
+
+    const saveBtn = createElementWithClasses("button", "govuk-button");
+    saveBtn.textContent = "Save";
+
+    container.appendChild(fixedPart);
+    container.appendChild(input);
+    container.appendChild(saveBtn);
+
+    return container;
+  }
+
+  function getExitEditModeHandler(container) {
+    return function(e) {
+      container.classList.remove("edit-mode");
+    } 
+  }
+
+  function makeTitleEditable(titleEl) {
+    const localPlanEl = titleEl.closest(".local-plan");
+    const editTitleEndpoint = document.querySelector(".new-plan-form").action;
+
+    const planTitleContainer = createElementWithClasses("div", "plan-title__container");
+    wrapElement( titleEl, planTitleContainer );
+    
+    const editableUI = createEditableUI(titleEl.textContent);
+    insertAfter(editableUI, titleEl);
+
+    titleEl.addEventListener('click', function(e) {
+      planTitleContainer.classList.toggle("edit-mode");
+    });
+
+    const exitEditModeHandler = getExitEditModeHandler( planTitleContainer );
+
+    function updateWithNewPlanTitle(newTitle) {
+      // update plan-title
+      titleEl.textContent = newTitle;
+      // update tab label
+      const tab = document.querySelector(`#tab_${localPlanEl.id}`);
+      tab.textContent = newTitle;
+      // remove edit-mode class
+      planTitleContainer.classList.remove("edit-mode");
+      // update edit input data attribute
+      editableUI.querySelector("input").dataset.currentSavedValue = newTitle;
+    }
+
+    const btn = editableUI.querySelector("button");
+    const input = editableUI.querySelector("input");
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const original = input.dataset.currentSavedValue;
+      const newTitle = `${original.split("-")[0]}-${input.value}`;
+      updateWithNewPlanTitle(newTitle);
+      postJSONRequest(editTitleEndpoint,
+        {'original_title': original,
+         'new_title': newTitle
+        });
+    });
+  }
 
 </script>
 {% endblock %}
