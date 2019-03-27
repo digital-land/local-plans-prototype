@@ -465,6 +465,7 @@ def data_as_csv():
 
 @frontend.route('/local-plans/map-of-data')
 def map_of_data():
+    #TODO this is really slow - do something!!!
     data = []
     planning_authorities = PlanningAuthority.query.all()
     for pla in planning_authorities:
