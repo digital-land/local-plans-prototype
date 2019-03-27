@@ -466,15 +466,13 @@ def data_as_csv():
 @frontend.route('/local-plans/map-of-data')
 def map_of_data():
     data = []
-    planning_authorities = PlanningAuthority.query.all()[25:200]
+    planning_authorities = PlanningAuthority.query.all()
     for pla in planning_authorities:
-        authority = {'planning_authority': pla.id, 'plans': []}
-        # ps = []
+        authority = {'planning_authority': pla.id, 'plans': [], 'has_housing_figures': False}
         for p in pla.local_plans:
             plan = {'documents': 0,
                     'facts': 0,
                     'plan_id': p.local_plan,
-                    'has_housing_figures': False,
                     'status': p.latest_state().to_dict()}
             for doc in p.plan_documents:
                 plan['documents'] = plan['documents'] + 1
@@ -484,20 +482,17 @@ def map_of_data():
                     range = ['HOUSING_REQUIREMENT_RANGE', 'HOUSING_REQUIREMENT_YEARLY_RANGE']
                     if fact.fact_type in total:
                         plan[fact.fact_type.lower()] = int(fact.fact.replace(',', '')) if fact.fact else None
-                        plan['has_housing_figures'] = True
+                        authority['has_housing_figures'] = True
                     if fact.fact_type in range:
                         plan[f'{fact.fact_type.lower()}_from'] = int(fact.from_.replace(',', '')) if fact.from_ else None
                         plan[f'{fact.fact_type.lower()}_to'] = int(fact.to.replace(',', '')) if fact.to else None
-                        plan['has_housing_figures'] = True
-                authority['plans'].append(plan)
+                        authority['has_housing_figures'] = True
+            authority['plans'].append(plan)
         query = "SELECT ST_AsGeoJSON(ST_SimplifyVW('%s', 0.00001))" % pla.geometry
         if pla.geometry is not None:
             geojson = db.session.execute(query).fetchone()[0]
             authority['geojson'] = json.loads(geojson)
         data.append(authority)
-
-
-    # return jsonify({'planning_authorities': data})
     return render_template('map-of-data.html', data=data)
 
 

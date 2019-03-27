@@ -46,8 +46,8 @@
         }
 
         var boundariesLayer = makeAndAddLayer(map);
-        //var missingDataLayer = makeAndAddLayer(boundariesLayer);
-        //var warningDataLayer = makeAndAddLayer(boundariesLayer);
+        var missingDataLayer = makeAndAddLayer(boundariesLayer);
+        var warningDataLayer = makeAndAddLayer(boundariesLayer);
         //var errorDataLayer = makeAndAddLayer(boundariesLayer);
         var validDataLayer = makeAndAddLayer(boundariesLayer);
 
@@ -76,7 +76,6 @@
         };
 
         var itemsProcessed = 0;
-
         function addLayerToABoundariesLayer(laBoundary, data, layerGroup, style) {
             laBoundary
                 ._setDefaultStyles(style)
@@ -94,9 +93,20 @@
         }
 
         planningAuthorityJson.forEach(function (planningAuthority) {
+
             if(planningAuthority.geojson){
                 const boundary = L.geoJSON(planningAuthority.geojson);
-                addLayerToABoundariesLayer(boundary, planningAuthority, validDataLayer, validStyle);
+
+                if (planningAuthority.plans.length == 0) {
+                    const styleSetting = disableStyle;
+                    addLayerToABoundariesLayer(boundary, planningAuthority, missingDataLayer, disableStyle);
+                } else {
+                    if (planningAuthority.has_housing_figures) {
+                        addLayerToABoundariesLayer(boundary, planningAuthority, validDataLayer, validStyle);
+                    } else {
+                        addLayerToABoundariesLayer(boundary, planningAuthority, warningDataLayer, warningStyle);
+                    }
+                }
             }
         });
 
@@ -105,22 +115,66 @@
             validDataLayer.bringToFront();
         }
 
-        const resultsTemplate =
+        const localAuthorityTemplate =
+            '<h3 class="govuk-heading-s"><a class="govuk-link" href="{url}">{planning_authority}</a></h3>' +
+            '<ul class="govuk-list">' +
+            '<li>Plans: {plan_count}</li>' +
+            '<li>Housing figures collected: {has_housing_figures}</li>' +
+            '</ul>';
+
+
+        const localAuthorityInputTemplate =
             '<h3 class="govuk-heading-s">{planning_authority}</h3>' +
             '<ul class="govuk-list">' +
-            '<li>{plan_count} plans</li>' +
+            '<li>Plans: {plan_count}</li>' +
+            '<li>Housing figures collected: {has_housing_figures}</li>' +
             '</ul>' +
-            '<p class="govuk-body"><a class="govuk-link" href="{url}">Go to local authority page</a></p>';
+            '<p class="govuk-body"><a class="govuk-link" href="{url}">Add data for this planning authority</a></p>';
+
+
+        const planDetailTemplate =
+            '<h3 class="govuk-heading-s"><a class="govuk-link" href="{url}">{plan}</a></h3>' +
+            '<ul class="govuk-list">' +
+            '<li>Documents found: {document_count}</li>' +
+            '<li>Facts collected: {facts}:</li>' +
+            '</ul>';
 
         function setupPopup(boundary, planningAuthority) {
-            const url = `/planning-authority/` + planningAuthority.planning_authority
-            const popupContent = L.Util.template(resultsTemplate,
+            const planCount = planningAuthority.plans.length;
+
+            if(planCount == 0){
+                const url = `/local-plans/` + planningAuthority.planning_authority
+                const popupContent = L.Util.template(localAuthorityInputTemplate,
                     {
                         planning_authority: planningAuthority.planning_authority,
                         plan_count: planningAuthority.plans.length,
-                        url: url
+                        url: url,
+                        has_housing_figures: planningAuthority.has_housing_figures
                     });
                 boundary.bindPopup(popupContent);
+            } else {
+                const url = `/planning-authority/` + planningAuthority.planning_authority;
+                var popupContent = L.Util.template(localAuthorityTemplate,
+                    {
+                        planning_authority: planningAuthority.planning_authority,
+                        plan_count: planningAuthority.plans.length,
+                        url: url,
+                        has_housing_figures: planningAuthority.has_housing_figures
+                    });
+
+                planningAuthority.plans.forEach(function(plan){
+                    const url = `/local-plans/` + planningAuthority.planning_authority +'#' + plan.plan_id;
+                    var planContent = L.Util.template(planDetailTemplate,
+                    {
+                        plan: plan.plan_id,
+                        document_count: plan.documents,
+                        facts: plan.facts,
+                        url: url,
+                    });
+                    popupContent += planContent;
+                });
+                boundary.bindPopup(popupContent);
+            }
         }
 
     </script>
