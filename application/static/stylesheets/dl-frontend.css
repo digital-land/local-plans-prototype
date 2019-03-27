@@ -6682,6 +6682,7 @@
 }
 
 .editable-title__container {
+  margin-bottom: 30px;
   font-family: "nta", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -6715,6 +6716,62 @@
 .editable-title__container input {
   margin-right: 5px;
   vertical-align: top;
+}
+
+.editable-title__container .govuk-button {
+  margin-bottom: 10px;
+}
+
+.editable-title__container .error-msg {
+  display: none;
+  font-family: "nta", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 1.25;
+  color: #b10e1e;
+}
+
+@media print {
+  .editable-title__container .error-msg {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .editable-title__container .error-msg {
+    font-size: 19px;
+    font-size: 1.1875rem;
+    line-height: 1.31579;
+  }
+}
+
+@media print {
+  .editable-title__container .error-msg {
+    font-size: 14pt;
+    line-height: 1.15;
+  }
+}
+
+.editable-title__container.has-error {
+  padding-left: 10px;
+  border-left: 5px solid #b10e1e;
+}
+
+.editable-title__container.has-error .error-msg {
+  display: block;
+}
+
+.govuk-inset-text--error {
+  border-color: #b10e1e;
+  color: #b10e1e;
+}
+
+.govuk-inset-text--small {
+  padding-top: 2px;
+  padding-bottom: 0;
 }
 
 .add-url-form {

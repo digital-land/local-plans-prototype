@@ -686,7 +686,7 @@
   const planTitles = document.querySelectorAll(".editable-plan-title");
   planTitles.forEach(makeTitleEditable);
 
-  function postJSONRequest(endpoint, data, callback) {
+  function postJSONRequest(endpoint, data, cb) {
     fetch(endpoint, {
       method: "POST",
       headers: {
@@ -696,7 +696,11 @@
     })
     .then(response => response.json())
     .then(resp_data => {
-      console.log(resp_data);
+      if(cb && typeof cb === "function") {
+        cb(resp_data);
+      } else {
+        console.log(resp_data);
+      }
     });
   }
 
@@ -735,13 +739,20 @@
     input.setAttribute("type", "text");
     input.value = parts[1];
     input.dataset.currentSavedValue = currentValue;
+    input.addEventListener('focus', (e) => {
+      container.classList.remove("has-error");
+    });
 
     const saveBtn = createElementWithClasses("button", "govuk-button");
     saveBtn.textContent = "Save";
 
+    const errorMessage = createElementWithClasses("div", "error-msg");
+    errorMessage.textContent = "Plan with this title already exists";
+
     container.appendChild(fixedPart);
     container.appendChild(input);
     container.appendChild(saveBtn);
+    container.appendChild(errorMessage);
 
     return container;
   }
@@ -802,10 +813,16 @@
       e.preventDefault();
       const original = input.dataset.currentSavedValue;
       const newTitle = `${original.split("-")[0]}-${input.value}`;
-      updateWithNewPlanTitle(newTitle);
       postJSONRequest(editTitleEndpoint,
         {'original_identifier': original,
          'new_identifier': newTitle
+        },
+        (resp_data) => {
+          if(resp_data['OK'] == 200) {
+            updateWithNewPlanTitle(newTitle);
+          } else {
+            editableUI.classList.add("has-error");
+          }
         });
     });
   }
