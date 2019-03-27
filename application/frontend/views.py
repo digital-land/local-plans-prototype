@@ -480,7 +480,14 @@ def map_of_data():
                 plan['documents'] = plan['documents'] + 1
                 for fact in doc.facts:
                     plan['facts'] = plan['facts'] + 1
-                    if 'HOUSING_REQUIREMENT' in fact.fact_type:
+                    total = ['HOUSING_REQUIREMENT_TOTAL' , 'HOUSING_REQUIREMENT_YEARLY_AVERAGE']
+                    range = ['HOUSING_REQUIREMENT_RANGE', 'HOUSING_REQUIREMENT_YEARLY_RANGE']
+                    if fact.fact_type in total:
+                        plan[fact.fact_type.lower()] = int(fact.fact.replace(',', '')) if fact.fact else None
+                        plan['has_housing_figures'] = True
+                    if fact.fact_type in range:
+                        plan[f'{fact.fact_type.lower()}_from'] = int(fact.from_.replace(',', '')) if fact.from_ else None
+                        plan[f'{fact.fact_type.lower()}_to'] = int(fact.to.replace(',', '')) if fact.to else None
                         plan['has_housing_figures'] = True
             ps.append(plan)
         data[pla.id]['plans'] = ps
