@@ -20,10 +20,8 @@ from flask import (
     current_app,
     make_response
 )
-from sqlalchemy import func
-from sqlalchemy.orm import Load
 
-from application.extensions import db
+from application.extensions import db, flask_optimize
 
 from application.models import (
     PlanningAuthority,
@@ -464,6 +462,7 @@ def data_as_csv():
 
 
 @frontend.route('/local-plans/map-of-data')
+@flask_optimize.optimize()
 def map_of_data():
     #TODO this is really slow - do something!!!
     data = []
