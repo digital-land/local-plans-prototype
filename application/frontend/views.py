@@ -465,11 +465,11 @@ def data_as_csv():
 
 @frontend.route('/local-plans/map-of-data')
 def map_of_data():
-    data = {}
-    planning_authorities = PlanningAuthority.query.all()
+    data = []
+    planning_authorities = PlanningAuthority.query.all()[25:100]
     for pla in planning_authorities:
-        data[pla.id] = {}
-        ps = []
+        authority = {'planning_authority': pla.id, 'plans': []}
+        # ps = []
         for p in pla.local_plans:
             plan = {'documents': 0,
                     'facts': 0,
@@ -489,15 +489,15 @@ def map_of_data():
                         plan[f'{fact.fact_type.lower()}_from'] = int(fact.from_.replace(',', '')) if fact.from_ else None
                         plan[f'{fact.fact_type.lower()}_to'] = int(fact.to.replace(',', '')) if fact.to else None
                         plan['has_housing_figures'] = True
-            ps.append(plan)
-        data[pla.id]['plans'] = ps
+                authority['plans'].append(plan)
         query = "SELECT ST_AsGeoJSON(ST_SimplifyVW('%s', 0.00001))" % pla.geometry
         if pla.geometry is not None:
             geojson = db.session.execute(query).fetchone()[0]
-            data[pla.id]['geojson'] = json.loads(geojson)
-        else:
-            geojson = None
+            authority['geojson'] = json.loads(geojson)
+        data.append(authority)
 
-    return jsonify({'planning_authorities': data})
+
+    # return jsonify({'planning_authorities': data})
+    return render_template('map-of-data.html', data=data)
 
 

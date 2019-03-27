@@ -24,109 +24,106 @@
 {% endblock %}
 
 {% block bodyEnd %}
-    {% block bodyEnd %}
-<script src="{{ static_path }}/static/javascripts/mhclg-maps.js"></script>
-<script src="{{ static_path }}/static/javascripts/leaflet-hover-effects.js"></script>
-<script>
+    <script src="{{ static_path }}/static/javascripts/mhclg-maps.js"></script>
+    <script src="{{ static_path }}/static/javascripts/leaflet-hover-effects.js"></script>
 
-  // initialise MHCLGMaps with mapbox access token
-  const mhclgMaps = new MHCLGMaps({mapbox_token: '{{ config.MAPBOX_TOKEN }}'});
+    <script>
 
-  const map = mhclgMaps.createMap("map-container");
-  mhclgMaps.setMapContainerHeight(map, 3/2, true);
+        // initialise MHCLGMaps with mapbox access token
+        const mhclgMaps = new MHCLGMaps({mapbox_token: '{{ config.MAPBOX_TOKEN }}'});
 
-  map.setView(new L.LatLng(54.00366, -2.547855), 7);
+        const map = mhclgMaps.createMap("map-container");
+        mhclgMaps.setMapContainerHeight(map, 3 / 2, true);
 
-  const planningAuthorityJson = {{ data | tojson }};
+        map.setView(new L.LatLng(54.00366, -2.547855), 7);
 
-  function makeAndAddLayer(layerGroup) {
-    const newLayer = new L.FeatureGroup();
-    layerGroup.addLayer(newLayer);
-    return newLayer;
-  }
+        const planningAuthorityJson = {{ data | tojson }};
 
-  var boundariesLayer = makeAndAddLayer(map);
-  var missingDataLayer = makeAndAddLayer(boundariesLayer);
-  var warningDataLayer = makeAndAddLayer(boundariesLayer);
-  var errorDataLayer = makeAndAddLayer(boundariesLayer);
-  var validDataLayer = makeAndAddLayer(boundariesLayer);
+        function makeAndAddLayer(layerGroup) {
+            const newLayer = new L.FeatureGroup();
+            layerGroup.addLayer(newLayer);
+            return newLayer;
+        }
 
-  const disableStyle = {
-    color: "#bfc1c3",
-    fillColor: "#bfc1c3",
-    fillOpacity: 0.3,
-  };
+        var boundariesLayer = makeAndAddLayer(map);
+        //var missingDataLayer = makeAndAddLayer(boundariesLayer);
+        //var warningDataLayer = makeAndAddLayer(boundariesLayer);
+        //var errorDataLayer = makeAndAddLayer(boundariesLayer);
+        var validDataLayer = makeAndAddLayer(boundariesLayer);
 
-  const validStyle = {
-    color: "#006435",
-    fillColor: "#006435",
-    fillOpacity: 0.3,
-  };
+        const disableStyle = {
+            color: "#bfc1c3",
+            fillColor: "#bfc1c3",
+            fillOpacity: 0.3,
+        };
 
-  const errorStyle = {
-    color: "#b10e1e",
-    fillColor: "#b10e1e",
-    fillOpacity: 0.3,
-  };
+        const validStyle = {
+            color: "#006435",
+            fillColor: "#006435",
+            fillOpacity: 0.3,
+        };
 
-  const warningStyle = {
-    color: "#ffbf47",
-    fillColor: "#ffbf47",
-    fillOpacity: 0.3,
-  };
+        const errorStyle = {
+            color: "#b10e1e",
+            fillColor: "#b10e1e",
+            fillOpacity: 0.3,
+        };
 
-  var itemsProcessed = 0;
-  function addLayerToABoundariesLayer(laBoundary, data, layerGroup, style) {
-    laBoundary
-      ._setDefaultStyles(style)
-      ._addHoverHandlers();
-    // speeds up page render by reducing js blocking time
-    // might be quicker to do a timeout for each forEach call
-    setTimeout(function() {
-      itemsProcessed++;
-      layerGroup.addLayer( laBoundary );
-      setupPopup(laBoundary, data);
-      if(itemsProcessed === planningAuthorityJson.length) {
-        orderBoundaryLayers();
-      }
-    }, 0);
-  }
+        const warningStyle = {
+            color: "#ffbf47",
+            fillColor: "#ffbf47",
+            fillOpacity: 0.3,
+        };
 
-  orgjson.forEach(function(planningAuthority) {
-    const boundary = L.geoJSON( planningAuthority.geojson );
+        var itemsProcessed = 0;
 
-    if( org.results === "No results available") {
-      const styleSetting = disableStyle;
-      addLayerToABoundariesLayer(boundary, org, missingDataLayer, disableStyle);
+        function addLayerToABoundariesLayer(laBoundary, data, layerGroup, style) {
+            laBoundary
+                ._setDefaultStyles(style)
+                ._addHoverHandlers();
+            // speeds up page render by reducing js blocking time
+            // might be quicker to do a timeout for each forEach call
+            setTimeout(function () {
+                itemsProcessed++;
+                layerGroup.addLayer(laBoundary);
+                setupPopup(laBoundary, data);
+                if (itemsProcessed === planningAuthorityJson.length) {
+                    orderBoundaryLayers();
+                }
+            }, 0);
+        }
 
-    }
-    /* else {
-      if (org.results.errors) {
-        const styleSetting = errorStyle;
-        addLayerToABoundariesLayer(boundary, org, errorDataLayer, errorStyle);
-      } else if (org.results.warnings || org.results.rows_analysed == 0) {
-        const styleSetting = warningStyle;
-        console.log(org);
-        addLayerToABoundariesLayer(boundary, org, warningDataLayer, warningStyle);
-      } else {
-        const styleSetting = validStyle;
-        addLayerToABoundariesLayer(boundary, org, validDataLayer, validStyle);
-      }
-    }*/
+        planningAuthorityJson.forEach(function (planningAuthority) {
+            if(planningAuthority.geojson){
+                const boundary = L.geoJSON(planningAuthority.geojson);
+                addLayerToABoundariesLayer(boundary, planningAuthority, validDataLayer, validStyle);
+            }
+        });
 
-  });
+        function orderBoundaryLayers() {
+            map.fitBounds(boundariesLayer.getBounds());
+            validDataLayer.bringToFront();
+        }
 
-  function orderBoundaryLayers() {
-    map.fitBounds(boundariesLayer.getBounds());
-    missingDataLayer.bringToFront();
-    warningDataLayer.bringToFront();
-    errorDataLayer.bringToFront();
-    validDataLayer.bringToFront();
-  }
+        const resultsTemplate =
+            '<h3 class="govuk-heading-s">{planning_authority}</h3>' +
+            '<ul class="govuk-list">' +
+            '<li>{plan_count} plans</li>' +
+            '</ul>' +
+            '<p class="govuk-body"><a class="govuk-link" href="{url}">See full results</a></p>';
 
+        function setupPopup(boundary, planningAuthority) {
+            const url = 'url to the plan? or planning authority?'
+            const popupContent = L.Util.template(resultsTemplate,
+                    {
+                        planning_authority: planningAuthority.planning_authority,
+                        plan_count: planningAuthority.plans.length,
+                        url: url
+                    });
+                boundary.bindPopup(popupContent);
+        }
 
-</script>
-{%  endblock %}
+    </script>
 {% endblock %}
 
 
