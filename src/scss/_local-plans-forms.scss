@@ -23,6 +23,24 @@
   @include govuk-responsive-margin(6, "bottom");
 }
 
+$indicator-box-spacing: 10px;
+
+.fact-already-exists__msg {
+  display: none;
+}
+
+.fact-already-set {
+  margin-top: -($indicator-box-spacing);
+  margin-left: -($indicator-box-spacing);
+  padding: $indicator-box-spacing;
+  background: govuk-colour("grey-3");
+
+  .fact-already-exists__msg {
+    display: block;
+    margin: 10px 0 0;
+  }
+}
+
 .publication-date-input,
 .regulation-18-date-input,
 .proposed-publication-date-input,

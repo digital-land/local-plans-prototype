@@ -226,7 +226,7 @@
                     {% if doc.facts|length > 0 %}<caption class="govuk-table__caption">Facts from document</caption>{% endif %}
                     <tbody class="govuk-table__body">
                         {% for fact in doc.facts %}
-                            <tr class="govuk-table__row">
+                            <tr class="govuk-table__row" data-fact-type="{{ fact.fact_type }}">
                               <th class="govuk-table__header" scope="row">{% if fact.from_ and fact.to  %}{{ fact.from_ }} to {{fact.to }}{% else %}{{ fact.fact }}{%  endif %}</th>
                               <td class="govuk-table__cell">{{ fact.fact_type | format_fact }}</td>
                               <td class="govuk-table__cell">{% if fact.notes == "" %}-{% else %}{{ fact.notes }}{% endif %}</td>
@@ -366,16 +366,46 @@
 
   // handle changes to form when user changes select
   const addFactForms = document.querySelectorAll(".add-fact-form");
+  const addFactDetails = Array.prototype.slice.call( addFactForms ).map((form) => form.closest("details"));
+  addFactDetails.forEach((detail) => {
+    const summary = detail.querySelector("summary");
+    summary.addEventListener('click', (e) => {
+      const form = detail.querySelector("form");
+      const firstFormGroup = form.querySelectorAll(".govuk-form-group")[0];
+      if(!detail.open) {
+        const option = firstFormGroup.querySelector('option:checked');
+        indicateIfFactAlreadySet(option, form);
+      }
+    });
+  });
   const addFactSelects = Array.prototype.slice.call( addFactForms ).map((form) => form.querySelector(".fact-select-types"));
   addFactSelects.forEach((select) => {
     select.addEventListener('change', (e) => {
       const form = e.target.closest('form');
       const option = e.target.querySelector('option:checked');
+
+      indicateIfFactAlreadySet(option, form);
+
       // remove all these classes before adding selected class
       removeAllClassesFromFactForm(form);
       form.classList.add(option.dataset.typeClass);
     });
   });
+
+  function checkIfFactIsSet(fact_type, form) {
+    const table = form.closest(".document-facts").querySelector(".document-facts__table");
+    const fact = table.querySelectorAll(`[data-fact-type=${fact_type}]`);
+    return (fact.length > 0) ? true:false;
+  }
+
+  function indicateIfFactAlreadySet(option, form) {
+    const formGroup = option.closest(".govuk-form-group");
+
+    formGroup.classList.remove('fact-already-set');
+    if(checkIfFactIsSet(option.value, form)) {
+      formGroup.classList.add('fact-already-set');
+    }
+  }
 
   const localPlanFactTypeClasses = ["plan-name", "plan-period", "plan-start-year", "plan-end-year", "housing-requirement-total", "housing-requirement-range", "housing-requirement-yearly-average", "housing-requirement-yearly-range"];
   const emergingPlanFactTypeClasses = ["publication-date", "proposed-reg-18-date", "proposed-publication-date", "proposed-submission-date", "proposed-main-modifications-date", "proposed-adoption-date" ];
@@ -525,7 +555,6 @@
 
   function factAddedCallback(resp_data, form) {
     if(resp_data['OK'] === 200) {
-      console.log(factTemplate(resp_data));
       const factsEl = form.closest(".document-facts");
       const table = factsEl.querySelector(".document-facts__table tbody");
 

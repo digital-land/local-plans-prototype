@@ -5429,6 +5429,22 @@
   }
 }
 
+.fact-already-exists__msg {
+  display: none;
+}
+
+.fact-already-set {
+  margin-top: -10px;
+  margin-left: -10px;
+  padding: 10px;
+  background: #dee0e2;
+}
+
+.fact-already-set .fact-already-exists__msg {
+  display: block;
+  margin: 10px 0 0;
+}
+
 .publication-date-input,
 .regulation-18-date-input,
 .proposed-publication-date-input,

@@ -20,6 +20,7 @@
              <option value="{{ fact_type.name }}" data-type-class="{{ fact_type.name|lower|replace('_', '-') }}">{{ fact_type.value }}</option>
           {% endfor %}
       </select>
+      <p class="govuk-body fact-already-exists__msg">A fact of this type has already been set.</p>
     </div>
 
      <!-- TODO depending on type of fact chosen render input for fact
