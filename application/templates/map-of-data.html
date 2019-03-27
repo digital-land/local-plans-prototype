@@ -110,10 +110,10 @@
             '<ul class="govuk-list">' +
             '<li>{plan_count} plans</li>' +
             '</ul>' +
-            '<p class="govuk-body"><a class="govuk-link" href="{url}">See full results</a></p>';
+            '<p class="govuk-body"><a class="govuk-link" href="{url}">Go to local authority page</a></p>';
 
         function setupPopup(boundary, planningAuthority) {
-            const url = 'url to the plan? or planning authority?'
+            const url = `/planning-authority/` + planningAuthority.planning_authority
             const popupContent = L.Util.template(resultsTemplate,
                     {
                         planning_authority: planningAuthority.planning_authority,
