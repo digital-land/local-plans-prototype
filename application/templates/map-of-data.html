@@ -174,7 +174,10 @@
                         planDetailTemplate += '<li>Housing requirement total: {housing_requirement_total}</li>';
                         context.housing_requirement_total = plan.housing_requirement_total
                     }
-                    /*if(plan.housing_requirement_yearly_average){
+                    /*
+                        // TODO - this is a bit to slow - would it be better to have different const templates for each
+                        // case rather than concatenate?
+                    if(plan.housing_requirement_yearly_average){
                         planDetailTemplate += '<li>Housing requirement yearly average: {housing_requirement_yearly_average}</li>';
                         context.housing_requirement_yearly_average = plan.housing_requirement_yearly_average
                     }
