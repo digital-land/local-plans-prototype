@@ -224,7 +224,7 @@ class State:
         self.date = date
 
     def to_dict(self):
-        return {'state': self.state, 'date': self.date.strftime('%Y-%m-%d')}
+        return {'state': self.state, 'date': self.date.strftime('%Y')}
 
     def __lt__(self, other):
         return self.date < other.date
