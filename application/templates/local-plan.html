@@ -747,7 +747,7 @@
   }
 
   function getExitEditModeHandler(container) {
-    return function(e) {
+    return function() {
       container.classList.remove("edit-mode");
     } 
   }
@@ -762,11 +762,27 @@
     const editableUI = createEditableUI(titleEl.textContent);
     insertAfter(editableUI, titleEl);
 
+    planTitleContainer.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
     titleEl.addEventListener('click', function(e) {
       planTitleContainer.classList.toggle("edit-mode");
+      document.addEventListener('click', clickOffEditTitle);
+      document.addEventListener('keydown', clickOffEditTitle);
     });
 
     const exitEditModeHandler = getExitEditModeHandler( planTitleContainer );
+
+    function clickOffEditTitle(e) {
+      // only exit edit mode if user clicks off or presses escape key
+      if( (e.type === "keydown" && e.keyCode === 27) | e.type === "click") {
+        console.log("switched off by click or esc");
+        exitEditModeHandler();
+        document.removeEventListener('click', clickOffEditTitle);
+        document.removeEventListener('keydown', clickOffEditTitle);
+      }
+    }
 
     function updateWithNewPlanTitle(newTitle) {
       // update plan-title
