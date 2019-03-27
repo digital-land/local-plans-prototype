@@ -735,6 +735,8 @@
     const fixedPart = createElementWithClasses("span", "editable-title__fixed");
     fixedPart.textContent = `${parts[0]}-`;
 
+    const form = createElementWithClasses("form", "form--inline");
+
     const input = createElementWithClasses("input", ["govuk-input", "govuk-input--width-4"]);
     input.setAttribute("type", "text");
     input.value = parts[1];
@@ -750,9 +752,10 @@
     errorMessage.textContent = "Plan with this title already exists";
 
     container.appendChild(fixedPart);
-    container.appendChild(input);
-    container.appendChild(saveBtn);
-    container.appendChild(errorMessage);
+    form.appendChild(input);
+    form.appendChild(saveBtn);
+    form.appendChild(errorMessage);
+    container.appendChild(form);
 
     return container;
   }
@@ -807,9 +810,9 @@
       editableUI.querySelector("input").dataset.currentSavedValue = newTitle;
     }
 
-    const btn = editableUI.querySelector("button");
+    const form = editableUI.querySelector("form");
     const input = editableUI.querySelector("input");
-    btn.addEventListener('click', (e) => {
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
       const original = input.dataset.currentSavedValue;
       const newTitle = `${original.split("-")[0]}-${input.value}`;
@@ -818,6 +821,7 @@
          'new_identifier': newTitle
         },
         (resp_data) => {
+          console.log(resp_data);
           if(resp_data['OK'] == 200) {
             updateWithNewPlanTitle(newTitle);
           } else {

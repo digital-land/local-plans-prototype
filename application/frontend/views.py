@@ -200,7 +200,7 @@ def update_plan(planning_authority, local_plan):
     plan.local_plan = plan_identifier
     db.session.add(plan)
     db.session.commit()
-    return jsonify({'message': 'plan identifier updated'})
+    return jsonify({'OK': 200, 'message': 'plan identifier updated'})
 
 
 @frontend.route('/local-plans/<local_plan>/document/<document>', methods=['DELETE'])

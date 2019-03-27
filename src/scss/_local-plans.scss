@@ -247,6 +247,12 @@
   }
 }
 
+.form--inline {
+  display: inline-block;
+  padding-top: 2px;
+  vertical-align: top;
+}
+
 .govuk-inset-text--error {
   border-color: govuk-colour("red");
   color: govuk-colour("red");
