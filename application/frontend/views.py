@@ -466,7 +466,7 @@ def data_as_csv():
 @frontend.route('/local-plans/map-of-data')
 def map_of_data():
     data = []
-    planning_authorities = PlanningAuthority.query.all()[25:100]
+    planning_authorities = PlanningAuthority.query.all()[25:200]
     for pla in planning_authorities:
         authority = {'planning_authority': pla.id, 'plans': []}
         # ps = []
