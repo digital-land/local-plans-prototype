@@ -187,9 +187,9 @@
                         context.housing_requirement_range_to = plan.housing_requirement_range_to;
                     }
                     if(plan.housing_requirement_yearly_range_from && plan.housing_requirement_yearly_range_from_to){
-                        planDetailTemplate += '<li>Housing requirement yearly range: {housing_requirement_yearly_range_from} to {housing_requirement_yearly_range_from}</li>';
+                        planDetailTemplate += '<li>Housing requirement yearly range: {housing_requirement_yearly_range_from} to {housing_requirement_yearly_range_from_to}</li>';
                         context.housing_requirement_yearly_range_from = plan.housing_requirement_yearly_range_from;
-                        context.housing_requirement_yearly_range_from = plan.housing_requirement_yearly_range_from;
+                        context.housing_requirement_yearly_range_from_to = plan.housing_requirement_yearly_range_from_to;
                     }
                     planDetailTemplate += '</ul>';
                     var planContent = L.Util.template(planDetailTemplate, context);
