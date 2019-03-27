@@ -114,7 +114,7 @@
         }
 
         const localAuthorityTemplate =
-            '<h3 class="govuk-heading-s"><a class="govuk-link" href="{url}">{planning_authority}</a></h3>' +
+            '<h3 class="govuk-heading-s"><a class="govuk-link" href="{url}" target="_blank">{planning_authority}</a></h3>' +
             '<ul class="govuk-list">' +
             '<li>Plans: {plan_count}</li>' +
             '<li>Housing figures collected: {has_housing_figures}</li>' +
@@ -127,7 +127,7 @@
             '<li>Plans: {plan_count}</li>' +
             '<li>Housing figures collected: {has_housing_figures}</li>' +
             '</ul>' +
-            '<p class="govuk-body"><a class="govuk-link" href="{url}">Add data for this planning authority</a></p>';
+            '<p class="govuk-body"><a class="govuk-link" href="{url}" target="_blank">Add data for this planning authority</a></p>';
 
         function setupPopup(boundary, planningAuthority) {
             const planCount = planningAuthority.plans.length;
@@ -159,7 +159,7 @@
                     // case rather than concatenate?
 
                     var planDetailTemplate =
-                        '<h3 class="govuk-heading-s"><a class="govuk-link" href="{url}">{plan}</a></h3>' +
+                        '<h3 class="govuk-heading-s"><a class="govuk-link" href="{url}" target="_blank">{plan}</a></h3>' +
                         '<ul class="govuk-list">' +
                         '<li style="text-transform: capitalize;">{status}</li>' +
                         '<li>Documents found: {document_count}</li>' +
