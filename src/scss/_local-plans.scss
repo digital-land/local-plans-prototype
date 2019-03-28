@@ -263,3 +263,19 @@
   padding-bottom: 0;
 }
 
+.govuk-caption-s {
+  @include govuk-font($size: 16);
+
+  display: block;
+
+  color: $govuk-secondary-text-colour;
+}
+
+.with-caption-after {
+  margin-bottom: 0;
+
+  & + .govuk-caption--after {
+    @include govuk-responsive-margin(4, "bottom");
+  }
+}
+

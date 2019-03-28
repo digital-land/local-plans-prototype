@@ -103,8 +103,6 @@
             }, 0);
         }
 
-<<<<<<< HEAD
-=======
         function reorderLayersIfAllAdded() {
           if (itemsProcessed === planningAuthorityJson.length) {
             orderBoundaryLayers();
@@ -112,7 +110,6 @@
         }
 
         console.log(planningAuthorityJson[11]);
->>>>>>> Added togglable layer to show if PLA has adopted plan
         planningAuthorityJson.forEach(function (planningAuthority) {
 
             if(planningAuthority.geojson){
@@ -130,10 +127,6 @@
                 }
             }
         });
-<<<<<<< HEAD
-=======
-
->>>>>>> Added togglable layer to show if PLA has adopted plan
 
         function orderBoundaryLayers() {
             map.fitBounds(boundariesLayer.getBounds());
@@ -141,7 +134,8 @@
         }
 
         const localAuthorityTemplate =
-            '<h3 class="govuk-heading-s"><a class="govuk-link" href="{url}">{planning_authority}</a></h3>' +
+            '<h3 class="govuk-heading-s with-caption-after"><a class="govuk-link" href="{url}">{planning_authority_name}</a></h3>' +
+            '<span class="govuk-caption--after govuk-caption-s">{planning_authority}</span>' +
             '<ul class="govuk-list">' +
             '<li>Plans: {plan_count}</li>' +
             '<li>Housing figures collected: {has_housing_figures}</li>' +
@@ -160,7 +154,7 @@
             const planCount = planningAuthority.plans.length;
 
             if(planCount == 0){
-                const url = `/local-plans/` + planningAuthority.planning_authority
+                const url = `/local-plans/` + planningAuthority.planning_authority;
                 const popupContent = L.Util.template(localAuthorityInputTemplate,
                     {
                         planning_authority: planningAuthority.planning_authority,
@@ -175,6 +169,7 @@
                 var popupContent = L.Util.template(localAuthorityTemplate,
                     {
                         planning_authority: planningAuthority.planning_authority,
+                        planning_authority_name: planningAuthority.planning_authority_name,
                         plan_count: planningAuthority.plans.length,
                         url: url,
                         has_housing_figures: planningAuthority.has_housing_figures
