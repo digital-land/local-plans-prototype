@@ -7081,6 +7081,54 @@
   }
 }
 
+.map-container {
+  position: relative;
+}
+
+.layer-toggles {
+  position: absolute;
+  z-index: 1000;
+  top: 10px;
+  right: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: #ffffff;
+}
+
+.layer-toggle button {
+  font-family: "nta", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 14px;
+  font-size: 0.875rem;
+  line-height: 1.14286;
+  padding: 8px 10px 6px;
+  background: #ffffff;
+}
+
+@media print {
+  .layer-toggle button {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .layer-toggle button {
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+}
+
+@media print {
+  .layer-toggle button {
+    font-size: 14pt;
+    line-height: 1.2;
+  }
+}
+
 .top-content {
   margin-bottom: 30px;
 }

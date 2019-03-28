@@ -15,7 +15,12 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-         <div id="map-container"></div>
+      <div class="map-container">
+        <div id="leaflet-map"></div>
+        <ul class="layer-toggles">
+          <li class="layer-toggle"><button data-layer="adopted">Show adopted</button></li>
+        </ul>
+      </div>
     </div>
   </div>
 
@@ -30,10 +35,10 @@
         // initialise MHCLGMaps with mapbox access token
         const mhclgMaps = new MHCLGMaps({mapbox_token: '{{ config.MAPBOX_TOKEN }}'});
 
-        const map = mhclgMaps.createMap("map-container");
-        mhclgMaps.setMapContainerHeight(map, 3 / 2, true);
+        const map = mhclgMaps.createMap("leaflet-map");
+        mhclgMaps.setMapContainerHeight(map, 1, true);
 
-        map.setView(new L.LatLng(54.00366, -2.547855), 7);
+        map.setView(new L.LatLng(52.47716, -2.392101), 7);
 
         const planningAuthorityJson = {{ data | tojson }};
 
@@ -73,8 +78,14 @@
             fillOpacity: 0.3,
         };
 
+        const govukBlueStyle = {
+            color: "#005ea5",
+            fillColor: "#005ea5",
+            fillOpacity: 0.3,
+        };
+
         var itemsProcessed = 0;
-        function addLayerToABoundariesLayer(laBoundary, data, layerGroup, style) {
+        function addLayerToABoundariesLayer(laBoundary, data, layerGroup, style, withPopup=false, cb) {
             laBoundary
                 ._setDefaultStyles(style)
                 ._addHoverHandlers();
@@ -83,13 +94,25 @@
             setTimeout(function () {
                 itemsProcessed++;
                 layerGroup.addLayer(laBoundary);
-                setupPopup(laBoundary, data);
-                if (itemsProcessed === planningAuthorityJson.length) {
-                    orderBoundaryLayers();
+                if(withPopup) {
+                  setupPopup(laBoundary, data);
+                }
+                if(cb && typeof cb === "function") {
+                  cb();
                 }
             }, 0);
         }
 
+<<<<<<< HEAD
+=======
+        function reorderLayersIfAllAdded() {
+          if (itemsProcessed === planningAuthorityJson.length) {
+            orderBoundaryLayers();
+          }
+        }
+
+        console.log(planningAuthorityJson[11]);
+>>>>>>> Added togglable layer to show if PLA has adopted plan
         planningAuthorityJson.forEach(function (planningAuthority) {
 
             if(planningAuthority.geojson){
@@ -97,16 +120,20 @@
 
                 if (planningAuthority.plans.length == 0) {
                     const styleSetting = disableStyle;
-                    addLayerToABoundariesLayer(boundary, planningAuthority, missingDataLayer, disableStyle);
+                    addLayerToABoundariesLayer(boundary, planningAuthority, missingDataLayer, disableStyle, true, reorderLayersIfAllAdded);
                 } else {
                     if (planningAuthority.has_housing_figures) {
-                        addLayerToABoundariesLayer(boundary, planningAuthority, validDataLayer, validStyle);
+                        addLayerToABoundariesLayer(boundary, planningAuthority, validDataLayer, validStyle, true,reorderLayersIfAllAdded);
                     } else {
-                        addLayerToABoundariesLayer(boundary, planningAuthority, warningDataLayer, warningStyle);
+                        addLayerToABoundariesLayer(boundary, planningAuthority, warningDataLayer, warningStyle, true, reorderLayersIfAllAdded);
                     }
                 }
             }
         });
+<<<<<<< HEAD
+=======
+
+>>>>>>> Added togglable layer to show if PLA has adopted plan
 
         function orderBoundaryLayers() {
             map.fitBounds(boundariesLayer.getBounds());
@@ -198,6 +225,51 @@
                 boundary.bindPopup(popupContent);
             }
         }
+
+        // --------------------------------------------------------
+        // Add a togglable layer to show if PLA has an adopted plan 
+        //---------------------------------------------------------
+
+        const adoptedPlanLayer = new L.FeatureGroup();
+        planningAuthorityJson.forEach((planningAuthority) => {
+          if(planningAuthority.geojson) {
+            const boundary = L.geoJSON(planningAuthority.geojson);
+            if(hasAdoptedPlan(planningAuthority)) {
+              addLayerToABoundariesLayer(boundary, planningAuthority, adoptedPlanLayer, govukBlueStyle);
+            } else {
+              addLayerToABoundariesLayer(boundary, planningAuthority, adoptedPlanLayer, disableStyle);
+            }
+          }
+        });
+        function hasAdoptedPlan(plA) {
+          const plans = plA.plans;
+          let hasAdopted = false;
+          if(plans.length > 0) {
+            plans.forEach((plan) => {
+              //console.log(plan.status.state);
+              if(plan.status.state === "adopted") {
+                hasAdopted = true;
+              }
+            });
+          }
+          return hasAdopted;
+        }
+        let adoptedLayerDisplayed = false;
+        const adoptedLayerToggle = document.querySelector("[data-layer='adopted']");
+        adoptedLayerToggle.addEventListener('click', (e) => {
+          if(adoptedLayerDisplayed) {
+            // hide it
+            map.removeLayer(adoptedPlanLayer);
+            map.addLayer(boundariesLayer);
+            adoptedLayerToggle.textContent = "Show adopted";
+          } else {
+            // display it
+            map.removeLayer(boundariesLayer);
+            map.addLayer(adoptedPlanLayer);
+            adoptedLayerToggle.textContent = "Show data collected";
+          }
+          adoptedLayerDisplayed = !adoptedLayerDisplayed;
+        });
 
     </script>
 {% endblock %}
