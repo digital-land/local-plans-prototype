@@ -348,6 +348,73 @@
 </script>
 {% endraw %}
 <script>
+  // ------------------
+  // DOM util functions
+  // ------------------
+
+  // classes can be str or Array of class names
+  function createElementWithClasses(tag, classes) {
+    const element = document.createElement(tag);
+    if(Array.isArray(classes)) {
+      element.classList.add(...classes);
+    } else {
+      element.classList.add(classes);
+    }
+    return element;
+  }
+
+
+  function insertAfter(el, referenceNode) {
+    referenceNode.parentNode.insertBefore(el, referenceNode.nextSibling);
+  }
+
+
+  // takes a newly created element -> wrapper
+  // and an element -> el to be wrapped
+  function wrapElement(el, wrapper) {
+    el.parentNode.insertBefore(wrapper, el);
+    wrapper.appendChild(el);
+  }
+
+
+  function switchClasses(el, toAdd, toRemove) {
+    el.classList.remove(toRemove);
+    el.classList.add(toAdd);
+  }
+
+  // ------ end DOM utils -------
+
+
+  // ------------------
+  // Helper functions
+  // ------------------
+
+  function cleanNumber(str) {
+    // strip any commas user may have added
+    return str.replace(/\,/g, "");
+  }
+
+
+  function postJSONRequest(endpoint, data, cb) {
+    fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(resp_data => {
+      if(cb && typeof cb === "function") {
+        cb(resp_data);
+      } else {
+        console.log(resp_data);
+      }
+    });
+  }
+
+  // ------ end Helper functions -------
+
   const urlAddBtns = document.querySelectorAll(".url-add-btn");
   const urlEditBtns = document.querySelectorAll(".url-edit-btn");
   const urlRemoveBtns = document.querySelectorAll(".url-remove-btn");
@@ -415,54 +482,6 @@
 
   function removeAllClassesFromFactForm(form) {
     form.classList.remove( ...allFactTypeClasses );
-  }
-  
-  const htmlStringToElement = (function () {
-    const parser = new DOMParser();
-    return function(htmlStr) {
-      const generatedDoc = parser.parseFromString(htmlStr, "text/xml");
-      return generatedDoc.childNodes[0];
-    }
-    //console.log("this runs straight away");
-  })();
-
-  function getNearestSection(el) {
-    return el.closest(".lp-section-box");
-  }
-
-  function switchClasses(el, toAdd, toRemove) {
-    el.classList.remove(toRemove);
-    el.classList.add(toAdd);
-  }
-
-  function postDataFieldSaveEvent(btn, dataKey, inputSelector, callback) {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const form = e.currentTarget.closest("form");
-      const url = form.getAttribute("action");
-      const section = getNearestSection(e.currentTarget);
-
-      // set up data obj to post
-      var data = {};
-      data[dataKey] = form.querySelector(inputSelector).value;
-
-      // perform post
-      fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      })
-      .then(response => response.json())
-      .then( (resp_data) => callback(resp_data, section) );
-    });
-  }
-
-
-  function cleanNumber(str) {
-    // strip any commas user may have added
-    return str.replace(/\,/g, "");
   }
 
   function extractDate(fieldset) {
@@ -542,15 +561,7 @@
     console.log(fact);
 
     // perform post
-    fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ 'fact': fact })
-    })
-    .then(response => response.json())
-    .then( (resp_data) => factAddedCallback(resp_data, form) );
+    postJSONRequest(url, {'fact': fact}, (resp_data) => factAddedCallback(resp_data, form));
   }
 
   function factAddedCallback(resp_data, form) {
@@ -558,8 +569,8 @@
       const factsEl = form.closest(".document-facts");
       const table = factsEl.querySelector(".document-facts__table tbody");
 
-      var row = document.createElement("tr");
-      row.classList.add('govuk-table__row');
+      const row = createElementWithClasses("tr", "govuk-table__row");
+      row.dataset.factType = resp_data.fact["fact_type"];
       row.innerHTML = factTemplate(resp_data);
       table.appendChild( row );
 
@@ -656,39 +667,32 @@
     };
 
     // perform post
-    fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then( (resp_data) => {
-      console.log(resp_data);
-      const item = document.createElement("li");
-      item.classList.add('url-item', 'govuk-grid-row');
-      item.innerHTML = urlTemplate(resp_data);
-      const detailsContainer = item.querySelector(".document-facts");
-      const detailsEl = cloneAddFactForm(resp_data.document['type'], resp_data.add_fact_url);
-      detailsContainer.appendChild( detailsEl );
+    postJSONRequest(endpoint, data, (resp_data) => handleSaveURLResponse(resp_data, listEl));
+  }
 
-      // add title to URL template
-      if(resp_data.document['title'] !== "") {
-        item.querySelector(".document-title").textContent = resp_data.document['title'];
-      }
+  function handleSaveURLResponse(resp_data, listElement) {
+    console.log(resp_data);
+    const item = createElementWithClasses("li", ['url-item', 'govuk-grid-row']);
+    item.innerHTML = urlTemplate(resp_data);
+    const detailsContainer = item.querySelector(".document-facts");
+    const detailsEl = cloneAddFactForm(resp_data.document['type'], resp_data.add_fact_url);
+    detailsContainer.appendChild( detailsEl );
 
-      listEl.appendChild( item );
+    // add title to URL template
+    if(resp_data.document['title'] !== "") {
+      item.querySelector(".document-title").textContent = resp_data.document['title'];
+    }
 
-      // add submit handler
-      const formBtn = detailsEl.querySelector('form .fact-save-btn');
-      formBtn.addEventListener('click', factSubmitHandler);
+    listElement.appendChild( item );
 
-      // hook up remove button
-      item.querySelector(".url-remove-btn").addEventListener('click', (e) => {
-        e.preventDefault();
-        removeBtnClickHandler(e, '.url-item')
-      });
+    // add submit handler
+    const formBtn = detailsEl.querySelector('form .fact-save-btn');
+    formBtn.addEventListener('click', factSubmitHandler);
+
+    // hook up remove button
+    item.querySelector(".url-remove-btn").addEventListener('click', (e) => {
+      e.preventDefault();
+      removeBtnClickHandler(e, '.url-item')
     });
   }
 
@@ -715,45 +719,8 @@
   const planTitles = document.querySelectorAll(".editable-plan-title");
   planTitles.forEach(makeTitleEditable);
 
-  function postJSONRequest(endpoint, data, cb) {
-    fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(resp_data => {
-      if(cb && typeof cb === "function") {
-        cb(resp_data);
-      } else {
-        console.log(resp_data);
-      }
-    });
-  }
-
-  function wrapElement(el, wrapper) {
-    el.parentNode.insertBefore(wrapper, el);
-    wrapper.appendChild(el);
-}
-
-  function insertAfter(el, referenceNode) {
-    referenceNode.parentNode.insertBefore(el, referenceNode.nextSibling);
-  }
-
   function splitPlanTitle(title) {
     return title.trim().split("-");
-  }
-
-  function createElementWithClasses(tag, classes) {
-    const element = document.createElement(tag);
-    if(Array.isArray(classes)) {
-      element.classList.add(...classes);
-    } else {
-      element.classList.add(classes);
-    }
-    return element;
   }
 
   function createEditableUI(currentValue) {
@@ -856,7 +823,8 @@
           } else {
             editableUI.classList.add("has-error");
           }
-        });
+        }
+      );
     });
   }
 
