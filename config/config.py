@@ -10,6 +10,9 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    S3_REGION = os.getenv('S3_REGION')
+    S3_BUCKET = os.getenv('S3_BUCKET')
+    MAPBOX_TOKEN = os.getenv('MAPBOX_TOKEN')
 
 
 class DevelopmentConfig(Config):

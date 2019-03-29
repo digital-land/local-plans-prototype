@@ -2,6 +2,7 @@ import base64
 import csv
 import datetime
 import io
+import json
 from urllib.parse import urlparse
 
 import boto3
@@ -20,7 +21,7 @@ from flask import (
     make_response
 )
 
-from application.extensions import db
+from application.extensions import db, flask_optimize
 
 from application.models import (
     PlanningAuthority,
@@ -200,7 +201,7 @@ def update_plan(planning_authority, local_plan):
     plan.local_plan = plan_identifier
     db.session.add(plan)
     db.session.commit()
-    return jsonify({'OK': 200, 'message': 'plan identifier updated'})
+    return jsonify({'message': 'plan identifier updated'})
 
 
 @frontend.route('/local-plans/<local_plan>/document/<document>', methods=['DELETE'])
@@ -458,3 +459,40 @@ def data_as_csv():
     out.headers["Content-Disposition"] = "attachment; filename=local-plan-data.csv"
     out.headers["Content-type"] = "text/csv"
     return out
+
+
+@frontend.route('/local-plans/map-of-data')
+@flask_optimize.optimize()
+def map_of_data():
+    #TODO this is really slow - do something!!!
+    data = []
+    planning_authorities = PlanningAuthority.query.all()
+    for pla in planning_authorities:
+        authority = {'planning_authority': pla.id, 'planning_authority_name': pla.name, 'plans': [], 'has_housing_figures': False}
+        for p in pla.local_plans:
+            plan = {'documents': 0,
+                    'facts': 0,
+                    'plan_id': p.local_plan,
+                    'status': p.latest_state().to_dict()}
+            for doc in p.plan_documents:
+                plan['documents'] = plan['documents'] + 1
+                for fact in doc.facts:
+                    plan['facts'] = plan['facts'] + 1
+                    total = ['HOUSING_REQUIREMENT_TOTAL' , 'HOUSING_REQUIREMENT_YEARLY_AVERAGE']
+                    range = ['HOUSING_REQUIREMENT_RANGE', 'HOUSING_REQUIREMENT_YEARLY_RANGE']
+                    if fact.fact_type in total:
+                        plan[fact.fact_type.lower()] = int(fact.fact.replace(',', '')) if fact.fact else None
+                        authority['has_housing_figures'] = True
+                    if fact.fact_type in range:
+                        plan[f'{fact.fact_type.lower()}_from'] = int(fact.from_.replace(',', '')) if fact.from_ else None
+                        plan[f'{fact.fact_type.lower()}_to'] = int(fact.to.replace(',', '')) if fact.to else None
+                        authority['has_housing_figures'] = True
+            authority['plans'].append(plan)
+        query = "SELECT ST_AsGeoJSON(ST_SimplifyVW('%s', 0.00001))" % pla.geometry
+        if pla.geometry is not None:
+            geojson = db.session.execute(query).fetchone()[0]
+            authority['geojson'] = json.loads(geojson)
+        data.append(authority)
+    return render_template('map-of-data.html', data=data)
+
+

@@ -1,0 +1,272 @@
+{% extends "dlf-base.html" %}
+{%- set mainClasses = "govuk-main-wrapper--l" -%}
+
+{% block head %}
+{{ super() }}
+
+    <link rel="stylesheet" href="{{ static_path }}/static/stylesheets/vendor/leaflet.css"/>
+    <script src="{{ static_path }}/static/javascripts/vendor/leaflet.js"></script>
+
+
+{% endblock %}
+
+{% block content %}
+
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <div class="map-container">
+        <div id="leaflet-map"></div>
+        <ul class="layer-toggles">
+          <li class="layer-toggle"><button data-layer="adopted">Show adopted</button></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block bodyEnd %}
+    <script src="{{ static_path }}/static/javascripts/mhclg-maps.js"></script>
+    <script src="{{ static_path }}/static/javascripts/leaflet-hover-effects.js"></script>
+
+    <script>
+
+        // initialise MHCLGMaps with mapbox access token
+        const mhclgMaps = new MHCLGMaps({mapbox_token: '{{ config.MAPBOX_TOKEN }}'});
+
+        const map = mhclgMaps.createMap("leaflet-map");
+        mhclgMaps.setMapContainerHeight(map, 1, true);
+
+        map.setView(new L.LatLng(52.47716, -2.392101), 7);
+
+        const planningAuthorityJson = {{ data | tojson }};
+
+        function makeAndAddLayer(layerGroup) {
+            const newLayer = new L.FeatureGroup();
+            layerGroup.addLayer(newLayer);
+            return newLayer;
+        }
+
+        var boundariesLayer = makeAndAddLayer(map);
+        var missingDataLayer = makeAndAddLayer(boundariesLayer);
+        var warningDataLayer = makeAndAddLayer(boundariesLayer);
+        //var errorDataLayer = makeAndAddLayer(boundariesLayer);
+        var validDataLayer = makeAndAddLayer(boundariesLayer);
+
+        const disableStyle = {
+            color: "#bfc1c3",
+            fillColor: "#bfc1c3",
+            fillOpacity: 0.3,
+        };
+
+        const validStyle = {
+            color: "#006435",
+            fillColor: "#006435",
+            fillOpacity: 0.3,
+        };
+
+        const errorStyle = {
+            color: "#b10e1e",
+            fillColor: "#b10e1e",
+            fillOpacity: 0.3,
+        };
+
+        const warningStyle = {
+            color: "#ffbf47",
+            fillColor: "#ffbf47",
+            fillOpacity: 0.3,
+        };
+
+        const govukBlueStyle = {
+            color: "#005ea5",
+            fillColor: "#005ea5",
+            fillOpacity: 0.3,
+        };
+
+        var itemsProcessed = 0;
+        function addLayerToABoundariesLayer(laBoundary, data, layerGroup, style, withPopup=false, cb) {
+            laBoundary
+                ._setDefaultStyles(style)
+                ._addHoverHandlers();
+            // speeds up page render by reducing js blocking time
+            // might be quicker to do a timeout for each forEach call
+            setTimeout(function () {
+                itemsProcessed++;
+                layerGroup.addLayer(laBoundary);
+                if(withPopup) {
+                  setupPopup(laBoundary, data);
+                }
+                if(cb && typeof cb === "function") {
+                  cb();
+                }
+            }, 0);
+        }
+
+        function reorderLayersIfAllAdded() {
+          if (itemsProcessed === planningAuthorityJson.length) {
+            orderBoundaryLayers();
+          }
+        }
+
+        console.log(planningAuthorityJson[11]);
+        planningAuthorityJson.forEach(function (planningAuthority) {
+
+            if(planningAuthority.geojson){
+                const boundary = L.geoJSON(planningAuthority.geojson);
+
+                if (planningAuthority.plans.length == 0) {
+                    const styleSetting = disableStyle;
+                    addLayerToABoundariesLayer(boundary, planningAuthority, missingDataLayer, disableStyle, true, reorderLayersIfAllAdded);
+                } else {
+                    if (planningAuthority.has_housing_figures) {
+                        addLayerToABoundariesLayer(boundary, planningAuthority, validDataLayer, validStyle, true,reorderLayersIfAllAdded);
+                    } else {
+                        addLayerToABoundariesLayer(boundary, planningAuthority, warningDataLayer, warningStyle, true, reorderLayersIfAllAdded);
+                    }
+                }
+            }
+        });
+
+        function orderBoundaryLayers() {
+            map.fitBounds(boundariesLayer.getBounds());
+            validDataLayer.bringToFront();
+        }
+
+        const localAuthorityTemplate =
+            '<h3 class="govuk-heading-s with-caption-after"><a class="govuk-link" href="{url}">{planning_authority_name}</a></h3>' +
+            '<span class="govuk-caption--after govuk-caption-s">{planning_authority}</span>' +
+            '<ul class="govuk-list">' +
+            '<li>Plans: {plan_count}</li>' +
+            '<li>Housing figures collected: {has_housing_figures}</li>' +
+            '</ul>';
+
+
+        const localAuthorityInputTemplate =
+            '<h3 class="govuk-heading-s">{planning_authority}</h3>' +
+            '<ul class="govuk-list">' +
+            '<li>Plans: {plan_count}</li>' +
+            '<li>Housing figures collected: {has_housing_figures}</li>' +
+            '</ul>' +
+            '<p class="govuk-body"><a class="govuk-link" href="{url}">Add data for this planning authority</a></p>';
+
+        function setupPopup(boundary, planningAuthority) {
+            const planCount = planningAuthority.plans.length;
+
+            if(planCount == 0){
+                const url = `/local-plans/` + planningAuthority.planning_authority;
+                const popupContent = L.Util.template(localAuthorityInputTemplate,
+                    {
+                        planning_authority: planningAuthority.planning_authority,
+                        plan_count: planningAuthority.plans.length,
+                        url: url,
+                        has_housing_figures: planningAuthority.has_housing_figures
+                    });
+                boundary.bindPopup(popupContent);
+            } else {
+
+                const url = `/planning-authority/` + planningAuthority.planning_authority;
+                var popupContent = L.Util.template(localAuthorityTemplate,
+                    {
+                        planning_authority: planningAuthority.planning_authority,
+                        planning_authority_name: planningAuthority.planning_authority_name,
+                        plan_count: planningAuthority.plans.length,
+                        url: url,
+                        has_housing_figures: planningAuthority.has_housing_figures
+                    });
+
+                planningAuthority.plans.forEach(function(plan){
+
+                    // TODO - this is a bit to slow - would it be better to have different const templates for each
+                    // case rather than concatenate?
+
+                    var planDetailTemplate =
+                        '<h3 class="govuk-heading-s"><a class="govuk-link" href="{url}">{plan}</a></h3>' +
+                        '<ul class="govuk-list">' +
+                        '<li style="text-transform: capitalize;">{status}</li>' +
+                        '<li>Documents found: {document_count}</li>' +
+                        '<li>Facts collected: {facts}</li>';
+
+                    const url = `/local-plans/` + planningAuthority.planning_authority +'#' + plan.plan_id;
+                    context = {
+                        plan: plan.plan_id,
+                        document_count: plan.documents,
+                        facts: plan.facts,
+                        url: url,
+                        status: plan.status.state + ' ' + plan.status.date,
+                    };
+                    if(plan.housing_requirement_total){
+                        planDetailTemplate += '<li>Housing requirement total: {housing_requirement_total}</li>';
+                        context.housing_requirement_total = plan.housing_requirement_total
+                    }
+                    if(plan.housing_requirement_yearly_average){
+                        planDetailTemplate += '<li>Housing requirement yearly average: {housing_requirement_yearly_average}</li>';
+                        context.housing_requirement_yearly_average = plan.housing_requirement_yearly_average
+                    }
+                    if(plan.housing_requirement_range_from && plan.housing_requirement_range_to){
+                        planDetailTemplate += '<li>Housing requirement range: {housing_requirement_range_from} to {housing_requirement_range_to}</li>';
+                        context.housing_requirement_range_from = plan.housing_requirement_range_from;
+                        context.housing_requirement_range_to = plan.housing_requirement_range_to;
+                    }
+                    if(plan.housing_requirement_yearly_range_from && plan.housing_requirement_yearly_range_from_to){
+                        planDetailTemplate += '<li>Housing requirement yearly range: {housing_requirement_yearly_range_from} to {housing_requirement_yearly_range_from_to}</li>';
+                        context.housing_requirement_yearly_range_from = plan.housing_requirement_yearly_range_from;
+                        context.housing_requirement_yearly_range_from_to = plan.housing_requirement_yearly_range_from_to;
+                    }
+                    planDetailTemplate += '</ul>';
+                    var planContent = L.Util.template(planDetailTemplate, context);
+                    popupContent += planContent;
+                });
+                boundary.bindPopup(popupContent);
+            }
+        }
+
+        // --------------------------------------------------------
+        // Add a togglable layer to show if PLA has an adopted plan
+        //---------------------------------------------------------
+
+        const adoptedPlanLayer = new L.FeatureGroup();
+        planningAuthorityJson.forEach((planningAuthority) => {
+          if(planningAuthority.geojson) {
+            const boundary = L.geoJSON(planningAuthority.geojson);
+            if(hasAdoptedPlan(planningAuthority)) {
+              addLayerToABoundariesLayer(boundary, planningAuthority, adoptedPlanLayer, govukBlueStyle);
+            } else {
+              addLayerToABoundariesLayer(boundary, planningAuthority, adoptedPlanLayer, disableStyle);
+            }
+          }
+        });
+        function hasAdoptedPlan(plA) {
+          const plans = plA.plans;
+          let hasAdopted = false;
+          if(plans.length > 0) {
+            plans.forEach((plan) => {
+              //console.log(plan.status.state);
+              if(plan.status.state === "adopted") {
+                hasAdopted = true;
+              }
+            });
+          }
+          return hasAdopted;
+        }
+        let adoptedLayerDisplayed = false;
+        const adoptedLayerToggle = document.querySelector("[data-layer='adopted']");
+        adoptedLayerToggle.addEventListener('click', (e) => {
+          if(adoptedLayerDisplayed) {
+            // hide it
+            map.removeLayer(adoptedPlanLayer);
+            map.addLayer(boundariesLayer);
+            adoptedLayerToggle.textContent = "Show adopted";
+          } else {
+            // display it
+            map.removeLayer(boundariesLayer);
+            map.addLayer(adoptedPlanLayer);
+            adoptedLayerToggle.textContent = "Show data collected";
+          }
+          adoptedLayerDisplayed = !adoptedLayerDisplayed;
+        });
+
+    </script>
+{% endblock %}
+
+

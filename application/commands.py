@@ -1,8 +1,12 @@
 import csv
+import json
 from datetime import datetime
 from pathlib import Path
+from urllib.request import urlopen
 
+import boto3
 import click
+import ijson
 import requests
 
 from flask.cli import with_appcontext
@@ -17,6 +21,15 @@ from application.models import (
     HousingDeliveryTest,
     Document
 )
+
+
+json_to_geo_query = "SELECT ST_SetSRID(ST_GeomFromGeoJSON('%s'), 4326);"
+
+def floaten(event):
+    if event[1] == 'number':
+        return (event[0], event[1], float(event[2]))
+    else:
+        return event
 
 HDT_URL = 'https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/779711/HDT_2018_measurement.xlsx'
 
@@ -199,6 +212,76 @@ def load_hdt():
                 pla.other_documents.append(document)
                 db.session.add(pla)
                 db.session.commit()
+
+
+@click.command()
+@with_appcontext
+def load_geojson():
+
+    from flask import current_app
+    from application.extensions import db
+
+    s3_region = current_app.config['S3_REGION']
+    s3_bucket = current_app.config['S3_BUCKET']
+    s3_bucket_url = 'http://%s.s3.amazonaws.com' % s3_bucket
+
+    s3 = boto3.resource('s3', region_name=s3_region)
+
+    planning_authority_feature_mappings = {}
+
+    item_url = '%s/organisation.tsv' % s3_bucket_url
+    print('Loading', item_url)
+    with closing(requests.get(item_url, stream=True)) as r:
+        reader = csv.DictReader(r.iter_lines(decode_unicode=True), delimiter='\t')
+        for row in reader:
+            org = row['organisation']
+            if 'local-authority' in org or 'national-park' in org:
+                planning_authority = db.session.query(PlanningAuthority).get(org)
+                if row.get('feature') is not None and planning_authority is not None:
+                        planning_authority_feature_mappings[row.get('feature')] = planning_authority.id
+
+    features_url = '%s/feature/local-authority-districts.geojson' % s3_bucket_url
+    load_features(features_url, planning_authority_feature_mappings)
+
+    features_url = '%s/feature/national-park-boundary.geojson' % s3_bucket_url
+    load_features(features_url, planning_authority_feature_mappings)
+
+
+def load_features(features_url, org_feature_mappings):
+
+    print('Loading', features_url)
+
+    try:
+        if features_url.startswith('http'):
+            f = urlopen(features_url)
+        else:
+            f = open(features_url, 'rb')
+        events = map(floaten, ijson.parse(f))
+        data = ijson.common.items(events, 'features.item')
+
+        for feature in data:
+            id = feature['properties'].get('feature')
+            item = 'item:%s' % feature['properties'].get('item')
+            feature_id = id if id is not None else item
+            try:
+                planning_authority = PlanningAuthority.query.get(org_feature_mappings[feature_id])
+                geojson = json.dumps(feature['geometry'])
+                planning_authority.geometry = db.session.execute(json_to_geo_query % geojson).fetchone()[0]
+                db.session.add(planning_authority)
+                db.session.commit()
+            except KeyError as e:
+                print('No organisation for feature', feature_id)
+            except Exception as e:
+                print(e)
+
+    except Exception as e:
+        print(e)
+        print('Error loading', features_url)
+    finally:
+        try:
+            f.close()
+        except:
+            pass
 
 
 @click.command()
