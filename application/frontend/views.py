@@ -468,7 +468,7 @@ def map_of_data():
     data = []
     planning_authorities = PlanningAuthority.query.all()
     for pla in planning_authorities:
-        authority = {'planning_authority': pla.id, 'plans': [], 'has_housing_figures': False}
+        authority = {'planning_authority': pla.id, 'planning_authority_name': pla.name, 'plans': [], 'has_housing_figures': False}
         for p in pla.local_plans:
             plan = {'documents': 0,
                     'facts': 0,

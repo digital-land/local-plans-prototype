@@ -19,3 +19,4 @@ config = {
 
 from flask_optimize import FlaskOptimize
 flask_optimize = FlaskOptimize(config=config)
+

@@ -226,7 +226,7 @@
                     {% if doc.facts|length > 0 %}<caption class="govuk-table__caption">Facts from document</caption>{% endif %}
                     <tbody class="govuk-table__body">
                         {% for fact in doc.facts %}
-                            <tr class="govuk-table__row">
+                            <tr class="govuk-table__row" data-fact-type="{{ fact.fact_type }}">
                               <th class="govuk-table__header" scope="row">{% if fact.from_ and fact.to  %}{{ fact.from_ }} to {{fact.to }}{% else %}{{ fact.fact }}{%  endif %}</th>
                               <td class="govuk-table__cell">{{ fact.fact_type | format_fact }}</td>
                               <td class="govuk-table__cell">{% if fact.notes == "" %}-{% else %}{{ fact.notes }}{% endif %}</td>
@@ -366,16 +366,46 @@
 
   // handle changes to form when user changes select
   const addFactForms = document.querySelectorAll(".add-fact-form");
+  const addFactDetails = Array.prototype.slice.call( addFactForms ).map((form) => form.closest("details"));
+  addFactDetails.forEach((detail) => {
+    const summary = detail.querySelector("summary");
+    summary.addEventListener('click', (e) => {
+      const form = detail.querySelector("form");
+      const firstFormGroup = form.querySelectorAll(".govuk-form-group")[0];
+      if(!detail.open) {
+        const option = firstFormGroup.querySelector('option:checked');
+        indicateIfFactAlreadySet(option, form);
+      }
+    });
+  });
   const addFactSelects = Array.prototype.slice.call( addFactForms ).map((form) => form.querySelector(".fact-select-types"));
   addFactSelects.forEach((select) => {
     select.addEventListener('change', (e) => {
       const form = e.target.closest('form');
       const option = e.target.querySelector('option:checked');
+
+      indicateIfFactAlreadySet(option, form);
+
       // remove all these classes before adding selected class
       removeAllClassesFromFactForm(form);
       form.classList.add(option.dataset.typeClass);
     });
   });
+
+  function checkIfFactIsSet(fact_type, form) {
+    const table = form.closest(".document-facts").querySelector(".document-facts__table");
+    const fact = table.querySelectorAll(`[data-fact-type=${fact_type}]`);
+    return (fact.length > 0) ? true:false;
+  }
+
+  function indicateIfFactAlreadySet(option, form) {
+    const formGroup = option.closest(".govuk-form-group");
+
+    formGroup.classList.remove('fact-already-set');
+    if(checkIfFactIsSet(option.value, form)) {
+      formGroup.classList.add('fact-already-set');
+    }
+  }
 
   const localPlanFactTypeClasses = ["plan-name", "plan-period", "plan-start-year", "plan-end-year", "housing-requirement-total", "housing-requirement-range", "housing-requirement-yearly-average", "housing-requirement-yearly-range"];
   const emergingPlanFactTypeClasses = ["publication-date", "proposed-reg-18-date", "proposed-publication-date", "proposed-submission-date", "proposed-main-modifications-date", "proposed-adoption-date" ];
@@ -525,7 +555,6 @@
 
   function factAddedCallback(resp_data, form) {
     if(resp_data['OK'] === 200) {
-      console.log(factTemplate(resp_data));
       const factsEl = form.closest(".document-facts");
       const table = factsEl.querySelector(".document-facts__table tbody");
 
@@ -686,7 +715,7 @@
   const planTitles = document.querySelectorAll(".editable-plan-title");
   planTitles.forEach(makeTitleEditable);
 
-  function postJSONRequest(endpoint, data, callback) {
+  function postJSONRequest(endpoint, data, cb) {
     fetch(endpoint, {
       method: "POST",
       headers: {
@@ -696,7 +725,11 @@
     })
     .then(response => response.json())
     .then(resp_data => {
-      console.log(resp_data);
+      if(cb && typeof cb === "function") {
+        cb(resp_data);
+      } else {
+        console.log(resp_data);
+      }
     });
   }
 
@@ -710,7 +743,7 @@
   }
 
   function splitPlanTitle(title) {
-    return title.split("-");
+    return title.trim().split("-");
   }
 
   function createElementWithClasses(tag, classes) {
@@ -731,23 +764,33 @@
     const fixedPart = createElementWithClasses("span", "editable-title__fixed");
     fixedPart.textContent = `${parts[0]}-`;
 
+    const form = createElementWithClasses("form", "form--inline");
+
     const input = createElementWithClasses("input", ["govuk-input", "govuk-input--width-4"]);
     input.setAttribute("type", "text");
     input.value = parts[1];
     input.dataset.currentSavedValue = currentValue;
+    input.addEventListener('focus', (e) => {
+      container.classList.remove("has-error");
+    });
 
     const saveBtn = createElementWithClasses("button", "govuk-button");
     saveBtn.textContent = "Save";
 
+    const errorMessage = createElementWithClasses("div", "error-msg");
+    errorMessage.textContent = "Plan with this title already exists";
+
     container.appendChild(fixedPart);
-    container.appendChild(input);
-    container.appendChild(saveBtn);
+    form.appendChild(input);
+    form.appendChild(saveBtn);
+    form.appendChild(errorMessage);
+    container.appendChild(form);
 
     return container;
   }
 
   function getExitEditModeHandler(container) {
-    return function(e) {
+    return function() {
       container.classList.remove("edit-mode");
     } 
   }
@@ -762,11 +805,27 @@
     const editableUI = createEditableUI(titleEl.textContent);
     insertAfter(editableUI, titleEl);
 
+    planTitleContainer.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
     titleEl.addEventListener('click', function(e) {
       planTitleContainer.classList.toggle("edit-mode");
+      document.addEventListener('click', clickOffEditTitle);
+      document.addEventListener('keydown', clickOffEditTitle);
     });
 
     const exitEditModeHandler = getExitEditModeHandler( planTitleContainer );
+
+    function clickOffEditTitle(e) {
+      // only exit edit mode if user clicks off or presses escape key
+      if( (e.type === "keydown" && e.keyCode === 27) | e.type === "click") {
+        console.log("switched off by click or esc");
+        exitEditModeHandler();
+        document.removeEventListener('click', clickOffEditTitle);
+        document.removeEventListener('keydown', clickOffEditTitle);
+      }
+    }
 
     function updateWithNewPlanTitle(newTitle) {
       // update plan-title
@@ -780,16 +839,23 @@
       editableUI.querySelector("input").dataset.currentSavedValue = newTitle;
     }
 
-    const btn = editableUI.querySelector("button");
+    const form = editableUI.querySelector("form");
     const input = editableUI.querySelector("input");
-    btn.addEventListener('click', (e) => {
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
       const original = input.dataset.currentSavedValue;
       const newTitle = `${original.split("-")[0]}-${input.value}`;
-      updateWithNewPlanTitle(newTitle);
       postJSONRequest(editTitleEndpoint,
         {'original_identifier': original,
          'new_identifier': newTitle
+        },
+        (resp_data) => {
+          console.log(resp_data);
+          if(resp_data['OK'] == 200) {
+            updateWithNewPlanTitle(newTitle);
+          } else {
+            editableUI.classList.add("has-error");
+          }
         });
     });
   }

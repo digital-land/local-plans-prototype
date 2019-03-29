@@ -1,0 +1,22 @@
+.map-container {
+  position: relative;
+}
+
+.layer-toggles {
+  position: absolute;
+  z-index: 1000;
+  top: 10px;
+  right: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: govuk-colour("white");
+}
+
+.layer-toggle {
+  button {
+    @include govuk-font($size: 16);
+    padding: 8px 10px 6px;
+    background: govuk-colour("white");
+  }
+}

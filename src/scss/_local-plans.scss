@@ -219,11 +219,63 @@
 }
 
 .editable-title__container {
+  margin-bottom: $govuk-gutter;
   @include govuk-font($size: 36, $weight: bold);
 
   input {
     margin-right: 5px;
     vertical-align: top;
+  }
+
+  .govuk-button {
+    margin-bottom: 10px;
+  }
+
+  .error-msg {
+    display: none;
+    @include govuk-font($size: 19);
+    color: govuk-colour("red");
+  }
+
+  &.has-error {
+    padding-left: 10px;
+    border-left: 5px solid govuk-colour("red");
+
+    .error-msg {
+      display: block;
+    }
+  }
+}
+
+.form--inline {
+  display: inline-block;
+  padding-top: 2px;
+  vertical-align: top;
+}
+
+.govuk-inset-text--error {
+  border-color: govuk-colour("red");
+  color: govuk-colour("red");
+}
+
+.govuk-inset-text--small {
+  padding-top: 2px;
+  padding-bottom: 0;
+}
+
+.govuk-caption-s {
+  @include govuk-font($size: 16);
+
+  display: block;
+
+  color: $govuk-secondary-text-colour;
+}
+
+.with-caption-after {
+  margin-bottom: 0;
+
+  & + .govuk-caption--after {
+    @include govuk-responsive-margin(4, "bottom");
   }
 }
 
