@@ -37,4 +37,19 @@ Check if all went well
 
 You should see something similar to:
 
-    2.4 USE_GEOS=1 USE_PROJ=1 USE_STATS=1
+    2.4 USE_GEOS=1 USE_PROJ=1 USE_STATS=1   
+    
+    
+Environment variables in .flaskenv already set
+
+    FLASK_ENV=development
+    FLASK_CONFIG=config.DevelopmentConfig
+    FLASK_APP=application.wsgi:app
+    SECRET_KEY=replaceinprod
+    DATABASE_URL=postgresql://localhost/local_plans
+
+Additional environment variables to add to .env (gitignored)
+
+    AWS_ACCESS_KEY_ID=[your access key]
+    AWS_SECRET_ACCESS_KEY=[your secret access key]
+    MAPBOX_TOKEN=[your map box token]
