@@ -7147,6 +7147,10 @@
   background: #ffffff;
 }
 
+.layer-toggle:not(:last-child) {
+  border-bottom: 1px solid #bfc1c3;
+}
+
 .layer-toggle button {
   font-family: "nta", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -7155,9 +7159,11 @@
   font-size: 14px;
   font-size: 0.875rem;
   line-height: 1.14286;
+  width: 100%;
   padding: 8px 10px 6px;
   border: 0;
   background: #ffffff;
+  text-align: left;
 }
 
 @media print {

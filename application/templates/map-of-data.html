@@ -31,6 +31,87 @@
     <script src="{{ static_path }}/static/javascripts/leaflet-hover-effects.js"></script>
 
     <script>
+      // classes can be str or Array of class names
+      function createElementWithClasses(tag, classes) {
+        const element = document.createElement(tag);
+        if(Array.isArray(classes)) {
+          element.classList.add(...classes);
+        } else {
+          element.classList.add(classes);
+        }
+        return element;
+      }
+
+
+      var TogglableDisplayGroup = L.FeatureGroup.extend({
+
+        options: {
+          _displayOnOwn: false,
+          _displayedStr: "Switch off",
+          _notDisplayedStr: "Switch on"
+        },
+
+        _displayed: false,
+
+        isDisplayed: function() { return this._displayed },
+        toggleDisplayed: function() {
+          // check if _linkedMap is set
+          if(this._displayed) {
+            this._linkedMap.removeLayer(this);
+          } else {
+            this._linkedMap.addLayer(this);
+          }
+          this._displayed = !this._displayed;
+          this._switchControlText();
+        },
+
+
+        _addControlToParent: function(parent) {
+          parent.appendChild(this._controlElement);
+          this._addControlEventHandlers();
+        },
+        _addControlEventHandlers: function() {
+          const that = this;
+
+          this._controlElement.addEventListener('click', function(e) {
+            that.toggleDisplayed.call(that);
+          });
+        },
+        _createControlElement: function() {
+          const control = createElementWithClasses("li", "layer-toggle");
+          const button = document.createElement("button");
+          button.textContent = this.options._notDisplayedStr;
+          control.appendChild(button);
+          this._controlElement = control;
+        },
+        _getControlElement: function() {
+          return this._controlElement;
+        },
+        _switchControlText: function() {
+          const button = this._controlElement.querySelector("button");
+          button.textContent = (this._displayed) ? this.options._displayedStr:this.options._notDisplayedStr;
+        },
+
+
+        _setMap: function(map) {
+          this._linkedMap = map;
+        },
+
+
+        initialize: function(map, visible, opts) {
+          this._setMap(map);
+          L.setOptions(this, opts);
+          L.FeatureGroup.prototype.initialize.call(this, map);
+
+          this._createControlElement();
+
+          if(visible) this.toggleDisplayed();
+        }
+      });
+    </script>
+
+    <script>
+        const controls = document.querySelector(".layer-toggles");
 
         // initialise MHCLGMaps with mapbox access token
         const mhclgMaps = new MHCLGMaps({mapbox_token: '{{ config.MAPBOX_TOKEN }}'});
@@ -48,7 +129,13 @@
             return newLayer;
         }
 
-        var boundariesLayer = makeAndAddLayer(map);
+        //var boundariesLayer = makeAndAddLayer(map);
+        const boundariesLayer = new TogglableDisplayGroup(map, true, {
+          _displayedStr: "Hide data collected summary",
+          _notDisplayedStr: "Show data collected summary"
+        });
+        boundariesLayer._addControlToParent(controls);
+
         var missingDataLayer = makeAndAddLayer(boundariesLayer);
         var warningDataLayer = makeAndAddLayer(boundariesLayer);
         //var errorDataLayer = makeAndAddLayer(boundariesLayer);
@@ -225,89 +312,10 @@
         // Add a togglable layer to show if PLA has an adopted plan
         //---------------------------------------------------------
 
-        // classes can be str or Array of class names
-        function createElementWithClasses(tag, classes) {
-          const element = document.createElement(tag);
-          if(Array.isArray(classes)) {
-            element.classList.add(...classes);
-          } else {
-            element.classList.add(classes);
-          }
-          return element;
-        }
-
-        var TogglableDisplayGroup = L.FeatureGroup.extend({
-
-          options: {
-            _displayOnOwn: false,
-            _displayedStr: "Switch off",
-            _notDisplayedStr: "Switch on"
-          },
-
-          _displayed: false,
-
-          isDisplayed: function() { return this._displayed },
-          toggleDisplayed: function() {
-            // check if _linkedMap is set
-            if(this._displayed) {
-              this._linkedMap.removeLayer(this);
-            } else {
-              this._linkedMap.addLayer(this);
-            }
-            this._displayed = !this._displayed;
-            this._switchControlText();
-          },
-
-
-          _addControlToParent: function(parent) {
-            parent.appendChild(this._controlElement);
-            this._addControlEventHandlers();
-          },
-          _addControlEventHandlers: function() {
-            const that = this;
-
-            this._controlElement.addEventListener('click', function(e) {
-              that.toggleDisplayed.call(that);
-            });
-          },
-          _createControlElement: function() {
-            const control = createElementWithClasses("li", "layer-toggle");
-            const button = document.createElement("button");
-            button.textContent = this.options._notDisplayedStr;
-            control.appendChild(button);
-            this._controlElement = control;
-          },
-          _getControlElement: function() {
-            return this._controlElement;
-          },
-          _switchControlText: function() {
-            const button = this._controlElement.querySelector("button");
-            button.textContent = (this._displayed) ? this.options._displayedStr:this.options._notDisplayedStr;
-          },
-
-
-          _setMap: function(map) {
-            this._linkedMap = map;
-          },
-
-
-          initialize: function(map, visible, opts) {
-            this._setMap(map);
-            L.setOptions(this, opts);
-            L.FeatureGroup.prototype.initialize.call(this, map);
-
-            this._createControlElement();
-
-            if(visible) this.toggleDisplayed();
-          }
-        });
-
         const adoptedPlanLayer = new TogglableDisplayGroup(map, false, {
           _displayedStr: "Hide adopted",
           _notDisplayedStr: "Show adopted"
         });
-
-        const controls = document.querySelector(".layer-toggles");
         adoptedPlanLayer._addControlToParent(controls);
 
         planningAuthorityJson.forEach((planningAuthority) => {

@@ -18,11 +18,17 @@ $map-control-trim: rgba(0, 0, 0, .2);
 .layer-toggle {
   background: govuk-colour("white");
 
+  &:not(:last-child) {
+    border-bottom: 1px solid govuk-colour("grey-2");
+  }
+
   button {
     @include govuk-font($size: 16);
+    width: 100%;
     padding: 8px 10px 6px;
     border: 0;
     background: govuk-colour("white");
+    text-align: left;
 
     &:hover {
       color: govuk-colour("blue");
