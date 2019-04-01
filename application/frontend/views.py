@@ -20,6 +20,7 @@ from flask import (
     current_app,
     make_response
 )
+from sqlalchemy import func
 
 from application.extensions import db, flask_optimize
 
@@ -466,9 +467,15 @@ def data_as_csv():
 def map_of_data():
     #TODO this is really slow - do something!!!
     data = []
-    planning_authorities = PlanningAuthority.query.all()
-    for pla in planning_authorities:
-        authority = {'planning_authority': pla.id, 'planning_authority_name': pla.name, 'plans': [], 'has_housing_figures': False}
+    planning_authorities = db.session.query(PlanningAuthority,
+                                            func.ST_AsGeoJSON(
+                                                func.ST_SimplifyVW(PlanningAuthority.geometry, 0.00001)
+                                            ).label('geojson')).all()
+    for pla, geojson in planning_authorities:
+        authority = {'planning_authority': pla.id,
+                     'planning_authority_name': pla.name,
+                     'plans': [],
+                     'has_housing_figures': False}
         for p in pla.local_plans:
             plan = {'documents': 0,
                     'facts': 0,
@@ -488,9 +495,7 @@ def map_of_data():
                         plan[f'{fact.fact_type.lower()}_to'] = int(fact.to.replace(',', '')) if fact.to else None
                         authority['has_housing_figures'] = True
             authority['plans'].append(plan)
-        query = "SELECT ST_AsGeoJSON(ST_SimplifyVW('%s', 0.00001))" % pla.geometry
         if pla.geometry is not None:
-            geojson = db.session.execute(query).fetchone()[0]
             authority['geojson'] = json.loads(geojson)
         data.append(authority)
     return render_template('map-of-data.html', data=data)
