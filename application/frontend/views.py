@@ -465,7 +465,6 @@ def data_as_csv():
 @frontend.route('/local-plans/map-of-data')
 @flask_optimize.optimize()
 def map_of_data():
-    #TODO this is really slow - do something!!!
     data = []
     planning_authorities = db.session.query(PlanningAuthority,
                                             func.ST_AsGeoJSON(
@@ -495,7 +494,7 @@ def map_of_data():
                         plan[f'{fact.fact_type.lower()}_to'] = int(fact.to.replace(',', '')) if fact.to else None
                         authority['has_housing_figures'] = True
             authority['plans'].append(plan)
-        if pla.geometry is not None:
+        if geojson is not None:
             authority['geojson'] = json.loads(geojson)
         data.append(authority)
     return render_template('map-of-data.html', data=data)
