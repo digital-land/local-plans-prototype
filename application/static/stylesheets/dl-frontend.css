@@ -7193,6 +7193,14 @@
   cursor: pointer;
 }
 
+.layer-toggle.displayed {
+  border-left: 5px solid #0b0c0c;
+}
+
+.layer-toggle.displayed button {
+  padding-left: 5px;
+}
+
 .top-content {
   margin-bottom: 30px;
 }

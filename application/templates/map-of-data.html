@@ -58,11 +58,12 @@
           // check if _linkedMap is set
           if(this._displayed) {
             this._linkedMap.removeLayer(this);
+            this._setControlState();
           } else {
             this._linkedMap.addLayer(this);
+            this._setControlState("visible");
           }
           this._displayed = !this._displayed;
-          this._switchControlText();
         },
 
 
@@ -87,9 +88,18 @@
         _getControlElement: function() {
           return this._controlElement;
         },
-        _switchControlText: function() {
+        _setControlState: function(state) {
+          if(state === "visible") {
+            this._controlElement.classList.add("displayed");
+            this._setControlBtnText( this.options._displayedStr );
+          } else {
+            this._controlElement.classList.remove("displayed");
+            this._setControlBtnText( this.options._notDisplayedStr );
+          }
+        },
+        _setControlBtnText: function(text) {
           const button = this._controlElement.querySelector("button");
-          button.textContent = (this._displayed) ? this.options._displayedStr:this.options._notDisplayedStr;
+          button.textContent = text;
         },
 
 
