@@ -347,74 +347,9 @@
   <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact" href="{{ remove_url }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
 </script>
 {% endraw %}
+
+<script src="{{ static_path }}/static/javascripts/dlf/helpers.js"></script>
 <script>
-  // ------------------
-  // DOM util functions
-  // ------------------
-
-  // classes can be str or Array of class names
-  function createElementWithClasses(tag, classes) {
-    const element = document.createElement(tag);
-    if(Array.isArray(classes)) {
-      element.classList.add(...classes);
-    } else {
-      element.classList.add(classes);
-    }
-    return element;
-  }
-
-
-  function insertAfter(el, referenceNode) {
-    referenceNode.parentNode.insertBefore(el, referenceNode.nextSibling);
-  }
-
-
-  // takes a newly created element -> wrapper
-  // and an element -> el to be wrapped
-  function wrapElement(el, wrapper) {
-    el.parentNode.insertBefore(wrapper, el);
-    wrapper.appendChild(el);
-  }
-
-
-  function switchClasses(el, toAdd, toRemove) {
-    el.classList.remove(toRemove);
-    el.classList.add(toAdd);
-  }
-
-  // ------ end DOM utils -------
-
-
-  // ------------------
-  // Helper functions
-  // ------------------
-
-  function cleanNumber(str) {
-    // strip any commas user may have added
-    return str.replace(/\,/g, "");
-  }
-
-
-  function postJSONRequest(endpoint, data, cb) {
-    fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(resp_data => {
-      if(cb && typeof cb === "function") {
-        cb(resp_data);
-      } else {
-        console.log(resp_data);
-      }
-    });
-  }
-
-  // ------ end Helper functions -------
-
   const urlAddBtns = document.querySelectorAll(".url-add-btn");
   const urlEditBtns = document.querySelectorAll(".url-edit-btn");
   const urlRemoveBtns = document.querySelectorAll(".url-remove-btn");

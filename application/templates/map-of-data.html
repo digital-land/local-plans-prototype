@@ -27,22 +27,12 @@
 {% endblock %}
 
 {% block bodyEnd %}
+    <script src="{{ static_path }}/static/javascripts/dlf/helpers.js"></script>
+
     <script src="{{ static_path }}/static/javascripts/mhclg-maps.js"></script>
     <script src="{{ static_path }}/static/javascripts/leaflet-hover-effects.js"></script>
 
     <script>
-      // classes can be str or Array of class names
-      function createElementWithClasses(tag, classes) {
-        const element = document.createElement(tag);
-        if(Array.isArray(classes)) {
-          element.classList.add(...classes);
-        } else {
-          element.classList.add(classes);
-        }
-        return element;
-      }
-
-
       var TogglableDisplayGroup = L.FeatureGroup.extend({
 
         options: {
