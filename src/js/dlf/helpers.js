@@ -1,5 +1,4 @@
-
-'use strict';
+/* eslint no-unused-vars: 0 */
 
 // ------------------
 // DOM util functions
@@ -8,7 +7,7 @@
 // classes can be str or Array of class names
 function createElementWithClasses(tag, classes) {
   const element = document.createElement(tag);
-  if(Array.isArray(classes)) {
+  if (Array.isArray(classes)) {
     element.classList.add(...classes);
   } else {
     element.classList.add(classes);
@@ -41,7 +40,7 @@ function switchClasses(el, toAdd, toRemove) {
 
 function cleanNumber(str) {
   // strip any commas user may have added
-  return str.replace(/\,/g, "");
+  return str.replace(/,/g, "");
 }
 
 
@@ -53,14 +52,14 @@ function postJSONRequest(endpoint, data, cb) {
     },
     body: JSON.stringify(data)
   })
-  .then(response => response.json())
-  .then(resp_data => {
-    if(cb && typeof cb === "function") {
-      cb(resp_data);
-    } else {
-      console.log(resp_data);
-    }
-  });
+    .then(response => response.json())
+    .then(respData => {
+      if (cb && typeof cb === "function") {
+        cb(respData);
+      } else {
+        console.log(respData); // eslint-disable-line
+      }
+    });
 }
 
 // ------ end Helper functions -------

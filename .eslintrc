@@ -1,0 +1,96 @@
+env:
+  browser: true
+  node: true
+  es6: true
+
+extends:
+  - "eslint:recommended"
+
+rules:
+  block-spacing: ['error', 'always']
+  brace-style: ["error", "1tbs", { "allowSingleLine": true }]
+  camelcase: ['error', { properties: 'never' }]
+  comma-dangle: ["error", { functions: "never" }]
+  comma-spacing: ['error', { before: false, after: true }]
+  comma-style: ["error", "last"]
+  curly: ["error", "all"]
+  dot-location: ['error', 'property']
+  eol-last: "error"
+  func-call-spacing: ["error", "never"]
+  indent: ["error", 2]
+  key-spacing: ["error", { beforeColon: false, afterColon: true }]
+  keyword-spacing: "error"
+  operator-linebreak: "error"
+  new-cap: "error"
+  new-parens: "error"
+  no-array-constructor: "error"
+  no-caller: "error"
+  no-class-assign: "error"
+  no-delete-var: "error"
+  no-dupe-args: "error"
+  no-dupe-keys: "error"
+  no-duplicate-imports: "error"
+  no-eval: "error"
+  no-extend-native: "warn"
+  no-extra-parens: "error"
+  no-extra-semi: "error"
+  no-fallthrough: "error"
+  no-floating-decimal: "error"
+  no-func-assign: "error"
+  no-global-assign: "error"
+  no-implied-eval: "error"
+  no-invalid-regexp: "error"
+  no-irregular-whitespace: "error"
+  no-iterator: "error"
+  no-label-var: "error"
+  no-labels: "error"
+  no-lone-blocks: "error"
+  no-mixed-spaces-and-tabs: "error"
+  no-multi-spaces: "error"
+  no-multi-str: "error"
+  no-nested-ternary: "error"
+  no-new: "error"
+  no-new-func: "error"
+  no-new-object: "error"
+  no-new-require: "error"
+  no-new-wrappers: "error"
+  no-octal: "error"
+  no-octal-escape: "error"
+  no-path-concat: "error"
+  no-proto: "error"
+  no-redeclare: "error"
+  no-return-assign: "error"
+  no-self-assign: "error"
+  no-self-compare: "error"
+  no-sequences: "error"
+  no-shadow-restricted-names: "error"
+  no-tabs: "error"
+  no-template-curly-in-string: "error"
+  no-throw-literal: "error"
+  no-trailing-spaces: "error"
+  no-undef: "error"
+  no-undef-init: "error"
+  no-unmodified-loop-condition: "error"
+  no-unreachable: "error"
+  no-unsafe-negation: "error"
+  no-useless-call: "error"
+  no-useless-computed-key: "error"
+  no-useless-constructor: "error"
+  no-useless-escape: "error"
+  no-useless-rename: "error"
+  no-use-before-define: ['error', { functions: true, classes: true, variables: true }]
+  no-whitespace-before-property: "error"
+  no-with: "error"
+  object-property-newline: ["error", { "allowAllPropertiesOnSameLine": true }]
+  quotes: ["error", "double", {avoidEscape: true}]
+  rest-spread-spacing: "error"
+  semi-spacing: ["error", {before: false, after: true}]
+  space-infix-ops: "error"
+  space-in-parens: "error"
+  space-unary-ops: ["error", {words: true, nonwords: false}]
+  strict: ['error', 'never']
+  template-curly-spacing: ["error", "never"]
+  valid-typeof: "error"
+  wrap-iife: "error"
+  yield-star-spacing: "error"
+  yoda: ["error", "never"]

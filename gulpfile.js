@@ -7,7 +7,8 @@ const gulp = require("gulp"),
       clean = require('gulp-clean'),
       rename = require("gulp-rename"),
       data = require("gulp-data"),
-      nunjucks = require('gulp-nunjucks');
+      nunjucks = require('gulp-nunjucks'),
+      eslint = require('gulp-eslint');
 
 // set paths ...
 const config = {
@@ -72,6 +73,12 @@ const copyCompiledCSS = () =>
     .pipe(gulp.dest(`${config.chromeExtStaticDest}`));
 
 
+const lintJS = () => 
+  gulp.src(['src/js/dlf/helpers.js'])
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
+
 // Generate extension popup
 // ========================
 const generateExtensionPopup = () =>
@@ -123,3 +130,4 @@ exports.default = watch;
 exports.stylesheets = latestStylesheets;
 exports.copyAssets = copyAllAssets;
 exports.generatePopup = generateExtensionPopup;
+exports.lintjs = lintJS;
