@@ -142,36 +142,6 @@
         //var errorDataLayer = makeAndAddLayer(boundariesLayer);
         var validDataLayer = makeAndAddLayer(boundariesLayer);
 
-        const disableStyle = {
-            color: "#bfc1c3",
-            fillColor: "#bfc1c3",
-            fillOpacity: 0.3,
-        };
-
-        const validStyle = {
-            color: "#006435",
-            fillColor: "#006435",
-            fillOpacity: 0.3,
-        };
-
-        const errorStyle = {
-            color: "#b10e1e",
-            fillColor: "#b10e1e",
-            fillOpacity: 0.3,
-        };
-
-        const warningStyle = {
-            color: "#ffbf47",
-            fillColor: "#ffbf47",
-            fillOpacity: 0.3,
-        };
-
-        const govukBlueStyle = {
-            color: "#005ea5",
-            fillColor: "#005ea5",
-            fillOpacity: 0.3,
-        };
-
         var itemsProcessed = 0;
         function addLayerToABoundariesLayer(laBoundary, data, layerGroup, style, withPopup=false, cb) {
             laBoundary
@@ -204,13 +174,12 @@
                 const boundary = L.geoJSON(planningAuthority.geojson);
 
                 if (planningAuthority.plans.length == 0) {
-                    const styleSetting = disableStyle;
-                    addLayerToABoundariesLayer(boundary, planningAuthority, missingDataLayer, disableStyle, true, reorderLayersIfAllAdded);
+                    addLayerToABoundariesLayer(boundary, planningAuthority, missingDataLayer, mhclgMaps.styles.disable, true, reorderLayersIfAllAdded);
                 } else {
                     if (planningAuthority.has_housing_figures) {
-                        addLayerToABoundariesLayer(boundary, planningAuthority, validDataLayer, validStyle, true,reorderLayersIfAllAdded);
+                        addLayerToABoundariesLayer(boundary, planningAuthority, validDataLayer, mhclgMaps.styles.valid, true,reorderLayersIfAllAdded);
                     } else {
-                        addLayerToABoundariesLayer(boundary, planningAuthority, warningDataLayer, warningStyle, true, reorderLayersIfAllAdded);
+                        addLayerToABoundariesLayer(boundary, planningAuthority, warningDataLayer, mhclgMaps.styles.warning, true, reorderLayersIfAllAdded);
                     }
                 }
             }
@@ -323,9 +292,9 @@
           if(planningAuthority.geojson) {
             const boundary = L.geoJSON(planningAuthority.geojson);
             if(hasAdoptedPlan(planningAuthority)) {
-              addLayerToABoundariesLayer(boundary, planningAuthority, adoptedPlanLayer, govukBlueStyle);
+              addLayerToABoundariesLayer(boundary, planningAuthority, adoptedPlanLayer, mhclgMaps.styles.govukBlue);
             } else {
-              addLayerToABoundariesLayer(boundary, planningAuthority, adoptedPlanLayer, disableStyle);
+              addLayerToABoundariesLayer(boundary, planningAuthority, adoptedPlanLayer, mhclgMaps.styles.disable);
             }
           }
         });
