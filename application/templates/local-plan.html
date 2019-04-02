@@ -145,8 +145,8 @@
     <ul class="govuk-tabs__list">
       {% for plan in planning_authority.sorted_plans()  %}
       <li class="govuk-tabs__list-item {% if plan.is_adopted() %}adopted-plan{% endif %}">
-        <a class="govuk-tabs__tab govuk-tabs__tab--selected" href="#{{ plan.local_plan }}">
-          {{ plan.local_plan }}
+        <a class="govuk-tabs__tab govuk-tabs__tab--selected" href="#{{ plan.title }}">
+          {{ plan.title }}
         </a>
       </li>
       {% endfor %}
@@ -158,8 +158,14 @@
     {% for plan in planning_authority.sorted_plans() %}
     <section class="govuk-tabs__panel local-plan {% if plan.is_adopted() %}adopted-plan{% endif %}" id="{{ plan.local_plan }}">
       <h2 class="govuk-heading-l editable-plan-title" data-update-plan-url="{{ url_for('frontend.update_plan', planning_authority=planning_authority.id, local_plan=plan.id) }}">
-          {{ plan.local_plan }}
+          {{ plan.title }}
       </h2>
+        <h3 class="govuk-heading-m">Plan period</h3>
+        <p>{{ plan.plan_start_year | format_year }} {{ plan.plan_end_year | format_year}}</p>
+
+
+{#        TODO if plan period not known then user needs to add here or update here #}
+
        {% if plan.url %}
           <h3 class="govuk-heading-m">Planning policy url</h3>
           <p class="govuk-body">
@@ -246,7 +252,7 @@
                 <details class="govuk-details govuk-details--facts govuk-details--facts-plan-doc govuk-grid-column-two-thirds">
                   <summary class="govuk-details__summary">
                     <span class="govuk-details__summary-text document-facts__add">
-                      Add fact from document
+                      Add housing number from document
                     </span>
                   </summary>
 
@@ -289,21 +295,39 @@
     <section id="new-plan-tab" class="govuk-tabs__panel">
       <h3 class="govuk-heading-m">Add a local plan</h3>
       <form class="govuk-form new-plan-form" method="post" action="{{ url_for('frontend.local_plan', planning_authority=planning_authority.id) }}">
-         <div class="govuk-form-group">
-          {{ form.start_year.label(class="govuk-label govuk-!-font-weight-bold") }}
-          <span class="govuk-hint">
-              The local authority code and start year will be used as a short plan title in this system e.g. ADU-2022
+
+          <div class="govuk-form-group">
+              {{ form.title.label(class="govuk-label govuk-!-font-weight-bold") }}
+              <span class="govuk-error-message">
+            {% for error in form.title.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
           </span>
+              {{ form.title(class="govuk-input") }}
+          </div>
+
+          <div class="govuk-form-group">
+          {{ form.start_year.label(class="govuk-label govuk-!-font-weight-bold") }}
           <span class="govuk-error-message">
             {% for error in form.start_year.errors  %}
                 <span>{{ error }}</span>
             {% endfor %}
           </span>
-          <span>{{ planning_authority.code() }}-</span>{{ form.start_year(class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4", pattern="[0-9]*") }}
+          {{ form.start_year(class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4", pattern="[0-9]*") }}
+         </div>
+          <div class="govuk-form-group">
+              {{ form.end_year.label(class="govuk-label govuk-!-font-weight-bold") }}
+              <span class="govuk-error-message">
+            {% for error in form.end_year.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+          </span>
+              {{ form.end_year(class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4", pattern="[0-9]*") }}
           </div>
           <div class="govuk-form-group">
             <button class="govuk-button dlf-secondary-button">Add plan</button>
           </div>
+
          {{ form.csrf_token }}
       </form>
     </section>
@@ -409,7 +433,7 @@
     }
   }
 
-  const localPlanFactTypeClasses = ["plan-name", "plan-period", "plan-start-year", "plan-end-year", "housing-requirement-total", "housing-requirement-range", "housing-requirement-yearly-average", "housing-requirement-yearly-range"];
+  const localPlanFactTypeClasses = ["housing-requirement-total", "housing-requirement-range", "housing-requirement-yearly-average", "housing-requirement-yearly-range"];
   const emergingPlanFactTypeClasses = ["publication-date", "proposed-reg-18-date", "proposed-publication-date", "proposed-submission-date", "proposed-main-modifications-date", "proposed-adoption-date" ];
   // using the spread operator in prototype
   // in prod need to either change or use Babel
@@ -654,23 +678,23 @@
   const planTitles = document.querySelectorAll(".editable-plan-title");
   planTitles.forEach(makeTitleEditable);
 
-  function splitPlanTitle(title) {
+  /*function splitPlanTitle(title) {
     return title.trim().split("-");
-  }
+  }*/
 
   function createEditableUI(currentValue) {
-    const parts = splitPlanTitle(currentValue);
+    //const parts = splitPlanTitle(currentValue);
 
     const container = createElementWithClasses("div", "editable-title__container");
 
-    const fixedPart = createElementWithClasses("span", "editable-title__fixed");
-    fixedPart.textContent = `${parts[0]}-`;
+    //const fixedPart = createElementWithClasses("span", "editable-title__fixed");
+    //fixedPart.textContent = `${parts[0]}-`;
 
     const form = createElementWithClasses("form", "form--inline");
 
-    const input = createElementWithClasses("input", ["govuk-input", "govuk-input--width-4"]);
+    const input = createElementWithClasses("input", ["govuk-input"]);
     input.setAttribute("type", "text");
-    input.value = parts[1];
+    input.value = currentValue;
     input.dataset.currentSavedValue = currentValue;
     input.addEventListener('focus', (e) => {
       container.classList.remove("has-error");
@@ -682,7 +706,7 @@
     const errorMessage = createElementWithClasses("div", "error-msg");
     errorMessage.textContent = "Plan with this title already exists";
 
-    container.appendChild(fixedPart);
+    //container.appendChild(fixedPart);
     form.appendChild(input);
     form.appendChild(saveBtn);
     form.appendChild(errorMessage);
@@ -746,7 +770,7 @@
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       const original = input.dataset.currentSavedValue;
-      const newTitle = `${original.split("-")[0]}-${input.value}`;
+      const newTitle = input.value;
       postJSONRequest(editTitleEndpoint,
         {'original_identifier': original,
          'new_identifier': newTitle

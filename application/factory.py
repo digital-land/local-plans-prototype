@@ -9,7 +9,8 @@ from application.filters import (
     format_date_from_str,
     format_fact,
     format_percent,
-    return_percent
+    return_percent,
+    format_year
 )
 
 
@@ -83,6 +84,7 @@ def register_filters(app):
     app.add_template_filter(format_fact)
     app.add_template_filter(format_percent)
     app.add_template_filter(return_percent)
+    app.add_template_filter(format_year)
 
 
 def register_context_processors(app):

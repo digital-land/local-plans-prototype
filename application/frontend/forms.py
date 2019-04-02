@@ -13,11 +13,7 @@ class LocalPlanURLForm(FlaskForm):
 
 
 class AddPlanForm(FlaskForm):
+	title = StringField('Plan title', [validators.DataRequired()])
 	start_year = IntegerField('Start year of plan', [validators.DataRequired()])
+	end_year = IntegerField('End year of plan', [validators.DataRequired()])
 	planning_authority = HiddenField()
-
-	def validate_start_year(form, field):
-		plan_id = f'{form.planning_authority.data}-{field.data}'
-		plan = LocalPlan.query.filter_by(local_plan=plan_id).first()
-		if plan is not None:
-			raise ValidationError(f'Plan with id {plan_id} already exists.')

@@ -346,6 +346,10 @@ def planning_authority_from_document():
                                    _external=True)
             resp = {'OK': 200, 'view-type': 'emerging-plan-document', 'document': document.to_dict(), 'add_fact_url': add_fact_url}
         elif PlanDocument.query.filter_by(url=website_location).first() is not None:
+
+           # TODO Actually we to know plan id as well otherwise can get an error here if doc has already been added to another
+           # plan and if so reject with useful error message
+
             document = PlanDocument.query.filter_by(url=website_location).one()
             add_fact_url = url_for('frontend.add_fact_to_document',
                                    planning_authority=document.local_plan.planning_authorities[0].id,

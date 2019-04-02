@@ -4,6 +4,11 @@ from datetime import datetime
 from application.models import FactType, EmergingFactType
 
 
+def format_year(date_time):
+    if date_time is not None:
+        return date_time.strftime('%Y')
+    return ''
+
 def format_date(date_time):
     return date_time.strftime('%d %b %Y')
 
