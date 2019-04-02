@@ -53,3 +53,14 @@ Additional environment variables to add to .env (gitignored)
     AWS_ACCESS_KEY_ID=[your access key]
     AWS_SECRET_ACCESS_KEY=[your secret access key]
     MAPBOX_TOKEN=[your map box token]
+
+Build tasks
+-----------
+
+We use gulp to compile and generate a lot of the assets.
+
+There are tasks to do this.
+
+Get a list of the available tasks with:
+
+    gulp --tasks

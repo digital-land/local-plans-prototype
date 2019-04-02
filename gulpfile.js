@@ -50,6 +50,17 @@ const lintSCSS = () =>
     .pipe(sassLint.failOnError());
 
 
+// JS related tasks
+// ======================================
+
+const lintJS = () => 
+  gulp.src(['src/js/*.js', 'src/js/dlf/helpers.js'])
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
+lintJS.description = `Lint JS files against rules set in .eshintrc`;
+
+
 // Tasks for copying assets to application
 // ======================================
 const copyVendorStylesheets = () =>
@@ -72,12 +83,6 @@ const copyCompiledCSS = () =>
     .src([`${config.destPath}/dl-frontend.css`, `${config.destPath}/popup.css`])
     .pipe(gulp.dest(`${config.chromeExtStaticDest}`));
 
-
-const lintJS = () => 
-  gulp.src(['src/js/*.js', 'src/js/dlf/helpers.js'])
-    .pipe(eslint())
-    .pipe(eslint.format())
-    .pipe(eslint.failAfterError());
 
 // Generate extension popup
 // ========================
