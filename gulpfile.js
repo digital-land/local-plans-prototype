@@ -7,7 +7,8 @@ const gulp = require("gulp"),
       clean = require('gulp-clean'),
       rename = require("gulp-rename"),
       data = require("gulp-data"),
-      nunjucks = require('gulp-nunjucks');
+      nunjucks = require('gulp-nunjucks'),
+      eslint = require('gulp-eslint');
 
 // set paths ...
 const config = {
@@ -49,6 +50,17 @@ const lintSCSS = () =>
     .pipe(sassLint.failOnError());
 
 
+// JS related tasks
+// ======================================
+
+const lintJS = () => 
+  gulp.src(['src/js/*.js', 'src/js/dlf/helpers.js'])
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
+lintJS.description = `Lint JS files against rules set in .eshintrc`;
+
+
 // Tasks for copying assets to application
 // ======================================
 const copyVendorStylesheets = () =>
@@ -61,15 +73,10 @@ const copyGovukAssets = () =>
     .src('src/govuk-frontend/assets/**/*')
     .pipe(gulp.dest(config.govukAssetPath));
 
-const copyVendorJS = () =>
+const copyJS = () =>
   gulp
-    .src('src/js/vendor/*.js')
-    .pipe(gulp.dest(`${config.jsDestPath}/vendor`));
-
-const copyGovukJS = () =>
-  gulp
-    .src('src/js/govuk-frontend/*.js')
-    .pipe(gulp.dest(`${config.jsDestPath}/govuk-frontend`));
+    .src('src/js/**/*.js')
+    .pipe(gulp.dest(`${config.jsDestPath}`));
 
 const copyCompiledCSS = () =>
   gulp
@@ -104,8 +111,7 @@ function getDataForExtTemplate(file) {
 const copyAllAssets = gulp.parallel(
   copyVendorStylesheets,
   copyGovukAssets,
-  copyVendorJS,
-  copyGovukJS
+  copyJS
 );
 copyAllAssets.description = `Copy all vendor and 3rd party assets to application`;
 
@@ -129,3 +135,4 @@ exports.default = watch;
 exports.stylesheets = latestStylesheets;
 exports.copyAssets = copyAllAssets;
 exports.generatePopup = generateExtensionPopup;
+exports.lintjs = lintJS;

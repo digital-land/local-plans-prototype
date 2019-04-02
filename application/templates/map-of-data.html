@@ -27,98 +27,12 @@
 {% endblock %}
 
 {% block bodyEnd %}
+    <script src="{{ static_path }}/static/javascripts/dlf/helpers.js"></script>
+
     <script src="{{ static_path }}/static/javascripts/mhclg-maps.js"></script>
     <script src="{{ static_path }}/static/javascripts/leaflet-hover-effects.js"></script>
 
-    <script>
-      // classes can be str or Array of class names
-      function createElementWithClasses(tag, classes) {
-        const element = document.createElement(tag);
-        if(Array.isArray(classes)) {
-          element.classList.add(...classes);
-        } else {
-          element.classList.add(classes);
-        }
-        return element;
-      }
-
-
-      var TogglableDisplayGroup = L.FeatureGroup.extend({
-
-        options: {
-          _displayOnOwn: false,
-          _displayedStr: "Switch off",
-          _notDisplayedStr: "Switch on"
-        },
-
-        _displayed: false,
-
-        isDisplayed: function() { return this._displayed },
-        toggleDisplayed: function() {
-          // check if _linkedMap is set
-          if(this._displayed) {
-            this._linkedMap.removeLayer(this);
-            this._setControlState();
-          } else {
-            this._linkedMap.addLayer(this);
-            this._setControlState("visible");
-          }
-          this._displayed = !this._displayed;
-        },
-
-
-        _addControlToParent: function(parent) {
-          parent.appendChild(this._controlElement);
-          this._addControlEventHandlers();
-        },
-        _addControlEventHandlers: function() {
-          const that = this;
-
-          this._controlElement.addEventListener('click', function(e) {
-            that.toggleDisplayed.call(that);
-          });
-        },
-        _createControlElement: function() {
-          const control = createElementWithClasses("li", "layer-toggle");
-          const button = document.createElement("button");
-          button.textContent = this.options._notDisplayedStr;
-          control.appendChild(button);
-          this._controlElement = control;
-        },
-        _getControlElement: function() {
-          return this._controlElement;
-        },
-        _setControlState: function(state) {
-          if(state === "visible") {
-            this._controlElement.classList.add("displayed");
-            this._setControlBtnText( this.options._displayedStr );
-          } else {
-            this._controlElement.classList.remove("displayed");
-            this._setControlBtnText( this.options._notDisplayedStr );
-          }
-        },
-        _setControlBtnText: function(text) {
-          const button = this._controlElement.querySelector("button");
-          button.textContent = text;
-        },
-
-
-        _setMap: function(map) {
-          this._linkedMap = map;
-        },
-
-
-        initialize: function(map, visible, opts) {
-          this._setMap(map);
-          L.setOptions(this, opts);
-          L.FeatureGroup.prototype.initialize.call(this, map);
-
-          this._createControlElement();
-
-          if(visible) this.toggleDisplayed();
-        }
-      });
-    </script>
+    <script src="{{ static_path }}/static/javascripts/leaflet-togglable-layers.js"></script>
 
     <script>
         const controls = document.querySelector(".layer-toggles");
@@ -150,36 +64,6 @@
         var warningDataLayer = makeAndAddLayer(boundariesLayer);
         //var errorDataLayer = makeAndAddLayer(boundariesLayer);
         var validDataLayer = makeAndAddLayer(boundariesLayer);
-
-        const disableStyle = {
-            color: "#bfc1c3",
-            fillColor: "#bfc1c3",
-            fillOpacity: 0.3,
-        };
-
-        const validStyle = {
-            color: "#006435",
-            fillColor: "#006435",
-            fillOpacity: 0.3,
-        };
-
-        const errorStyle = {
-            color: "#b10e1e",
-            fillColor: "#b10e1e",
-            fillOpacity: 0.3,
-        };
-
-        const warningStyle = {
-            color: "#ffbf47",
-            fillColor: "#ffbf47",
-            fillOpacity: 0.3,
-        };
-
-        const govukBlueStyle = {
-            color: "#005ea5",
-            fillColor: "#005ea5",
-            fillOpacity: 0.3,
-        };
 
         var itemsProcessed = 0;
         function addLayerToABoundariesLayer(laBoundary, data, layerGroup, style, withPopup=false, cb) {
@@ -213,13 +97,12 @@
                 const boundary = L.geoJSON(planningAuthority.geojson);
 
                 if (planningAuthority.plans.length == 0) {
-                    const styleSetting = disableStyle;
-                    addLayerToABoundariesLayer(boundary, planningAuthority, missingDataLayer, disableStyle, true, reorderLayersIfAllAdded);
+                    addLayerToABoundariesLayer(boundary, planningAuthority, missingDataLayer, mhclgMaps.styles.disable, true, reorderLayersIfAllAdded);
                 } else {
                     if (planningAuthority.has_housing_figures) {
-                        addLayerToABoundariesLayer(boundary, planningAuthority, validDataLayer, validStyle, true,reorderLayersIfAllAdded);
+                        addLayerToABoundariesLayer(boundary, planningAuthority, validDataLayer, mhclgMaps.styles.valid, true,reorderLayersIfAllAdded);
                     } else {
-                        addLayerToABoundariesLayer(boundary, planningAuthority, warningDataLayer, warningStyle, true, reorderLayersIfAllAdded);
+                        addLayerToABoundariesLayer(boundary, planningAuthority, warningDataLayer, mhclgMaps.styles.warning, true, reorderLayersIfAllAdded);
                     }
                 }
             }
@@ -332,9 +215,9 @@
           if(planningAuthority.geojson) {
             const boundary = L.geoJSON(planningAuthority.geojson);
             if(hasAdoptedPlan(planningAuthority)) {
-              addLayerToABoundariesLayer(boundary, planningAuthority, adoptedPlanLayer, govukBlueStyle);
+              addLayerToABoundariesLayer(boundary, planningAuthority, adoptedPlanLayer, mhclgMaps.styles.govukBlue);
             } else {
-              addLayerToABoundariesLayer(boundary, planningAuthority, adoptedPlanLayer, disableStyle);
+              addLayerToABoundariesLayer(boundary, planningAuthority, adoptedPlanLayer, mhclgMaps.styles.disable);
             }
           }
         });
