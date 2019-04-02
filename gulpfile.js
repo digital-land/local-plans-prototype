@@ -61,15 +61,10 @@ const copyGovukAssets = () =>
     .src('src/govuk-frontend/assets/**/*')
     .pipe(gulp.dest(config.govukAssetPath));
 
-const copyVendorJS = () =>
+const copyJS = () =>
   gulp
-    .src('src/js/vendor/*.js')
-    .pipe(gulp.dest(`${config.jsDestPath}/vendor`));
-
-const copyGovukJS = () =>
-  gulp
-    .src('src/js/govuk-frontend/*.js')
-    .pipe(gulp.dest(`${config.jsDestPath}/govuk-frontend`));
+    .src('src/js/**/*.js')
+    .pipe(gulp.dest(`${config.jsDestPath}`));
 
 const copyCompiledCSS = () =>
   gulp
@@ -104,8 +99,7 @@ function getDataForExtTemplate(file) {
 const copyAllAssets = gulp.parallel(
   copyVendorStylesheets,
   copyGovukAssets,
-  copyVendorJS,
-  copyGovukJS
+  copyJS
 );
 copyAllAssets.description = `Copy all vendor and 3rd party assets to application`;
 
