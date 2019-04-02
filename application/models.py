@@ -73,10 +73,11 @@ class LocalPlan(db.Model):
         return states
 
     def to_dict(self):
+        title = self.title if self.title else self.local_plan
         data = {
-            'id': self.local_plan,
+            'id': self.id,
             'is_adopted': self.is_adopted(),
-            'title': self.title,
+            'title': title,
             'planning_authorities': [{'name': authority.name, 'id':authority.id} for authority in self.planning_authorities]
         }
         return data

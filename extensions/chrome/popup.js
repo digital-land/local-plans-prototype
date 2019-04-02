@@ -154,7 +154,7 @@ function createStageTag(plan, _class) {
   var tagElement = document.createElement('span');
   (classes === undefined) ? tagElement.classList.add('stage-tag'):tagElement.classList.add('stage-tag', classes);
   tagElement.dataset.planId = plan['id'];
-  tagElement.textContent = plan['id'];
+  tagElement.textContent = plan['title'];
   if(plan['is_adopted']) tagElement.classList.add('stage-tag--adopted');
   return tagElement;
 }
@@ -210,7 +210,7 @@ function displayPageDetails(pla_obj) {
     });
     planList.querySelector(`[data-plan-id=${pla_obj['plans'][0]['id']}]`).classList.add("selected");
   }
-  activePlan = pla_obj['plans'][0]['id'];
+  activePlan = pla_obj['plans'][0]['title'];
 }
 
 // populates extension when viewing a document associated with a plan
@@ -225,7 +225,9 @@ function populatePlanView(data) {
 
   const planEl = section.querySelector('.facts__local-plan');
   planEl.appendChild( createStageTag(data.local_plan, "selected") );
-  activePlan = data.local_plan['id'];
+  activePlan = data.local_plan['title'];
+
+  console.log(activePlan);
 
   const table = section.querySelector(".document-facts__table");
   const table_body = table.querySelector('tbody');
