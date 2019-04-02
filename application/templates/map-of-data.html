@@ -62,10 +62,11 @@
           this._addControlEventHandlers();
         },
         _addControlEventHandlers: function() {
-          const that = this;
-
-          this._controlElement.addEventListener('click', function(e) {
-            that.toggleDisplayed.call(that);
+          // using arrow function negates need to make reference to 'this' obj
+          // instead of pointing to context scope 'this' will point to what is outside this
+          // declaration. In this case this = layer object
+          this._controlElement.addEventListener('click', () => {
+            this.toggleDisplayed();
           });
         },
         _createControlElement: function() {
