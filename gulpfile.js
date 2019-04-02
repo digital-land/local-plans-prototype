@@ -74,7 +74,7 @@ const copyCompiledCSS = () =>
 
 
 const lintJS = () => 
-  gulp.src(['src/js/mhclg-maps.js', 'src/js/dlf/helpers.js'])
+  gulp.src(['src/js/*.js', 'src/js/dlf/helpers.js'])
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
