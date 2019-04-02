@@ -1,3 +1,5 @@
+/*global L createElementWithClasses */
+
 (function(L) {
 
   const TogglableDisplayGroup = L.FeatureGroup.extend({
@@ -13,7 +15,7 @@
     isDisplayed: function() { return this._displayed },
     toggleDisplayed: function() {
       // check if _linkedMap is set
-      if(this._displayed) {
+      if (this._displayed) {
         this._linkedMap.removeLayer(this);
         this._setControlState();
       } else {
@@ -32,7 +34,7 @@
       // using arrow function negates need to make reference to 'this' obj
       // instead of pointing to context scope 'this' will point to what is outside this
       // declaration. In this case this = layer object
-      this._controlElement.addEventListener('click', () => {
+      this._controlElement.addEventListener("click", () => {
         this.toggleDisplayed();
       });
     },
@@ -47,12 +49,12 @@
       return this._controlElement;
     },
     _setControlState: function(state) {
-      if(state === "visible") {
+      if (state === "visible") {
         this._controlElement.classList.add("displayed");
-        this._setControlBtnText( this.options._displayedStr );
+        this._setControlBtnText(this.options._displayedStr);
       } else {
         this._controlElement.classList.remove("displayed");
-        this._setControlBtnText( this.options._notDisplayedStr );
+        this._setControlBtnText(this.options._notDisplayedStr);
       }
     },
     _setControlBtnText: function(text) {
@@ -73,7 +75,7 @@
 
       this._createControlElement();
 
-      if(visible) this.toggleDisplayed();
+      if (visible) { this.toggleDisplayed() }
     }
   });
 
