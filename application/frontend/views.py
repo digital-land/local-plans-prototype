@@ -209,16 +209,17 @@ def update_local_plan_url(planning_authority, local_plan):
 def update_plan(planning_authority, local_plan):
     plan_identifier = request.json['new_identifier'].strip()
     original_identifier = request.json['original_identifier'].strip()
-    plan = LocalPlan.query.filter_by(local_plan=plan_identifier).first()
-    if plan is not None:
-        return jsonify({'error': 'A plan with that title already exists',
+    try:
+        plan = LocalPlan.query.get(local_plan)
+        plan.local_plan = plan_identifier
+        db.session.add(plan)
+        db.session.commit()
+        return jsonify({'message': 'plan identifier updated', 'OK': 200})
+    except Exception as e:
+        current_app.logger.exception(e)
+        return jsonify({'error': 'Could not update plan',
                         'new_identifier': plan_identifier,
-                        'original_identifier': original_identifier })
-    plan = LocalPlan.query.get(local_plan)
-    plan.local_plan = plan_identifier
-    db.session.add(plan)
-    db.session.commit()
-    return jsonify({'message': 'plan identifier updated'})
+                        'original_identifier': original_identifier})
 
 
 @frontend.route('/local-plans/<local_plan>/document/<document>', methods=['DELETE'])
