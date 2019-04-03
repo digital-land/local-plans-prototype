@@ -724,8 +724,8 @@
 
     const input = createElementWithClasses("input", ["govuk-input"]);
     input.setAttribute("type", "text");
-    input.value = currentValue;
-    input.dataset.currentSavedValue = currentValue;
+    input.value = currentValue.trim();
+    input.dataset.currentSavedValue = currentValue.trim();
     input.addEventListener('focus', (e) => {
       container.classList.remove("has-error");
     });
