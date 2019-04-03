@@ -207,11 +207,12 @@ def update_local_plan_url(planning_authority, local_plan):
 
 @frontend.route('/local-plans/<planning_authority>/<local_plan>/update', methods=['POST'])
 def update_plan(planning_authority, local_plan):
+
     plan_identifier = request.json['new_identifier'].strip()
     original_identifier = request.json['original_identifier'].strip()
     try:
         plan = LocalPlan.query.get(local_plan)
-        plan.local_plan = plan_identifier
+        plan.title = plan_identifier
         db.session.add(plan)
         db.session.commit()
         return jsonify({'message': 'plan identifier updated', 'OK': 200})

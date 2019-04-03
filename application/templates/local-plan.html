@@ -514,15 +514,7 @@
     fact["notes"] = form.querySelector("textarea").value;
     fact["document_type"] = form.querySelector("input[type='hidden']").value;
 
-    if(form.classList.contains('plan-name')) {
-      fact["fact"] = form.querySelector(".plan-name-input input").value;
-    } else if (form.classList.contains('plan-period')) {
-      fact["fact"] = extractRange( form.querySelector(".plan-period-fieldset") );
-    } else if (form.classList.contains('plan-start-year')) {
-      fact["fact"] = extractDate( form.querySelector(".plan-start-date-input fieldset") );
-    } else if (form.classList.contains('plan-end-year')) {
-      fact["fact"] = extractDate( form.querySelector(".plan-end-date-input fieldset") );
-    } else if (form.classList.contains('housing-requirement-total')) {
+    if (form.classList.contains('housing-requirement-total')) {
       fact["fact"] = cleanNumber( form.querySelector(".plan-housing-req-total input").value );
     } else if (form.classList.contains('housing-requirement-range')) {
       fact["fact"] = extractRange( form.querySelector(".housing-req-range-fieldset") );
