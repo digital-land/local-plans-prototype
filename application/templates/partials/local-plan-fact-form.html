@@ -13,7 +13,7 @@
 
     <div class="govuk-form-group">
        <label class="govuk-label" for="document-note-{{counter}}">
-           Specify the type of fact
+           Select a category for this information
        </label>
         <select class="govuk-select fact-select-types" id="fact-type-{{counter}}" name="fact-type-{{counter}}">
           {% for fact_type in params.fact_types %}
@@ -152,7 +152,7 @@
 
     <div class="govuk-form-group">
       <label class="govuk-label" for="document-note-{{counter}}">
-        Provide any additional information about the fact
+        Provide any additional information
       </label>
       <textarea class="govuk-textarea document-note-input" id="document-note-{{counter}}" name="document-note-{{counter}}" rows="5"></textarea>
     </div>
