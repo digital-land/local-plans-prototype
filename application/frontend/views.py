@@ -327,6 +327,7 @@ def add_document():
     return jsonify(resp)
 
 
+ # TODO is this only used from extension?
 @frontend.route('/local-plans/planning-authority', methods=['POST'])
 def planning_authority_from_document():
 
@@ -339,7 +340,7 @@ def planning_authority_from_document():
     if website_location.endswith(('.pdf')):
         # first check for Emerging Plan document
         if OtherDocument.query.filter_by(url=website_location).first() is not None:
-            document = OtherDocument.query.filter_by(url=website_location).one()
+            document = OtherDocument.query.filter_by(url=website_location).first()
             add_fact_url = url_for('frontend.add_fact_to_document',
                                    planning_authority=document.planning_authority_id,
                                    document=str(document.id),
@@ -347,10 +348,7 @@ def planning_authority_from_document():
             resp = {'OK': 200, 'view-type': 'emerging-plan-document', 'document': document.to_dict(), 'add_fact_url': add_fact_url}
         elif PlanDocument.query.filter_by(url=website_location).first() is not None:
 
-           # TODO Actually we to know plan id as well otherwise can get an error here if doc has already been added to another
-           # plan and if so reject with useful error message
-
-            document = PlanDocument.query.filter_by(url=website_location).one()
+            document = PlanDocument.query.filter_by(url=website_location).first()
             add_fact_url = url_for('frontend.add_fact_to_document',
                                    planning_authority=document.local_plan.planning_authorities[0].id,
                                    local_plan=document.local_plan_id,

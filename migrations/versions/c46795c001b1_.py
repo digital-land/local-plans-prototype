@@ -67,14 +67,16 @@ def upgrade():
         if fact.document.type == 'plan_document':
             plan = fact.document.local_plan
             if fact.fact_type == 'PLAN_START_YEAR':
-                plan.plan_start_year = datetime.strptime(fact.fact, '%Y')
-                print('START YEAR', datetime.strptime(fact.fact, '%Y'))
+                d = fact.fact.split('-')[0]
+                plan.plan_start_year = datetime.strptime(d, '%Y')
             if fact.fact_type == 'PLAN_END_YEAR':
-                plan.plan_end_year = datetime.strptime(fact.fact, '%Y')
-                print('END YEAR', datetime.strptime(fact.fact, '%Y'))
+                d = fact.fact.split('-')[0]
+                plan.plan_end_year = datetime.strptime(d, '%Y')
             if fact.fact_type == 'PLAN_PERIOD':
-                plan.plan_start_year = datetime.strptime(fact.from_.strip(), '%Y')
-                plan.plan_end_year = datetime.strptime(fact.to.strip(), '%Y')
+                d_from = fact.from_.strip().split('-')[0]
+                d_to = fact.to.strip().split('-')[0]
+                plan.plan_start_year = datetime.strptime(d_from, '%Y')
+                plan.plan_end_year = datetime.strptime(d_to, '%Y')
             if fact.fact_type == 'PLAN_NAME' and (plan.title is None or plan.title.strip() == ''):
                 plan.title = fact.fact
 
