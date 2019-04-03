@@ -69,6 +69,18 @@ class LocalPlan(db.Model):
 
     def is_adopted(self):
         return True if self.adopted_date is not None else False
+
+    def is_joint_plan(self):
+        return len(self.planning_authorities) > 1
+
+    def has_plan_period(self):
+        return self.plan_start_year is not None or self.plan_end_year is not None
+
+    def has_housing_numbers(self):
+        return len(self.get_housing_numbers()) > 0
+
+    def has_plan_documents(self):
+        return len(self.plan_documents) > 0
         
     def ordered_states(self):
         states = []
@@ -105,9 +117,9 @@ class LocalPlan(db.Model):
 
     def get_housing_numbers(self):
         housing_numbers = []
-        for doc in self.planning_documents:
+        for doc in self.plan_documents:
             for fact in doc.facts:
-                if 'HOUSING' in fact.type:
+                if 'HOUSING' in fact.fact_type:
                     housing_numbers.append(fact)
         return housing_numbers
 
