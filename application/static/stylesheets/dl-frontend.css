@@ -6270,6 +6270,7 @@
   padding: 19px;
   border-width: 2px;
   border-style: dashed;
+  cursor: pointer;
 }
 
 .highlight-box--gap .highlight-box__title {
@@ -6825,6 +6826,30 @@
   .with-caption-after + .govuk-caption--after {
     margin-bottom: 20px;
   }
+}
+
+.missing-plan-period form {
+  display: none;
+}
+
+.missing-plan-period.active form {
+  display: block;
+}
+
+.govuk-form--contained {
+  margin-top: 15px;
+}
+
+.govuk-form--contained .govuk-heading-s {
+  margin-bottom: 15px;
+}
+
+.govuk-form--contained .govuk-form-group:not(:last-of-type) {
+  margin-bottom: 15px;
+}
+
+.govuk-form--contained .govuk-button {
+  margin-bottom: 0;
 }
 
 .add-url-form {

@@ -14,6 +14,6 @@ class LocalPlanURLForm(FlaskForm):
 
 class AddPlanForm(FlaskForm):
 	title = StringField('Plan title', [validators.DataRequired()])
-	start_year = IntegerField('Start year of plan', [validators.DataRequired()])
-	end_year = IntegerField('End year of plan', [validators.DataRequired()])
+	start_year = IntegerField('Start year', [validators.DataRequired()])
+	end_year = IntegerField('End year', [validators.DataRequired()])
 	planning_authority = HiddenField()

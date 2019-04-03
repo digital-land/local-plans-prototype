@@ -99,6 +99,21 @@ def local_plan(planning_authority):
                            emerging_fact_types=EmergingFactType,
                            form=form)
 
+@frontend.route('/local-plans/<planning_authority>/<plan_id>/update-plan-period', methods=['POST'])
+def update_plan_period(planning_authority, plan_id):
+    plan = LocalPlan.query.get(plan_id)
+    if plan is not None:
+        start_year = int(request.json.get('start-year'))
+        end_year = int(request.json.get('end-year'))
+        plan.plan_start_year = datetime.datetime(start_year,1,1)
+        plan.plan_end_year = datetime.datetime(end_year,1,1)
+        db.session.add(plan)
+        db.session.commit()
+        resp = {"OK": 200, "plan": plan.to_dict()}
+    else:
+        resp = {"OK": 204, "error": "Can't find that plan"}
+    return jsonify(resp)
+
 
 @frontend.route('/start-collecting-data')
 def start_collecting_data():

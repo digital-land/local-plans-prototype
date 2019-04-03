@@ -161,10 +161,48 @@
           {{ plan.title }}
       </h2>
         <h3 class="govuk-heading-m">Plan period</h3>
+        {% if plan.plan_start_year is defined and plan.plan_start_year != None %}
         <p>{{ plan.plan_start_year | format_year }} {{ plan.plan_end_year | format_year}}</p>
-
+        {% else %}
+        <div class="highlight-box highlight-box--gap highlight-box--flush missing-plan-period">
+          <h3 class="govuk-heading-s highlight-box__title">Plan period unknown</h3>
+          <p class="govuk-body govuk-!-margin-bottom-0">We do not have the plan period for this plan. Can you add it?</p>
+          <form class="govuk-form govuk-form--contained" action="{{ url_for('frontend.update_plan_period', planning_authority=planning_authority.id, plan_id=plan.id) }}" data-plan-id="{{ plan.id }}" method="POST">
+            <h3 class="govuk-heading-s">Add plan period</h3>
+            <div class="govuk-form-group">
+              {{ form.start_year.label(class="govuk-label") }}
+              {% if form.start_year.errors -%}
+                <div class="govuk-error-message">
+                {% for error in form.start_year.errors  %}
+                  <span>{{ error }}</span>
+                {% endfor %}
+                </div>
+              {%- endif %}
+              {{ form.start_year(class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4", pattern="[0-9]*") }}
+            </div>
+            <div class="govuk-form-group">
+              {{ form.end_year.label(class="govuk-label") }}
+              {% if form.start_year.errors -%}
+                <div class="govuk-error-message">
+                {% for error in form.end_year.errors %}
+                  <span>{{ error }}</span>
+                {% endfor %}
+                </div>
+              {% endif -%}
+              {{ form.end_year(class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4", pattern="[0-9]*") }}
+            </div>
+            <div class="govuk-form-group">
+              <input type="submit" class="govuk-button dlf-secondary-button" value="Save plan period">
+              <button class="cancel-btn">Cancel</button>
+            </div>
+          </form>
+        </div>
+        {% endif %}
 
 {#        TODO if plan period not known then user needs to add here or update here #}
+
+
+      
 
        {% if plan.url %}
           <h3 class="govuk-heading-m">Planning policy url</h3>
@@ -786,6 +824,51 @@
       );
     });
   }
+
+  // -----------------------
+  // handle plan period form
+  // -----------------------
+  const ppFormContainers = document.querySelectorAll(".missing-plan-period");
+
+  ppFormContainers.forEach((ppFormContainer) => {
+
+    function openHighlightBox(e) {
+      if(!ppFormContainer.classList.contains("active")) {
+        ppFormContainer.classList.add("active");
+        ppFormContainer.removeEventListener("click", openHighlightBox)
+      }
+    }
+    ppFormContainer.addEventListener("click", openHighlightBox);
+
+    const ppForm = ppFormContainer.querySelector("form");
+    console.log(ppForm);
+    const ppFormCancel = ppForm.querySelector(".cancel-btn");
+
+    ppFormCancel.addEventListener("click", (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      ppFormContainer.classList.remove("active");
+      ppFormContainer.addEventListener("click", openHighlightBox);
+    });
+
+    ppForm.addEventListener("submit", (e) => {
+      console.log("trying to submit...");
+      e.preventDefault();
+
+      const endpoint = ppForm.action;
+
+      const data = {
+        "start-year": ppForm.querySelector("[name='start_year']").value,
+        "end-year": ppForm.querySelector("[name='end_year']").value
+      };
+
+      postJSONRequest(endpoint, data, function(respData) {
+        // To Do: handle the response
+        console.log(respData);
+      });
+    });
+
+  });  
 
 </script>
 {% endblock %}

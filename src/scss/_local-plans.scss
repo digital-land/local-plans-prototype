@@ -279,3 +279,14 @@
   }
 }
 
+.missing-plan-period {
+  form {
+    display: none;
+  }
+
+  &.active {
+    form {
+      display: block;
+    }
+  }
+}

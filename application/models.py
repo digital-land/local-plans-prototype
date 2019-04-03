@@ -90,6 +90,8 @@ class LocalPlan(db.Model):
             'id': self.id,
             'is_adopted': self.is_adopted(),
             'title': title,
+            'plan_start_year': self.plan_start_year.strftime('%Y'),
+            'plan_end_year': self.plan_end_year.strftime('%Y'),
             'planning_authorities': [{'name': authority.name, 'id':authority.id} for authority in self.planning_authorities]
         }
         return data
