@@ -708,21 +708,15 @@
   const planTitles = document.querySelectorAll(".editable-plan-title");
   planTitles.forEach(makeTitleEditable);
 
-  /*function splitPlanTitle(title) {
-    return title.trim().split("-");
-  }*/
-
   function createEditableUI(currentValue) {
-    //const parts = splitPlanTitle(currentValue);
 
     const container = createElementWithClasses("div", "editable-title__container");
-
-    //const fixedPart = createElementWithClasses("span", "editable-title__fixed");
-    //fixedPart.textContent = `${parts[0]}-`;
-
     const form = createElementWithClasses("form", "form--inline");
 
     const input = createElementWithClasses("input", ["govuk-input"]);
+    const inputContainer = createElementWithClasses("div", "govuk-form-group");
+    inputContainer.appendChild(input);
+
     input.setAttribute("type", "text");
     input.value = currentValue.trim();
     input.dataset.currentSavedValue = currentValue.trim();
@@ -733,12 +727,18 @@
     const saveBtn = createElementWithClasses("button", "govuk-button");
     saveBtn.textContent = "Save";
 
+    const cancelButton = createElementWithClasses("button", "cancel-btn");
+    cancelButton.textContent = "Cancel";
+
+    const buttonContainer = createElementWithClasses("div", "govuk-form-group");
+    buttonContainer.appendChild(saveBtn);
+    buttonContainer.appendChild(cancelButton);
+
     const errorMessage = createElementWithClasses("div", "error-msg");
     errorMessage.textContent = "Plan with this title already exists";
 
-    //container.appendChild(fixedPart);
-    form.appendChild(input);
-    form.appendChild(saveBtn);
+    form.appendChild(inputContainer);
+    form.appendChild(buttonContainer);
     form.appendChild(errorMessage);
     container.appendChild(form);
 
@@ -770,7 +770,7 @@
       document.addEventListener('click', clickOffEditTitle);
       document.addEventListener('keydown', clickOffEditTitle);
     });
-
+    
     const exitEditModeHandler = getExitEditModeHandler( planTitleContainer );
 
     function clickOffEditTitle(e) {
