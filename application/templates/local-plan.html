@@ -245,33 +245,34 @@
       </div>
      {% endif %}
 
-     {% if not plan.is_emerging() %}
-        <div class="pims-stages">
-            {% set latest_state = plan.latest_state() %}
-            <div class="current-stage">
-                <span class="stage-tag">{{ latest_state.state }}</span>
-                <span class="stage-date">{{ latest_state.date | format_month_and_year }}</span>
-            </div>
-            <details class="govuk-details">
-                <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">
-                 PINS Timeline
-                </span>
-                </summary>
-                <div class="govuk-details__text">
-                    <table class="govuk-table">
-                        <tbody class="govuk-table__body">
-                        {% for state in plan.ordered_states() %}
-                            <tr class="govuk-table__row">
-                                <th class="govuk-table__cell" scope="row">{{ state.state }}</th>
-                                <td class="govuk-table__cell">{{ state.date | format_month_and_year }}</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </details>
+    {% if not plan.is_emerging() %}
+    <h3 class="govuk-heading-m">PINS data</h3>
+    <div class="pims-stages govuk-!-margin-bottom-8">
+      {% set latest_state = plan.latest_state() %}
+      <div class="current-stage">
+        <span class="stage-tag">{{ latest_state.state }}</span>
+        <span class="stage-date">{{ latest_state.date | format_month_and_year }}</span>
+      </div>
+      <details class="govuk-details">
+        <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+         PINS Timeline
+        </span>
+        </summary>
+        <div class="govuk-details__text">
+          <table class="govuk-table">
+            <tbody class="govuk-table__body">
+            {% for state in plan.ordered_states() -%}
+              <tr class="govuk-table__row">
+                <th class="govuk-table__cell" scope="row">{{ state.state }}</th>
+                <td class="govuk-table__cell">{{ state.date | format_month_and_year }}</td>
+              </tr>
+            {%- endfor %}
+            </tbody>
+          </table>
         </div>
+      </details>
+    </div>
     {% endif %}
 
       
@@ -363,32 +364,38 @@
       <form class="govuk-form new-plan-form" method="post" action="{{ url_for('frontend.local_plan', planning_authority=planning_authority.id) }}">
 
           <div class="govuk-form-group">
-              {{ form.title.label(class="govuk-label govuk-!-font-weight-bold") }}
+            {{ form.title.label(class="govuk-label") }}
+            {% if form.title.errors | length > 0 -%}
               <span class="govuk-error-message">
-            {% for error in form.title.errors %}
+              {% for error in form.title.errors %}
                 <span>{{ error }}</span>
-            {% endfor %}
-          </span>
-              {{ form.title(class="govuk-input") }}
+              {% endfor %}
+              </span>
+            {%- endif %}
+            {{ form.title(class="govuk-input") }}
           </div>
 
           <div class="govuk-form-group">
-          {{ form.start_year.label(class="govuk-label govuk-!-font-weight-bold") }}
-          <span class="govuk-error-message">
-            {% for error in form.start_year.errors  %}
+            {{ form.start_year.label(class="govuk-label") }}
+            {% if form.title.errors | length > 0 -%}
+              <span class="govuk-error-message">
+              {% for error in form.title.errors %}
                 <span>{{ error }}</span>
-            {% endfor %}
-          </span>
+              {% endfor %}
+              </span>
+            {%- endif %}
           {{ form.start_year(class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4", pattern="[0-9]*") }}
          </div>
           <div class="govuk-form-group">
-              {{ form.end_year.label(class="govuk-label govuk-!-font-weight-bold") }}
+            {{ form.end_year.label(class="govuk-label") }}
+            {% if form.title.errors | length > 0 -%}
               <span class="govuk-error-message">
-            {% for error in form.end_year.errors %}
+              {% for error in form.title.errors %}
                 <span>{{ error }}</span>
-            {% endfor %}
-          </span>
-              {{ form.end_year(class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4", pattern="[0-9]*") }}
+              {% endfor %}
+              </span>
+            {%- endif %}
+            {{ form.end_year(class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4", pattern="[0-9]*") }}
           </div>
           <div class="govuk-form-group">
             <button class="govuk-button dlf-secondary-button">Add plan</button>
