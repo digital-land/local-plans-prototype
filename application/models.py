@@ -362,13 +362,14 @@ class Fact(db.Model):
             return FactType[self.fact_type]
         elif self.fact_type in EmergingFactType.__members__:
             return EmergingFactType[self.fact_type]
+        return None
 
     def to_dict(self):
         data = {
             'id': str(self.id),
             'fact': self.fact,
             'fact_type': self.fact_type,
-            'fact_type_display': self.get_fact_type().value,
+            'fact_type_display': self.get_fact_type().value if self.get_fact_type() else self.fact_type,
             'notes': self.notes,
             'document': str(self.document_id),
             'document_url': self.document.url,
