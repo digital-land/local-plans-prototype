@@ -7,7 +7,7 @@
         <h1 class="govuk-heading-m">Start collection information for</h1>
         <p class="govuk-body">
             {% for planning_authority in local_plan.planning_authorities %}
-                {%  set target = planning_authority.id + '#' + plan_id %}
+                {%  set target = planning_authority.id + '#plan_tab_' + plan_id %}
                  <h2>
                      <a href="/local-plans/{{ target }}">
                          {% if local_plan.is_joint_plan() %}Joint plan - {% endif %}{{ local_plan.title }} - {{ planning_authority.name }}
