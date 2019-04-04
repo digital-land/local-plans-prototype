@@ -145,7 +145,7 @@
     <ul class="govuk-tabs__list">
       {% for plan in planning_authority.sorted_plans()  %}
       <li class="govuk-tabs__list-item {% if plan.is_adopted() %}adopted-plan{% endif %}">
-        <a class="govuk-tabs__tab govuk-tabs__tab--selected" href="#plan_tab_{{ loop.index }}">
+        <a class="govuk-tabs__tab govuk-tabs__tab--selected" href="#plan_tab_{{ plan.id}}">
           {{ plan.title }}
         </a>
       </li>
@@ -188,7 +188,7 @@
     {% endmacro %}
 
     {% for plan in planning_authority.sorted_plans() %}
-    <section class="govuk-tabs__panel local-plan {% if plan.is_adopted() %}adopted-plan{% endif %}" id="plan_tab_{{ loop.index }}">
+    <section class="govuk-tabs__panel local-plan {% if plan.is_adopted() %}adopted-plan{% endif %}" id="plan_tab_{{ plan.id }}">
       <h2 class="govuk-heading-l editable-plan-title" data-update-plan-url="{{ url_for('frontend.update_plan', planning_authority=planning_authority.id, local_plan=plan.id) }}">
           {{ plan.title }}
       </h2>
