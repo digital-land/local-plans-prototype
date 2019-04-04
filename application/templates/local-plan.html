@@ -193,22 +193,6 @@
           {{ plan.title }}
       </h2>
 
-      <!-- start of plan period section -->
-      <h3 class="govuk-heading-m">Plan period</h3>
-      <div class="edit-plan-period {% if plan.plan_start_year is undefined or plan.plan_start_year == None %}not-set{% endif %}">
-        <p class="plan-period"><span data-year-type="start">{{ plan.plan_start_year | format_year }}</span>-<span data-year-type="end">{{ plan.plan_end_year | format_year}}</span></p>
-        <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="#" class="govuk-link">Update plan period</a>.</p>
-        <div class="highlight-box highlight-box--flush highlight-box--minimal">
-         {{ renderPlanPeriodForm(plan, "Edit plan period", "edit" + loop.index | string, "govuk-form--contained") }}
-        </div>
-      </div>
-      {% if plan.plan_start_year is undefined or plan.plan_start_year == None %}
-      <div class="highlight-box highlight-box--gap highlight-box--flush missing-plan-period">
-        <h3 class="govuk-heading-s highlight-box__title">Plan period unknown</h3>
-        <p class="govuk-body govuk-!-margin-bottom-0">We do not have the plan period for this plan. Can you add it?</p>
-        {{ renderPlanPeriodForm(plan, "Add plan period", "add" + loop.index | string, "govuk-form--contained") }}
-      </div>
-      {% endif %}
 
       <!-- start of plan policy url section -->
 
@@ -244,6 +228,24 @@
         {{ renderPolicyURLForm(plan, "Add policy url", "add" + loop.index | string, "govuk-form--contained") }}
       </div>
      {% endif %}
+
+      <!-- start of plan period section -->
+      <h3 class="govuk-heading-m">Plan period</h3>
+      <div class="edit-plan-period {% if plan.plan_start_year is undefined or plan.plan_start_year == None %}not-set{% endif %}">
+        <p class="plan-period"><span data-year-type="start">{{ plan.plan_start_year | format_year }}</span>-<span data-year-type="end">{{ plan.plan_end_year | format_year}}</span></p>
+        <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="#" class="govuk-link">Update plan period</a>.</p>
+        <div class="highlight-box highlight-box--flush highlight-box--minimal">
+         {{ renderPlanPeriodForm(plan, "Edit plan period", "edit" + loop.index | string, "govuk-form--contained") }}
+        </div>
+      </div>
+      {% if plan.plan_start_year is undefined or plan.plan_start_year == None %}
+      <div class="highlight-box highlight-box--gap highlight-box--flush missing-plan-period">
+        <h3 class="govuk-heading-s highlight-box__title">Plan period unknown</h3>
+        <p class="govuk-body govuk-!-margin-bottom-0">We do not have the plan period for this plan. Can you add it?</p>
+        {{ renderPlanPeriodForm(plan, "Add plan period", "add" + loop.index | string, "govuk-form--contained") }}
+      </div>
+      {% endif %}
+
 
     {% if not plan.is_emerging() %}
     <h3 class="govuk-heading-m">PINS data</h3>
