@@ -6672,11 +6672,14 @@
 
 .editable-plan-title {
   box-sizing: content-box;
+  padding-bottom: 1px;
 }
 
 .editable-plan-title:hover {
   margin-top: -1px;
-  margin-left: -1px;
+  margin-left: -10px;
+  padding-left: 9px;
+  padding-bottom: 0;
   border: 1px dashed #005ea5;
   background: #f8f8f8;
   cursor: pointer;
