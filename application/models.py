@@ -104,7 +104,8 @@ class LocalPlan(db.Model):
             'title': title,
             'plan_start_year': self.plan_start_year.strftime('%Y'),
             'plan_end_year': self.plan_end_year.strftime('%Y'),
-            'planning_authorities': [{'name': authority.name, 'id':authority.id} for authority in self.planning_authorities]
+            'planning_authorities': [{'name': authority.name, 'id':authority.id} for authority in self.planning_authorities],
+            'url': self.url
         }
         return data
 

@@ -6868,15 +6868,18 @@
   }
 }
 
-.missing-plan-period form {
+.missing-plan-period form,
+.missing-plan-url form {
   display: none;
 }
 
-.missing-plan-period.active form {
+.missing-plan-period.active form,
+.missing-plan-url.active form {
   display: block;
 }
 
-.missing-plan-period.has-been-set {
+.missing-plan-period.has-been-set,
+.missing-plan-url.has-been-set {
   display: none;
 }
 
@@ -6894,6 +6897,22 @@
 }
 
 .edit-plan-period.edit-mode .request-for-update {
+  display: none;
+}
+
+.plan-policy-url-section .highlight-box {
+  display: none;
+}
+
+.plan-policy-url-section.not-set {
+  display: none;
+}
+
+.plan-policy-url-section.edit-mode .highlight-box {
+  display: block;
+}
+
+.plan-policy-url-section.edit-mode .request-for-update {
   display: none;
 }
 

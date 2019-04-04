@@ -195,12 +195,20 @@ def update_local_scheme_url(planning_authority):
 def update_local_plan_url(planning_authority, local_plan):
     pla = PlanningAuthority.query.get(planning_authority)
     plan = LocalPlan.query.get(local_plan)
-    form = LocalPlanURLForm(url=plan.url)
-    if form.validate_on_submit():
-        plan.url = form.url.data
+
+    if request.method == 'POST' and request.json['policy-url'] is not None:
+        plan.url = request.json['policy-url']
         db.session.add(pla)
         db.session.commit()
-        return redirect(url_for('frontend.local_plan', planning_authority=pla.id))
+        resp = {'OK': 200, 'plan': plan.to_dict()}
+        return jsonify(resp)
+    else:
+        form = LocalPlanURLForm(url=plan.url)
+        if form.validate_on_submit():
+            plan.url = form.url.data
+            db.session.add(pla)
+            db.session.commit()
+            return redirect(url_for('frontend.local_plan', planning_authority=pla.id))
 
     return render_template('update-plan-url.html', planning_authority=pla, local_plan=plan, form=form)
 

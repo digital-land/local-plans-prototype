@@ -192,34 +192,58 @@
       <h2 class="govuk-heading-l editable-plan-title" data-update-plan-url="{{ url_for('frontend.update_plan', planning_authority=planning_authority.id, local_plan=plan.id) }}">
           {{ plan.title }}
       </h2>
-        <h3 class="govuk-heading-m">Plan period</h3>
-        <div class="edit-plan-period {% if plan.plan_start_year is undefined or plan.plan_start_year == None %}not-set{% endif %}">
-          <p class="plan-period"><span data-year-type="start">{{ plan.plan_start_year | format_year }}</span>-<span data-year-type="end">{{ plan.plan_end_year | format_year}}</span></p>
-          <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="#" class="govuk-link">Update plan period</a>.</p>
-          <div class="highlight-box highlight-box--flush highlight-box--minimal">
-           {{ renderPlanPeriodForm(plan, "Edit plan period", "edit" + loop.index | string, "govuk-form--contained") }}
-          </div>
-        </div>
-        {% if plan.plan_start_year is undefined or plan.plan_start_year == None %}
-        <div class="highlight-box highlight-box--gap highlight-box--flush missing-plan-period">
-          <h3 class="govuk-heading-s highlight-box__title">Plan period unknown</h3>
-          <p class="govuk-body govuk-!-margin-bottom-0">We do not have the plan period for this plan. Can you add it?</p>
-          {{ renderPlanPeriodForm(plan, "Add plan period", "add" + loop.index | string, "govuk-form--contained") }}
-        </div>
-        {% endif %}
 
-       {% if plan.url %}
-          <h3 class="govuk-heading-m">Planning policy url</h3>
-          <p class="govuk-body">
-            <a id="policy-url" class="govuk-link" href="{{ plan.url }}" target="_blank">{{ plan.url }}</a>
-          </p>
-          <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="{{ url_for('frontend.update_local_plan_url', planning_authority=planning_authority.id, local_plan=plan.id) }}" class="govuk-link">Update the url</a>.</p>
-          {% else %}
-          <a class="highlight-box highlight-box--gap highlight-box--flush" href="{{ url_for('frontend.update_local_plan_url', planning_authority=planning_authority.id, local_plan=plan.id) }}">
-            <h3 class="govuk-heading-s highlight-box__title">URL unavailable</h3>
-            <p class="govuk-body govuk-!-margin-bottom-0">We do not have a link to the local plan. Can you add one?</p>
-          </a>
-       {% endif %}
+      <!-- start of plan period section -->
+      <h3 class="govuk-heading-m">Plan period</h3>
+      <div class="edit-plan-period {% if plan.plan_start_year is undefined or plan.plan_start_year == None %}not-set{% endif %}">
+        <p class="plan-period"><span data-year-type="start">{{ plan.plan_start_year | format_year }}</span>-<span data-year-type="end">{{ plan.plan_end_year | format_year}}</span></p>
+        <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="#" class="govuk-link">Update plan period</a>.</p>
+        <div class="highlight-box highlight-box--flush highlight-box--minimal">
+         {{ renderPlanPeriodForm(plan, "Edit plan period", "edit" + loop.index | string, "govuk-form--contained") }}
+        </div>
+      </div>
+      {% if plan.plan_start_year is undefined or plan.plan_start_year == None %}
+      <div class="highlight-box highlight-box--gap highlight-box--flush missing-plan-period">
+        <h3 class="govuk-heading-s highlight-box__title">Plan period unknown</h3>
+        <p class="govuk-body govuk-!-margin-bottom-0">We do not have the plan period for this plan. Can you add it?</p>
+        {{ renderPlanPeriodForm(plan, "Add plan period", "add" + loop.index | string, "govuk-form--contained") }}
+      </div>
+      {% endif %}
+
+      <!-- start of plan policy url section -->
+
+      {% macro renderPolicyURLForm(plan, heading, suffix, classes, value) %}
+       <form action="{{ url_for('frontend.update_local_plan_url', planning_authority=planning_authority.id, local_plan=plan.id) }}" class="govuk-form{{- ' ' + classes if classes}}" method="POST">
+        <h3 class="govuk-heading-s">{{ heading }}</h3>
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="url-{{ suffix }}">Local plan URL</label>
+          <input class="govuk-input" id="url-{{ suffix }}" name="url-{{ suffix }}" type="text" value="{{ value }}">
+        </div>
+
+        <div class="govuk-form-group">
+          <button class="govuk-button dlf-secondary-button" type="submit">Save</button>
+          <button class="cancel-btn">Cancel</button>
+        </div>
+      </form>
+      {% endmacro %}
+
+      <h3 class="govuk-heading-m">Planning policy url</h3>
+      <div class="plan-policy-url-section {% if not plan.url %}not-set{% endif %}">
+        <p class="govuk-body">
+          <a id="policy-url" class="govuk-link policy-url" href="{{ plan.url }}" target="_blank">{{ plan.url }}</a>
+        </p>
+        <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="{{ url_for('frontend.update_local_plan_url', planning_authority=planning_authority.id, local_plan=plan.id) }}" class="govuk-link">Update the url</a>.</p>
+        <div class="highlight-box highlight-box--flush highlight-box--minimal">
+          {{ renderPolicyURLForm(plan, "Edit policy url", "edit" + loop.index | string, "govuk-form--contained", plan.url) }}
+        </div>
+      </div>
+      {% if not plan.url %}
+      <div class="highlight-box highlight-box--gap highlight-box--flush missing-plan-url">
+        <h3 class="govuk-heading-s highlight-box__title">URL unavailable</h3>
+        <p class="govuk-body govuk-!-margin-bottom-0">We do not have a link to the local plan. Can you add one?</p>
+        {{ renderPolicyURLForm(plan, "Add policy url", "add" + loop.index | string, "govuk-form--contained") }}
+      </div>
+     {% endif %}
 
      {% if not plan.is_emerging() %}
         <div class="pims-stages">
@@ -914,6 +938,7 @@
         // To Do: handle the response
         if(respData["OK"] === 200) {
           that.exitEditMode();
+          that.trigger.addEventListener("click", that.editHandler);
           if (succCb && typeof succCb === "function") {
             succCb(respData);
           }
@@ -973,6 +998,61 @@
       const endyear = editableSection.section.querySelector("[data-year-type='end']");
       startyear.textContent = data.plan.plan_start_year;
       endyear.textContent = data.plan.plan_end_year;
+    }
+
+    editableSection.initialiseForm(extractData, onSuccessfulChange);
+  });
+
+
+  // ---------------------------
+  // handle plan policy url form
+  // ---------------------------
+  const planUrlContainers = document.querySelectorAll(".missing-plan-url");
+
+  planUrlContainers.forEach((planUrlContainer) => {
+    const editableSection = new EditableSection(planUrlContainer, {
+      allClickable: true,
+      activeClass: "active"
+    });
+
+    const extractData = (form) => {
+      return data = {
+        "policy-url": form.querySelector("[name^='url-']").value
+      };
+    };
+
+    console.log(editableSection);
+
+    const successfullySaved = (data) => {
+      const section = editableSection.section;
+      section.classList.add("has-been-set");
+
+      const planUrl = section.parentNode.querySelector(".plan-policy-url-section");
+      planUrl.classList.remove("not-set");
+      const url = planUrl.querySelector(".policy-url");
+      url.textContent = data.plan.url;
+      url.href = data.plan.url;
+    };
+
+    editableSection.initialiseForm(extractData, successfullySaved);
+
+  });
+
+  // -----------------------------
+  // make plan policy url editable
+  // -----------------------------
+  const planPolicyURLS = document.querySelectorAll(".plan-policy-url-section");
+  planPolicyURLS.forEach((urlSection) => {
+    const editableSection = new EditableSection(urlSection);
+    const extractData = (form) => {
+      return data = {
+        "policy-url": form.querySelector("[name^='url-']").value
+      };
+    };
+    const onSuccessfulChange = (data) => {
+      const url = editableSection.section.querySelector(".policy-url");
+      url.textContent = data.plan.url;
+      url.href = data.plan.url;
     }
 
     editableSection.initialiseForm(extractData, onSuccessfulChange);
