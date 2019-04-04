@@ -155,6 +155,38 @@
       </li>
     </ul>
 
+    {% from "govuk-jinja-components/govuk-form/govuk-label.jinja" import govukLabel %}
+    {% from "govuk-jinja-components/govuk-form/govuk-input.jinja" import govukTextInput %}
+
+    {% macro renderPlanPeriodForm(plan, heading, suffix, classes) %}
+    <form class="govuk-form{{- ' ' + classes if classes}}" action="{{ url_for('frontend.update_plan_period', planning_authority=planning_authority.id, plan_id=plan.id) }}" data-plan-id="{{ plan.id }}" method="POST">
+      <h3 class="govuk-heading-s">{{ heading }}</h3>
+      <div class="govuk-form-group">
+        {{ govukLabel({ "label": "Start year", "for": "start_year_" + suffix }) }}
+        {{ govukTextInput({
+          "classes": "govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4",
+          "id": "start-year_" + suffix,
+          "name": "start-year_" + suffix,
+          "value": plan.plan_start_year | format_year
+        }) }}
+      </div>
+      <div class="govuk-form-group">
+        {{ govukLabel({ "label": "End year", "for": "end_year_" + suffix }) }}
+        {{ govukTextInput({
+          "classes": "govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4",
+          "id": "end-year_" + suffix,
+          "name": "end-year_" + suffix,
+          "value": plan.plan_end_year | format_year,
+          "pattern":"[0-9]*"
+        }) }}
+      </div>
+      <div class="govuk-form-group">
+        <input type="submit" class="govuk-button dlf-secondary-button" value="Save plan period">
+        <button class="cancel-btn">Cancel</button>
+      </div>
+    </form>
+    {% endmacro %}
+
     {% for plan in planning_authority.sorted_plans() %}
     <section class="govuk-tabs__panel local-plan {% if plan.is_adopted() %}adopted-plan{% endif %}" id="plan_tab_{{ loop.index }}">
       <h2 class="govuk-heading-l editable-plan-title" data-update-plan-url="{{ url_for('frontend.update_plan', planning_authority=planning_authority.id, local_plan=plan.id) }}">
@@ -162,47 +194,18 @@
       </h2>
         <h3 class="govuk-heading-m">Plan period</h3>
         {% if plan.plan_start_year is defined and plan.plan_start_year != None %}
-        <p>{{ plan.plan_start_year | format_year }} {{ plan.plan_end_year | format_year}}</p>
+        <div class="edit-plan-period">
+          <p><span data-year-type="start">{{ plan.plan_start_year | format_year }}</span>-<span data-year-type="end">{{ plan.plan_end_year | format_year}}</span></p>
+          <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="#" class="govuk-link">Update plan period</a>.</p>
+          {{ renderPlanPeriodForm(plan, "Edit plan period", "edit" + loop.index | string) }}
+        </div>
         {% else %}
         <div class="highlight-box highlight-box--gap highlight-box--flush missing-plan-period">
           <h3 class="govuk-heading-s highlight-box__title">Plan period unknown</h3>
           <p class="govuk-body govuk-!-margin-bottom-0">We do not have the plan period for this plan. Can you add it?</p>
-          <form class="govuk-form govuk-form--contained" action="{{ url_for('frontend.update_plan_period', planning_authority=planning_authority.id, plan_id=plan.id) }}" data-plan-id="{{ plan.id }}" method="POST">
-            <h3 class="govuk-heading-s">Add plan period</h3>
-            <div class="govuk-form-group">
-              {{ form.start_year.label(class="govuk-label") }}
-              {% if form.start_year.errors -%}
-                <div class="govuk-error-message">
-                {% for error in form.start_year.errors  %}
-                  <span>{{ error }}</span>
-                {% endfor %}
-                </div>
-              {%- endif %}
-              {{ form.start_year(class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4", pattern="[0-9]*") }}
-            </div>
-            <div class="govuk-form-group">
-              {{ form.end_year.label(class="govuk-label") }}
-              {% if form.start_year.errors -%}
-                <div class="govuk-error-message">
-                {% for error in form.end_year.errors %}
-                  <span>{{ error }}</span>
-                {% endfor %}
-                </div>
-              {% endif -%}
-              {{ form.end_year(class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4", pattern="[0-9]*") }}
-            </div>
-            <div class="govuk-form-group">
-              <input type="submit" class="govuk-button dlf-secondary-button" value="Save plan period">
-              <button class="cancel-btn">Cancel</button>
-            </div>
-          </form>
+          {{ renderPlanPeriodForm(plan, "Add plan period", "add" + loop.index | string, "govuk-form--contained") }}
         </div>
         {% endif %}
-
-{#        TODO if plan period not known then user needs to add here or update here #}
-
-
-      
 
        {% if plan.url %}
           <h3 class="govuk-heading-m">Planning policy url</h3>
@@ -850,8 +853,8 @@
       const endpoint = ppForm.action;
 
       const data = {
-        "start-year": ppForm.querySelector("[name='start_year']").value,
-        "end-year": ppForm.querySelector("[name='end_year']").value
+        "start-year": ppForm.querySelector("[name^='start_year']").value,
+        "end-year": ppForm.querySelector("[name^='end_year']").value
       };
 
       postJSONRequest(endpoint, data, function(respData) {
@@ -860,7 +863,110 @@
       });
     });
 
-  });  
+  });
+
+  // -------------------------
+  // make plan period editable
+  // -------------------------
+  function EditableSection(section, opts) {
+    this.section = section;
+    this.options = opts || {};
+
+    this.enterEditMode = () => this.section.classList.add("edit-mode");
+    this.exitEditMode = () => this.section.classList.remove("edit-mode");
+
+    if (this.options.trigger) {
+      this.setEditTrigger(this.options.trigger);
+    } else {
+      this.setEditTrigger();
+    }
+
+  }
+
+  EditableSection.prototype.setEditTrigger = function(selector) {
+    if (selector) {
+      this.trigger = this.section.querySelector(selector);
+    } else {
+      this.trigger = this.section.querySelector(".request-for-update a");
+    }
+    this.addEditListener();
+
+    if (this.options.cancel) {
+      this.setCancelTrigger(this.options.cancel);
+    } else {
+      this.setCancelTrigger();
+    }
+  }
+
+  EditableSection.prototype.addEditListener = function() {
+    const that = this;
+    function editHandler(e) {
+      e.preventDefault();
+      that.enterEditMode();
+    }
+    this.trigger.addEventListener("click", editHandler);
+  }
+
+  EditableSection.prototype.setCancelTrigger = function(selector) {
+    if (selector) {
+      this.cancel = this.section.querySelector(selector);
+      //this.trigger.addEventListener("click", )
+    } else {
+      this.cancel = this.section.querySelector(".cancel-btn");
+    }
+    this.addCancelListener();
+  }
+
+  EditableSection.prototype.addCancelListener = function() {
+    const that = this;
+    function cancelHandler(e) {
+      e.preventDefault();
+      that.exitEditMode();
+    }
+    this.cancel.addEventListener("click", cancelHandler);
+  }
+
+  EditableSection.prototype.initialiseForm = function(extractDataFunc, succCb, errCb) {
+    const form = this.section.querySelector("form");
+    this.form = form;
+
+    const that = this;
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const endpoint = form.action;
+
+      const data = extractDataFunc(form);
+
+      postJSONRequest(endpoint, data, function(respData) {
+        // To Do: handle the response
+        if(respData["OK"] === 200) {
+          that.exitEditMode();
+          succCb(respData);
+        }
+        console.log(respData);
+      });
+    });
+  }
+
+  const planPeriods = document.querySelectorAll(".edit-plan-period");
+  planPeriods.forEach((plan) => {
+    const editableSection = new EditableSection(plan);
+    const extractData = (form) => {
+      return data = {
+        "start-year": form.querySelector("[name^='start-year']").value,
+        "end-year": form.querySelector("[name^='end-year']").value
+      };
+    };
+    const onSuccessfulChange = (data) => {
+      const startyear = editableSection.section.querySelector("[data-year-type='start']");
+      const endyear = editableSection.section.querySelector("[data-year-type='end']");
+      startyear.textContent = data.plan.plan_start_year;
+      endyear.textContent = data.plan.plan_end_year;
+    }
+
+    editableSection.initialiseForm(extractData, onSuccessfulChange);
+  });
 
 </script>
 {% endblock %}

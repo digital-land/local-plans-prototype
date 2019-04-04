@@ -171,6 +171,7 @@
 
 
 .request-for-update {
+  @include govuk-font($size: 16);
   color: govuk-colour("grey-1");
 }
 
@@ -215,8 +216,8 @@ $editable-box-border-width: 1px;
   &:hover {
     margin-top: -$editable-box-border-width;
     margin-left: -10px;
-    padding-left: 10px - $editable-box-border-width;
     padding-bottom: 0;
+    padding-left: 10px - $editable-box-border-width;
     border: $editable-box-border-width dashed govuk-colour("blue");
     background: govuk-colour("grey-4");
     cursor: pointer;
@@ -292,6 +293,22 @@ $editable-box-border-width: 1px;
   &.active {
     form {
       display: block;
+    }
+  }
+}
+
+.edit-plan-period {
+  form {
+    display: none;
+  }
+
+  &.edit-mode {
+    form {
+      display: block;
+    }
+
+    .request-for-update {
+      display: none;
     }
   }
 }

@@ -6613,7 +6613,35 @@
 }
 
 .request-for-update {
+  font-family: "nta", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 14px;
+  font-size: 0.875rem;
+  line-height: 1.14286;
   color: #6f777b;
+}
+
+@media print {
+  .request-for-update {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .request-for-update {
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+}
+
+@media print {
+  .request-for-update {
+    font-size: 14pt;
+    line-height: 1.2;
+  }
 }
 
 .govuk-tabs__tab--add-new:not(.govuk-tabs__tab--selected) {
@@ -6678,8 +6706,8 @@
 .editable-plan-title:hover {
   margin-top: -1px;
   margin-left: -10px;
-  padding-left: 9px;
   padding-bottom: 0;
+  padding-left: 9px;
   border: 1px dashed #005ea5;
   background: #f8f8f8;
   cursor: pointer;
@@ -6837,6 +6865,18 @@
 
 .missing-plan-period.active form {
   display: block;
+}
+
+.edit-plan-period form {
+  display: none;
+}
+
+.edit-plan-period.edit-mode form {
+  display: block;
+}
+
+.edit-plan-period.edit-mode .request-for-update {
+  display: none;
 }
 
 .govuk-form--contained {
