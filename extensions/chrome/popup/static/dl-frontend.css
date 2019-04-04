@@ -6262,6 +6262,15 @@
   color: #0b0c0c;
 }
 
+.highlight-box--minimal {
+  border: 0;
+}
+
+.highlight-box--minimal:hover {
+  border: 0;
+  box-shadow: none;
+}
+
 .highlight-box--flush {
   margin-left: 0;
 }
@@ -6270,6 +6279,7 @@
   padding: 19px;
   border-width: 2px;
   border-style: dashed;
+  cursor: pointer;
 }
 
 .highlight-box--gap .highlight-box__title {
@@ -6612,7 +6622,35 @@
 }
 
 .request-for-update {
+  font-family: "nta", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 14px;
+  font-size: 0.875rem;
+  line-height: 1.14286;
   color: #6f777b;
+}
+
+@media print {
+  .request-for-update {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .request-for-update {
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+}
+
+@media print {
+  .request-for-update {
+    font-size: 14pt;
+    line-height: 1.2;
+  }
 }
 
 .govuk-tabs__tab--add-new:not(.govuk-tabs__tab--selected) {
@@ -6671,11 +6709,14 @@
 
 .editable-plan-title {
   box-sizing: content-box;
+  padding-bottom: 1px;
 }
 
 .editable-plan-title:hover {
   margin-top: -1px;
-  margin-left: -1px;
+  margin-left: -10px;
+  padding-bottom: 0;
+  padding-left: 9px;
   border: 1px dashed #005ea5;
   background: #f8f8f8;
   cursor: pointer;
@@ -6825,6 +6866,74 @@
   .with-caption-after + .govuk-caption--after {
     margin-bottom: 20px;
   }
+}
+
+.missing-plan-period form,
+.missing-plan-url form {
+  display: none;
+}
+
+.missing-plan-period.active form,
+.missing-plan-url.active form {
+  display: block;
+}
+
+.missing-plan-period.has-been-set,
+.missing-plan-url.has-been-set {
+  display: none;
+}
+
+.edit-plan-period .highlight-box {
+  display: none;
+}
+
+.edit-plan-period.not-set .plan-period,
+.edit-plan-period.not-set .request-for-update {
+  display: none;
+}
+
+.edit-plan-period.edit-mode .highlight-box {
+  display: block;
+}
+
+.edit-plan-period.edit-mode .request-for-update {
+  display: none;
+}
+
+.plan-policy-url-section .highlight-box {
+  display: none;
+}
+
+.plan-policy-url-section.not-set {
+  display: none;
+}
+
+.plan-policy-url-section.edit-mode .highlight-box {
+  display: block;
+}
+
+.plan-policy-url-section.edit-mode .request-for-update {
+  display: none;
+}
+
+.govuk-form--contained {
+  margin-top: 15px;
+}
+
+.govuk-form--contained .govuk-heading-s {
+  margin-bottom: 15px;
+}
+
+.govuk-form--contained .govuk-form-group:not(:last-of-type) {
+  margin-bottom: 15px;
+}
+
+.govuk-form--contained .govuk-button {
+  margin-bottom: 0;
+}
+
+.govuk-form--contained:first-child {
+  margin-top: 0;
 }
 
 .add-url-form {

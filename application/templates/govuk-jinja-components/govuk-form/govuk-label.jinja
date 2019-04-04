@@ -1,0 +1,3 @@
+{% macro govukLabel(params) %}
+<label class="govuk-label{{- ' ' + params.classes if params.classes}}" for="{{ params.for }}">{{ params.label }}</label>
+{% endmacro %}

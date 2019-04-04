@@ -1,0 +1,3 @@
+{% macro govukTextInput(params) %}
+<input class="govuk-input{{- ' ' + params.classes if params.classes}}" id="{{ params.id }}" name="{{ params.name }}" {% if params.pattern %}pattern="{{ params.pattern }}"{% endif %} type="text" value="{{params.value if params.value}}">
+{% endmacro %}

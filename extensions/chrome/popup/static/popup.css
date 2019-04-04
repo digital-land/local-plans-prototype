@@ -5399,6 +5399,26 @@
   background-color: #d0d3d6;
 }
 
+.govuk-form--contained {
+  margin-top: 15px;
+}
+
+.govuk-form--contained .govuk-heading-s {
+  margin-bottom: 15px;
+}
+
+.govuk-form--contained .govuk-form-group:not(:last-of-type) {
+  margin-bottom: 15px;
+}
+
+.govuk-form--contained .govuk-button {
+  margin-bottom: 0;
+}
+
+.govuk-form--contained:first-child {
+  margin-top: 0;
+}
+
 .add-url-form {
   box-sizing: border-box;
   display: block;

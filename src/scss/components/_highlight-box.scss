@@ -49,6 +49,15 @@
   }
 }
 
+.highlight-box--minimal {
+  border: 0;
+
+  &:hover {
+    border: 0;
+    box-shadow: none;
+  }
+}
+
 
 .highlight-box--flush {
   margin-left: 0;
@@ -59,6 +68,7 @@
   padding: 19px;
   border-width: 2px;
   border-style: dashed;
+  cursor: pointer;
 
   .highlight-box__title {
     margin: 0;

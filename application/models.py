@@ -29,6 +29,10 @@ class LocalPlan(db.Model):
     local_plan = db.Column(db.String())
     url = db.Column(db.String())
     title = db.Column(db.String())
+
+    plan_start_year = db.Column(db.Date())
+    plan_end_year = db.Column(db.Date())
+
     start_year = db.Column(db.Date())
     published_date = db.Column(db.Date())
     submitted_date = db.Column(db.Date())
@@ -42,21 +46,44 @@ class LocalPlan(db.Model):
     plan_documents = db.relationship('PlanDocument', back_populates='local_plan', lazy=True, order_by='PlanDocument.created_date')
 
     def __eq__(self, other):
-        return self.ordered_states() == other.ordered_states()
+
+        if self.plan_start_year is not None and other.plan_end_year is not None:
+            return self.plan_start_year == other.plan_start_year
+        else:
+            return self.ordered_states() == other.ordered_states()
 
     def __lt__(self, other):
-        self_states = self.ordered_states()
-        other_states = other.ordered_states()
-        if len(self_states) == 1 and len(other_states) == 1 and self_states[0].date > other_states[0].date:
-            return True
+
+        if self.plan_start_year is not None and other.plan_end_year is not None:
+            return self.plan_start_year < other.plan_start_year
         else:
-            return len(self_states) < len(other_states)
+            self_states = self.ordered_states()
+            other_states = other.ordered_states()
+            if len(self_states) == 1 and len(other_states) == 1 and self_states[0].date > other_states[0].date:
+                return True
+            else:
+                return len(self_states) < len(other_states)
 
     def latest_state(self):
         return self.ordered_states()[-1]
 
     def is_adopted(self):
         return True if self.adopted_date is not None else False
+
+    def is_joint_plan(self):
+        return len(self.planning_authorities) > 1
+
+    def has_plan_period(self):
+        return self.plan_start_year is not None or self.plan_end_year is not None
+
+    def has_housing_numbers(self):
+        return len(self.get_housing_numbers()) > 0
+
+    def has_plan_documents(self):
+        return len(self.plan_documents) > 0
+
+    def has_pins_data(self):
+        return any([self.published_date, self.submitted_date, self.sound_date, self.adopted_date])
         
     def ordered_states(self):
         states = []
@@ -78,7 +105,10 @@ class LocalPlan(db.Model):
             'id': self.id,
             'is_adopted': self.is_adopted(),
             'title': title,
-            'planning_authorities': [{'name': authority.name, 'id':authority.id} for authority in self.planning_authorities]
+            'plan_start_year': self.plan_start_year.strftime('%Y'),
+            'plan_end_year': self.plan_end_year.strftime('%Y'),
+            'planning_authorities': [{'name': authority.name, 'id':authority.id} for authority in self.planning_authorities],
+            'url': self.url
         }
         return data
 
@@ -88,6 +118,14 @@ class LocalPlan(db.Model):
     def covers_years(self, from_, to):
         dates = [s.date for s in self.ordered_states()]
         return from_ >= dates[0] or to <= dates[-1]
+
+    def get_housing_numbers(self):
+        housing_numbers = []
+        for doc in self.plan_documents:
+            for fact in doc.facts:
+                if 'HOUSING' in fact.fact_type:
+                    housing_numbers.append(fact)
+        return housing_numbers
 
 
 class PlanningAuthority(db.Model):
@@ -160,15 +198,10 @@ def _parse_date(datestr):
 
 class FactType(Enum):
 
-    PLAN_NAME = 'Plan name'
-    PLAN_PERIOD = 'Plan period'
-    PLAN_START_YEAR = 'Plan period start year'
-    PLAN_END_YEAR = 'Plan period end year'
     HOUSING_REQUIREMENT_TOTAL = 'Housing requirement total'
     HOUSING_REQUIREMENT_RANGE = 'Housing requirement range'
     HOUSING_REQUIREMENT_YEARLY_AVERAGE = 'Housing requirement yearly average'
     HOUSING_REQUIREMENT_YEARLY_RANGE = 'Housing requirement yearly range'
-    OTHER = 'Other'
 
 
 class EmergingFactType(Enum):
@@ -275,7 +308,6 @@ class PlanDocument(Document):
     local_plan_id = db.Column(UUID(as_uuid=True), db.ForeignKey('local_plan.id', name='document_local_plan_id_fkey'))
     local_plan_id_old = db.Column(db.String(64))
     local_plan = db.relationship('LocalPlan', back_populates='plan_documents')
-
 
     def to_dict(self):
         data = {

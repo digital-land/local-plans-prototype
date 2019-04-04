@@ -48,8 +48,8 @@
           {% for plan in planning_authority.sorted_plans() %}
           <li>
             <div class="plan-details">
-              <a class="plan-details__item local-plan-id" href="{{ url_for('frontend.local_plan', planning_authority= planning_authority.id, _anchor=plan.local_plan ) }}">{{ plan.local_plan }}</a>
-              {% set latest_state = plan.latest_state() %}
+              <a class="plan-details__item local-plan-id" href="{{ url_for('frontend.local_plan', planning_authority= planning_authority.id, _anchor=plan.title ) }}">{{ plan.title }}</a>
+               {% set latest_state = plan.latest_state() %}
               <span class="stage-tag plan-details__item {% if plan.is_adopted() %}is-adopted{% endif %}">{{ latest_state.state }}</span>
               <span class="plan-details__item">{% if not plan.is_emerging() %}{{ latest_state.date | format_month_and_year }}{% endif %}</span>
               <span class="plan-details__item plan-no-of-docs">{{ plan.plan_documents|length }} associated documents</span>

@@ -171,6 +171,7 @@
 
 
 .request-for-update {
+  @include govuk-font($size: 16);
   color: govuk-colour("grey-1");
 }
 
@@ -206,13 +207,18 @@
   }
 }
 
+$editable-box-border-width: 1px;
+
 .editable-plan-title {
   box-sizing: content-box;
+  padding-bottom: $editable-box-border-width;
 
   &:hover {
-    margin-top: -1px;
-    margin-left: -1px;
-    border: 1px dashed govuk-colour("blue");
+    margin-top: -$editable-box-border-width;
+    margin-left: -10px;
+    padding-bottom: 0;
+    padding-left: 10px - $editable-box-border-width;
+    border: $editable-box-border-width dashed govuk-colour("blue");
     background: govuk-colour("grey-4");
     cursor: pointer;
   }
@@ -279,3 +285,62 @@
   }
 }
 
+.missing-plan-period,
+.missing-plan-url {
+  form {
+    display: none;
+  }
+
+  &.active {
+    form {
+      display: block;
+    }
+  }
+
+  &.has-been-set {
+    display: none;
+  }
+}
+
+.edit-plan-period {
+  .highlight-box {
+    display: none;
+  }
+
+  &.not-set {
+    .plan-period,
+    .request-for-update {
+      display: none;
+    }
+  }
+
+  &.edit-mode {
+    .highlight-box {
+      display: block;
+    }
+
+    .request-for-update {
+      display: none;
+    }
+  }
+}
+
+.plan-policy-url-section {
+  .highlight-box {
+    display: none;
+  }
+
+  &.not-set {
+    display: none;
+  }
+
+  &.edit-mode {
+    .highlight-box {
+      display: block;
+    }
+
+    .request-for-update {
+      display: none;
+    }
+  }
+}

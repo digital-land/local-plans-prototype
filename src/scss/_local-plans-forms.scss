@@ -1,6 +1,26 @@
 // Styles for the various forms on the local plans pages
 // =====================================================
 
+.govuk-form--contained {
+  margin-top: $govuk-gutter-half;
+
+  .govuk-heading-s {
+    margin-bottom: $govuk-gutter-half;
+  }
+
+  .govuk-form-group:not(:last-of-type) {
+    margin-bottom: $govuk-gutter-half;
+  }
+
+  .govuk-button {
+    margin-bottom: 0;
+  }
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
 .add-url-form {
   box-sizing: border-box;
   display: block;

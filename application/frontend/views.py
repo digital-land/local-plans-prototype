@@ -3,6 +3,7 @@ import csv
 import datetime
 import io
 import json
+import sqlalchemy
 from urllib.parse import urlparse
 
 import boto3
@@ -20,7 +21,7 @@ from flask import (
     current_app,
     make_response
 )
-from sqlalchemy import func
+from sqlalchemy import func, or_
 
 from application.extensions import db, flask_optimize
 
@@ -98,6 +99,21 @@ def local_plan(planning_authority):
                            fact_types=FactType,
                            emerging_fact_types=EmergingFactType,
                            form=form)
+
+@frontend.route('/local-plans/<planning_authority>/<plan_id>/update-plan-period', methods=['POST'])
+def update_plan_period(planning_authority, plan_id):
+    plan = LocalPlan.query.get(plan_id)
+    if plan is not None:
+        start_year = int(request.json.get('start-year'))
+        end_year = int(request.json.get('end-year'))
+        plan.plan_start_year = datetime.datetime(start_year,1,1)
+        plan.plan_end_year = datetime.datetime(end_year,1,1)
+        db.session.add(plan)
+        db.session.commit()
+        resp = {"OK": 200, "plan": plan.to_dict()}
+    else:
+        resp = {"OK": 204, "error": "Can't find that plan"}
+    return jsonify(resp)
 
 
 @frontend.route('/start-collecting-data')
@@ -179,30 +195,40 @@ def update_local_scheme_url(planning_authority):
 def update_local_plan_url(planning_authority, local_plan):
     pla = PlanningAuthority.query.get(planning_authority)
     plan = LocalPlan.query.get(local_plan)
-    form = LocalPlanURLForm(url=plan.url)
-    if form.validate_on_submit():
-        plan.url = form.url.data
+
+    if request.method == 'POST' and request.json['policy-url'] is not None:
+        plan.url = request.json['policy-url']
         db.session.add(pla)
         db.session.commit()
-        return redirect(url_for('frontend.local_plan', planning_authority=pla.id))
+        resp = {'OK': 200, 'plan': plan.to_dict()}
+        return jsonify(resp)
+    else:
+        form = LocalPlanURLForm(url=plan.url)
+        if form.validate_on_submit():
+            plan.url = form.url.data
+            db.session.add(pla)
+            db.session.commit()
+            return redirect(url_for('frontend.local_plan', planning_authority=pla.id))
 
     return render_template('update-plan-url.html', planning_authority=pla, local_plan=plan, form=form)
 
 
 @frontend.route('/local-plans/<planning_authority>/<local_plan>/update', methods=['POST'])
 def update_plan(planning_authority, local_plan):
+
     plan_identifier = request.json['new_identifier'].strip()
     original_identifier = request.json['original_identifier'].strip()
-    plan = LocalPlan.query.filter_by(local_plan=plan_identifier).first()
-    if plan is not None:
-        return jsonify({'error': 'A plan with that title already exists',
+    try:
+        plan = LocalPlan.query.get(local_plan)
+        plan.title = plan_identifier
+        db.session.add(plan)
+        db.session.commit()
+        return jsonify({'message': 'plan identifier updated', 'OK': 200})
+    except Exception as e:
+        current_app.logger.exception(e)
+        return jsonify({'error': 'Could not update plan',
                         'new_identifier': plan_identifier,
-                        'original_identifier': original_identifier })
-    plan = LocalPlan.query.get(local_plan)
-    plan.local_plan = plan_identifier
-    db.session.add(plan)
-    db.session.commit()
-    return jsonify({'message': 'plan identifier updated'})
+                        'original_identifier': original_identifier})
 
 
 @frontend.route('/local-plans/<local_plan>/document/<document>', methods=['DELETE'])
@@ -327,6 +353,7 @@ def add_document():
     return jsonify(resp)
 
 
+ # TODO is this only used from extension?
 @frontend.route('/local-plans/planning-authority', methods=['POST'])
 def planning_authority_from_document():
 
@@ -339,14 +366,15 @@ def planning_authority_from_document():
     if website_location.endswith(('.pdf')):
         # first check for Emerging Plan document
         if OtherDocument.query.filter_by(url=website_location).first() is not None:
-            document = OtherDocument.query.filter_by(url=website_location).one()
+            document = OtherDocument.query.filter_by(url=website_location).first()
             add_fact_url = url_for('frontend.add_fact_to_document',
                                    planning_authority=document.planning_authority_id,
                                    document=str(document.id),
                                    _external=True)
             resp = {'OK': 200, 'view-type': 'emerging-plan-document', 'document': document.to_dict(), 'add_fact_url': add_fact_url}
         elif PlanDocument.query.filter_by(url=website_location).first() is not None:
-            document = PlanDocument.query.filter_by(url=website_location).one()
+
+            document = PlanDocument.query.filter_by(url=website_location).first()
             add_fact_url = url_for('frontend.add_fact_to_document',
                                    planning_authority=document.local_plan.planning_authorities[0].id,
                                    local_plan=document.local_plan_id,
@@ -391,11 +419,37 @@ def planning_authority_from_document():
 @frontend.route('/local-plans/lucky-dip')
 def lucky_dip():
     import random
-    query = db.session.query(PlanningAuthority)
+    query = db.session.query(LocalPlan).filter(or_(LocalPlan.plan_start_year.is_(None), LocalPlan.plan_end_year.is_(None)))
     row_count = int(query.count())
-    pla = query.offset(int(row_count * random.random())).first()
-    facts = pla.gather_facts()
-    return render_template('lucky-dip.html', planning_authority=pla, facts=facts)
+    local_plan = query.offset(int(row_count * random.random())).first()
+    if local_plan is None:
+        count_query = '''SELECT COUNT(*)
+                         FROM local_plan l, document d, fact f 
+                         WHERE l.id = d.local_plan_id
+                         AND d.id = f.document_id
+                         AND l.plan_start_year is not null
+                         AND l.plan_end_year is not null
+                         AND d.id not in (SELECT f.document_id FROM fact f WHERE f.fact_type ILIKE '%HOUSING%')
+                         '''
+        result = db.session.execute(sqlalchemy.text(count_query))
+
+        count = result.next()[0]
+
+        lp_query = f'''SELECT l.id FROM local_plan l, document d, fact f
+                       WHERE l.id = d.local_plan_id
+                       AND d.id = f.document_id
+                       AND l.plan_start_year is not null
+                       AND l.plan_end_year is not null
+                       AND d.id not in (SELECT f.document_id FROM fact f WHERE f.fact_type ILIKE '%HOUSING%')
+                       OFFSET floor(random()* {count}) LIMIT 1;'''
+
+        q = sqlalchemy.text(lp_query)
+
+        result = db.session.execute(q)
+        plan_id = result.next()[0]
+        local_plan = db.session.query(LocalPlan).filter(LocalPlan.id == plan_id).first()
+
+    return render_template('lucky-dip.html', local_plan=local_plan, plan_id=str(local_plan.id))
 
 
 @frontend.route('/local-plans/<planning_authority>/check-plan-documents')
