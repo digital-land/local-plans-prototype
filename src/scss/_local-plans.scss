@@ -295,15 +295,26 @@ $editable-box-border-width: 1px;
       display: block;
     }
   }
+
+  &.has-been-set {
+    display: none;
+  }
 }
 
 .edit-plan-period {
-  form {
+  .highlight-box {
     display: none;
   }
 
+  &.not-set {
+    .plan-period,
+    .request-for-update {
+      display: none;
+    }
+  }
+
   &.edit-mode {
-    form {
+    .highlight-box {
       display: block;
     }
 

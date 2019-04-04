@@ -49,6 +49,15 @@
   }
 }
 
+.highlight-box--minimal {
+  border: 0;
+
+  &:hover {
+    border: 0;
+    box-shadow: none;
+  }
+}
+
 
 .highlight-box--flush {
   margin-left: 0;

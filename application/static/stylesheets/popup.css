@@ -5415,6 +5415,10 @@
   margin-bottom: 0;
 }
 
+.govuk-form--contained:first-child {
+  margin-top: 0;
+}
+
 .add-url-form {
   box-sizing: border-box;
   display: block;

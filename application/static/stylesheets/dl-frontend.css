@@ -6262,6 +6262,15 @@
   color: #0b0c0c;
 }
 
+.highlight-box--minimal {
+  border: 0;
+}
+
+.highlight-box--minimal:hover {
+  border: 0;
+  box-shadow: none;
+}
+
 .highlight-box--flush {
   margin-left: 0;
 }
@@ -6867,11 +6876,20 @@
   display: block;
 }
 
-.edit-plan-period form {
+.missing-plan-period.has-been-set {
   display: none;
 }
 
-.edit-plan-period.edit-mode form {
+.edit-plan-period .highlight-box {
+  display: none;
+}
+
+.edit-plan-period.not-set .plan-period,
+.edit-plan-period.not-set .request-for-update {
+  display: none;
+}
+
+.edit-plan-period.edit-mode .highlight-box {
   display: block;
 }
 
@@ -6893,6 +6911,10 @@
 
 .govuk-form--contained .govuk-button {
   margin-bottom: 0;
+}
+
+.govuk-form--contained:first-child {
+  margin-top: 0;
 }
 
 .add-url-form {

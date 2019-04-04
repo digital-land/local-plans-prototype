@@ -62,4 +62,17 @@ function postJSONRequest(endpoint, data, cb) {
     });
 }
 
+// @function setOptions(obj: Object, options: Object): Object
+// Merges the given properties to the `options` of the `obj` object, returning the resulting options.
+// Based on setOptions in LeafletJS Class
+function setOptions(obj, options) {
+  if (!obj.hasOwnProperty("options")) {
+    obj.options = obj.options || {};
+  }
+  for (var i in options) {
+    obj.options[i] = options[i];
+  }
+  return obj.options;
+}
+
 // ------ end Helper functions -------

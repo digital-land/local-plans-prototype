@@ -193,13 +193,14 @@
           {{ plan.title }}
       </h2>
         <h3 class="govuk-heading-m">Plan period</h3>
-        {% if plan.plan_start_year is defined and plan.plan_start_year != None %}
-        <div class="edit-plan-period">
-          <p><span data-year-type="start">{{ plan.plan_start_year | format_year }}</span>-<span data-year-type="end">{{ plan.plan_end_year | format_year}}</span></p>
+        <div class="edit-plan-period {% if plan.plan_start_year is undefined or plan.plan_start_year == None %}not-set{% endif %}">
+          <p class="plan-period"><span data-year-type="start">{{ plan.plan_start_year | format_year }}</span>-<span data-year-type="end">{{ plan.plan_end_year | format_year}}</span></p>
           <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="#" class="govuk-link">Update plan period</a>.</p>
-          {{ renderPlanPeriodForm(plan, "Edit plan period", "edit" + loop.index | string) }}
+          <div class="highlight-box highlight-box--flush highlight-box--minimal">
+           {{ renderPlanPeriodForm(plan, "Edit plan period", "edit" + loop.index | string, "govuk-form--contained") }}
+          </div>
         </div>
-        {% else %}
+        {% if plan.plan_start_year is undefined or plan.plan_start_year == None %}
         <div class="highlight-box highlight-box--gap highlight-box--flush missing-plan-period">
           <h3 class="govuk-heading-s highlight-box__title">Plan period unknown</h3>
           <p class="govuk-body govuk-!-margin-bottom-0">We do not have the plan period for this plan. Can you add it?</p>
@@ -820,62 +821,27 @@
     });
   }
 
-  // -----------------------
-  // handle plan period form
-  // -----------------------
-  const ppFormContainers = document.querySelectorAll(".missing-plan-period");
-
-  ppFormContainers.forEach((ppFormContainer) => {
-
-    function openHighlightBox(e) {
-      if(!ppFormContainer.classList.contains("active")) {
-        ppFormContainer.classList.add("active");
-        ppFormContainer.removeEventListener("click", openHighlightBox)
-      }
-    }
-    ppFormContainer.addEventListener("click", openHighlightBox);
-
-    const ppForm = ppFormContainer.querySelector("form");
-    console.log(ppForm);
-    const ppFormCancel = ppForm.querySelector(".cancel-btn");
-
-    ppFormCancel.addEventListener("click", (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      ppFormContainer.classList.remove("active");
-      ppFormContainer.addEventListener("click", openHighlightBox);
-    });
-
-    ppForm.addEventListener("submit", (e) => {
-      console.log("trying to submit...");
-      e.preventDefault();
-
-      const endpoint = ppForm.action;
-
-      const data = {
-        "start-year": ppForm.querySelector("[name^='start_year']").value,
-        "end-year": ppForm.querySelector("[name^='end_year']").value
-      };
-
-      postJSONRequest(endpoint, data, function(respData) {
-        // To Do: handle the response
-        console.log(respData);
-      });
-    });
-
-  });
-
-  // -------------------------
-  // make plan period editable
-  // -------------------------
+  // --------------------
+  // Basic Editable Class
+  // --------------------
   function EditableSection(section, opts) {
     this.section = section;
-    this.options = opts || {};
 
-    this.enterEditMode = () => this.section.classList.add("edit-mode");
-    this.exitEditMode = () => this.section.classList.remove("edit-mode");
+    // defaults 
+    this.options = {
+      allClickable: false,
+      activeClass: "edit-mode"
+    };
 
-    if (this.options.trigger) {
+    // merge user set options with defaults
+    setOptions(this, opts);
+
+    this.enterEditMode = () => this.section.classList.add(this.options.activeClass);
+    this.exitEditMode = () => this.section.classList.remove(this.options.activeClass);
+
+    if (this.options.allClickable) {
+      this.setEditTrigger(this.section);
+    } else if (this.options.trigger) {
       this.setEditTrigger(this.options.trigger);
     } else {
       this.setEditTrigger();
@@ -884,7 +850,9 @@
   }
 
   EditableSection.prototype.setEditTrigger = function(selector) {
-    if (selector) {
+    if (selector instanceof Element) {
+      this.trigger = this.section;
+    } else if (selector) {
       this.trigger = this.section.querySelector(selector);
     } else {
       this.trigger = this.section.querySelector(".request-for-update a");
@@ -903,7 +871,9 @@
     function editHandler(e) {
       e.preventDefault();
       that.enterEditMode();
+      that.trigger.removeEventListener("click", editHandler);
     }
+    this.editHandler = editHandler;
     this.trigger.addEventListener("click", editHandler);
   }
 
@@ -920,8 +890,10 @@
   EditableSection.prototype.addCancelListener = function() {
     const that = this;
     function cancelHandler(e) {
+      e.stopPropagation();
       e.preventDefault();
       that.exitEditMode();
+      that.trigger.addEventListener("click", that.editHandler);
     }
     this.cancel.addEventListener("click", cancelHandler);
   }
@@ -942,13 +914,51 @@
         // To Do: handle the response
         if(respData["OK"] === 200) {
           that.exitEditMode();
-          succCb(respData);
+          if (succCb && typeof succCb === "function") {
+            succCb(respData);
+          }
         }
         console.log(respData);
       });
     });
   }
 
+  // -----------------------
+  // handle plan period form
+  // -----------------------
+  const ppFormContainers = document.querySelectorAll(".missing-plan-period");
+
+  ppFormContainers.forEach((ppFormContainer) => {
+    const editableSection = new EditableSection(ppFormContainer, {
+      allClickable: true,
+      activeClass: "active"
+    });
+
+    const extractData = (form) => {
+      return data = {
+        "start-year": form.querySelector("[name^='start-year']").value,
+        "end-year": form.querySelector("[name^='end-year']").value
+      };
+    };
+
+    const successfullySaved = (data) => {
+      const section = editableSection.section;
+      section.classList.add("has-been-set");
+      const planPeriod = section.parentNode.querySelector(".edit-plan-period");
+      planPeriod.classList.remove("not-set");
+      const startyear = planPeriod.querySelector("[data-year-type='start']");
+      const endyear = planPeriod.querySelector("[data-year-type='end']");
+      startyear.textContent = data.plan.plan_start_year;
+      endyear.textContent = data.plan.plan_end_year;
+    };
+
+    editableSection.initialiseForm(extractData, successfullySaved);
+
+  });
+
+  // -------------------------
+  // make plan period editable
+  // -------------------------
   const planPeriods = document.querySelectorAll(".edit-plan-period");
   planPeriods.forEach((plan) => {
     const editableSection = new EditableSection(plan);
