@@ -81,6 +81,9 @@ class LocalPlan(db.Model):
 
     def has_plan_documents(self):
         return len(self.plan_documents) > 0
+
+    def has_pins_data(self):
+        return any([self.published_date, self.submitted_date, self.sound_date, self.adopted_date])
         
     def ordered_states(self):
         states = []
