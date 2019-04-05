@@ -33,6 +33,8 @@ class LocalPlan(db.Model):
     plan_start_year = db.Column(db.Date())
     plan_end_year = db.Column(db.Date())
 
+    housing_numbers = db.Column(JSON)
+
     start_year = db.Column(db.Date())
     published_date = db.Column(db.Date())
     submitted_date = db.Column(db.Date())

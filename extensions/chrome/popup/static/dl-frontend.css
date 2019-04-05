@@ -6869,17 +6869,20 @@
 }
 
 .missing-plan-period form,
-.missing-plan-url form {
+.missing-plan-url form,
+.missing-housing-numbers form {
   display: none;
 }
 
 .missing-plan-period.active form,
-.missing-plan-url.active form {
+.missing-plan-url.active form,
+.missing-housing-numbers.active form {
   display: block;
 }
 
 .missing-plan-period.has-been-set,
-.missing-plan-url.has-been-set {
+.missing-plan-url.has-been-set,
+.missing-housing-numbers.has-been-set {
   display: none;
 }
 
@@ -6897,6 +6900,23 @@
 }
 
 .edit-plan-period.edit-mode .request-for-update {
+  display: none;
+}
+
+.edit-housing-numbers .highlight-box {
+  display: none;
+}
+
+.edit-housing-numbers.not-set .housing-numbers,
+.edit-housing-numbers.not-set .request-for-update {
+  display: none;
+}
+
+.edit-housing-numbers.edit-mode .highlight-box {
+  display: block;
+}
+
+.edit-housing-numbers.edit-mode .request-for-update {
   display: none;
 }
 
