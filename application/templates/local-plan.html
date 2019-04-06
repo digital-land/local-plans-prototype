@@ -191,7 +191,12 @@
                     <label class="govuk-label" for="url-{{ suffix }}">Source document url</label>
                     <input class="govuk-input" id="url-{{ suffix }}" name="url-{{ suffix }}" type="text"
                            value="{{ value }}">
-                    <input type="file" name="screenshot" id="screenshot" />
+
+                </div>
+
+                <div class="govuk-form-group">
+                   <label class="govuk-label" for="screenshot-{{ suffix }}">Upload a screenshot from source document</label>
+                   <input class="govuk-file-upload" type="file" name="screenshot-{{ suffix }}" id="screenshot-{{ suffix }}" />
                 </div>
 
                 <div class="govuk-form-group">
