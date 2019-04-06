@@ -121,15 +121,24 @@ def update_plan_period(planning_authority, plan_id):
 def update_plan_housing_requirement(planning_authority, plan_id):
     plan = LocalPlan.query.get(plan_id)
     if plan is not None:
-        data = request.json
-        data['created_date'] = datetime.datetime.utcnow().isoformat()
+        data = {
+            'housing_number_type': request.form['housing_number_type'],
+            'created_date': datetime.datetime.utcnow().isoformat(),
+            'source_document': request.form['source_document'],
+        }
+        if 'range' in request.form['housing_number_type']:
+            data['min'] = request.form['min']
+            data['max'] = request.form['max']
+        else:
+            data['number'] = request.form['number']
         plan.housing_numbers = data
         db.session.add(plan)
         db.session.commit()
-        resp = {"OK": 200, "plan": plan.to_dict()}
+        resp = 'OK', 200
     else:
-        resp = {"OK": 204, "error": "Can't find that plan"}
-    return jsonify(resp)
+        resp = 'NOT FOUND', 400
+
+    return make_response(resp)
 
 
 

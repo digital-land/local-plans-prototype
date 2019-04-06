@@ -43,7 +43,6 @@ function cleanNumber(str) {
   return str.replace(/,/g, "");
 }
 
-
 function postJSONRequest(endpoint, data, cb) {
   fetch(endpoint, {
     method: "POST",
@@ -60,6 +59,15 @@ function postJSONRequest(endpoint, data, cb) {
         console.log(respData); // eslint-disable-line
       }
     });
+}
+
+function postFormDataRequest(endpoint, data, cb) {
+  fetch(endpoint, {
+    method: "POST",
+    body: data
+  }).then(response => {
+      console.log(response);
+  });
 }
 
 // @function setOptions(obj: Object, options: Object): Object

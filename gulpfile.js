@@ -127,7 +127,10 @@ const latestStylesheets = gulp.series(
 latestStylesheets.description = `Generate the latest stylesheets`;
 
 // Watch for scss changes
-const watch = () => gulp.watch("src/scss/**/*", latestStylesheets);
+const watch = () => {
+  gulp.watch("src/scss/**/*", latestStylesheets);
+  gulp.watch("src/js/**/*", copyJS);
+};
 watch.description = `Watch all project .scss for changes, then rebuild stylesheets.`;
 
 // Set watch as default task

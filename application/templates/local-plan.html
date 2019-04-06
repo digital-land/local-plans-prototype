@@ -85,7 +85,8 @@
 
         {% macro renderHousingRequirementForm(plan, heading, suffix, classes) %}
             <form class="govuk-form{{- ' ' + classes if classes }} housing-requirement-total" \
-                  action="{{ url_for('frontend.update_plan_housing_requirement', planning_authority=planning_authority.id, plan_id=plan.id) }}" method="POST">
+                  action="{{ url_for('frontend.update_plan_housing_requirement', planning_authority=planning_authority.id, plan_id=plan.id) }}"
+                  method="POST" enctype="multipart/form-data">
                 <h3 class="govuk-heading-s">{{ heading }}</h3>
 
                 <div class="govuk-form-group">
@@ -190,6 +191,7 @@
                     <label class="govuk-label" for="url-{{ suffix }}">Source document url</label>
                     <input class="govuk-input" id="url-{{ suffix }}" name="url-{{ suffix }}" type="text"
                            value="{{ value }}">
+                    <input type="file" name="screenshot" id="screenshot" />
                 </div>
 
                 <div class="govuk-form-group">
@@ -943,20 +945,24 @@
                 e.preventDefault();
 
                 const endpoint = form.action;
-
                 const data = extractDataFunc(form);
 
-                postJSONRequest(endpoint, data, function (respData) {
-                    // To Do: handle the response
-                    if (respData["OK"] === 200) {
-                        that.exitEditMode();
-                        that.trigger.addEventListener("click", that.editHandler);
-                        if (succCb && typeof succCb === "function") {
-                            succCb(respData);
+                if(form.enctype !== undefined && form.enctype == 'multipart/form-data'){
+                    postFormDataRequest(endpoint, data);
+                }
+                else {
+                    postJSONRequest(endpoint, data, function (respData) {
+                        // To Do: handle the response
+                        if (respData["OK"] === 200) {
+                            that.exitEditMode();
+                            that.trigger.addEventListener("click", that.editHandler);
+                            if (succCb && typeof succCb === "function") {
+                                succCb(respData);
+                            }
                         }
-                    }
-                    console.log(respData);
-                });
+                        console.log(respData);
+                    });
+                }
             });
         };
 
@@ -1074,39 +1080,35 @@
         // ---------------------------
 
         const extractor = (form) => {
+            const formData = new FormData();
+            formData.append("screenshot", form.querySelector("[name^='screenshot']").files[0]);
+
             if (form.classList.contains('housing-requirement-total')) {
-                return data = {
-                    "housing_number_type": "housing-requirement-total",
-                    "number": Number(cleanNumber(form.querySelector("[name^='housing-requirement-total']").value)),
-                    "source_document": form.querySelector("[name^='url-']").value
-                };
+                formData.append("housing_number_type", "housing-requirement-total");
+                formData.append("number", cleanNumber(form.querySelector("[name^='housing-requirement-total']").value));
+                formData.append("source_document", form.querySelector("[name^='url-']").value);
             }
             else if (form.classList.contains('housing-requirement-yearly-average')) {
-                return data = {
-                    "housing_number_type": "housing-requirement-yearly-average",
-                    "number": Number(cleanNumber(form.querySelector("[name^='housing-requirement-yearly-average']").value)),
-                    "source_document": form.querySelector("[name^='url-']").value
-                };
+                formData.append("housing_number_type", "housing-requirement-yearly-average");
+                formData.append("number", cleanNumber(form.querySelector("[name^='housing-requirement-yearly-average']").value));
+                formData.append("source_document", form.querySelector("[name^='url-']").value);
             }
             else if (form.classList.contains('housing-requirement-range')) {
-                return data = {
-                    "housing_number_type": "housing-requirement-range",
-                    "min": Number(cleanNumber(form.querySelector("[name^='housing-requirement-range-min']").value)),
-                    "max": Number(cleanNumber(form.querySelector("[name^='housing-requirement-range-max']").value)),
-                    "source_document": form.querySelector("[name^='url-']").value
-                };
+                formData.append("housing_number_type", "housing-requirement-range");
+                formData.append("min", cleanNumber(form.querySelector("[name^='housing-requirement-range-min']").value));
+                formData.append("max", cleanNumber(form.querySelector("[name^='housing-requirement-range-max']").value));
+                formData.append("source_document", form.querySelector("[name^='url-']").value);
             }
             else if (form.classList.contains('housing-requirement-yearly-range')) {
-                return data = {
-                    "housing_number_type": "housing-requirement-yearly-range",
-                    "min": Number(cleanNumber(form.querySelector("[name^='housing-requirement-yearly-range-min']").value)),
-                    "max": Number(cleanNumber(form.querySelector("[name^='housing-requirement-yearly-range-max']").value)),
-                    "source_document": form.querySelector("[name^='url-']").value
-                };
+                formData.append("housing_number_type", "housing-requirement-yearly-range");
+                formData.append("min", cleanNumber(form.querySelector("[name^='housing-requirement-yearly-range-min']").value));
+                formData.append("max", cleanNumber(form.querySelector("[name^='housing-requirement-yearly-range-max']").value));
+                formData.append("source_document", form.querySelector("[name^='url-']").value);
             }
             else {
                 console.log('What am I doing here?')
             }
+            return formData;
         };
 
 
