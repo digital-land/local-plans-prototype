@@ -75,13 +75,6 @@
               "pattern":"[0-9]*"
             }) }}
                 </div>
-
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="url-{{ suffix }}">Source document url</label>
-                    <input class="govuk-input" id="url-{{ suffix }}" name="url-{{ suffix }}" type="text"
-                           value="{{ value }}">
-                </div>
-
                 <div class="govuk-form-group">
                     <input type="submit" class="govuk-button dlf-secondary-button" value="Save plan period">
                     <button class="cancel-btn">Cancel</button>
@@ -289,7 +282,9 @@
                             {% else %}
                                 <li>{{ plan.housing_numbers.number }}</li>
                             {% endif %}
-                            <li>Source: {{ plan.housing_numbers.source_document }}</li>
+                            <li>Source: <a href="{{ plan.housing_numbers.source_document }}" target="_blank">
+                                {{ plan.housing_numbers.source_document }}</a>
+                            </li>
                             <li>Link to screenshot</li>
                             <li>Notes</li>
                         </ul>
