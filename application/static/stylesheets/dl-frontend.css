@@ -6870,19 +6870,19 @@
 
 .missing-plan-period form,
 .missing-plan-url form,
-.missing-housing-numbers form {
+.missing-housing-requirement form {
   display: none;
 }
 
 .missing-plan-period.active form,
 .missing-plan-url.active form,
-.missing-housing-numbers.active form {
+.missing-housing-requirement.active form {
   display: block;
 }
 
 .missing-plan-period.has-been-set,
 .missing-plan-url.has-been-set,
-.missing-housing-numbers.has-been-set {
+.missing-housing-requirement.has-been-set {
   display: none;
 }
 
@@ -6903,20 +6903,20 @@
   display: none;
 }
 
-.edit-housing-numbers .highlight-box {
+.edit-housing-requirement .highlight-box {
   display: none;
 }
 
-.edit-housing-numbers.not-set .housing-numbers,
-.edit-housing-numbers.not-set .request-for-update {
+.edit-housing-requirement.not-set .housing-numbers,
+.edit-housing-requirement.not-set .request-for-update {
   display: none;
 }
 
-.edit-housing-numbers.edit-mode .highlight-box {
+.edit-housing-requirement.edit-mode .highlight-box {
   display: block;
 }
 
-.edit-housing-numbers.edit-mode .request-for-update {
+.edit-housing-requirement.edit-mode .request-for-update {
   display: none;
 }
 
@@ -7012,14 +7012,14 @@
 .plan-period-fieldset,
 .plan-start-date-input,
 .plan-end-date-input,
-.plan-housing-req-total,
-.housing-req-range-fieldset,
-.housing-req-yearly-average-input,
-.housing-req-yearly-range-fieldset {
+.plan-housing-requirement-total,
+.housing-requirement-range-fieldset,
+.housing-requirement-yearly-average-input,
+.housing-requirement-yearly-range-fieldset {
   display: none;
 }
 
-.housing-req-range-fieldset {
+.housing-requirement-range-fieldset {
   margin-bottom: 30px;
 }
 
@@ -7039,19 +7039,19 @@
   display: block;
 }
 
-.housing-requirement-total .plan-housing-req-total {
+.housing-requirement-total .plan-housing-requirement-total {
   display: block;
 }
 
-.housing-requirement-range .housing-req-range-fieldset {
+.housing-requirement-range .housing-requirement-range-fieldset {
   display: block;
 }
 
-.housing-requirement-yearly-average .housing-req-yearly-average-input {
+.housing-requirement-yearly-average .housing-requirement-yearly-average-input {
   display: block;
 }
 
-.housing-requirement-yearly-range .housing-req-yearly-range-fieldset {
+.housing-requirement-yearly-range .housing-requirement-yearly-range-fieldset {
   display: block;
 }
 

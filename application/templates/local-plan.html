@@ -90,45 +90,40 @@
         {% endmacro %}
 
 
-        {% macro renderHousingNumbersForm(plan, heading, suffix, classes) %}
-            <form class="govuk-form{{- ' ' + classes if classes }}" action="#URL FOR ADD HOUSING NUMBERS" method="POST">
+        {% macro renderHousingRequirementForm(plan, heading, suffix, classes) %}
+            <form class="govuk-form{{- ' ' + classes if classes }} housing-requirement-total" \
+                  action="{{ url_for('frontend.update_plan_housing_requirement', planning_authority=planning_authority.id, plan_id=plan.id) }}" method="POST">
                 <h3 class="govuk-heading-s">{{ heading }}</h3>
 
-{#                <div class="govuk-form-group">#}
-{#                    {{ govukLabel({ "label": "Housing number", "for": "housing-number_" + suffix }) }}#}
-{#                    {{ govukTextInput({#}
-{#              "classes": "govuk-input govuk-input--width-4",#}
-{#              "id": "housing-number_" + suffix,#}
-{#              "name": "housing-numbe_" + suffix,#}
-{#              "value": 0,#}
-{#              "pattern":"[0-9]*"#}
-{#            }) }}#}
-{#                </div>#}
-
                 <div class="govuk-form-group">
-                    <label class="govuk-label" for="housing-number-{{ suffix }}">
+                    <label class="govuk-label" for="housing-requirement-type-{{ suffix }}">
                         Select a type of house number
                     </label>
-                    <select class="govuk-select housing-number-select-types" id="housing-number-type-{{ suffix }}"
-                            name="housing-number-{{ suffix }}">
-                        {% for housing_number in fact_types %}
-                            <option value="{{ housing_number.name }}"
-                                    data-type-class="{{ housing_number.name|lower|replace('_', '-') }}">{{ housing_number.value }}</option>
+                    <select class="govuk-select housing-requirement-select-types" id="housing-requirement-type-{{ suffix }}"
+                            name="housing-requirement-type-{{ suffix }}">
+                        {% for housing_requirement in fact_types %}
+                            <option value="{{ housing_requirement.name }}"
+                                    data-type-class="{{ housing_requirement.name|lower|replace('_', '-') }}">{{ housing_requirement.value }}</option>
                         {% endfor %}
                     </select>
                 </div>
 
                 <!-- for Housing requirement total -->
-                <div class="govuk-form-group plan-housing-req-total">
-                    <label class="govuk-label" for="housing-req-total-{{ suffix }}">
-                        Housing requirement total
-                    </label>
-                    <input class="govuk-input govuk-input--width-10" id="housing-req-total-{{ suffix }}"
-                           name="housing-req-total-{{ suffix }}" type="text">
+                <div class="govuk-form-group plan-housing-requirement-total">
+                    <div class="govuk-form-group">
+                        {{ govukLabel({ "label": "Housing requirement total", "for": "housing-requirement-total-" + suffix }) }}
+                        {{ govukTextInput({
+                      "classes": "govuk-input govuk-input--width-10",
+                      "id": "housing-requirement-total-" + suffix,
+                      "name": "housing-requirement-total-" + suffix,
+                      "value": 0,
+                      "pattern":"[0-9]*",
+                      "required":True}) }}
+                    </div>
                 </div>
 
                 <!-- for Housing requirement range -->
-                <fieldset class="govuk-fieldset fieldset-range housing-req-range-fieldset">
+                <fieldset class="govuk-fieldset fieldset-range housing-requirement-range-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
                         <h1 class="govuk-fieldset__heading">
                             Housing requirement range
@@ -136,35 +131,40 @@
                     </legend>
 
                     <div class="govuk-form-group">
-                        <label class="govuk-label" for="housing-req-range-min-{{ suffix }}">
-                            Min
-                        </label>
-                        <input class="govuk-input govuk-input--width-10 housing-req-range-min"
-                               id="housing-req-range-min-{{ suffix }}" name="housing-req-range-min-{{ suffix }}"
-                               data-range-type="start" type="text" pattern="[0-9]*">
+                        {{ govukLabel({ "label": "Min", "for": "housing-requirement-range-min-" + suffix }) }}
+                        {{ govukTextInput({
+                          "classes": "govuk-input govuk-input--width-10 housing-requirement-range-min",
+                          "id": "housing-requirement-range-min-" + suffix,
+                          "name": "housing-requirement-range-min-" + suffix,
+                          "value": 0,
+                          "pattern":"[0-9]*"}) }}
                     </div>
 
                     <div class="govuk-form-group">
-                        <label class="govuk-label" for="housing-req-range-max-{{ suffix }}">
-                            Max
-                        </label>
-                        <input class="govuk-input govuk-input--width-10 housing-req-range-max"
-                               id="housing-req-range-max-{{ suffix }}" name="housing-req-range-max-{{ suffix }}"
-                               data-range-type="end" type="text" pattern="[0-9]*">
+                        {{ govukLabel({ "label": "Max", "for": "housing-requirement-range-max-" + suffix }) }}
+                        {{ govukTextInput({
+                          "classes": "govuk-input govuk-input--width-10 housing-requirement-range-max",
+                          "id": "housing-requirement-range-max-" + suffix,
+                          "name": "housing-requirement-range-max-" + suffix,
+                          "value": 0,
+                          "pattern":"[0-9]*"}) }}
                     </div>
                 </fieldset>
 
                 <!-- for Housing requirement yearly average -->
-                <div class="govuk-form-group housing-req-yearly-average-input">
-                    <label class="govuk-label" for="housing-req-total-{{ suffix }}">
-                        Housing requirement yearly average
-                    </label>
-                    <input class="govuk-input govuk-input--width-10" id="housing-req-yearly-avg-{{ suffix }}"
-                           name="housing-req-yearly-avg-{{ suffix }}" type="text">
+                <div class="govuk-form-group housing-requirement-yearly-average-input">
+                    {{ govukLabel({ "label": "Housing requirement yearly average", "for": "housing-requirement-yearly-average-" + suffix }) }}
+                    {{ govukTextInput({
+                          "classes": "govuk-input govuk-input--width-10",
+                          "id": "housing-requirement-yearly-average-" + suffix,
+                          "name": "housing-requirement-yearly-average-" + suffix,
+                          "value": 0,
+                          "pattern":"[0-9]*"}) }}
                 </div>
 
                 <!-- for Housing requirement yearly range -->
-                <fieldset class="govuk-fieldset fieldset-range housing-req-yearly-range-fieldset">
+                <fieldset class="govuk-fieldset fieldset-range housing-requirement-yearly-range-fieldset">
+
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
                         <h1 class="govuk-fieldset__heading">
                             Housing requirement yearly range
@@ -172,24 +172,27 @@
                     </legend>
 
                     <div class="govuk-form-group">
-                        <label class="govuk-label" for="housing-req-yearly-range-min-{{ suffix }}">
-                            Min
-                        </label>
-                        <input class="govuk-input govuk-input--width-10 housing-req-yearly-range-min"
-                               id="housing-req-yearly-range-min-{{ suffix }}"
-                               name="housing-req-yearly-range-min-{{ suffix }}" data-range-type="start" type="text">
+                        {{ govukLabel({ "label": "Min", "for": "housing-requirement-yearly-range-min-" + suffix }) }}
+                        {{ govukTextInput({
+                          "classes": "govuk-input govuk-input--width-10 housing-requirement-yearly-range-min",
+                          "id": "housing-requirement-yearly-range-min-" + suffix,
+                          "name": "housing-requirement-yearly-range-min-" + suffix,
+                          "value": 0,
+                          "pattern":"[0-9]*"}) }}
                     </div>
 
                     <div class="govuk-form-group">
-                        <label class="govuk-label" for="housing-req-yearly-range-max-{{ counter }}">
-                            Max
-                        </label>
-                        <input class="govuk-input govuk-input--width-10 housing-req-yearly-range-max"
-                               id="housing-req-yearly-range-max-{{ suffix }}"
-                               name="housing-req-yearly-range-max-{{ suffix }}" data-range-type="end" type="text">
+                        {{ govukLabel({ "label": "Max", "for": "housing-requirement-yearly-range-max-" + suffix }) }}
+                        {{ govukTextInput({
+                          "classes": "govuk-input govuk-input--width-10 housing-requirement-yearly-range-max",
+                          "id": "housing-req-requirement-range-max-" + suffix,
+                          "name": "housing-req-requirement-range-max-" + suffix,
+                          "value": 0,
+                          "pattern":"[0-9]*"}) }}
                     </div>
+
                 </fieldset>
-            
+
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="url-{{ suffix }}">Source document url</label>
                     <input class="govuk-input" id="url-{{ suffix }}" name="url-{{ suffix }}" type="text"
@@ -273,24 +276,36 @@
                     </div>
                 {% endif %}
 
-                <!-- start of housing numbers section -->
-                <h3 class="govuk-heading-m">Housing numbers</h3>
-                <div class="edit-housing-numbers {% if not plan.has_housing_numbers() %}not-set{% endif %}">
-                    <p class="housing-numbers">
-                        <span data-housing-number="{{ plan.housing_numbers.number }}">{{ plan.housing_numbers }}</span>
-                    </p>
+                <!-- start of housing requirement section -->
+                <h3 class="govuk-heading-m">Housing requirements</h3>
+                <div class="edit-housing-requirement {% if not plan.has_housing_numbers() %}not-set{% endif %}">
+                    {% if plan.has_housing_numbers() %}
+                       <!-- colm not sure where this data attr is used? -->
+                        <p class="housing-requirement" data-housing-requirement="{{ plan.housing_numbers.number }}"></p>
+                         <ul>
+                            <li>{{ plan.housing_numbers.housing_number_type }}</li>
+                            {% if 'range' in plan.housing_numbers.housing_number_type %}
+                                <li>{{ plan.housing_numbers.min }} to {{ plan.housing_numbers.max }}</li>
+                            {% else %}
+                                <li>{{ plan.housing_numbers.number }}</li>
+                            {% endif %}
+                            <li>Source: {{ plan.housing_numbers.source_document }}</li>
+                            <li>Link to screenshot</li>
+                            <li>Notes</li>
+                        </ul>
+                    {% endif %}
                     <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="#" class="govuk-link">Update
-                        housing numbers</a>.</p>
+                        housing requirement numbers</a>.</p>
                     <div class="highlight-box highlight-box--flush highlight-box--minimal">
-                        {{ renderHousingNumbersForm(plan, "Edit housing numbers", "edit" + loop.index | string, "govuk-form--contained add-housing-number-form") }}
+                        {{ renderHousingRequirementForm(plan, "Edit housing requirement", "edit" + loop.index | string, "govuk-form--contained add-housing-requirement-form") }}
                     </div>
                 </div>
                 {% if not plan.has_housing_numbers() %}
-                    <div class="highlight-box highlight-box--gap highlight-box--flush missing-housing-numbers">
-                        <h3 class="govuk-heading-s highlight-box__title">Housing numbers unknown</h3>
-                        <p class="govuk-body govuk-!-margin-bottom-0">We do not have any housing numbers for this plan.
+                    <div class="highlight-box highlight-box--gap highlight-box--flush missing-housing-requirement">
+                        <h3 class="govuk-heading-s highlight-box__title">Housing requirement unknown</h3>
+                        <p class="govuk-body govuk-!-margin-bottom-0">We do not have any housing requirement numbers for this plan.
                             Can you add some?</p>
-                        {{ renderHousingNumbersForm(plan, "Add housing numbers", "add" + loop.index | string, "govuk-form--contained add-housing-number-form") }}
+                        {{ renderHousingRequirementForm(plan, "Add housing requirement numbers", "add" + loop.index | string, "govuk-form--contained add-housing-requirement-form") }}
                     </div>
                 {% endif %}
 
@@ -469,9 +484,9 @@
         */
 
 
-        const addHousingNumberForms = document.querySelectorAll(".add-housing-number-form");
+        const addHousingNumberForms = document.querySelectorAll(".add-housing-requirement-form");
 
-        const housingNumberSelects = Array.prototype.slice.call(addHousingNumberForms).map((form) => form.querySelector(".housing-number-select-types"));
+        const housingNumberSelects = Array.prototype.slice.call(addHousingNumberForms).map((form) => form.querySelector(".housing-requirement-select-types"));
         housingNumberSelects.forEach((select) => {
             select.addEventListener('change', (e) => {
                 const form = e.target.closest('form');
@@ -1023,8 +1038,6 @@
                 };
             };
 
-            console.log(editableSection);
-
             const successfullySaved = (data) => {
                 const section = editableSection.section;
                 section.classList.add("has-been-set");
@@ -1064,21 +1077,52 @@
         // ---------------------------
         // handle housing numbers form
         // ---------------------------
-        const housingNumbersContainers = document.querySelectorAll(".missing-housing-numbers");
 
-        housingNumbersContainers.forEach((housingNumbersContainer) => {
-            const editableSection = new EditableSection(housingNumbersContainer, {
+        const extractor = (form) => {
+            if (form.classList.contains('housing-requirement-total')) {
+                return data = {
+                    "housing_number_type": "housing-requirement-total",
+                    "number": Number(cleanNumber(form.querySelector("[name^='housing-requirement-total']").value)),
+                    "source_document": form.querySelector("[name^='url-']").value
+                };
+            }
+            else if (form.classList.contains('housing-requirement-yearly-average')) {
+                return data = {
+                    "housing_number_type": "housing-requirement-yearly-average",
+                    "number": Number(cleanNumber(form.querySelector("[name^='housing-requirement-yearly-average']").value)),
+                    "source_document": form.querySelector("[name^='url-']").value
+                };
+            }
+            else if (form.classList.contains('housing-requirement-range')) {
+                return data = {
+                    "housing_number_type": "housing-requirement-range",
+                    "min": Number(cleanNumber(form.querySelector("[name^='housing-requirement-range-min']").value)),
+                    "max": Number(cleanNumber(form.querySelector("[name^='housing-requirement-range-max']").value)),
+                    "source_document": form.querySelector("[name^='url-']").value
+                };
+            }
+            else if (form.classList.contains('housing-requirement-yearly-range')) {
+                return data = {
+                    "housing_number_type": "housing-requirement-yearly-range",
+                    "min": Number(cleanNumber(form.querySelector("[name^='housing-requirement-yearly-range-min']").value)),
+                    "max": Number(cleanNumber(form.querySelector("[name^='housing-requirement-yearly-range-max']").value)),
+                    "source_document": form.querySelector("[name^='url-']").value
+                };
+            }
+            else {
+                console.log('What am I doing here?')
+            }
+        };
+
+
+        const housingRequirementContainers = document.querySelectorAll(".missing-housing-requirement");
+
+        housingRequirementContainers.forEach((housingRequirementContainer) => {
+            const editableSection = new EditableSection(housingRequirementContainer, {
                 allClickable: true,
                 activeClass: "active"
             });
-
-            const extractData = (form) => {
-                return data = {
-                    "housing-number": form.querySelector("[name^='housing-number']").value
-                };
-            };
-
-            console.log(editableSection);
+            const extractData = extractor;
 
             const successfullySaved = (data) => {
                 const section = editableSection.section;
@@ -1099,18 +1143,13 @@
         // -------------------------
         // make housing numbers editable
         // -------------------------
-        const housingNumbers = document.querySelectorAll(".edit-housing-numbers");
-        housingNumbers.forEach((plan) => {
+        const housingRequirement = document.querySelectorAll(".edit-housing-requirement");
+        housingRequirement.forEach((plan) => {
             const editableSection = new EditableSection(plan);
-            const extractData = (form) => {
-                return data = {
-                    "housing-number": form.querySelector("[name^='housing-number']").value
-                };
-            };
+            const extractData = extractor;
             const onSuccessfulChange = (data) => {
                 console.log(data);
-            }
-
+            };
             editableSection.initialiseForm(extractData, onSuccessfulChange);
         });
 

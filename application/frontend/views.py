@@ -74,9 +74,10 @@ def local_plan(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
     form = AddPlanForm(planning_authority=pla.code())
     if form.validate_on_submit():
-        local_plan_id = f'{pla.code()}-{form.start_year.data}'
         start_year = datetime.datetime(year=form.start_year.data, month=1, day=1)
-        plan = LocalPlan(local_plan=local_plan_id, start_year=start_year)
+        end_year = datetime.datetime(year=form.end_year.data, month=1, day=1)
+        title = form.title.data
+        plan = LocalPlan(title=title, start_year=start_year, plan_start_year=start_year, plan_end_year=end_year)
         plan.planning_authorities.append(pla)
         db.session.add(pla)
         db.session.commit()
@@ -114,6 +115,22 @@ def update_plan_period(planning_authority, plan_id):
     else:
         resp = {"OK": 204, "error": "Can't find that plan"}
     return jsonify(resp)
+
+
+@frontend.route('/local-plans/<planning_authority>/<plan_id>/update-plan-housing-requirement', methods=['POST'])
+def update_plan_housing_requirement(planning_authority, plan_id):
+    plan = LocalPlan.query.get(plan_id)
+    if plan is not None:
+        data = request.json
+        data['created_date'] = datetime.datetime.utcnow().isoformat()
+        plan.housing_numbers = data
+        db.session.add(plan)
+        db.session.commit()
+        resp = {"OK": 200, "plan": plan.to_dict()}
+    else:
+        resp = {"OK": 204, "error": "Can't find that plan"}
+    return jsonify(resp)
+
 
 
 @frontend.route('/start-collecting-data')

@@ -79,7 +79,7 @@ class LocalPlan(db.Model):
         return self.plan_start_year is not None or self.plan_end_year is not None
 
     def has_housing_numbers(self):
-        return len(self.get_housing_numbers()) > 0
+        return self.housing_numbers is not None
 
     def has_plan_documents(self):
         return len(self.plan_documents) > 0

@@ -287,7 +287,7 @@ $editable-box-border-width: 1px;
 
 .missing-plan-period,
 .missing-plan-url,
-.missing-housing-numbers {
+.missing-housing-requirement {
   form {
     display: none;
   }
@@ -326,7 +326,7 @@ $editable-box-border-width: 1px;
   }
 }
 
-.edit-housing-numbers {
+.edit-housing-requirement {
   .highlight-box {
     display: none;
   }

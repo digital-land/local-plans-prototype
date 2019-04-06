@@ -5475,14 +5475,14 @@
 .plan-period-fieldset,
 .plan-start-date-input,
 .plan-end-date-input,
-.plan-housing-req-total,
-.housing-req-range-fieldset,
-.housing-req-yearly-average-input,
-.housing-req-yearly-range-fieldset {
+.plan-housing-requirement-total,
+.housing-requirement-range-fieldset,
+.housing-requirement-yearly-average-input,
+.housing-requirement-yearly-range-fieldset {
   display: none;
 }
 
-.housing-req-range-fieldset {
+.housing-requirement-range-fieldset {
   margin-bottom: 30px;
 }
 
@@ -5502,19 +5502,19 @@
   display: block;
 }
 
-.housing-requirement-total .plan-housing-req-total {
+.housing-requirement-total .plan-housing-requirement-total {
   display: block;
 }
 
-.housing-requirement-range .housing-req-range-fieldset {
+.housing-requirement-range .housing-requirement-range-fieldset {
   display: block;
 }
 
-.housing-requirement-yearly-average .housing-req-yearly-average-input {
+.housing-requirement-yearly-average .housing-requirement-yearly-average-input {
   display: block;
 }
 
-.housing-requirement-yearly-range .housing-req-yearly-range-fieldset {
+.housing-requirement-yearly-range .housing-requirement-yearly-range-fieldset {
   display: block;
 }
 
