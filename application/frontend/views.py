@@ -127,10 +127,10 @@ def update_plan_housing_requirement(planning_authority, plan_id):
             'source_document': request.form['source_document'],
         }
         if 'range' in request.form['housing_number_type']:
-            data['min'] = request.form['min']
-            data['max'] = request.form['max']
+            data['min'] = int(request.form['min'])
+            data['max'] = int(request.form['max'])
         else:
-            data['number'] = request.form['number']
+            data['number'] = int(request.form['number'])
         plan.housing_numbers = data
         db.session.add(plan)
         db.session.commit()
