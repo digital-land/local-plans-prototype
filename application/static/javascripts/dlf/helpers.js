@@ -61,7 +61,7 @@ function postJSONRequest(endpoint, data, cb) {
     });
 }
 
-function postFormDataRequest(endpoint, data, cb) {
+function postFormDataRequest(endpoint, data) {
   fetch(endpoint, {
     method: "POST",
     body: data
