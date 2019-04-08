@@ -141,6 +141,15 @@ def update_plan_housing_requirement(planning_authority, plan_id):
     return make_response(resp)
 
 
+@frontend.route('/local-plans/<planning_authority>/<plan_id>/update-plan-flags', methods=['POST'])
+def update_plan_data_flags(planning_authority, plan_id):
+    plan = LocalPlan.query.get(plan_id)
+    if plan is not None:
+        resp = {'OK': 200}
+    else:
+        resp = {'OK': 400, 'error': 'Plan not found'}
+
+    return jsonify(resp)
 
 @frontend.route('/start-collecting-data')
 def start_collecting_data():

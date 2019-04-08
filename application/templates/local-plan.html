@@ -276,10 +276,10 @@
                         {{ renderPlanPeriodForm(plan, "Add plan period", "add" + loop.index | string, "govuk-form--contained") }}
                     </div>
 
-                    <form action="" class="govuk-form govuk-form--single-checkbox">
+                    <form action="{{ url_for('frontend.update_plan_data_flags', planning_authority=planning_authority.id, plan_id=plan.id) }}" class="govuk-form govuk-form--single-checkbox">
                       <div class="govuk-checkboxes">
                         <div class="govuk-checkboxes__item">
-                          <input class="govuk-checkboxes__input" id="no-pp-checkbox-{{ loop.index }}" name="no-pp-checkbox" type="checkbox" value="no plan period">
+                          <input class="govuk-checkboxes__input" data-data-type="plan-period" id="no-pp-checkbox-{{ loop.index }}" name="no-pp-checkbox" type="checkbox" value="no plan period">
                           <label class="govuk-label govuk-checkboxes__label" for="no-pp-checkbox-{{ loop.index }}">
                             I can't find a plan period
                           </label>
@@ -339,10 +339,10 @@
                         {{ renderHousingRequirementForm(plan, "Add housing requirement numbers", "add" + loop.index | string, "govuk-form--contained add-housing-requirement-form") }}
                     </div>
 
-                    <form action="" class="govuk-form govuk-form--single-checkbox">
+                    <form action="{{ url_for('frontend.update_plan_data_flags', planning_authority=planning_authority.id, plan_id=plan.id) }}" class="govuk-form govuk-form--single-checkbox">
                       <div class="govuk-checkboxes">
                         <div class="govuk-checkboxes__item">
-                          <input class="govuk-checkboxes__input" id="no-housing-nums-checkbox-{{ loop.index }}" name="no-housing-nums-checkbox" type="checkbox" value="no plan period">
+                          <input class="govuk-checkboxes__input" id="no-housing-nums-checkbox-{{ loop.index }}" name="no-housing-nums-checkbox" data-data-type="housing-number" type="checkbox" value="no plan period">
                           <label class="govuk-label govuk-checkboxes__label" for="no-housing-nums-checkbox-{{ loop.index }}">
                             I can't find housing numbers for this local plan
                           </label>
@@ -1217,6 +1217,17 @@
             reader.readAsDataURL(file);
           }
         }
+
+
+        // ----------------------
+        // Handle flaggin no data
+        // ----------------------
+        const noDataCheckboxes = document.querySelectorAll(".govuk-form--single-checkbox input");
+        noDataCheckboxes.forEach(checkbox => {
+          checkbox.addEventListener('change', (e) => {
+            console.log(e.target.dataset.dataType, e.target.checked);
+          });
+        })
 
 
     </script>
