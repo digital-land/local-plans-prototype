@@ -197,6 +197,7 @@
                 <div class="govuk-form-group">
                    <label class="govuk-label" for="screenshot-{{ suffix }}">Upload a screenshot from source document</label>
                    <input class="govuk-file-upload" type="file" name="screenshot-{{ suffix }}" id="screenshot-{{ suffix }}" />
+                   <img src="" alt="" class="img-preview not-active">
                 </div>
 
                 <div class="govuk-form-group">
@@ -1171,6 +1172,29 @@
             };
             editableSection.initialiseForm(extractData, onSuccessfulChange);
         });
+
+
+        // -------------------------------------
+        // Display preview of image back to user
+        // -------------------------------------
+        const fileUploads = document.querySelectorAll(".govuk-file-upload");
+        fileUploads.forEach(uploader => uploader.addEventListener('change', previewScreenshotFile));
+        function previewScreenshotFile(e) {
+          const filePicker = e.target;
+          // why do I need to do nextSibling twice?
+          const preview = filePicker.nextSibling.nextSibling;
+          const file = filePicker.files[0];
+          const reader  = new FileReader();
+
+          reader.addEventListener("load", function () {
+            preview.classList.remove("not-active");
+            preview.src = reader.result;
+          }, false);
+
+          if (file) {
+            reader.readAsDataURL(file);
+          }
+        }
 
 
     </script>

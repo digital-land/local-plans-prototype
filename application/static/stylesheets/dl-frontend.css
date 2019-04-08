@@ -6936,6 +6936,14 @@
   display: none;
 }
 
+.img-preview {
+  max-width: 200px;
+}
+
+.img-preview.not-active {
+  display: none;
+}
+
 .govuk-form--contained {
   margin-top: 15px;
 }

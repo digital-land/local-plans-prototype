@@ -369,3 +369,11 @@ $editable-box-border-width: 1px;
     }
   }
 }
+
+.img-preview {
+  max-width: 200px;
+
+  &.not-active {
+    display: none;
+  }
+}
