@@ -7257,6 +7257,18 @@
   }
 }
 
+.data-item {
+  display: block;
+  font-family: "nta", Arial, sans-serif;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.data-item a {
+  color: #0b0c0c;
+}
+
 .map-container {
   position: relative;
 }

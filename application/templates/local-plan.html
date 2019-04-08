@@ -277,24 +277,41 @@
                 {% endif %}
 
                 <!-- start of housing requirement section -->
-                <h3 class="govuk-heading-m">Housing requirements</h3>
+                <h3 class="govuk-heading-m">Housing numbers</h3>
                 <div class="edit-housing-requirement {% if not plan.has_housing_numbers() %}not-set{% endif %}">
                     {% if plan.has_housing_numbers() %}
+                    <div class="govuk-grid-row">
+                      <div class="govuk-grid-column-one-half">
+                        <div class="data">
+                          <span class="data-item govuk-!-font-size-80 govuk-!-font-weight-bold">
+                            {%- if 'range' in plan.housing_numbers.housing_number_type %}
+                              {{ plan.housing_numbers.min }} to {{ plan.housing_numbers.max }}
+                            {% else %}
+                              {{ plan.housing_numbers.number }}
+                            {% endif -%}
+                          </span>
+                          <span class="data-item bold-xsmall govuk-!-font-size-16 govuk-!-font-weight-bold">{{ plan.housing_numbers.housing_number_type | format_fact }}</span>
+                        </div>
+                        <span class="data-source">Source: <a href="{{ plan.housing_numbers.source_document }}" target="_blank">{{ plan.housing_numbers.source_document }}</a></span>
+                        {% if plan.housing_numbers.notes %}
+                        <details class="govuk-details">
+                          <summary class="govuk-details__summary">
+                            <span class="govuk-detaild__summary-text">Notes</span>
+                          </summary>
+                          <div class="govuk-details__text">
+                            {{ plan.housing_numbers.notes }}
+                          </div>
+                        </details>
+                        {% endif %}
+                      </div>
+                      <div class="govuk-grid-column-one-half">
+                        {%- if plan.housing_numbers.image_url %}
+                        <img src="{{ plan.housing_numbers.image_url }}" alt="">
+                        {% endif -%}
+                      </div>
+                    </div>
                        <!-- colm not sure where this data attr is used? -->
                         <p class="housing-requirement" data-housing-requirement="{{ plan.housing_numbers.number }}"></p>
-                         <ul>
-                            <li>{{ plan.housing_numbers.housing_number_type }}</li>
-                            {% if 'range' in plan.housing_numbers.housing_number_type %}
-                                <li>{{ plan.housing_numbers.min }} to {{ plan.housing_numbers.max }}</li>
-                            {% else %}
-                                <li>{{ plan.housing_numbers.number }}</li>
-                            {% endif %}
-                            <li>Source: <a href="{{ plan.housing_numbers.source_document }}" target="_blank">
-                                {{ plan.housing_numbers.source_document }}</a>
-                            </li>
-                            <li>Link to screenshot</li>
-                            <li>Notes</li>
-                        </ul>
                     {% endif %}
                     <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="#" class="govuk-link">Update
                         housing requirement numbers</a>.</p>
