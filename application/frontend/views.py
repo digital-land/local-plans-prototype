@@ -563,25 +563,23 @@ def map_of_data():
         authority = {'planning_authority': pla.id,
                      'planning_authority_name': pla.name,
                      'plans': [],
-                     'has_housing_figures': False}
+                     'has_housing_numbers': False}
         for p in pla.local_plans:
-            plan = {'documents': 0,
-                    'facts': 0,
-                    'plan_id': p.local_plan,
-                    'status': p.latest_state().to_dict()}
-            for doc in p.plan_documents:
-                plan['documents'] = plan['documents'] + 1
-                for fact in doc.facts:
-                    plan['facts'] = plan['facts'] + 1
-                    housing_no_total = ['HOUSING_REQUIREMENT_TOTAL', 'HOUSING_REQUIREMENT_YEARLY_AVERAGE']
-                    housing_no_range = ['HOUSING_REQUIREMENT_RANGE', 'HOUSING_REQUIREMENT_YEARLY_RANGE']
-                    if fact.fact_type in housing_no_total:
-                        plan[fact.fact_type.lower()] = int(fact.fact.replace(',', '')) if fact.fact else None
-                        authority['has_housing_figures'] = True
-                    if fact.fact_type in housing_no_range:
-                        plan[f'{fact.fact_type.lower()}_from'] = int(fact.from_.replace(',', '')) if fact.from_ else None
-                        plan[f'{fact.fact_type.lower()}_to'] = int(fact.to.replace(',', '')) if fact.to else None
-                        authority['has_housing_figures'] = True
+            plan = {'plan_id': p.local_plan,
+                    'status': p.latest_state().to_dict(),
+                    'has_housing_numbers': p.has_housing_numbers()
+                    }
+            try:
+                if p.has_housing_numbers():
+                    authority['has_housing_numbers'] = True
+                    if 'range'in p.housing_numbers['housing_number_type'].lower():
+                        plan[f"{p.housing_numbers['housing_number_type']}_from".lower()] = p.housing_numbers['min']
+                        plan[f"{p.housing_numbers['housing_number_type']}_to".lower()] = p.housing_numbers['max']
+                    else:
+                        plan[p.housing_numbers['housing_number_type'].lower()] = p.housing_numbers['number']
+            except Exception as e:
+                print(e)
+
             authority['plans'].append(plan)
         if geojson is not None:
             authority['geojson'] = json.loads(geojson)

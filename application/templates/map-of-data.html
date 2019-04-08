@@ -99,7 +99,7 @@
                 if (planningAuthority.plans.length == 0) {
                     addLayerToABoundariesLayer(boundary, planningAuthority, missingDataLayer, mhclgMaps.styles.disable, true, reorderLayersIfAllAdded);
                 } else {
-                    if (planningAuthority.has_housing_figures) {
+                    if (planningAuthority.has_housing_numbers) {
                         addLayerToABoundariesLayer(boundary, planningAuthority, validDataLayer, mhclgMaps.styles.valid, true,reorderLayersIfAllAdded);
                     } else {
                         addLayerToABoundariesLayer(boundary, planningAuthority, warningDataLayer, mhclgMaps.styles.warning, true, reorderLayersIfAllAdded);
@@ -118,7 +118,7 @@
             '<span class="govuk-caption--after govuk-caption-s">{planning_authority}</span>' +
             '<ul class="govuk-list">' +
             '<li>Plans: {plan_count}</li>' +
-            '<li>Housing figures collected: {has_housing_figures}</li>' +
+            '<li>Housing figures collected: {has_housing_numbers}</li>' +
             '</ul>';
 
 
@@ -126,7 +126,7 @@
             '<h3 class="govuk-heading-s">{planning_authority}</h3>' +
             '<ul class="govuk-list">' +
             '<li>Plans: {plan_count}</li>' +
-            '<li>Housing figures collected: {has_housing_figures}</li>' +
+            '<li>Housing numbers collected: {has_housing_numbers}</li>' +
             '</ul>' +
             '<p class="govuk-body"><a class="govuk-link" href="{url}">Add data for this planning authority</a></p>';
 
@@ -140,7 +140,7 @@
                         planning_authority: planningAuthority.planning_authority,
                         plan_count: planningAuthority.plans.length,
                         url: url,
-                        has_housing_figures: planningAuthority.has_housing_figures
+                        has_housing_numbers: planningAuthority.has_housing_numbers
                     });
                 boundary.bindPopup(popupContent);
             } else {
@@ -152,7 +152,7 @@
                         planning_authority_name: planningAuthority.planning_authority_name,
                         plan_count: planningAuthority.plans.length,
                         url: url,
-                        has_housing_figures: planningAuthority.has_housing_figures
+                        has_housing_numbers: planningAuthority.has_housing_numbers
                     });
 
                 planningAuthority.plans.forEach(function(plan){
@@ -163,15 +163,11 @@
                     var planDetailTemplate =
                         '<h3 class="govuk-heading-s"><a class="govuk-link" href="{url}">{plan}</a></h3>' +
                         '<ul class="govuk-list">' +
-                        '<li style="text-transform: capitalize;">{status}</li>' +
-                        '<li>Documents found: {document_count}</li>' +
-                        '<li>Facts collected: {facts}</li>';
+                        '<li style="text-transform: capitalize;">{status}</li>';
 
                     const url = `/local-plans/` + planningAuthority.planning_authority +'#' + plan.plan_id;
                     context = {
                         plan: plan.plan_id,
-                        document_count: plan.documents,
-                        facts: plan.facts,
                         url: url,
                         status: plan.status.state + ' ' + plan.status.date,
                     };
