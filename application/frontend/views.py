@@ -150,6 +150,10 @@ def update_plan_housing_requirement(planning_authority, plan_id):
 @frontend.route('/local-plans/<planning_authority>/<plan_id>/update-plan-flags', methods=['POST'])
 def update_plan_data_flags(planning_authority, plan_id):
     plan = LocalPlan.query.get(plan_id)
+
+    # TODO plan has two fields, plan_period_found and housing_numbers_found which would at this stage
+    # be null. You can set the appropriate flag to False and then save to db
+
     if plan is not None:
         resp = {'OK': 200}
     else:
