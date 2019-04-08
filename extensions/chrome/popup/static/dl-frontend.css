@@ -6964,6 +6964,10 @@
   margin-top: 0;
 }
 
+.govuk-form--single-checkbox {
+  margin-bottom: 30px;
+}
+
 .add-url-form {
   box-sizing: border-box;
   display: block;

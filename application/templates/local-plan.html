@@ -275,6 +275,17 @@
                             you add it?</p>
                         {{ renderPlanPeriodForm(plan, "Add plan period", "add" + loop.index | string, "govuk-form--contained") }}
                     </div>
+
+                    <form action="" class="govuk-form govuk-form--single-checkbox">
+                      <div class="govuk-checkboxes">
+                        <div class="govuk-checkboxes__item">
+                          <input class="govuk-checkboxes__input" id="no-pp-checkbox-{{ loop.index }}" name="no-pp-checkbox" type="checkbox" value="no plan period">
+                          <label class="govuk-label govuk-checkboxes__label" for="no-pp-checkbox-{{ loop.index }}">
+                            I can't find a plan period
+                          </label>
+                        </div>
+                      </div>
+                    </form>
                 {% endif %}
 
                 <!-- start of housing requirement section -->
@@ -327,6 +338,17 @@
                             Can you add some?</p>
                         {{ renderHousingRequirementForm(plan, "Add housing requirement numbers", "add" + loop.index | string, "govuk-form--contained add-housing-requirement-form") }}
                     </div>
+
+                    <form action="" class="govuk-form govuk-form--single-checkbox">
+                      <div class="govuk-checkboxes">
+                        <div class="govuk-checkboxes__item">
+                          <input class="govuk-checkboxes__input" id="no-housing-nums-checkbox-{{ loop.index }}" name="no-housing-nums-checkbox" type="checkbox" value="no plan period">
+                          <label class="govuk-label govuk-checkboxes__label" for="no-housing-nums-checkbox-{{ loop.index }}">
+                            I can't find housing numbers for this local plan
+                          </label>
+                        </div>
+                      </div>
+                    </form>
                 {% endif %}
 
 
