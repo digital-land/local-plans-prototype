@@ -35,6 +35,9 @@ class LocalPlan(db.Model):
 
     housing_numbers = db.Column(JSON)
 
+    plan_period_found = db.Column(db.Boolean)
+    housing_numbers_found = db.Column(db.Boolean)
+
     start_year = db.Column(db.Date())
     published_date = db.Column(db.Date())
     submitted_date = db.Column(db.Date())

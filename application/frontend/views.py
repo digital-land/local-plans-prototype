@@ -109,6 +109,7 @@ def update_plan_period(planning_authority, plan_id):
         end_year = int(request.json.get('end-year'))
         plan.plan_start_year = datetime.datetime(start_year,1,1)
         plan.plan_end_year = datetime.datetime(end_year,1,1)
+        plan.plan_period_found = True
         db.session.add(plan)
         db.session.commit()
         resp = {"OK": 200, "plan": plan.to_dict()}
@@ -132,6 +133,7 @@ def update_plan_housing_requirement(planning_authority, plan_id):
         else:
             data['number'] = int(request.form['number'])
         plan.housing_numbers = data
+        plan.housing_numbers_found = True
         db.session.add(plan)
         db.session.commit()
         resp = 'OK', 200
