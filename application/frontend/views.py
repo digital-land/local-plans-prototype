@@ -4,10 +4,10 @@ import datetime
 import io
 import json
 import sqlalchemy
-from urllib.parse import urlparse
-
+import uuid
 import boto3
 
+from urllib.parse import urlparse
 from pathlib import Path
 
 from flask import (
@@ -21,6 +21,7 @@ from flask import (
     current_app,
     make_response
 )
+
 from sqlalchemy import func, or_
 
 from application.extensions import db, flask_optimize
@@ -132,15 +133,22 @@ def update_plan_housing_requirement(planning_authority, plan_id):
             data['max'] = int(request.form['max'])
         else:
             data['number'] = int(request.form['number'])
+
+        bucket = 'local-plans'
+        key = f'images/{plan.id}/{uuid.uuid4()}.jpg'
+        s3 = boto3.client('s3')
+        s3.upload_fileobj(request.files['screenshot'], bucket, key, ExtraArgs={'ContentType': 'image/jpeg', 'ACL': 'public-read'})
+        data['image_url'] = f'https://s3.eu-west-2.amazonaws.com/{bucket}/{key}'
         plan.housing_numbers = data
         plan.housing_numbers_found = True
         db.session.add(plan)
         db.session.commit()
-        resp = 'OK', 200
+        resp = make_response(jsonify(data=data))
+        resp.status_code = 200
+        resp.headers = {'Content-Type': 'application/json'}
+        return resp
     else:
-        resp = 'NOT FOUND', 400
-
-    return make_response(resp)
+        return make_response(jsonify({'error': 'could not find plan to update'}), 404)
 
 
 @frontend.route('/local-plans/<planning_authority>/<plan_id>/update-plan-flags', methods=['POST'])

@@ -318,7 +318,9 @@
                       </div>
                       <div class="govuk-grid-column-one-half">
                         {%- if plan.housing_numbers.image_url %}
-                        <img src="{{ plan.housing_numbers.image_url }}" alt="">
+                            <a href="{{ plan.housing_numbers.image_url }}" target="_blank">
+                                <img src="{{ plan.housing_numbers.image_url }}" alt="" style="width: 200px">
+                            </a>
                         {% endif -%}
                       </div>
                     </div>
