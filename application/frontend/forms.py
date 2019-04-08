@@ -1,7 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, validators, IntegerField, ValidationError, HiddenField
-
-from application.models import LocalPlan
+from wtforms import StringField, validators, IntegerField, HiddenField, SelectMultipleField
 
 
 class LocalDevelopmentSchemeURLForm(FlaskForm):
@@ -17,3 +15,8 @@ class AddPlanForm(FlaskForm):
 	start_year = IntegerField('Start year', [validators.DataRequired()])
 	end_year = IntegerField('End year', [validators.DataRequired()])
 	planning_authority = HiddenField()
+
+
+class MakeJointPlanForm(FlaskForm):
+	planning_authorities = SelectMultipleField('Select one or more planning authorities', [validators.DataRequired()])
+

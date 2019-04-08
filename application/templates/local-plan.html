@@ -235,6 +235,19 @@
                     </form>
                 {% endmacro %}
 
+                {% if plan.is_joint_plan() %}
+                    <h3>Joint plan with</h3>
+                    <ul>
+                        {% for authority in plan.joint_plan_authorites(planning_authority.id) %}
+                            <li><a href="{{ url_for('frontend.local_plan', planning_authority=authority.id) }}">{{ authority.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                {%  else %}
+                    <p class="govuk-body">If this should be a joint plan you can
+                        <a href="{{ url_for('frontend.make_joint_plan', planning_authority=planning_authority.id, local_plan=plan.id) }}">add other authorities here</a>
+                    </p>
+                {% endif %}
+
                 <h3 class="govuk-heading-m">Planning policy url</h3>
                 <div class="plan-policy-url-section {% if not plan.url %}not-set{% endif %}">
                     <p class="govuk-body">

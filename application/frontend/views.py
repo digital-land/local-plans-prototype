@@ -23,7 +23,7 @@ from flask import (
 from sqlalchemy import func, or_
 
 from application.extensions import db, flask_optimize
-from application.frontend.forms import LocalDevelopmentSchemeURLForm, LocalPlanURLForm, AddPlanForm
+from application.frontend.forms import LocalDevelopmentSchemeURLForm, LocalPlanURLForm, AddPlanForm, MakeJointPlanForm
 from application.models import (
     PlanningAuthority,
     LocalPlan,
@@ -525,8 +525,7 @@ def data_as_json():
     planning_authorities = PlanningAuthority.query.all()
     data = []
     for pla in planning_authorities:
-        for fact in pla.gather_facts(as_dict=True):
-            data.append(fact)
+        data.append(pla.to_dict())
     return jsonify(data=data)
 
 
@@ -593,3 +592,19 @@ def map_of_data():
     return render_template('map-of-data.html', data=data)
 
 
+@frontend.route('/local-plans/<planning_authority>/<local_plan>/make-joint-plan', methods=['GET', 'POST'])
+def make_joint_plan(planning_authority, local_plan):
+    planning_authority = PlanningAuthority.query.get(planning_authority)
+    planning_authorities = PlanningAuthority.query.filter(PlanningAuthority.id != planning_authority.id).order_by(PlanningAuthority.name).all()
+    plan = LocalPlan.query.get(local_plan)
+    form = MakeJointPlanForm()
+    form.planning_authorities.choices = [(p.id, p.name) for p in planning_authorities]
+    if form.validate_on_submit():
+        for id in form.planning_authorities.data:
+            pla = PlanningAuthority.query.get(id)
+            plan.planning_authorities.append(pla)
+        db.session.add(plan)
+        db.session.commit()
+        return redirect(url_for('frontend.local_plan', planning_authority=planning_authority.id))
+
+    return render_template('make-joint-plan.html', planning_authority=planning_authority, local_plan=plan, form=form)

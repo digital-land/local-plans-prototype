@@ -1,0 +1,31 @@
+{% extends "dlf-base.html" %}
+{%- set mainClasses = "govuk-main-wrapper--l" -%}
+
+
+{% block content %}
+
+    <h1>Associate plan with other planning authorities</h1>
+    <p>Plan {{ local_plan.title }}</p>
+    <p>From planning authority {{ planning_authority.name }}</p>
+
+    <form action="{{ url_for('frontend.make_joint_plan', planning_authority=planning_authority.id, local_plan=local_plan.id) }}"
+        method="POST">
+
+        <div class="govuk-form-group">
+            {{ form.planning_authorities.label }}
+            {{ form.planning_authorities }}
+        </div>
+
+        <div class="govuk-form-group">
+            <button class="govuk-button">Save</button>
+        </div>
+
+        {{ form.csrf_token }}
+    </form>
+
+{% endblock %}
+
+{% block bodyEnd %}
+{% endblock %}
+
+
