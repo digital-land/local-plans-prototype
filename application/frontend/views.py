@@ -3,13 +3,12 @@ import csv
 import datetime
 import io
 import json
-import sqlalchemy
 import uuid
-import boto3
-
-from urllib.parse import urlparse
 from pathlib import Path
+from urllib.parse import urlparse
 
+import boto3
+import sqlalchemy
 from flask import (
     Blueprint,
     render_template,
@@ -21,11 +20,10 @@ from flask import (
     current_app,
     make_response
 )
-
 from sqlalchemy import func, or_
 
 from application.extensions import db, flask_optimize
-
+from application.frontend.forms import LocalDevelopmentSchemeURLForm, LocalPlanURLForm, AddPlanForm
 from application.models import (
     PlanningAuthority,
     LocalPlan,
@@ -35,8 +33,6 @@ from application.models import (
     OtherDocument,
     Fact
 )
-
-from application.frontend.forms import LocalDevelopmentSchemeURLForm, LocalPlanURLForm, AddPlanForm
 
 frontend = Blueprint('frontend', __name__, template_folder='templates')
 
