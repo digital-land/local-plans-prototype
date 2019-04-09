@@ -4,7 +4,8 @@
 
 {% block content %}
 
-    <h1 class="govuk-heading-m">Make {{ local_plan.title }} a joint plan by linking with other planning authorities</h1>
+    <h1 class="govuk-heading-l">{{ local_plan.title }} - {{ planning_authority.name  }}</h1>
+    <p class="govuk-body-lead">Link {{ local_plan.title }} other planning authorities to create joint plan</p>
 
     <form action="{{ url_for('frontend.make_joint_plan', planning_authority=planning_authority.id, local_plan=local_plan.id) }}"
         method="POST">
