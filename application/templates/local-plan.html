@@ -309,7 +309,7 @@
                       <div class="govuk-grid-column-one-half">
                         <div class="data">
                           <span class="data-item govuk-!-font-size-80 govuk-!-font-weight-bold">
-                            {%- if 'range' in plan.housing_numbers.housing_number_type %}
+                            {%- if 'range' in plan.housing_numbers.housing_number_type|lower %}
                               {{ plan.housing_numbers.min }} to {{ plan.housing_numbers.max }}
                             {% else %}
                               {{ plan.housing_numbers.number }}
