@@ -292,7 +292,7 @@
                     <form action="{{ url_for('frontend.update_plan_data_flags', planning_authority=planning_authority.id, plan_id=plan.id) }}" class="govuk-form govuk-form--single-checkbox">
                       <div class="govuk-checkboxes">
                         <div class="govuk-checkboxes__item">
-                          <input class="govuk-checkboxes__input" data-data-type="plan-period" id="no-pp-checkbox-{{ loop.index }}" name="no-pp-checkbox" type="checkbox" value="no plan period">
+                          <input class="govuk-checkboxes__input" data-data-type="plan-period" id="no-pp-checkbox-{{ loop.index }}" name="no-pp-checkbox" type="checkbox" value="no plan period" {% if plan.plan_period_found is defined and plan.plan_period_found == false %}checked=checked{% endif %}>
                           <label class="govuk-label govuk-checkboxes__label" for="no-pp-checkbox-{{ loop.index }}">
                             I can't find a plan period
                           </label>
@@ -357,7 +357,7 @@
                     <form action="{{ url_for('frontend.update_plan_data_flags', planning_authority=planning_authority.id, plan_id=plan.id) }}" class="govuk-form govuk-form--single-checkbox">
                       <div class="govuk-checkboxes">
                         <div class="govuk-checkboxes__item">
-                          <input class="govuk-checkboxes__input" id="no-housing-nums-checkbox-{{ loop.index }}" name="no-housing-nums-checkbox" data-data-type="housing-number" type="checkbox" value="no plan period">
+                          <input class="govuk-checkboxes__input" id="no-housing-nums-checkbox-{{ loop.index }}" name="no-housing-nums-checkbox" data-data-type="housing-number" type="checkbox" value="no plan period" {% if plan.housing_numbers_found is defined and plan.housing_numbers_found == false %}checked=checked{% endif %}>
                           <label class="govuk-label govuk-checkboxes__label" for="no-housing-nums-checkbox-{{ loop.index }}">
                             I can't find housing numbers for this local plan
                           </label>
@@ -1234,15 +1234,21 @@
         }
 
 
-        // ----------------------
-        // Handle flaggin no data
-        // ----------------------
+        // -----------------------
+        // Handle flagging no data
+        // -----------------------
         const noDataCheckboxes = document.querySelectorAll(".govuk-form--single-checkbox input");
         noDataCheckboxes.forEach(checkbox => {
+          const form = checkbox.closest("form");
           checkbox.addEventListener('change', (e) => {
+            const data = {
+              'data-type': checkbox.dataset.dataType,
+              'not-found': checkbox.checked
+            };
             console.log(e.target.dataset.dataType, e.target.checked);
+            postJSONRequest(form.action, data, (respData) => console.log(respData));
           });
-        })
+        });
 
 
     </script>

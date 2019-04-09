@@ -155,7 +155,20 @@ def update_plan_data_flags(planning_authority, plan_id):
     # be null. You can set the appropriate flag to False and then save to db
 
     if plan is not None:
-        resp = {'OK': 200}
+        if request.json.get('data-type') is not None:
+            # user saying data can't be found
+            found = False if bool(request.json.get('not-found')) else None
+
+            if request.json.get('data-type') == 'housing-number':
+                plan.housing_numbers_found = found
+            else:
+                plan.plan_period_found = found
+
+            db.session.add(plan)
+            db.session.commit()
+            resp = {'OK': 200, 'plan': plan.to_dict(planning_authority) }
+        else:
+            resp = {'OK': 400, 'error': 'Data type not provided'}
     else:
         resp = {'OK': 400, 'error': 'Plan not found'}
 

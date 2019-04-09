@@ -117,7 +117,9 @@ class LocalPlan(db.Model):
             'plan_end_year': self.plan_end_year.strftime('%Y') if self.plan_end_year else None,
             'joint_plan_authorities': self.joint_plan_authorites(authority_id) if self.is_joint_plan() else None,
             'url': self.url,
-            'housing_numbers': self.housing_numbers
+            'housing_numbers': self.housing_numbers,
+            'plan_period_found': self.plan_period_found,
+            'housing_numbers_found': self.housing_numbers_found
         }
         return data
 
