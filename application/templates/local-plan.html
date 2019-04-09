@@ -519,34 +519,34 @@
                 class="govuk-visually-hidden"> this fact</span></a></td>
     </script>
 
-    <script id="existing-housing-numbers" type="text/x-handlebars-template">
+    <script id="housing-numbers-template" type="text/x-handlebars-template">
       <div class="govuk-grid-column-one-half">
         <div class="data">
           <span class="data-item govuk-!-font-size-80 govuk-!-font-weight-bold">
-            {{#if housing_numbers.number }}
-              {{ housing_numbers.number }}
+            {{#if number }}
+              {{ number }}
             {{else}}
-              {{ housing_numbers.min }} to {{ housing_numbers.max }}
+              {{ min }} to {{ max }}
             {{/if}}
           </span>
-          <span class="data-item bold-xsmall govuk-!-font-size-16 govuk-!-font-weight-bold">{{ housing_numbers.housing_number_type_display }}</span>
+          <span class="data-item bold-xsmall govuk-!-font-size-16 govuk-!-font-weight-bold">{{ housing_number_type_display }}</span>
         </div>
-        <span class="data-source">Source: <a href="{{ housing_numbers.source_document }}" target="_blank">{{ housing_numbers.source_document }}</a></span>
-        {{#if housing_numbers.notes }}
+        <span class="data-source">Source: <a href="{{ source_document }}" target="_blank">{{ source_document }}</a></span>
+        {{#if notes }}
         <details class="govuk-details">
           <summary class="govuk-details__summary">
             <span class="govuk-detaild__summary-text">Notes</span>
           </summary>
           <div class="govuk-details__text">
-            {{ housing_numbers.notes }}
+            {{ notes }}
           </div>
         </details>
         {{/if}}
       </div>
       <div class="govuk-grid-column-one-half">
-      {{#if housing_numbers.image_url }}
-        <a href="{{ housing_numbers.image_url }}" target="_blank">
-          <img src="{{ housing_numbers.image_url }}" alt="" style="width: 200px">
+      {{#if image_url }}
+        <a href="{{ image_url }}" target="_blank">
+          <img src="{{ image_url }}" alt="" style="width: 200px">
         </a>
       {{/if}}
       </div>
@@ -1076,14 +1076,13 @@
                 if(form.enctype !== undefined && form.enctype == 'multipart/form-data'){
                     postFormDataRequest(endpoint, data, function(respData) {
                       form.classList.remove("posting");
-                      if (respData["OK"] === 200) {
-                            that.exitEditMode();
-                            that.trigger.addEventListener("click", that.editHandler);
-                            if (succCb && typeof succCb === "function") {
-                                succCb(respData);
-                            }
-                        }
-                        console.log(respData);
+
+                      that.exitEditMode();
+                      that.trigger.addEventListener("click", that.editHandler);
+                      if (succCb && typeof succCb === "function") {
+                        succCb(respData);
+                      }
+                      console.log(respData);
                     });
                 }
                 else {
@@ -1279,13 +1278,18 @@
         // -------------------------
         // make housing numbers editable
         // -------------------------
+        var housingNumbersSource = document.getElementById("housing-numbers-template").innerHTML;
+        var housingNumbersTemplate = Handlebars.compile(housingNumbersSource);
+
         const housingRequirement = document.querySelectorAll(".edit-housing-requirement");
         housingRequirement.forEach((plan) => {
             const editableSection = new EditableSection(plan);
+
+            const currentNumbers = plan.querySelector(".govuk-grid-row:first-child");
+
             const extractData = extractor;
             const onSuccessfulChange = (data) => {
-              console.log("never gets here");
-              console.log(data);
+              currentNumbers.innerHTML = housingNumbersTemplate(data.data);
             };
             editableSection.initialiseForm(extractData, onSuccessfulChange);
         });
