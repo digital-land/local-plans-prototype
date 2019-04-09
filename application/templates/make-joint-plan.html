@@ -4,16 +4,14 @@
 
 {% block content %}
 
-    <h1>Associate plan with other planning authorities</h1>
-    <p>Plan {{ local_plan.title }}</p>
-    <p>From planning authority {{ planning_authority.name }}</p>
+    <h1 class="govuk-heading-m">Make {{ local_plan.title }} a joint plan by linking with other planning authorities</h1>
 
     <form action="{{ url_for('frontend.make_joint_plan', planning_authority=planning_authority.id, local_plan=local_plan.id) }}"
         method="POST">
 
         <div class="govuk-form-group">
-            {{ form.planning_authorities.label }}
-            {{ form.planning_authorities }}
+            {{ form.planning_authorities.label(class="govuk-label") }}
+            {{ form.planning_authorities(class="govuk-select", style="height: 200px;") }}
         </div>
 
         <div class="govuk-form-group">
