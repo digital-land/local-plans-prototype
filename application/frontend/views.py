@@ -493,36 +493,9 @@ def planning_authority_from_document():
 @frontend.route('/local-plans/lucky-dip')
 def lucky_dip():
     import random
-    query = db.session.query(LocalPlan).filter(or_(LocalPlan.plan_start_year.is_(None), LocalPlan.plan_end_year.is_(None)))
+    query = db.session.query(LocalPlan).filter(or_(LocalPlan.plan_start_year.is_(None), LocalPlan.plan_end_year.is_(None), LocalPlan.housing_numbers.is_(None)))
     row_count = int(query.count())
     local_plan = query.offset(int(row_count * random.random())).first()
-    if local_plan is None:
-        count_query = '''SELECT COUNT(*)
-                         FROM local_plan l, document d, fact f 
-                         WHERE l.id = d.local_plan_id
-                         AND d.id = f.document_id
-                         AND l.plan_start_year is not null
-                         AND l.plan_end_year is not null
-                         AND d.id not in (SELECT f.document_id FROM fact f WHERE f.fact_type ILIKE '%HOUSING%')
-                         '''
-        result = db.session.execute(sqlalchemy.text(count_query))
-
-        count = result.next()[0]
-
-        lp_query = f'''SELECT l.id FROM local_plan l, document d, fact f
-                       WHERE l.id = d.local_plan_id
-                       AND d.id = f.document_id
-                       AND l.plan_start_year is not null
-                       AND l.plan_end_year is not null
-                       AND d.id not in (SELECT f.document_id FROM fact f WHERE f.fact_type ILIKE '%HOUSING%')
-                       OFFSET floor(random()* {count}) LIMIT 1;'''
-
-        q = sqlalchemy.text(lp_query)
-
-        result = db.session.execute(q)
-        plan_id = result.next()[0]
-        local_plan = db.session.query(LocalPlan).filter(LocalPlan.id == plan_id).first()
-
     return render_template('lucky-dip.html', local_plan=local_plan, plan_id=str(local_plan.id))
 
 
