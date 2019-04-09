@@ -274,7 +274,7 @@ def update_local_plan_url(planning_authority, local_plan):
         plan.url = request.json['policy-url']
         db.session.add(pla)
         db.session.commit()
-        resp = {'OK': 200, 'plan': plan.to_dict()}
+        resp = {'OK': 200, 'plan': plan.to_dict(pla.id)}
         return jsonify(resp)
     else:
         form = LocalPlanURLForm(url=plan.url)
