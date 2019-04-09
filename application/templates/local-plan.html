@@ -98,20 +98,26 @@
                             name="housing-requirement-type-{{ suffix }}">
                         {% for housing_requirement in fact_types %}
                             <option value="{{ housing_requirement.name }}"
-                                    data-type-class="{{ housing_requirement.name|lower|replace('_', '-') }}">{{ housing_requirement.value }}</option>
+                                    data-type-class="{{ housing_requirement.name|lower|replace('_', '-') }}"
+                                    {%- if housing_requirement.name == plan.housing_numbers.housing_number_type %} selected{% endif %}>{{ housing_requirement.value }}</option>
                         {% endfor %}
                     </select>
                 </div>
 
                 <!-- for Housing requirement total -->
                 <div class="govuk-form-group plan-housing-requirement-total">
+                    {%- if plan.housing_numbers.housing_number_type == "HOUSING_REQUIREMENT_TOTAL" %}
+                      {% set housing_value = plan.housing_numbers.number %}
+                    {% else %}
+                      {% set housing_value = 0 %}
+                    {% endif -%}
                     <div class="govuk-form-group">
                         {{ govukLabel({ "label": "Housing requirement total", "for": "housing-requirement-total-" + suffix }) }}
                         {{ govukTextInput({
                       "classes": "govuk-input govuk-input--width-10",
                       "id": "housing-requirement-total-" + suffix,
                       "name": "housing-requirement-total-" + suffix,
-                      "value": 0,
+                      "value": housing_value,
                       "pattern":"[0-9]*"}) }}
                     </div>
                 </div>
@@ -124,13 +130,20 @@
                         </h1>
                     </legend>
 
+                    {%- if plan.housing_numbers.housing_number_type == "HOUSING_REQUIREMENT_RANGE" %}
+                      {% set housing_value_min = plan.housing_numbers.min %}
+                      {% set housing_value_max = plan.housing_numbers.max %}
+                    {% else %}
+                      {% set housing_value_min = 0 %}
+                      {% set housing_value_max = 0 %}
+                    {% endif -%}
                     <div class="govuk-form-group">
                         {{ govukLabel({ "label": "Min", "for": "housing-requirement-range-min-" + suffix }) }}
                         {{ govukTextInput({
                           "classes": "govuk-input govuk-input--width-10 housing-requirement-range-min",
                           "id": "housing-requirement-range-min-" + suffix,
                           "name": "housing-requirement-range-min-" + suffix,
-                          "value": 0,
+                          "value": housing_value_min,
                           "pattern":"[0-9]*"}) }}
                     </div>
 
@@ -140,19 +153,24 @@
                           "classes": "govuk-input govuk-input--width-10 housing-requirement-range-max",
                           "id": "housing-requirement-range-max-" + suffix,
                           "name": "housing-requirement-range-max-" + suffix,
-                          "value": 0,
+                          "value": housing_value_max,
                           "pattern":"[0-9]*"}) }}
                     </div>
                 </fieldset>
 
                 <!-- for Housing requirement yearly average -->
+                {%- if plan.housing_numbers.housing_number_type == "HOUSING_REQUIREMENT_YEARLY_AVERAGE" %}
+                  {% set housing_value = plan.housing_numbers.number %}
+                {% else %}
+                  {% set housing_value = 0 %}
+                {% endif -%}
                 <div class="govuk-form-group housing-requirement-yearly-average-input">
                     {{ govukLabel({ "label": "Housing requirement yearly average", "for": "housing-requirement-yearly-average-" + suffix }) }}
                     {{ govukTextInput({
                           "classes": "govuk-input govuk-input--width-10",
                           "id": "housing-requirement-yearly-average-" + suffix,
                           "name": "housing-requirement-yearly-average-" + suffix,
-                          "value": 0,
+                          "value": housing_value,
                           "pattern":"[0-9]*"}) }}
                 </div>
 
@@ -165,13 +183,21 @@
                         </h1>
                     </legend>
 
+
+                    {%- if plan.housing_numbers.housing_number_type == "HOUSING_REQUIREMENT_YEARLY_RANGE" %}
+                      {% set housing_value_min = plan.housing_numbers.min %}
+                      {% set housing_value_max = plan.housing_numbers.max %}
+                    {% else %}
+                      {% set housing_value_min = 0 %}
+                      {% set housing_value_max = 0 %}
+                    {% endif -%}
                     <div class="govuk-form-group">
                         {{ govukLabel({ "label": "Min", "for": "housing-requirement-yearly-range-min-" + suffix }) }}
                         {{ govukTextInput({
                           "classes": "govuk-input govuk-input--width-10 housing-requirement-yearly-range-min",
                           "id": "housing-requirement-yearly-range-min-" + suffix,
                           "name": "housing-requirement-yearly-range-min-" + suffix,
-                          "value": 0,
+                          "value": housing_value_min,
                           "pattern":"[0-9]*"}) }}
                     </div>
 
@@ -181,16 +207,21 @@
                           "classes": "govuk-input govuk-input--width-10 housing-requirement-yearly-range-max",
                           "id": "housing-req-requirement-range-max-" + suffix,
                           "name": "housing-req-requirement-range-max-" + suffix,
-                          "value": 0,
+                          "value": housing_value_max,
                           "pattern":"[0-9]*"}) }}
                     </div>
 
                 </fieldset>
 
+                {% if plan.has_housing_numbers() %}
+                  {% set source_document = plan.housing_numbers.source_document %}
+                {% else %}
+                  {% set source_document = "" %}
+                {% endif %}
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="url-{{ suffix }}">Source document url</label>
                     <input class="govuk-input" id="url-{{ suffix }}" name="url-{{ suffix }}" type="text"
-                           value="{{ value }}">
+                           value="{{ source_document }}">
 
                 </div>
 
