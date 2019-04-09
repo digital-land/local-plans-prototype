@@ -52,7 +52,7 @@ class LocalPlan(db.Model):
 
     def __eq__(self, other):
 
-        if self.plan_start_year is not None and other.plan_end_year is not None:
+        if self.plan_start_year is not None and other.plan_start_year is not None:
             return self.plan_start_year == other.plan_start_year
         else:
             return self.ordered_states() == other.ordered_states()
