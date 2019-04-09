@@ -7281,6 +7281,50 @@
   color: #0b0c0c;
 }
 
+.loader {
+  position: absolute;
+  bottom: -30px;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  overflow: hidden;
+  background-color: #dee0e2;
+}
+
+.loader:before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: -20%;
+  width: 20%;
+  height: 4px;
+  background-color: #005ea5;
+}
+
+@keyframes loading {
+  from {
+    left: -20%;
+  }
+  50% {
+    left: 55%;
+  }
+  95% {
+    left: 120%;
+  }
+  to {
+    left: 100%;
+  }
+}
+
+.posting {
+  position: relative;
+}
+
+.posting .loader:before {
+  display: block;
+  animation: loading 1s linear infinite;
+}
+
 .map-container {
   position: relative;
 }

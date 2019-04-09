@@ -1,0 +1,51 @@
+$loader-height: 4px;
+$loader-width: 20%;
+
+.loader {
+  position: absolute;
+  bottom: -($govuk-gutter);
+  left: 0;
+  width: 100%;
+  height: $loader-height;
+  overflow: hidden;
+  background-color: govuk-colour("grey-3");
+}
+
+.loader:before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: -($loader-width);
+  width: $loader-width;
+  height: 4px;
+  background-color: govuk-colour("blue");
+}
+
+// the loader animation for 
+@keyframes loading {
+  from {
+    left: -($loader-width);
+  }
+
+  50% {
+    left: 55%;
+  }
+
+  95% {
+    left: 120%;
+  }
+
+  to {
+    left: 100%;
+  }
+}
+
+// class it acts on
+.posting {
+  position: relative;
+
+  .loader:before {
+    display: block;
+    animation: loading 1s linear infinite;
+  }
+}

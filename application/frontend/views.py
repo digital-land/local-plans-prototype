@@ -34,6 +34,8 @@ from application.models import (
     Fact
 )
 
+from application.filters import format_fact
+
 frontend = Blueprint('frontend', __name__, template_folder='templates')
 
 
@@ -121,6 +123,7 @@ def update_plan_housing_requirement(planning_authority, plan_id):
     if plan is not None:
         data = {
             'housing_number_type': request.form['housing_number_type'],
+            'housing_number_type_display': format_fact(request.form['housing_number_type']),
             'created_date': datetime.datetime.utcnow().isoformat(),
             'source_document': request.form['source_document'],
         }

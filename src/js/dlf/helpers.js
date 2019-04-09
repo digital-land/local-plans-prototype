@@ -61,12 +61,18 @@ function postJSONRequest(endpoint, data, cb) {
     });
 }
 
-function postFormDataRequest(endpoint, data) {
+function postFormDataRequest(endpoint, data, cb) {
   fetch(endpoint, {
     method: "POST",
     body: data
-  }).then(response => {
-      console.log(response);
+  })
+  .then(response => response.json())
+  .then(respData => {
+    if (cb && typeof cb === "function") {
+      cb(respData);
+    } else {
+      console.log(respData); // eslint-disable-line
+    }
   });
 }
 
