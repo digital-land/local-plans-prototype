@@ -7282,6 +7282,7 @@
 }
 
 .loader {
+  display: none;
   position: absolute;
   bottom: -30px;
   left: 0;
@@ -7316,8 +7317,12 @@
   }
 }
 
-.posting {
+.govuk-form--contained {
   position: relative;
+}
+
+.posting .loader {
+  display: block;
 }
 
 .posting .loader:before {

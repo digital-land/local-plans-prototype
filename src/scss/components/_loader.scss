@@ -2,6 +2,7 @@ $loader-height: 4px;
 $loader-width: 20%;
 
 .loader {
+  display: none;
   position: absolute;
   bottom: -($govuk-gutter);
   left: 0;
@@ -40,9 +41,15 @@ $loader-width: 20%;
   }
 }
 
+.govuk-form--contained {
+  position: relative;
+}
+
 // class it acts on
 .posting {
-  position: relative;
+  .loader {
+    display: block;
+  }
 
   .loader:before {
     display: block;
