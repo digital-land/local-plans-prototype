@@ -3,9 +3,9 @@
 {% from "dl-macros/date-input.html" import renderDateInput %}
 
 {% block beforeContent %}
- {{ super() }}
+    {{ super() }}
 
- {{ govukBreadcrumbs({
+    {{ govukBreadcrumbs({
    "items": [
     {
        "text": "Home",
@@ -25,1047 +25,1317 @@
 
 {% block content %}
 
-  <span class="govuk-caption-xl">Local plan data</span>
-  <h1 class="govuk-heading-xl">{{ planning_authority.name }}</h1>
+    <span class="govuk-caption-xl">Local plan data</span>
+    <h1 class="govuk-heading-xl">{{ planning_authority.name }}</h1>
 
-{#  <div class="govuk-grid-row">#}
-{#    <div class="govuk-grid-column-two-thirds">#}
-{#      <h2 class="govuk-heading-l">Local development scheme</h2>#}
-{#      <p class="govuk-body">#}
-{#        Each planning authority is expected to publish a local development scheme. For {{ planning_authority.name }} you should be able to view it at:#}
-{#      </p>#}
-{#    </div>#}
-{#  </div>#}
-{#  #}
-{#  {% if planning_authority.local_scheme_url %}#}
-{##}
-{#      <!--#}
-{#      TODO we need to be able to add documents to this as well. in the same was as we add docs to plans#}
-{#      except these are stored against local authority but in table emerging_plan_documents#}
-{#      -->#}
-{##}
-{#      <p class="govuk-body">#}
-{#        <a id="policy-url" class="govuk-link" href="{{ planning_authority.local_scheme_url }}">{{ planning_authority.local_scheme_url }}</a>#}
-{#      </p>#}
-{#      <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="{{ url_for('frontend.update_local_scheme_url', planning_authority=planning_authority.id) }}" class="govuk-link">Update the url</a>.</p>#}
-{##}
-{#      <h3 class="govuk-heading-m">Local scheme documents</h3>#}
-{#        <ul class="url-list" data-url-list-type="lds-url-list">#}
-{#          {% if planning_authority.other_documents|length > 0 %}#}
-{#            {% for doc in planning_authority.other_documents %}#}
-{#            <li class="url-item govuk-grid-row">#}
-{#              <section class="document-link govuk-grid-column-full">#}
-{#                {% if doc.title %}#}
-{#                <span>{{ doc.title }}</span>#}
-{#                {% else %}#}
-{#                <span class="no-title-given">no title given</span>#}
-{#                {% endif %}#}
-{#                <a class="url-link" href="{{ doc.url }}" target="_blank">{{ doc.url }}</a>#}
-{#                <div class="url-item__controls">#}
-{#                  <a href="" class="url-item__btn url-edit-btn govuk-visually-hidden">Edit</a>#}
-{#                  <a href="{{ url_for('frontend.remove_document_from_planning_authority', document=doc.id, planning_authority=planning_authority.id ) }}" class="url-item__btn url-remove-btn">Remove</a>#}
-{#                </div>#}
-{#              </section>#}
-{##}
-{#              <section class="document-facts govuk-clearfix">#}
-{##}
-{#                <div class="govuk-grid-column-full">#}
-{#                <!-- TODO need some facts for emerging plan docs -->#}
-{#                  <table class="govuk-table document-facts__table">#}
-{#                    {% if doc.facts|length > 0 %}<caption class="govuk-table__caption">Facts from document</caption>{% endif %}#}
-{#                    <tbody class="govuk-table__body">#}
-{#                    {% for fact in doc.facts %}#}
-{#                      <tr class="govuk-table__row">#}
-{#                        <th class="govuk-table__header" scope="row">{% if fact.from_ and fact.to  %}{{ fact.from_ }} to {{fact.to }}{% else %}{{ fact.fact }}{%  endif %}</th>#}
-{#                        <td class="govuk-table__cell">{{ fact.fact_type | format_fact }}</td>#}
-{#                        <td class="govuk-table__cell">{% if fact.notes == "" %}-{% else %}{{ fact.notes }}{% endif %}</td>#}
-{#                        <td class="govuk-table__cell">{% if fact.image_url %}<a href="{{ fact.image_url }}" target="_blank"><img style="height: 60px" src="{{ fact.image_url }}"></a>{% endif %}</td>#}
-{#                        <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact" href="{{ url_for('frontend.remove_fact_from_document', document=doc.id, fact=fact.id) }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>#}
-{#                      </tr>#}
-{#                    {% endfor %}#}
-{#                    </tbody>#}
-{#                  </table>#}
-{#                </div>#}
-{##}
-{#                <details class="govuk-details govuk-details--facts govuk-details--facts-emerging-plan-doc govuk-grid-column-two-thirds">#}
-{#                  <summary class="govuk-details__summary">#}
-{#                    <span class="govuk-details__summary-text document-facts__add">#}
-{#                      Add fact from document#}
-{#                    </span>#}
-{#                  </summary>#}
-{##}
-{#                  {% from "partials/emerging-plan-fact-form.html" import renderEmergingPlanFactForm %}#}
-{##}
-{#                  {{ renderEmergingPlanFactForm({#}
-{#                      "action_url": url_for('frontend.add_fact_to_document', planning_authority=planning_authority.id, document=doc.id),#}
-{#                      "fact_types": emerging_fact_types,#}
-{#                      "form_number": loop.index#}
-{#                    }) }}#}
-{##}
-{#                </details>#}
-{##}
-{#              </section>#}
-{#            </li>#}
-{#            {% endfor %}#}
-{#          {% endif %}#}
-{#        </ul>#}
-{##}
-{#      <form action="{{ url_for('frontend.add_document_to_plan', planning_authority=planning_authority.id,  document_type='emerging_plan_document' )}}" data-associated-list="lds-url-list" class="govuk-form add-url-form">#}
-{#        <div class="govuk-form-group">#}
-{#          <label class="govuk-label label-add" for="url-input">#}
-{#          Add URL to a local development scheme or emerging plan document#}
-{#          </label>#}
-{#          <input class="govuk-input" id="url-input" name="url-input" type="text">#}
-{#        </div>#}
-{#        <div class="govuk-form-group">#}
-{#          <label class="govuk-label" for="doc-title-input">#}
-{#            Does the document have a title?#}
-{#          </label>#}
-{#          <input class="govuk-input govuk-input--width-20" id="doc-title-input" name="doc-title-input" type="text">#}
-{#        </div>#}
-{#        <div class="govuk-form-group">#}
-{#          <button class="govuk-button dlf-secondary-button url-save-btn">Add URL</button>#}
-{#        </div>#}
-{#      </form>#}
-{##}
-{#  {% else %}#}
-{#      <a class="highlight-box highlight-box--gap highlight-box--flush" href="{{ url_for('frontend.update_local_scheme_url', planning_authority=planning_authority.id) }}">#}
-{#        <h3 class="govuk-heading-s highlight-box__title">URL unavailable</h3>#}
-{#        <p class="govuk-body govuk-!-margin-bottom-0">We do not have a link to the local development scheme. Can you add one?</p>#}
-{#      </a>#}
-{#  {% endif %}#}
+    <h2 class="govuk-heading-l govuk-!-margin-top-9">Local plans</h2>
 
-  <h2 class="govuk-heading-l govuk-!-margin-top-9">Local plans</h2>
+    <div class="govuk-tabs" data-module="tabs">
+        <h2 class="govuk-tabs__title">
+            Contents
+        </h2>
 
-  <div class="govuk-tabs" data-module="tabs">
-    <h2 class="govuk-tabs__title">
-      Contents
-    </h2>
+        <ul class="govuk-tabs__list">
+            {% for plan in planning_authority.sorted_plans() %}
+                <li class="govuk-tabs__list-item {% if plan.is_adopted() %}adopted-plan{% endif %}">
+                    <a class="govuk-tabs__tab govuk-tabs__tab--selected" href="#plan_tab_{{ plan.id }}">
+                        {{ plan.title }}
+                    </a>
+                </li>
+            {% endfor %}
+            <li class="govuk-tabs__list-item">
+                <a href="#new-plan-tab" class="govuk-tabs__tab govuk-tabs__tab--add-new">Add new plan</a>
+            </li>
+        </ul>
 
-    <ul class="govuk-tabs__list">
-      {% for plan in planning_authority.sorted_plans()  %}
-      <li class="govuk-tabs__list-item {% if plan.is_adopted() %}adopted-plan{% endif %}">
-        <a class="govuk-tabs__tab govuk-tabs__tab--selected" href="#plan_tab_{{ plan.id}}">
-          {{ plan.title }}
-        </a>
-      </li>
-      {% endfor %}
-      <li class="govuk-tabs__list-item">
-        <a href="#new-plan-tab" class="govuk-tabs__tab govuk-tabs__tab--add-new">Add new plan</a>
-      </li>
-    </ul>
+        {% from "govuk-jinja-components/govuk-form/govuk-label.jinja" import govukLabel %}
+        {% from "govuk-jinja-components/govuk-form/govuk-input.jinja" import govukTextInput %}
 
-    {% from "govuk-jinja-components/govuk-form/govuk-label.jinja" import govukLabel %}
-    {% from "govuk-jinja-components/govuk-form/govuk-input.jinja" import govukTextInput %}
-
-    {% macro renderPlanPeriodForm(plan, heading, suffix, classes) %}
-    <form class="govuk-form{{- ' ' + classes if classes}}" action="{{ url_for('frontend.update_plan_period', planning_authority=planning_authority.id, plan_id=plan.id) }}" data-plan-id="{{ plan.id }}" method="POST">
-      <h3 class="govuk-heading-s">{{ heading }}</h3>
-      <div class="govuk-form-group">
-        {{ govukLabel({ "label": "Start year", "for": "start_year_" + suffix }) }}
-        {{ govukTextInput({
-          "classes": "govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4",
-          "id": "start-year_" + suffix,
-          "name": "start-year_" + suffix,
-          "value": plan.plan_start_year | format_year
-        }) }}
-      </div>
-      <div class="govuk-form-group">
-        {{ govukLabel({ "label": "End year", "for": "end_year_" + suffix }) }}
-        {{ govukTextInput({
-          "classes": "govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4",
-          "id": "end-year_" + suffix,
-          "name": "end-year_" + suffix,
-          "value": plan.plan_end_year | format_year,
-          "pattern":"[0-9]*"
-        }) }}
-      </div>
-      <div class="govuk-form-group">
-        <input type="submit" class="govuk-button dlf-secondary-button" value="Save plan period">
-        <button class="cancel-btn">Cancel</button>
-      </div>
-    </form>
-    {% endmacro %}
-
-    {% for plan in planning_authority.sorted_plans() %}
-    <section class="govuk-tabs__panel local-plan {% if plan.is_adopted() %}adopted-plan{% endif %}" id="plan_tab_{{ plan.id }}">
-      <h2 class="govuk-heading-l editable-plan-title" data-update-plan-url="{{ url_for('frontend.update_plan', planning_authority=planning_authority.id, local_plan=plan.id) }}">
-          {{ plan.title }}
-      </h2>
+        {% macro renderPlanPeriodForm(plan, heading, suffix, classes) %}
+            <form class="govuk-form{{- ' ' + classes if classes }}"
+                  action="{{ url_for('frontend.update_plan_period', planning_authority=planning_authority.id, plan_id=plan.id) }}"
+                  data-plan-id="{{ plan.id }}" method="POST">
+                <h3 class="govuk-heading-s">{{ heading }}</h3>
+                <div class="govuk-form-group">
+                    {{ govukLabel({ "label": "Start year", "for": "start_year_" + suffix }) }}
+                    {{ govukTextInput({
+              "classes": "govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4",
+              "id": "start-year_" + suffix,
+              "name": "start-year_" + suffix,
+              "value": plan.plan_start_year | format_year
+            }) }}
+                </div>
+                <div class="govuk-form-group">
+                    {{ govukLabel({ "label": "End year", "for": "end_year_" + suffix }) }}
+                    {{ govukTextInput({
+              "classes": "govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4",
+              "id": "end-year_" + suffix,
+              "name": "end-year_" + suffix,
+              "value": plan.plan_end_year | format_year,
+              "pattern":"[0-9]*"
+            }) }}
+                </div>
+                <div class="govuk-form-group">
+                    <input type="submit" class="govuk-button dlf-secondary-button" value="Save plan period">
+                    <button class="cancel-btn">Cancel</button>
+                </div>
+            </form>
+        {% endmacro %}
 
 
-      <!-- start of plan policy url section -->
+        {% macro renderHousingRequirementForm(plan, heading, suffix, classes) %}
+            <form class="govuk-form{{- ' ' + classes if classes }} 
+                  {%- if plan.has_housing_numbers() %} {{ plan.housing_numbers.housing_number_type|lower|replace('_', '-') }}{% else %} housing-requirement-total{% endif %}" 
+                  action="{{ url_for('frontend.update_plan_housing_requirement', planning_authority=planning_authority.id, plan_id=plan.id) }}"
+                  method="POST" enctype="multipart/form-data">
+                <h3 class="govuk-heading-s">{{ heading }}</h3>
 
-      {% macro renderPolicyURLForm(plan, heading, suffix, classes, value) %}
-       <form action="{{ url_for('frontend.update_local_plan_url', planning_authority=planning_authority.id, local_plan=plan.id) }}" class="govuk-form{{- ' ' + classes if classes}}" method="POST">
-        <h3 class="govuk-heading-s">{{ heading }}</h3>
-        <div class="govuk-form-group">
-          <label class="govuk-label" for="url-{{ suffix }}">Local plan URL</label>
-          <input class="govuk-input" id="url-{{ suffix }}" name="url-{{ suffix }}" type="text" value="{{ value }}">
-        </div>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="housing-requirement-type-{{ suffix }}">
+                        Select a type of house number
+                    </label>
+                    <select class="govuk-select housing-requirement-select-types" id="housing-requirement-type-{{ suffix }}"
+                            name="housing-requirement-type-{{ suffix }}">
+                        {% for housing_requirement in fact_types %}
+                            <option value="{{ housing_requirement.name }}"
+                                    data-type-class="{{ housing_requirement.name|lower|replace('_', '-') }}"
+                                    {%- if housing_requirement.name == plan.housing_numbers.housing_number_type %} selected{% endif %}>{{ housing_requirement.value }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-        <div class="govuk-form-group">
-          <button class="govuk-button dlf-secondary-button" type="submit">Save</button>
-          <button class="cancel-btn">Cancel</button>
-        </div>
-      </form>
-      {% endmacro %}
+                <!-- for Housing requirement total -->
+                <div class="govuk-form-group plan-housing-requirement-total">
+                    {%- if plan.housing_numbers.housing_number_type == "HOUSING_REQUIREMENT_TOTAL" %}
+                      {% set housing_value = plan.housing_numbers.number %}
+                    {% else %}
+                      {% set housing_value = 0 %}
+                    {% endif -%}
+                    <div class="govuk-form-group">
+                        {{ govukLabel({ "label": "Housing requirement total", "for": "housing-requirement-total-" + suffix }) }}
+                        {{ govukTextInput({
+                      "classes": "govuk-input govuk-input--width-10",
+                      "id": "housing-requirement-total-" + suffix,
+                      "name": "housing-requirement-total-" + suffix,
+                      "value": housing_value,
+                      "pattern":"[0-9]*"}) }}
+                    </div>
+                </div>
 
-      <h3 class="govuk-heading-m">Planning policy url</h3>
-      <div class="plan-policy-url-section {% if not plan.url %}not-set{% endif %}">
-        <p class="govuk-body">
-          <a id="policy-url" class="govuk-link policy-url" href="{{ plan.url }}" target="_blank">{{ plan.url }}</a>
-        </p>
-        <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="{{ url_for('frontend.update_local_plan_url', planning_authority=planning_authority.id, local_plan=plan.id) }}" class="govuk-link">Update the url</a>.</p>
-        <div class="highlight-box highlight-box--flush highlight-box--minimal">
-          {{ renderPolicyURLForm(plan, "Edit policy url", "edit" + loop.index | string, "govuk-form--contained", plan.url) }}
-        </div>
-      </div>
-      {% if not plan.url %}
-      <div class="highlight-box highlight-box--gap highlight-box--flush missing-plan-url">
-        <h3 class="govuk-heading-s highlight-box__title">URL unavailable</h3>
-        <p class="govuk-body govuk-!-margin-bottom-0">We do not have a link to the local plan. Can you add one?</p>
-        {{ renderPolicyURLForm(plan, "Add policy url", "add" + loop.index | string, "govuk-form--contained") }}
-      </div>
-     {% endif %}
+                <!-- for Housing requirement range -->
+                <fieldset class="govuk-fieldset fieldset-range housing-requirement-range-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                        <h1 class="govuk-fieldset__heading">
+                            Housing requirement range
+                        </h1>
+                    </legend>
 
-      <!-- start of plan period section -->
-      <h3 class="govuk-heading-m">Plan period</h3>
-      <div class="edit-plan-period {% if plan.plan_start_year is undefined or plan.plan_start_year == None %}not-set{% endif %}">
-        <p class="plan-period"><span data-year-type="start">{{ plan.plan_start_year | format_year }}</span>-<span data-year-type="end">{{ plan.plan_end_year | format_year}}</span></p>
-        <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="#" class="govuk-link">Update plan period</a>.</p>
-        <div class="highlight-box highlight-box--flush highlight-box--minimal">
-         {{ renderPlanPeriodForm(plan, "Edit plan period", "edit" + loop.index | string, "govuk-form--contained") }}
-        </div>
-      </div>
-      {% if plan.plan_start_year is undefined or plan.plan_start_year == None %}
-      <div class="highlight-box highlight-box--gap highlight-box--flush missing-plan-period">
-        <h3 class="govuk-heading-s highlight-box__title">Plan period unknown</h3>
-        <p class="govuk-body govuk-!-margin-bottom-0">We do not have the plan period for this plan. Can you add it?</p>
-        {{ renderPlanPeriodForm(plan, "Add plan period", "add" + loop.index | string, "govuk-form--contained") }}
-      </div>
-      {% endif %}
+                    {%- if plan.housing_numbers.housing_number_type == "HOUSING_REQUIREMENT_RANGE" %}
+                      {% set housing_value_min = plan.housing_numbers.min %}
+                      {% set housing_value_max = plan.housing_numbers.max %}
+                    {% else %}
+                      {% set housing_value_min = 0 %}
+                      {% set housing_value_max = 0 %}
+                    {% endif -%}
+                    <div class="govuk-form-group">
+                        {{ govukLabel({ "label": "Min", "for": "housing-requirement-range-min-" + suffix }) }}
+                        {{ govukTextInput({
+                          "classes": "govuk-input govuk-input--width-10 housing-requirement-range-min",
+                          "id": "housing-requirement-range-min-" + suffix,
+                          "name": "housing-requirement-range-min-" + suffix,
+                          "value": housing_value_min,
+                          "pattern":"[0-9]*"}) }}
+                    </div>
+
+                    <div class="govuk-form-group">
+                        {{ govukLabel({ "label": "Max", "for": "housing-requirement-range-max-" + suffix }) }}
+                        {{ govukTextInput({
+                          "classes": "govuk-input govuk-input--width-10 housing-requirement-range-max",
+                          "id": "housing-requirement-range-max-" + suffix,
+                          "name": "housing-requirement-range-max-" + suffix,
+                          "value": housing_value_max,
+                          "pattern":"[0-9]*"}) }}
+                    </div>
+                </fieldset>
+
+                <!-- for Housing requirement yearly average -->
+                {%- if plan.housing_numbers.housing_number_type == "HOUSING_REQUIREMENT_YEARLY_AVERAGE" %}
+                  {% set housing_value = plan.housing_numbers.number %}
+                {% else %}
+                  {% set housing_value = 0 %}
+                {% endif -%}
+                <div class="govuk-form-group housing-requirement-yearly-average-input">
+                    {{ govukLabel({ "label": "Housing requirement yearly average", "for": "housing-requirement-yearly-average-" + suffix }) }}
+                    {{ govukTextInput({
+                          "classes": "govuk-input govuk-input--width-10",
+                          "id": "housing-requirement-yearly-average-" + suffix,
+                          "name": "housing-requirement-yearly-average-" + suffix,
+                          "value": housing_value,
+                          "pattern":"[0-9]*"}) }}
+                </div>
+
+                <!-- for Housing requirement yearly range -->
+                <fieldset class="govuk-fieldset fieldset-range housing-requirement-yearly-range-fieldset">
+
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                        <h1 class="govuk-fieldset__heading">
+                            Housing requirement yearly range
+                        </h1>
+                    </legend>
 
 
-    {% if not plan.is_emerging() %}
-    <h3 class="govuk-heading-m">PINS data</h3>
-    <div class="pims-stages govuk-!-margin-bottom-8">
-      {% set latest_state = plan.latest_state() %}
-      <div class="current-stage">
-        <span class="stage-tag">{{ latest_state.state }}</span>
-        <span class="stage-date">{{ latest_state.date | format_month_and_year }}</span>
-      </div>
-      <details class="govuk-details">
-        <summary class="govuk-details__summary">
+                    {%- if plan.housing_numbers.housing_number_type == "HOUSING_REQUIREMENT_YEARLY_RANGE" %}
+                      {% set housing_value_min = plan.housing_numbers.min %}
+                      {% set housing_value_max = plan.housing_numbers.max %}
+                    {% else %}
+                      {% set housing_value_min = 0 %}
+                      {% set housing_value_max = 0 %}
+                    {% endif -%}
+                    <div class="govuk-form-group">
+                        {{ govukLabel({ "label": "Min", "for": "housing-requirement-yearly-range-min-" + suffix }) }}
+                        {{ govukTextInput({
+                          "classes": "govuk-input govuk-input--width-10 housing-requirement-yearly-range-min",
+                          "id": "housing-requirement-yearly-range-min-" + suffix,
+                          "name": "housing-requirement-yearly-range-min-" + suffix,
+                          "value": housing_value_min,
+                          "pattern":"[0-9]*"}) }}
+                    </div>
+
+                    <div class="govuk-form-group">
+                        {{ govukLabel({ "label": "Max", "for": "housing-requirement-yearly-range-max-" + suffix }) }}
+                        {{ govukTextInput({
+                          "classes": "govuk-input govuk-input--width-10 housing-requirement-yearly-range-max",
+                          "id": "housing-req-requirement-range-max-" + suffix,
+                          "name": "housing-req-requirement-range-max-" + suffix,
+                          "value": housing_value_max,
+                          "pattern":"[0-9]*"}) }}
+                    </div>
+
+                </fieldset>
+
+                {% if plan.has_housing_numbers() %}
+                  {% set source_document = plan.housing_numbers.source_document %}
+                {% else %}
+                  {% set source_document = "" %}
+                {% endif %}
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="url-{{ suffix }}">Source document url</label>
+                    <input class="govuk-input" id="url-{{ suffix }}" name="url-{{ suffix }}" type="text"
+                           value="{{ source_document }}">
+
+                </div>
+
+                <div class="govuk-form-group">
+                   <label class="govuk-label" for="screenshot-{{ suffix }}">Upload a screenshot from source document</label>
+                   <input class="govuk-file-upload" type="file" name="screenshot-{{ suffix }}" id="screenshot-{{ suffix }}" />
+                   <img src="{% if plan.housing_numbers.image_url %}{{ plan.housing_numbers.image_url }}{% endif %}" alt="" class="img-preview{% if not plan.housing_numbers.image_url %} not-active{% endif %}">
+                </div>
+
+                <div class="govuk-form-group">
+                    <input type="submit" class="govuk-button dlf-secondary-button" value="Save housing numbers">
+                    <button class="cancel-btn">Cancel</button>
+                </div>
+              <div class="loader"></div>
+            </form>
+        {% endmacro %}
+
+        {% for plan in planning_authority.sorted_plans() %}
+            <section class="govuk-tabs__panel local-plan {% if plan.is_adopted() %}adopted-plan{% endif %}"
+                     id="plan_tab_{{ plan.id }}">
+                <h2 class="govuk-heading-l editable-plan-title"
+                    data-update-plan-url="{{ url_for('frontend.update_plan', planning_authority=planning_authority.id, local_plan=plan.id) }}">
+                    {{ plan.title }}
+                </h2>
+
+                <!-- start of plan policy url section -->
+
+                {% macro renderPolicyURLForm(plan, heading, suffix, classes, value) %}
+                    <form action="{{ url_for('frontend.update_local_plan_url', planning_authority=planning_authority.id, local_plan=plan.id) }}"
+                          class="govuk-form{{- ' ' + classes if classes }}" method="POST">
+                        <h3 class="govuk-heading-s">{{ heading }}</h3>
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="url-{{ suffix }}">Local plan URL</label>
+                            <input class="govuk-input" id="url-{{ suffix }}" name="url-{{ suffix }}" type="text"
+                                   value="{{ value }}">
+                        </div>
+
+                        <div class="govuk-form-group">
+                            <button class="govuk-button dlf-secondary-button" type="submit">Save</button>
+                            <button class="cancel-btn">Cancel</button>
+                        </div>
+                    </form>
+                {% endmacro %}
+
+                {% if plan.is_joint_plan() %}
+                    <h3>Joint plan with</h3>
+                    <ul>
+                        {% for authority in plan.joint_plan_authorites(planning_authority.id) %}
+                            <li><a href="{{ url_for('frontend.local_plan', planning_authority=authority.id) }}">{{ authority.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                {%  else %}
+                    <p class="govuk-body">If this should be a joint plan you can
+                        <a href="{{ url_for('frontend.make_joint_plan', planning_authority=planning_authority.id, local_plan=plan.id) }}">add other authorities here</a>
+                    </p>
+                {% endif %}
+
+                <h3 class="govuk-heading-m">Planning policy url</h3>
+                <div class="plan-policy-url-section {% if not plan.url %}not-set{% endif %}">
+                    <p class="govuk-body">
+                        <a id="policy-url" class="govuk-link policy-url" href="{{ plan.url }}"
+                           target="_blank">{{ plan.url }}</a>
+                    </p>
+                    <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a
+                            href="{{ url_for('frontend.update_local_plan_url', planning_authority=planning_authority.id, local_plan=plan.id) }}"
+                            class="govuk-link">Update the url</a>.</p>
+                    <div class="highlight-box highlight-box--flush highlight-box--minimal">
+                        {{ renderPolicyURLForm(plan, "Edit policy url", "edit" + loop.index | string, "govuk-form--contained", plan.url) }}
+                    </div>
+                </div>
+                {% if not plan.url %}
+                    <div class="highlight-box highlight-box--gap highlight-box--flush missing-plan-url">
+                        <h3 class="govuk-heading-s highlight-box__title">URL unavailable</h3>
+                        <p class="govuk-body govuk-!-margin-bottom-0">We do not have a link to the local plan. Can you
+                            add one?</p>
+                        {{ renderPolicyURLForm(plan, "Add policy url", "add" + loop.index | string, "govuk-form--contained") }}
+                    </div>
+                {% endif %}
+
+                <!-- start of plan period section -->
+                <h3 class="govuk-heading-m">Plan period</h3>
+                <div class="edit-plan-period {% if not plan.has_plan_period() %}not-set{% endif %}">
+                    <p class="plan-period"><span data-year-type="start">{{ plan.plan_start_year | format_year }}</span>-<span
+                            data-year-type="end">{{ plan.plan_end_year | format_year }}</span></p>
+                    <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="#" class="govuk-link">Update
+                        plan period</a>.</p>
+                    <div class="highlight-box highlight-box--flush highlight-box--minimal">
+                        {{ renderPlanPeriodForm(plan, "Edit plan period", "edit" + loop.index | string, "govuk-form--contained") }}
+                    </div>
+                </div>
+                {% if not plan.has_plan_period() %}
+                    <div class="highlight-box highlight-box--gap highlight-box--flush missing-plan-period">
+                        <h3 class="govuk-heading-s highlight-box__title">Plan period unknown</h3>
+                        <p class="govuk-body govuk-!-margin-bottom-0">We do not have the plan period for this plan. Can
+                            you add it?</p>
+                        {{ renderPlanPeriodForm(plan, "Add plan period", "add" + loop.index | string, "govuk-form--contained") }}
+                    </div>
+
+                    <form action="{{ url_for('frontend.update_plan_data_flags', planning_authority=planning_authority.id, plan_id=plan.id) }}" class="govuk-form govuk-form--single-checkbox">
+                      <div class="govuk-checkboxes">
+                        <div class="govuk-checkboxes__item">
+                          <input class="govuk-checkboxes__input" data-data-type="plan-period" id="no-pp-checkbox-{{ loop.index }}" name="no-pp-checkbox" type="checkbox" value="no plan period" {% if plan.plan_period_found is defined and plan.plan_period_found == false %}checked=checked{% endif %}>
+                          <label class="govuk-label govuk-checkboxes__label" for="no-pp-checkbox-{{ loop.index }}">
+                            I can't find a plan period
+                          </label>
+                        </div>
+                      </div>
+                    </form>
+                {% endif %}
+
+                <!-- start of housing requirement section -->
+                <h3 class="govuk-heading-m">Housing numbers</h3>
+                <div class="edit-housing-requirement {% if not plan.has_housing_numbers() %}not-set{% endif %}">
+                    {% if plan.has_housing_numbers() %}
+                    <div class="govuk-grid-row">
+                      <div class="govuk-grid-column-one-half">
+                        <div class="data">
+                          <span class="data-item govuk-!-font-size-80 govuk-!-font-weight-bold">
+                            {%- if 'range' in plan.housing_numbers.housing_number_type|lower %}
+                              {{ plan.housing_numbers.min }} to {{ plan.housing_numbers.max }}
+                            {% else %}
+                              {{ plan.housing_numbers.number }}
+                            {% endif -%}
+                          </span>
+                          <span class="data-item bold-xsmall govuk-!-font-size-16 govuk-!-font-weight-bold">{{ plan.housing_numbers.housing_number_type | format_fact }}</span>
+                        </div>
+                        <span class="data-source">Source: <a href="{{ plan.housing_numbers.source_document }}" target="_blank">{{ plan.housing_numbers.source_document }}</a></span>
+                        {% if plan.housing_numbers.notes %}
+                        <details class="govuk-details">
+                          <summary class="govuk-details__summary">
+                            <span class="govuk-detaild__summary-text">Notes</span>
+                          </summary>
+                          <div class="govuk-details__text">
+                            {{ plan.housing_numbers.notes }}
+                          </div>
+                        </details>
+                        {% endif %}
+                      </div>
+                      <div class="govuk-grid-column-one-half">
+                        {%- if plan.housing_numbers.image_url %}
+                            <a href="{{ plan.housing_numbers.image_url }}" target="_blank">
+                                <img src="{{ plan.housing_numbers.image_url }}" alt="" style="width: 200px">
+                            </a>
+                        {% endif -%}
+                      </div>
+                    </div>
+                       <!-- colm not sure where this data attr is used? -->
+                        <p class="housing-requirement" data-housing-requirement="{{ plan.housing_numbers.number }}"></p>
+                    {% endif %}
+                    <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="#" class="govuk-link">Update
+                        housing requirement numbers</a>.</p>
+                    <div class="highlight-box highlight-box--flush highlight-box--minimal">
+                        {{ renderHousingRequirementForm(plan, "Edit housing requirement", "edit" + loop.index | string, "govuk-form--contained add-housing-requirement-form") }}
+                    </div>
+                </div>
+                {% if not plan.has_housing_numbers() %}
+                    <div class="highlight-box highlight-box--gap highlight-box--flush missing-housing-requirement">
+                        <h3 class="govuk-heading-s highlight-box__title">Housing requirement unknown</h3>
+                        <p class="govuk-body govuk-!-margin-bottom-0">We do not have any housing requirement numbers for this plan.
+                            Can you add some?</p>
+                        {{ renderHousingRequirementForm(plan, "Add housing requirement numbers", "add" + loop.index | string, "govuk-form--contained add-housing-requirement-form") }}
+                    </div>
+
+                    <form action="{{ url_for('frontend.update_plan_data_flags', planning_authority=planning_authority.id, plan_id=plan.id) }}" class="govuk-form govuk-form--single-checkbox">
+                      <div class="govuk-checkboxes">
+                        <div class="govuk-checkboxes__item">
+                          <input class="govuk-checkboxes__input" id="no-housing-nums-checkbox-{{ loop.index }}" name="no-housing-nums-checkbox" data-data-type="housing-number" type="checkbox" value="no plan period" {% if plan.housing_numbers_found is defined and plan.housing_numbers_found == false %}checked=checked{% endif %}>
+                          <label class="govuk-label govuk-checkboxes__label" for="no-housing-nums-checkbox-{{ loop.index }}">
+                            I can't find housing numbers for this local plan
+                          </label>
+                        </div>
+                      </div>
+                    </form>
+                {% endif %}
+
+
+                {% if not plan.is_emerging() %}
+                    <h3 class="govuk-heading-m">PINS data</h3>
+                    <div class="pims-stages govuk-!-margin-bottom-8">
+                        {% set latest_state = plan.latest_state() %}
+                        <div class="current-stage">
+                            <span class="stage-tag">{{ latest_state.state }}</span>
+                            <span class="stage-date">{{ latest_state.date | format_month_and_year }}</span>
+                        </div>
+                        <details class="govuk-details">
+                            <summary class="govuk-details__summary">
         <span class="govuk-details__summary-text">
          PINS Timeline
         </span>
-        </summary>
-        <div class="govuk-details__text">
-          <table class="govuk-table">
-            <tbody class="govuk-table__body">
-            {% for state in plan.ordered_states() -%}
-              <tr class="govuk-table__row">
-                <th class="govuk-table__cell" scope="row">{{ state.state }}</th>
-                <td class="govuk-table__cell">{{ state.date | format_month_and_year }}</td>
-              </tr>
-            {%- endfor %}
-            </tbody>
-          </table>
-        </div>
-      </details>
-    </div>
-    {% endif %}
-
-      
-        <h3 class="govuk-heading-m">Local plan documents</h3>
-        <ul class="url-list" data-url-list-type="{{ plan.id }}-url-list">
-          {% if plan.plan_documents|length > 0 %}
-            {% for doc in plan.plan_documents %}
-            <li class="url-item govuk-grid-row">
-              <section class="document-link govuk-grid-column-full">
-                {% if doc.title %}
-                <span>{{ doc.title }}</span>
+                            </summary>
+                            <div class="govuk-details__text">
+                                <table class="govuk-table">
+                                    <tbody class="govuk-table__body">
+                                    {% for state in plan.ordered_states() -%}
+                                        <tr class="govuk-table__row">
+                                            <th class="govuk-table__cell" scope="row">{{ state.state }}</th>
+                                            <td class="govuk-table__cell">{{ state.date | format_month_and_year }}</td>
+                                        </tr>
+                                    {%- endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </details>
+                    </div>
                 {% endif %}
-                <a class="url-link" href="{{ doc.url }}" target="_blank">{{ doc.url }}</a>
-                <div class="url-item__controls">
-                  <a href="" class="url-item__btn url-edit-btn govuk-visually-hidden">Edit</a>
-                  <a href="{{ url_for('frontend.remove_document_from_plan', document=doc.id, local_plan=plan.id) }}" class="url-item__btn url-remove-btn">Remove</a>
-                </div>
-              </section>
 
-              <section class="document-facts govuk-clearfix">
+            </section>
+        {% endfor %}
+        <section id="new-plan-tab" class="govuk-tabs__panel">
+            <h3 class="govuk-heading-m">Add a local plan</h3>
+            <form class="govuk-form new-plan-form" method="post"
+                  action="{{ url_for('frontend.local_plan', planning_authority=planning_authority.id) }}">
 
-                <div class="govuk-grid-column-full">
-                  <table class="govuk-table document-facts__table">
-                    {% if doc.facts|length > 0 %}<caption class="govuk-table__caption">Facts from document</caption>{% endif %}
-                    <tbody class="govuk-table__body">
-                        {% for fact in doc.facts %}
-                            <tr class="govuk-table__row" data-fact-type="{{ fact.fact_type }}">
-                              <th class="govuk-table__header" scope="row">{% if fact.from_ and fact.to  %}{{ fact.from_ }} to {{fact.to }}{% else %}{{ fact.fact }}{%  endif %}</th>
-                              <td class="govuk-table__cell">{{ fact.fact_type | format_fact }}</td>
-                              <td class="govuk-table__cell">{% if fact.notes == "" %}-{% else %}{{ fact.notes }}{% endif %}</td>
-                              <td class="govuk-table__cell">
-                                {% if fact.image_url -%}
-                                  <a href="{{ fact.image_url }}" target="_blank">
-                                    <img style="height: 60px" src="{{ fact.image_url }}">
-                                  </a>
-                                {% endif -%}</td>
-                              <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact" href="{{ url_for('frontend.remove_fact_from_document', document=doc.id, fact=fact.id) }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                  </table>
+                <div class="govuk-form-group">
+                    {{ form.title.label(class="govuk-label") }}
+                    {% if form.title.errors | length > 0 -%}
+                        <span class="govuk-error-message">
+              {% for error in form.title.errors %}
+                  <span>{{ error }}</span>
+              {% endfor %}
+              </span>
+                    {%- endif %}
+                    {{ form.title(class="govuk-input") }}
                 </div>
 
-                <details class="govuk-details govuk-details--facts govuk-details--facts-plan-doc govuk-grid-column-two-thirds">
-                  <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text document-facts__add">
-                      Add housing number from document
-                    </span>
-                  </summary>
-
-                  {% from "partials/local-plan-fact-form.html" import renderLocalPlanFactForm %}
-
-                  {{ renderLocalPlanFactForm({
-                      "action_url": url_for('frontend.add_fact_to_document', planning_authority=planning_authority.id, local_plan=plan.id, document=doc.id),
-                      "fact_types": fact_types,
-                      "form_number": loop.index
-                    }) }}
-
-                </details>
-                
-              </section>
-            </li>
-            {% endfor %}
-          {% endif %}
-        </ul>
-
-        <form action="{{ url_for('frontend.add_document_to_plan', planning_authority=planning_authority.id, local_plan=plan.id, document_type='plan_document' )}}" data-associated-list="{{ plan.id }}-url-list" class="govuk-form add-url-form">
-          <div class="govuk-form-group">
-            <label class="govuk-label" for="url-input">
-              Add URL of document to local plan
-            </label>
-            <input class="govuk-input" id="url-input" name="url-input" type="text">
-          </div>
-          <div class="govuk-form-group">
-            <label class="govuk-label" for="doc-title-input">
-              Does the document have a title?
-            </label>
-            <input class="govuk-input govuk-input--width-20" id="doc-title-input" name="doc-title-input" type="text">
-          </div>
-          <div class="govuk-form-group">
-            <button class="govuk-button dlf-secondary-button url-save-btn">Add URL</button>
-          </div>
-        </form>
-
-    </section>
-    {% endfor %}
-    <section id="new-plan-tab" class="govuk-tabs__panel">
-      <h3 class="govuk-heading-m">Add a local plan</h3>
-      <form class="govuk-form new-plan-form" method="post" action="{{ url_for('frontend.local_plan', planning_authority=planning_authority.id) }}">
-
-          <div class="govuk-form-group">
-            {{ form.title.label(class="govuk-label") }}
-            {% if form.title.errors | length > 0 -%}
-              <span class="govuk-error-message">
+                <div class="govuk-form-group">
+                    {{ form.start_year.label(class="govuk-label") }}
+                    {% if form.title.errors | length > 0 -%}
+                        <span class="govuk-error-message">
               {% for error in form.title.errors %}
-                <span>{{ error }}</span>
+                  <span>{{ error }}</span>
               {% endfor %}
               </span>
-            {%- endif %}
-            {{ form.title(class="govuk-input") }}
-          </div>
-
-          <div class="govuk-form-group">
-            {{ form.start_year.label(class="govuk-label") }}
-            {% if form.title.errors | length > 0 -%}
-              <span class="govuk-error-message">
+                    {%- endif %}
+                    {{ form.start_year(class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4", pattern="[0-9]*") }}
+                </div>
+                <div class="govuk-form-group">
+                    {{ form.end_year.label(class="govuk-label") }}
+                    {% if form.title.errors | length > 0 -%}
+                        <span class="govuk-error-message">
               {% for error in form.title.errors %}
-                <span>{{ error }}</span>
+                  <span>{{ error }}</span>
               {% endfor %}
               </span>
-            {%- endif %}
-          {{ form.start_year(class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4", pattern="[0-9]*") }}
-         </div>
-          <div class="govuk-form-group">
-            {{ form.end_year.label(class="govuk-label") }}
-            {% if form.title.errors | length > 0 -%}
-              <span class="govuk-error-message">
-              {% for error in form.title.errors %}
-                <span>{{ error }}</span>
-              {% endfor %}
-              </span>
-            {%- endif %}
-            {{ form.end_year(class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4", pattern="[0-9]*") }}
-          </div>
-          <div class="govuk-form-group">
-            <button class="govuk-button dlf-secondary-button">Add plan</button>
-          </div>
+                    {%- endif %}
+                    {{ form.end_year(class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4", pattern="[0-9]*") }}
+                </div>
+                <div class="govuk-form-group">
+                    <button class="govuk-button dlf-secondary-button">Add plan</button>
+                </div>
 
-         {{ form.csrf_token }}
-      </form>
-    </section>
+                {{ form.csrf_token }}
+            </form>
+        </section>
 
-  </div>
+    </div>
 {% endblock %}
 
 {% block bodyEnd %}
-<div class="govuk-visually-hidden emerging-plan-details-template">
-  {% include "partials/emerging-plan-details.html" ignore missing %}
-</div>
-
-<div class="govuk-visually-hidden local-plan-details-template">
-  {% include "partials/local-plan-details.html" ignore missing %}
-</div>
-
-<script src="/static/javascripts/vendor/handlebars-v4.1.0.js"></script>
-{% raw %}
-<script id="url-item-template" type="text/x-handlebars-template">
-  <section class="document-link govuk-grid-column-full">
-    <span class="document-title"></span>   
-    <a class="url-link" href="{{ url }}">{{ url }}</a>
-    <div class="url-item__controls">
-      <a href="" class="url-item__btn url-edit-btn govuk-visually-hidden">Edit</a>
-      <a href="{{ remove_url }}" class="url-item__btn url-remove-btn">Remove</a>
+    <div class="govuk-visually-hidden emerging-plan-details-template">
+        {% include "partials/emerging-plan-details.html" ignore missing %}
     </div>
-  </section>
-  <section class="document-facts govuk-clearfix">
-    <div class="govuk-grid-column-full">
-      <table class="govuk-table document-facts__table">
-        <tbody class="govuk-table__body"></tbody>
-      </table>
+
+    <div class="govuk-visually-hidden local-plan-details-template">
+        {% include "partials/local-plan-details.html" ignore missing %}
     </div>
-  </section>
-</script>
-<script id="fact-row-template" type="text/x-handlebars-template">
-  <th class="govuk-table__header" scope="row">{{ fact.fact }}</th>
-  <td class="govuk-table__cell">{{ fact.fact_type_display }}</td>
-  <td class="govuk-table__cell">{{#if fact.notes }}{{ fact.notes }}{{else}}-{{/if}}</td>
-  <td class="govuk-table__cell"></td>
-  <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact" href="{{ remove_url }}">remove<span class="govuk-visually-hidden"> this fact</span></a></td>
-</script>
-{% endraw %}
 
-<script src="{{ static_path }}/static/javascripts/dlf/helpers.js"></script>
-<script>
-  const urlAddBtns = document.querySelectorAll(".url-add-btn");
-  const urlEditBtns = document.querySelectorAll(".url-edit-btn");
-  const urlRemoveBtns = document.querySelectorAll(".url-remove-btn");
+    <script src="/static/javascripts/vendor/handlebars-v4.1.0.js"></script>
+    {% raw %}
+    <script id="url-item-template" type="text/x-handlebars-template">
+        <section class="document-link govuk-grid-column-full">
+            <span class="document-title"></span>
+            <a class="url-link" href="{{ url }}">{{ url }}</a>
+            <div class="url-item__controls">
+                <a href="" class="url-item__btn url-edit-btn govuk-visually-hidden">Edit</a>
+                <a href="{{ remove_url }}" class="url-item__btn url-remove-btn">Remove</a>
+            </div>
+        </section>
+        <section class="document-facts govuk-clearfix">
+            <div class="govuk-grid-column-full">
+                <table class="govuk-table document-facts__table">
+                    <tbody class="govuk-table__body"></tbody>
+                </table>
+            </div>
+        </section>
+    </script>
 
-  const addUrlForms = document.querySelectorAll(".add-url-form");
+    <script id="fact-row-template" type="text/x-handlebars-template">
+        <th class="govuk-table__header" scope="row">{{ fact.fact }}</th>
+        <td class="govuk-table__cell">{{ fact.fact_type_display }}</td>
+        <td class="govuk-table__cell">{{#if fact.notes }}{{ fact.notes }}{{else}}-{{/if}}</td>
+        <td class="govuk-table__cell"></td>
+        <td class="govuk-table__cell govuk-table__cell--numeric"><a class="remove-fact"
+                                                                    href="{{ remove_url }}">remove<span
+                class="govuk-visually-hidden"> this fact</span></a></td>
+    </script>
 
-  const factSaveBtns = document.querySelectorAll(".fact-save-btn");
-  const factCancelBtns = document.querySelectorAll(".add-fact-form .cancel-btn");
-  const factTables = document.querySelectorAll(".document-facts__table");
-
-  var source   = document.getElementById("url-item-template").innerHTML;
-  var urlTemplate = Handlebars.compile(source);
-
-  var factTemplateSource = document.getElementById("fact-row-template").innerHTML;
-  var factTemplate = Handlebars.compile(factTemplateSource);
-
-  // handle changes to form when user changes select
-  const addFactForms = document.querySelectorAll(".add-fact-form");
-  const addFactDetails = Array.prototype.slice.call( addFactForms ).map((form) => form.closest("details"));
-  addFactDetails.forEach((detail) => {
-    const summary = detail.querySelector("summary");
-    summary.addEventListener('click', (e) => {
-      const form = detail.querySelector("form");
-      const firstFormGroup = form.querySelectorAll(".govuk-form-group")[0];
-      if(!detail.open) {
-        const option = firstFormGroup.querySelector('option:checked');
-        indicateIfFactAlreadySet(option, form);
-      }
-    });
-  });
-  const addFactSelects = Array.prototype.slice.call( addFactForms ).map((form) => form.querySelector(".fact-select-types"));
-  addFactSelects.forEach((select) => {
-    select.addEventListener('change', (e) => {
-      const form = e.target.closest('form');
-      const option = e.target.querySelector('option:checked');
-
-      indicateIfFactAlreadySet(option, form);
-
-      // remove all these classes before adding selected class
-      removeAllClassesFromFactForm(form);
-      form.classList.add(option.dataset.typeClass);
-    });
-  });
-
-  function checkIfFactIsSet(fact_type, form) {
-    const table = form.closest(".document-facts").querySelector(".document-facts__table");
-    const fact = table.querySelectorAll(`[data-fact-type=${fact_type}]`);
-    return (fact.length > 0) ? true:false;
-  }
-
-  function indicateIfFactAlreadySet(option, form) {
-    const formGroup = option.closest(".govuk-form-group");
-
-    formGroup.classList.remove('fact-already-set');
-    if(checkIfFactIsSet(option.value, form)) {
-      formGroup.classList.add('fact-already-set');
-    }
-  }
-
-  const localPlanFactTypeClasses = ["housing-requirement-total", "housing-requirement-range", "housing-requirement-yearly-average", "housing-requirement-yearly-range"];
-  const emergingPlanFactTypeClasses = ["publication-date", "proposed-reg-18-date", "proposed-publication-date", "proposed-submission-date", "proposed-main-modifications-date", "proposed-adoption-date" ];
-  // using the spread operator in prototype
-  // in prod need to either change or use Babel
-  const allFactTypeClasses = [...localPlanFactTypeClasses, ...emergingPlanFactTypeClasses];
-
-  function removeAllClassesFromFactForm(form) {
-    form.classList.remove( ...allFactTypeClasses );
-  }
-
-  function extractDate(fieldset) {
-    const month = fieldset.querySelector(".govuk-date-input__month");
-    const year = fieldset.querySelector(".govuk-date-input__year");
-    if(month) {
-      return `${year.value},${month.value}`;
-    }
-    return `${year.value}`;
-  }
-
-  function extractRange(fieldset) {
-    var min = cleanNumber( fieldset.querySelector("[data-range-type='start']").value );
-    var max = cleanNumber( fieldset.querySelector("[data-range-type='end']").value );
-    return `${min},${max}`;
-  }
-
-  // save a fact
-  // ===========
-  factSaveBtns.forEach((btn) => {
-    btn.addEventListener('click', factSubmitHandler);
-  });
-
-  function factSubmitHandler(e) {
-    e.preventDefault();
-    const form = e.target.closest("form");
-    const url = form.getAttribute("action");
-
-    // set up data obj to post
-    // serialise all parts of form
-    var fact = {};
-    fact["fact_type"] = form.querySelector("select").value;
-    fact["notes"] = form.querySelector("textarea").value;
-    fact["document_type"] = form.querySelector("input[type='hidden']").value;
-
-    if (form.classList.contains('housing-requirement-total')) {
-      fact["fact"] = cleanNumber( form.querySelector(".plan-housing-req-total input").value );
-    } else if (form.classList.contains('housing-requirement-range')) {
-      fact["fact"] = extractRange( form.querySelector(".housing-req-range-fieldset") );
-    } else if (form.classList.contains('housing-requirement-yearly-average')) {
-      fact["fact"] = cleanNumber( form.querySelector(".housing-req-yearly-average-input input").value );
-    } else if (form.classList.contains('housing-requirement-yearly-range')) {
-      fact["fact"] = extractRange( form.querySelector(".housing-req-yearly-range-fieldset") );
-    } else if (form.classList.contains('publication-date')) {
-      fact["fact"] = extractDate( form.querySelector(".publication-date-input fieldset") );
-    } else if (form.classList.contains('proposed-reg-18-date')) {
-      fact["fact"] = extractDate( form.querySelector(".regulation-18-date-input fieldset") );
-    } else if (form.classList.contains('proposed-publication-date')) {
-      fact["fact"] = extractDate( form.querySelector(".proposed-publication-date-input fieldset") );
-    } else if (form.classList.contains('proposed-submission-date')) {
-      fact["fact"] = extractDate( form.querySelector(".proposed-submission-date-input fieldset") );
-    } else if (form.classList.contains('proposed-main-modifications-date')) {
-      fact["fact"] = extractDate( form.querySelector(".proposed-main-modifications-date-input fieldset") );
-    } else if (form.classList.contains('proposed-adoption-date')) {
-      fact["fact"] = extractDate( form.querySelector(".proposed-adoption-date-input fieldset") );
-    } else {
-      // situation where user has selected other
-      fact["fact"] = "";
-    }
+    <script id="housing-numbers-template" type="text/x-handlebars-template">
+      <div class="govuk-grid-column-one-half">
+        <div class="data">
+          <span class="data-item govuk-!-font-size-80 govuk-!-font-weight-bold">
+            {{#if number }}
+              {{ number }}
+            {{else}}
+              {{ min }} to {{ max }}
+            {{/if}}
+          </span>
+          <span class="data-item bold-xsmall govuk-!-font-size-16 govuk-!-font-weight-bold">{{ housing_number_type_display }}</span>
+        </div>
+        <span class="data-source">Source: <a href="{{ source_document }}" target="_blank">{{ source_document }}</a></span>
+        {{#if notes }}
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-detaild__summary-text">Notes</span>
+          </summary>
+          <div class="govuk-details__text">
+            {{ notes }}
+          </div>
+        </details>
+        {{/if}}
+      </div>
+      <div class="govuk-grid-column-one-half">
+      {{#if image_url }}
+        <a href="{{ image_url }}" target="_blank">
+          <img src="{{ image_url }}" alt="" style="width: 200px">
+        </a>
+      {{/if}}
+      </div>
+    </script>
     
-    // if serialising
-    // fact["plan_name"] = form.querySelector(".plan-name-input input").value;
-    // fact["plan_start_date"] = extractDate( form.querySelector(".plan-start-date-input fieldset") );
-    // fact["plan_end_date"] = extractDate( form.querySelector(".plan-end-date-input fieldset") );
-    // fact["housing_req_total"] = form.querySelector(".plan-housing-req-total input").value;
-    // fact["housing_req_range_min"] = form.querySelector(".housing-req-range-fieldset .housing-req-range-min").value;
-    // fact["housing_req_range_max"] = form.querySelector(".housing-req-range-fieldset .housing-req-range-max").value;
-    
-    console.log(fact);
+    {% endraw %}
 
-    // perform post
-    postJSONRequest(url, {'fact': fact}, (resp_data) => factAddedCallback(resp_data, form));
-  }
+    <script src="{{ static_path }}/static/javascripts/dlf/helpers.js"></script>
+    <script>
+        const urlAddBtns = document.querySelectorAll(".url-add-btn");
+        const urlEditBtns = document.querySelectorAll(".url-edit-btn");
+        const urlRemoveBtns = document.querySelectorAll(".url-remove-btn");
 
-  function factAddedCallback(resp_data, form) {
-    if(resp_data['OK'] === 200) {
-      const factsEl = form.closest(".document-facts");
-      const table = factsEl.querySelector(".document-facts__table tbody");
+        const addUrlForms = document.querySelectorAll(".add-url-form");
 
-      const row = createElementWithClasses("tr", "govuk-table__row");
-      row.dataset.factType = resp_data.fact["fact_type"];
-      row.innerHTML = factTemplate(resp_data);
-      table.appendChild( row );
+        //const factSaveBtns = document.querySelectorAll(".fact-save-btn");
+        //const factCancelBtns = document.querySelectorAll(".add-fact-form .cancel-btn");
+        //const factTables = document.querySelectorAll(".document-facts__table");
 
-      resetFactForm(form);
-    }
-  }
+        var source = document.getElementById("url-item-template").innerHTML;
+        var urlTemplate = Handlebars.compile(source);
 
-  // resets the form
-  // - deletes any added content
-  // - sets form to initial display config
-  function resetFactForm(form) {
-    form.reset();
-    const formType = form.querySelector("input[type='hidden']").value;
+        //var factTemplateSource = document.getElementById("fact-row-template").innerHTML;
+        //var factTemplate = Handlebars.compile(factTemplateSource);
 
-    // remove all classes
-    removeAllClassesFromFactForm(form);
-    // add initial class relevant to type of fact
-    if(formType === "plan_document") {
-      form.classList.add('plan-name');
-    } else {
-      form.classList.add('publication-date');
-    }
-  }
+        // handle changes to form when user changes select
+        //const addFactForms = document.querySelectorAll(".add-fact-form");
+        //const addFactDetails = Array.prototype.slice.call(addFactForms).map((form) => form.closest("details"));
+        /*
+        addFactDetails.forEach((detail) => {
+            const summary = detail.querySelector("summary");
+            summary.addEventListener('click', (e) => {
+                const form = detail.querySelector("form");
+                const firstFormGroup = form.querySelectorAll(".govuk-form-group")[0];
+                if (!detail.open) {
+                    const option = firstFormGroup.querySelector('option:checked');
+                    indicateIfFactAlreadySet(option, form);
+                }
+            });
+        });
+        */
 
-  // close fact form
-  // ===============
-  factCancelBtns.forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const form = btn.closest('.govuk-form');
-      resetFactForm(form);
-      const details = btn.closest('.govuk-details');
-      //console.log(details);
-      details.open = false;
-    })
-  });
+        /*
+        const addFactSelects = Array.prototype.slice.call(addFactForms).map((form) => form.querySelector(".fact-select-types"));
+        addFactSelects.forEach((select) => {
+            select.addEventListener('change', (e) => {
+                const form = e.target.closest('form');
+                const option = e.target.querySelector('option:checked');
 
-  // remove fact
-  // ===========
-  factTables.forEach((table) => {
-    table.addEventListener('click', (e) => {
-      e.preventDefault();
-      if(e.target.classList.contains("remove-fact")) {
-        console.log("Delete button clicked");
-        removeBtnClickHandler(e, '.govuk-table__row')
-      }
-    });
-  });
+                indicateIfFactAlreadySet(option, form);
 
-  function removeBtnClickHandler(e, selector) {
-    e.preventDefault();
-    const elementToBeRemoved = e.target.closest(selector);
-
-    const url = e.target.href;
-    fetch(url, {
-      method: "DELETE"
-    })
-    .then(response => response.json())
-    .then(data => {
-      // element needs to have a tranistion in it's css
-      // brittle!
-      elementToBeRemoved.addEventListener('transitionend', () => elementToBeRemoved.remove());
-      elementToBeRemoved.classList.add("being-deleted");
-    });
-  }
-
-  urlRemoveBtns.forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      removeBtnClickHandler(e, '.url-item');
-    });
-  });
-
-  addUrlForms.forEach((form) => {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const input = form.querySelector("input[name='url-input']");
-
-      if(input.value === "") {
-        alert("The URL field is empty. Please add a URL before saving.")
-      } else {
-        const urlList = document.querySelector(`[data-url-list-type='${form.dataset.associatedList}']`);
-        saveURL(form.action, form, urlList);
-      }
-      console.log(e);
-    });
-  });
-
-  function saveURL(endpoint, form, listEl) {
-    // set up data obj
-    var data = {
-      'url': form.querySelector("input[name='url-input']").value,
-      'doc_title': form.querySelector("input[name='doc-title-input']").value
-    };
-
-    // perform post
-    postJSONRequest(endpoint, data, (resp_data) => handleSaveURLResponse(resp_data, listEl));
-  }
-
-  function handleSaveURLResponse(resp_data, listElement) {
-    console.log(resp_data);
-    const item = createElementWithClasses("li", ['url-item', 'govuk-grid-row']);
-    item.innerHTML = urlTemplate(resp_data);
-    const detailsContainer = item.querySelector(".document-facts");
-    const detailsEl = cloneAddFactForm(resp_data.document['type'], resp_data.add_fact_url);
-    detailsContainer.appendChild( detailsEl );
-
-    // add title to URL template
-    if(resp_data.document['title'] !== "") {
-      item.querySelector(".document-title").textContent = resp_data.document['title'];
-    }
-
-    listElement.appendChild( item );
-
-    // add submit handler
-    const formBtn = detailsEl.querySelector('form .fact-save-btn');
-    formBtn.addEventListener('click', factSubmitHandler);
-
-    // hook up remove button
-    item.querySelector(".url-remove-btn").addEventListener('click', (e) => {
-      e.preventDefault();
-      removeBtnClickHandler(e, '.url-item')
-    });
-  }
-
-  function cloneAddFactForm(docType, add_fact_url) {
-    let template;
-    if(docType === "plan_document") {
-      template = document.querySelector(".local-plan-details-template");
-    } else {
-      template = document.querySelector(".emerging-plan-details-template");
-    }
-    const detailsElement = template.querySelector('details');
-    const clonedFormContainer = detailsElement.cloneNode(true);
-    // update the action attribute
-    const form = clonedFormContainer.querySelector('form');
-    form.action = add_fact_url;
-
-    return clonedFormContainer;
-  };
+                // remove all these classes before adding selected class
+                removeAllClassesFromFactForm(form);
+                form.classList.add(option.dataset.typeClass);
+            });
+        });
+        */
 
 
-  // ------------
-  // make plan titles editable
-  // -------------
-  const planTitles = document.querySelectorAll(".editable-plan-title");
-  planTitles.forEach(makeTitleEditable);
+        const addHousingNumberForms = document.querySelectorAll(".add-housing-requirement-form");
 
-  function createEditableUI(currentValue) {
+        const housingNumberSelects = Array.prototype.slice.call(addHousingNumberForms).map((form) => form.querySelector(".housing-requirement-select-types"));
+        housingNumberSelects.forEach((select) => {
+            select.addEventListener('change', (e) => {
+                const form = e.target.closest('form');
+                const option = e.target.querySelector('option:checked');
+                // remove all these classes before adding selected class
+                removeAllClassesFromFactForm(form);
+                form.classList.add(option.dataset.typeClass);
+            });
+        });
 
-    const container = createElementWithClasses("div", "editable-title__container");
-    const form = createElementWithClasses("form", "form--inline");
 
-    const input = createElementWithClasses("input", ["govuk-input"]);
-    const inputContainer = createElementWithClasses("div", "govuk-form-group");
-    inputContainer.appendChild(input);
+        /*
+        function checkIfFactIsSet(fact_type, form) {
+            const table = form.closest(".document-facts").querySelector(".document-facts__table");
+            const fact = table.querySelectorAll(`[data-fact-type=${fact_type}]`);
+            return (fact.length > 0) ? true : false;
+        }
 
-    input.setAttribute("type", "text");
-    input.value = currentValue.trim();
-    input.dataset.currentSavedValue = currentValue.trim();
-    input.addEventListener('focus', (e) => {
-      container.classList.remove("has-error");
-    });
+        function indicateIfFactAlreadySet(option, form) {
+            const formGroup = option.closest(".govuk-form-group");
 
-    const saveBtn = createElementWithClasses("button", "govuk-button");
-    saveBtn.textContent = "Save";
+            formGroup.classList.remove('fact-already-set');
+            if (checkIfFactIsSet(option.value, form)) {
+                formGroup.classList.add('fact-already-set');
+            }
+        }
+        */
 
-    const cancelButton = createElementWithClasses("button", "cancel-btn");
-    cancelButton.textContent = "Cancel";
+        const localPlanFactTypeClasses = ["housing-requirement-total", "housing-requirement-range", "housing-requirement-yearly-average", "housing-requirement-yearly-range"];
+        const emergingPlanFactTypeClasses = ["publication-date", "proposed-reg-18-date", "proposed-publication-date", "proposed-submission-date", "proposed-main-modifications-date", "proposed-adoption-date"];
+        // using the spread operator in prototype
+        // in prod need to either change or use Babel
+        const allFactTypeClasses = [...localPlanFactTypeClasses, ...emergingPlanFactTypeClasses];
 
-    const buttonContainer = createElementWithClasses("div", "govuk-form-group");
-    buttonContainer.appendChild(saveBtn);
-    buttonContainer.appendChild(cancelButton);
+        function removeAllClassesFromFactForm(form) {
+            form.classList.remove(...allFactTypeClasses);
+        }
 
-    const errorMessage = createElementWithClasses("div", "error-msg");
-    errorMessage.textContent = "Plan with this title already exists";
+        function extractDate(fieldset) {
+            const month = fieldset.querySelector(".govuk-date-input__month");
+            const year = fieldset.querySelector(".govuk-date-input__year");
+            if (month) {
+                return `${year.value},${month.value}`;
+            }
+            return `${year.value}`;
+        }
 
-    form.appendChild(inputContainer);
-    form.appendChild(buttonContainer);
-    form.appendChild(errorMessage);
-    container.appendChild(form);
+        function extractRange(fieldset) {
+            var min = cleanNumber(fieldset.querySelector("[data-range-type='start']").value);
+            var max = cleanNumber(fieldset.querySelector("[data-range-type='end']").value);
+            return `${min},${max}`;
+        }
 
-    return container;
-  }
+        /*
+        // save a fact
+        // ===========
+        factSaveBtns.forEach((btn) => {
+            btn.addEventListener('click', factSubmitHandler);
+        });
 
-  function getExitEditModeHandler(container) {
-    return function() {
-      container.classList.remove("edit-mode");
-    } 
-  }
+        function factSubmitHandler(e) {
+            e.preventDefault();
+            const form = e.target.closest("form");
+            const url = form.getAttribute("action");
 
-  function makeTitleEditable(titleEl) {
-    const localPlanEl = titleEl.closest(".local-plan");
-    const editTitleEndpoint = titleEl.dataset.updatePlanUrl;
+            // set up data obj to post
+            // serialise all parts of form
+            var fact = {};
+            fact["fact_type"] = form.querySelector("select").value;
+            fact["notes"] = form.querySelector("textarea").value;
+            fact["document_type"] = form.querySelector("input[type='hidden']").value;
 
-    const planTitleContainer = createElementWithClasses("div", "plan-title__container");
-    wrapElement( titleEl, planTitleContainer );
-    
-    const editableUI = createEditableUI(titleEl.textContent);
-    insertAfter(editableUI, titleEl);
+            if (form.classList.contains('housing-requirement-total')) {
+                fact["fact"] = cleanNumber(form.querySelector(".plan-housing-req-total input").value);
+            } else if (form.classList.contains('housing-requirement-range')) {
+                fact["fact"] = extractRange(form.querySelector(".housing-req-range-fieldset"));
+            } else if (form.classList.contains('housing-requirement-yearly-average')) {
+                fact["fact"] = cleanNumber(form.querySelector(".housing-req-yearly-average-input input").value);
+            } else if (form.classList.contains('housing-requirement-yearly-range')) {
+                fact["fact"] = extractRange(form.querySelector(".housing-req-yearly-range-fieldset"));
+            } else if (form.classList.contains('publication-date')) {
+                fact["fact"] = extractDate(form.querySelector(".publication-date-input fieldset"));
+            } else if (form.classList.contains('proposed-reg-18-date')) {
+                fact["fact"] = extractDate(form.querySelector(".regulation-18-date-input fieldset"));
+            } else if (form.classList.contains('proposed-publication-date')) {
+                fact["fact"] = extractDate(form.querySelector(".proposed-publication-date-input fieldset"));
+            } else if (form.classList.contains('proposed-submission-date')) {
+                fact["fact"] = extractDate(form.querySelector(".proposed-submission-date-input fieldset"));
+            } else if (form.classList.contains('proposed-main-modifications-date')) {
+                fact["fact"] = extractDate(form.querySelector(".proposed-main-modifications-date-input fieldset"));
+            } else if (form.classList.contains('proposed-adoption-date')) {
+                fact["fact"] = extractDate(form.querySelector(".proposed-adoption-date-input fieldset"));
+            } else {
+                // situation where user has selected other
+                fact["fact"] = "";
+            }
 
-    planTitleContainer.addEventListener('click', (e) => {
-      e.stopPropagation();
-    });
+            console.log(fact);
 
-    titleEl.addEventListener('click', function(e) {
-      planTitleContainer.classList.toggle("edit-mode");
-      document.addEventListener('click', clickOffEditTitle);
-      document.addEventListener('keydown', clickOffEditTitle);
-    });
+            // perform post
+            postJSONRequest(url, {'fact': fact}, (resp_data) => factAddedCallback(resp_data, form));
+        }
 
-    const exitEditModeHandler = getExitEditModeHandler( planTitleContainer );
+        function factAddedCallback(resp_data, form) {
+            if (resp_data['OK'] === 200) {
+                const factsEl = form.closest(".document-facts");
+                const table = factsEl.querySelector(".document-facts__table tbody");
 
-    function clickOffEditTitle(e) {
-      // only exit edit mode if user clicks off or presses escape key
-      if( (e.type === "keydown" && e.keyCode === 27) | e.type === "click") {
-        console.log("switched off by click or esc");
-        exitEditModeHandler();
-        document.removeEventListener('click', clickOffEditTitle);
-        document.removeEventListener('keydown', clickOffEditTitle);
-      }
-    }
+                const row = createElementWithClasses("tr", "govuk-table__row");
+                row.dataset.factType = resp_data.fact["fact_type"];
+                row.innerHTML = factTemplate(resp_data);
+                table.appendChild(row);
 
-    function updateWithNewPlanTitle(newTitle) {
-      // update plan-title
-      titleEl.textContent = newTitle;
-      // update tab label
-      const tab = document.querySelector(`#tab_${localPlanEl.id}`);
-      tab.textContent = newTitle;
-      // remove edit-mode class
-      planTitleContainer.classList.remove("edit-mode");
-      // update edit input data attribute
-      editableUI.querySelector("input").dataset.currentSavedValue = newTitle;
-    }
+                resetFactForm(form);
+            }
+        }
 
-    const form = editableUI.querySelector("form");
-    const input = editableUI.querySelector("input");
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const original = input.dataset.currentSavedValue;
-      const newTitle = input.value;
-      postJSONRequest(editTitleEndpoint,
-        {'original_identifier': original,
-         'new_identifier': newTitle
-        },
-        (resp_data) => {
-          console.log(resp_data);
-          if(resp_data['OK'] == 200) {
-            updateWithNewPlanTitle(newTitle);
-          } else {
-            editableUI.classList.add("has-error");
+        // resets the form
+        // - deletes any added content
+        // - sets form to initial display config
+        function resetFactForm(form) {
+            form.reset();
+            const formType = form.querySelector("input[type='hidden']").value;
+
+            // remove all classes
+            removeAllClassesFromFactForm(form);
+            // add initial class relevant to type of fact
+            if (formType === "plan_document") {
+                form.classList.add('plan-name');
+            } else {
+                form.classList.add('publication-date');
+            }
+        }
+
+        // close fact form
+        // ===============
+        factCancelBtns.forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const form = btn.closest('.govuk-form');
+                resetFactForm(form);
+                const details = btn.closest('.govuk-details');
+                //console.log(details);
+                details.open = false;
+            })
+        });
+
+        // remove fact
+        // ===========
+        factTables.forEach((table) => {
+            table.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (e.target.classList.contains("remove-fact")) {
+                    console.log("Delete button clicked");
+                    removeBtnClickHandler(e, '.govuk-table__row')
+                }
+            });
+        });
+        */
+
+        function removeBtnClickHandler(e, selector) {
+            e.preventDefault();
+            const elementToBeRemoved = e.target.closest(selector);
+
+            const url = e.target.href;
+            fetch(url, {
+                method: "DELETE"
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // element needs to have a tranistion in it's css
+                    // brittle!
+                    elementToBeRemoved.addEventListener('transitionend', () => elementToBeRemoved.remove());
+                    elementToBeRemoved.classList.add("being-deleted");
+                });
+        }
+
+        urlRemoveBtns.forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                removeBtnClickHandler(e, '.url-item');
+            });
+        });
+
+        addUrlForms.forEach((form) => {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const input = form.querySelector("input[name='url-input']");
+
+                if (input.value === "") {
+                    alert("The URL field is empty. Please add a URL before saving.")
+                } else {
+                    const urlList = document.querySelector(`[data-url-list-type='${form.dataset.associatedList}']`);
+                    saveURL(form.action, form, urlList);
+                }
+                console.log(e);
+            });
+        });
+
+        function saveURL(endpoint, form, listEl) {
+            // set up data obj
+            var data = {
+                'url': form.querySelector("input[name='url-input']").value,
+                'doc_title': form.querySelector("input[name='doc-title-input']").value
+            };
+
+            // perform post
+            postJSONRequest(endpoint, data, (resp_data) => handleSaveURLResponse(resp_data, listEl));
+        }
+
+        function handleSaveURLResponse(resp_data, listElement) {
+            console.log(resp_data);
+            const item = createElementWithClasses("li", ['url-item', 'govuk-grid-row']);
+            item.innerHTML = urlTemplate(resp_data);
+            const detailsContainer = item.querySelector(".document-facts");
+            const detailsEl = cloneAddFactForm(resp_data.document['type'], resp_data.add_fact_url);
+            detailsContainer.appendChild(detailsEl);
+
+            // add title to URL template
+            if (resp_data.document['title'] !== "") {
+                item.querySelector(".document-title").textContent = resp_data.document['title'];
+            }
+
+            listElement.appendChild(item);
+
+            // add submit handler
+            const formBtn = detailsEl.querySelector('form .fact-save-btn');
+            formBtn.addEventListener('click', factSubmitHandler);
+
+            // hook up remove button
+            item.querySelector(".url-remove-btn").addEventListener('click', (e) => {
+                e.preventDefault();
+                removeBtnClickHandler(e, '.url-item')
+            });
+        }
+
+        /*
+        function cloneAddFactForm(docType, add_fact_url) {
+            let template;
+            if (docType === "plan_document") {
+                template = document.querySelector(".local-plan-details-template");
+            } else {
+                template = document.querySelector(".emerging-plan-details-template");
+            }
+            const detailsElement = template.querySelector('details');
+            const clonedFormContainer = detailsElement.cloneNode(true);
+            // update the action attribute
+            const form = clonedFormContainer.querySelector('form');
+            form.action = add_fact_url;
+
+            return clonedFormContainer;
+        };
+        */
+
+
+        // ------------
+        // make plan titles editable
+        // -------------
+        const planTitles = document.querySelectorAll(".editable-plan-title");
+        planTitles.forEach(makeTitleEditable);
+
+        function createEditableUI(currentValue) {
+
+            const container = createElementWithClasses("div", "editable-title__container");
+            const form = createElementWithClasses("form", "form--inline");
+
+            const input = createElementWithClasses("input", ["govuk-input"]);
+            const inputContainer = createElementWithClasses("div", "govuk-form-group");
+            inputContainer.appendChild(input);
+
+            input.setAttribute("type", "text");
+            input.value = currentValue.trim();
+            input.dataset.currentSavedValue = currentValue.trim();
+            input.addEventListener('focus', (e) => {
+                container.classList.remove("has-error");
+            });
+
+            const saveBtn = createElementWithClasses("button", "govuk-button");
+            saveBtn.textContent = "Save";
+
+            const cancelButton = createElementWithClasses("button", "cancel-btn");
+            cancelButton.textContent = "Cancel";
+
+            const buttonContainer = createElementWithClasses("div", "govuk-form-group");
+            buttonContainer.appendChild(saveBtn);
+            buttonContainer.appendChild(cancelButton);
+
+            const errorMessage = createElementWithClasses("div", "error-msg");
+            errorMessage.textContent = "Plan with this title already exists";
+
+            form.appendChild(inputContainer);
+            form.appendChild(buttonContainer);
+            form.appendChild(errorMessage);
+            container.appendChild(form);
+
+            return container;
+        }
+
+        function getExitEditModeHandler(container) {
+            return function () {
+                container.classList.remove("edit-mode");
+            }
+        }
+
+        function makeTitleEditable(titleEl) {
+            const localPlanEl = titleEl.closest(".local-plan");
+            const editTitleEndpoint = titleEl.dataset.updatePlanUrl;
+
+            const planTitleContainer = createElementWithClasses("div", "plan-title__container");
+            wrapElement(titleEl, planTitleContainer);
+
+            const editableUI = createEditableUI(titleEl.textContent);
+            insertAfter(editableUI, titleEl);
+
+            planTitleContainer.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+
+            titleEl.addEventListener('click', function (e) {
+                planTitleContainer.classList.toggle("edit-mode");
+                document.addEventListener('click', clickOffEditTitle);
+                document.addEventListener('keydown', clickOffEditTitle);
+            });
+
+            const exitEditModeHandler = getExitEditModeHandler(planTitleContainer);
+
+            function clickOffEditTitle(e) {
+                // only exit edit mode if user clicks off or presses escape key
+                if ((e.type === "keydown" && e.keyCode === 27) | e.type === "click") {
+                    console.log("switched off by click or esc");
+                    exitEditModeHandler();
+                    document.removeEventListener('click', clickOffEditTitle);
+                    document.removeEventListener('keydown', clickOffEditTitle);
+                }
+            }
+
+            function updateWithNewPlanTitle(newTitle) {
+                // update plan-title
+                titleEl.textContent = newTitle;
+                // update tab label
+                const tab = document.querySelector(`#tab_${localPlanEl.id}`);
+                tab.textContent = newTitle;
+                // remove edit-mode class
+                planTitleContainer.classList.remove("edit-mode");
+                // update edit input data attribute
+                editableUI.querySelector("input").dataset.currentSavedValue = newTitle;
+            }
+
+            const form = editableUI.querySelector("form");
+            const input = editableUI.querySelector("input");
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const original = input.dataset.currentSavedValue;
+                const newTitle = input.value;
+                postJSONRequest(editTitleEndpoint,
+                    {
+                        'original_identifier': original,
+                        'new_identifier': newTitle
+                    },
+                    (resp_data) => {
+                        console.log(resp_data);
+                        if (resp_data['OK'] == 200) {
+                            updateWithNewPlanTitle(newTitle);
+                        } else {
+                            editableUI.classList.add("has-error");
+                        }
+                    }
+                );
+            });
+        }
+
+        // --------------------
+        // Basic Editable Class
+        // --------------------
+        function EditableSection(section, opts) {
+            this.section = section;
+
+            // defaults
+            this.options = {
+                allClickable: false,
+                activeClass: "edit-mode"
+            };
+
+            // merge user set options with defaults
+            setOptions(this, opts);
+
+            this.enterEditMode = () => this.section.classList.add(this.options.activeClass);
+            this.exitEditMode = () => this.section.classList.remove(this.options.activeClass);
+
+            if (this.options.allClickable) {
+                this.setEditTrigger(this.section);
+            } else if (this.options.trigger) {
+                this.setEditTrigger(this.options.trigger);
+            } else {
+                this.setEditTrigger();
+            }
+
+        }
+
+        EditableSection.prototype.setEditTrigger = function (selector) {
+            if (selector instanceof Element) {
+                this.trigger = this.section;
+            } else if (selector) {
+                this.trigger = this.section.querySelector(selector);
+            } else {
+                this.trigger = this.section.querySelector(".request-for-update a");
+            }
+            this.addEditListener();
+
+            if (this.options.cancel) {
+                this.setCancelTrigger(this.options.cancel);
+            } else {
+                this.setCancelTrigger();
+            }
+        }
+
+        EditableSection.prototype.addEditListener = function () {
+            const that = this;
+
+            function editHandler(e) {
+                e.preventDefault();
+                that.enterEditMode();
+                that.trigger.removeEventListener("click", editHandler);
+            }
+
+            this.editHandler = editHandler;
+            this.trigger.addEventListener("click", editHandler);
+        }
+
+        EditableSection.prototype.setCancelTrigger = function (selector) {
+            if (selector) {
+                this.cancel = this.section.querySelector(selector);
+                //this.trigger.addEventListener("click", )
+            } else {
+                this.cancel = this.section.querySelector(".cancel-btn");
+            }
+            this.addCancelListener();
+        }
+
+        EditableSection.prototype.addCancelListener = function () {
+            const that = this;
+
+            function cancelHandler(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                that.exitEditMode();
+                that.trigger.addEventListener("click", that.editHandler);
+            }
+
+            this.cancel.addEventListener("click", cancelHandler);
+        }
+
+        EditableSection.prototype.initialiseForm = function (extractDataFunc, succCb, errCb) {
+            const form = this.section.querySelector("form");
+            this.form = form;
+
+            const that = this;
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+
+                const endpoint = form.action;
+                const data = extractDataFunc(form);
+
+                form.classList.add("posting");
+                if(form.enctype !== undefined && form.enctype == 'multipart/form-data'){
+                    postFormDataRequest(endpoint, data, function(respData) {
+                      form.classList.remove("posting");
+
+                      that.exitEditMode();
+                      that.trigger.addEventListener("click", that.editHandler);
+                      if (succCb && typeof succCb === "function") {
+                        succCb(respData);
+                      }
+                      console.log(respData);
+                    });
+                }
+                else {
+                    postJSONRequest(endpoint, data, function (respData) {
+                        // To Do: handle the response
+                        form.classList.remove("posting");
+                        if (respData["OK"] === 200) {
+                            that.exitEditMode();
+                            that.trigger.addEventListener("click", that.editHandler);
+                            if (succCb && typeof succCb === "function") {
+                                succCb(respData);
+                            }
+                        }
+                        console.log(respData);
+                    });
+                }
+            });
+        };
+
+        // -----------------------
+        // handle plan period form
+        // -----------------------
+        const ppFormContainers = document.querySelectorAll(".missing-plan-period");
+
+        ppFormContainers.forEach((ppFormContainer) => {
+            const editableSection = new EditableSection(ppFormContainer, {
+                allClickable: true,
+                activeClass: "active"
+            });
+
+            const extractData = (form) => {
+                return data = {
+                    "start-year": form.querySelector("[name^='start-year']").value,
+                    "end-year": form.querySelector("[name^='end-year']").value
+                };
+            };
+
+            const successfullySaved = (data) => {
+                const section = editableSection.section;
+                section.classList.add("has-been-set");
+                const planPeriod = section.parentNode.querySelector(".edit-plan-period");
+                planPeriod.classList.remove("not-set");
+                const startyear = planPeriod.querySelector("[data-year-type='start']");
+                const endyear = planPeriod.querySelector("[data-year-type='end']");
+                startyear.textContent = data.plan.plan_start_year;
+                endyear.textContent = data.plan.plan_end_year;
+            };
+
+            editableSection.initialiseForm(extractData, successfullySaved);
+
+        });
+
+        // -------------------------
+        // make plan period editable
+        // -------------------------
+        const planPeriods = document.querySelectorAll(".edit-plan-period");
+        planPeriods.forEach((plan) => {
+            const editableSection = new EditableSection(plan);
+            const extractData = (form) => {
+                return data = {
+                    "start-year": form.querySelector("[name^='start-year']").value,
+                    "end-year": form.querySelector("[name^='end-year']").value
+                };
+            };
+            const onSuccessfulChange = (data) => {
+                const startyear = editableSection.section.querySelector("[data-year-type='start']");
+                const endyear = editableSection.section.querySelector("[data-year-type='end']");
+                startyear.textContent = data.plan.plan_start_year;
+                endyear.textContent = data.plan.plan_end_year;
+            }
+
+            editableSection.initialiseForm(extractData, onSuccessfulChange);
+        });
+
+
+        // ---------------------------
+        // handle plan policy url form
+        // ---------------------------
+        const planUrlContainers = document.querySelectorAll(".missing-plan-url");
+
+        planUrlContainers.forEach((planUrlContainer) => {
+            const editableSection = new EditableSection(planUrlContainer, {
+                allClickable: true,
+                activeClass: "active"
+            });
+
+            const extractData = (form) => {
+                return data = {
+                    "policy-url": form.querySelector("[name^='url-']").value
+                };
+            };
+
+            const successfullySaved = (data) => {
+                const section = editableSection.section;
+                section.classList.add("has-been-set");
+
+                const planUrl = section.parentNode.querySelector(".plan-policy-url-section");
+                planUrl.classList.remove("not-set");
+                const url = planUrl.querySelector(".policy-url");
+                url.textContent = data.plan.url;
+                url.href = data.plan.url;
+            };
+
+            editableSection.initialiseForm(extractData, successfullySaved);
+
+        });
+
+        // -----------------------------
+        // make plan policy url editable
+        // -----------------------------
+        const planPolicyURLS = document.querySelectorAll(".plan-policy-url-section");
+        planPolicyURLS.forEach((urlSection) => {
+            const editableSection = new EditableSection(urlSection);
+            const extractData = (form) => {
+                return data = {
+                    "policy-url": form.querySelector("[name^='url-']").value
+                };
+            };
+            const onSuccessfulChange = (data) => {
+                const url = editableSection.section.querySelector(".policy-url");
+                url.textContent = data.plan.url;
+                url.href = data.plan.url;
+            }
+
+            editableSection.initialiseForm(extractData, onSuccessfulChange);
+        });
+
+
+        // ---------------------------
+        // handle housing numbers form
+        // ---------------------------
+
+        const extractor = (form) => {
+            const formData = new FormData();
+            formData.append("screenshot", form.querySelector("[name^='screenshot']").files[0]);
+
+            const selectEl = form.querySelector("select");
+
+            if (form.classList.contains('housing-requirement-total')) {
+                formData.append("housing_number_type", selectEl.options[selectEl.selectedIndex].value);
+                formData.append("number", cleanNumber(form.querySelector("[name^='housing-requirement-total']").value));
+                formData.append("source_document", form.querySelector("[name^='url-']").value);
+            }
+            else if (form.classList.contains('housing-requirement-yearly-average')) {
+                formData.append("housing_number_type", selectEl.options[selectEl.selectedIndex].value);
+                formData.append("number", cleanNumber(form.querySelector("[name^='housing-requirement-yearly-average']").value));
+                formData.append("source_document", form.querySelector("[name^='url-']").value);
+            }
+            else if (form.classList.contains('housing-requirement-range')) {
+                formData.append("housing_number_type", selectEl.options[selectEl.selectedIndex].value);
+                formData.append("min", cleanNumber(form.querySelector("[name^='housing-requirement-range-min']").value));
+                formData.append("max", cleanNumber(form.querySelector("[name^='housing-requirement-range-max']").value));
+                formData.append("source_document", form.querySelector("[name^='url-']").value);
+            }
+            else if (form.classList.contains('housing-requirement-yearly-range')) {
+                formData.append("housing_number_type", selectEl.options[selectEl.selectedIndex].value);
+                formData.append("min", cleanNumber(form.querySelector("[name^='housing-requirement-yearly-range-min']").value));
+                formData.append("max", cleanNumber(form.querySelector("[name^='housing-requirement-yearly-range-max']").value));
+                formData.append("source_document", form.querySelector("[name^='url-']").value);
+            }
+            else {
+                console.log('What am I doing here?')
+            }
+            return formData;
+        };
+
+
+        const housingRequirementContainers = document.querySelectorAll(".missing-housing-requirement");
+
+        housingRequirementContainers.forEach((housingRequirementContainer) => {
+            const editableSection = new EditableSection(housingRequirementContainer, {
+                allClickable: true,
+                activeClass: "active"
+            });
+            const extractData = extractor;
+
+            const successfullySaved = (data) => {
+                const section = editableSection.section;
+                section.classList.add("has-been-set");
+
+                const currentNumbers = section.parentNode.querySelector(".edit-housing-requirement");
+                currentNumbers.classList.remove("not-set");
+
+                const gridRow = createElementWithClasses('div', "govuk-grid-row");
+                gridRow.innerHTML = housingNumbersTemplate(data.data);
+
+                currentNumbers.insertBefore(gridRow, currentNumbers.firstChild);
+            };
+
+            editableSection.initialiseForm(extractData, successfullySaved);
+
+        });
+
+
+        // -------------------------
+        // make housing numbers editable
+        // -------------------------
+        var housingNumbersSource = document.getElementById("housing-numbers-template").innerHTML;
+        var housingNumbersTemplate = Handlebars.compile(housingNumbersSource);
+
+        const housingRequirement = document.querySelectorAll(".edit-housing-requirement");
+        housingRequirement.forEach((plan) => {
+            const editableSection = new EditableSection(plan);
+
+            const currentNumbers = plan.querySelector(".govuk-grid-row:first-child");
+
+            const extractData = extractor;
+            const onSuccessfulChange = (data) => {
+              currentNumbers.innerHTML = housingNumbersTemplate(data.data);
+            };
+            editableSection.initialiseForm(extractData, onSuccessfulChange);
+        });
+
+
+        // -------------------------------------
+        // Display preview of image back to user
+        // -------------------------------------
+        const fileUploads = document.querySelectorAll(".govuk-file-upload");
+        fileUploads.forEach(uploader => uploader.addEventListener('change', previewScreenshotFile));
+        function previewScreenshotFile(e) {
+          const filePicker = e.target;
+          // why do I need to do nextSibling twice?
+          const preview = filePicker.nextSibling.nextSibling;
+          const file = filePicker.files[0];
+          const reader  = new FileReader();
+
+          reader.addEventListener("load", function () {
+            preview.classList.remove("not-active");
+            preview.src = reader.result;
+          }, false);
+
+          if (file) {
+            reader.readAsDataURL(file);
           }
         }
-      );
-    });
-  }
-
-  // --------------------
-  // Basic Editable Class
-  // --------------------
-  function EditableSection(section, opts) {
-    this.section = section;
-
-    // defaults 
-    this.options = {
-      allClickable: false,
-      activeClass: "edit-mode"
-    };
-
-    // merge user set options with defaults
-    setOptions(this, opts);
-
-    this.enterEditMode = () => this.section.classList.add(this.options.activeClass);
-    this.exitEditMode = () => this.section.classList.remove(this.options.activeClass);
-
-    if (this.options.allClickable) {
-      this.setEditTrigger(this.section);
-    } else if (this.options.trigger) {
-      this.setEditTrigger(this.options.trigger);
-    } else {
-      this.setEditTrigger();
-    }
-
-  }
-
-  EditableSection.prototype.setEditTrigger = function(selector) {
-    if (selector instanceof Element) {
-      this.trigger = this.section;
-    } else if (selector) {
-      this.trigger = this.section.querySelector(selector);
-    } else {
-      this.trigger = this.section.querySelector(".request-for-update a");
-    }
-    this.addEditListener();
-
-    if (this.options.cancel) {
-      this.setCancelTrigger(this.options.cancel);
-    } else {
-      this.setCancelTrigger();
-    }
-  }
-
-  EditableSection.prototype.addEditListener = function() {
-    const that = this;
-    function editHandler(e) {
-      e.preventDefault();
-      that.enterEditMode();
-      that.trigger.removeEventListener("click", editHandler);
-    }
-    this.editHandler = editHandler;
-    this.trigger.addEventListener("click", editHandler);
-  }
-
-  EditableSection.prototype.setCancelTrigger = function(selector) {
-    if (selector) {
-      this.cancel = this.section.querySelector(selector);
-      //this.trigger.addEventListener("click", )
-    } else {
-      this.cancel = this.section.querySelector(".cancel-btn");
-    }
-    this.addCancelListener();
-  }
-
-  EditableSection.prototype.addCancelListener = function() {
-    const that = this;
-    function cancelHandler(e) {
-      e.stopPropagation();
-      e.preventDefault();
-      that.exitEditMode();
-      that.trigger.addEventListener("click", that.editHandler);
-    }
-    this.cancel.addEventListener("click", cancelHandler);
-  }
-
-  EditableSection.prototype.initialiseForm = function(extractDataFunc, succCb, errCb) {
-    const form = this.section.querySelector("form");
-    this.form = form;
-
-    const that = this;
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const endpoint = form.action;
-
-      const data = extractDataFunc(form);
-
-      postJSONRequest(endpoint, data, function(respData) {
-        // To Do: handle the response
-        if(respData["OK"] === 200) {
-          that.exitEditMode();
-          that.trigger.addEventListener("click", that.editHandler);
-          if (succCb && typeof succCb === "function") {
-            succCb(respData);
-          }
-        }
-        console.log(respData);
-      });
-    });
-  }
-
-  // -----------------------
-  // handle plan period form
-  // -----------------------
-  const ppFormContainers = document.querySelectorAll(".missing-plan-period");
-
-  ppFormContainers.forEach((ppFormContainer) => {
-    const editableSection = new EditableSection(ppFormContainer, {
-      allClickable: true,
-      activeClass: "active"
-    });
-
-    const extractData = (form) => {
-      return data = {
-        "start-year": form.querySelector("[name^='start-year']").value,
-        "end-year": form.querySelector("[name^='end-year']").value
-      };
-    };
-
-    const successfullySaved = (data) => {
-      const section = editableSection.section;
-      section.classList.add("has-been-set");
-      const planPeriod = section.parentNode.querySelector(".edit-plan-period");
-      planPeriod.classList.remove("not-set");
-      const startyear = planPeriod.querySelector("[data-year-type='start']");
-      const endyear = planPeriod.querySelector("[data-year-type='end']");
-      startyear.textContent = data.plan.plan_start_year;
-      endyear.textContent = data.plan.plan_end_year;
-    };
-
-    editableSection.initialiseForm(extractData, successfullySaved);
-
-  });
-
-  // -------------------------
-  // make plan period editable
-  // -------------------------
-  const planPeriods = document.querySelectorAll(".edit-plan-period");
-  planPeriods.forEach((plan) => {
-    const editableSection = new EditableSection(plan);
-    const extractData = (form) => {
-      return data = {
-        "start-year": form.querySelector("[name^='start-year']").value,
-        "end-year": form.querySelector("[name^='end-year']").value
-      };
-    };
-    const onSuccessfulChange = (data) => {
-      const startyear = editableSection.section.querySelector("[data-year-type='start']");
-      const endyear = editableSection.section.querySelector("[data-year-type='end']");
-      startyear.textContent = data.plan.plan_start_year;
-      endyear.textContent = data.plan.plan_end_year;
-    }
-
-    editableSection.initialiseForm(extractData, onSuccessfulChange);
-  });
 
 
-  // ---------------------------
-  // handle plan policy url form
-  // ---------------------------
-  const planUrlContainers = document.querySelectorAll(".missing-plan-url");
+        // -----------------------
+        // Handle flagging no data
+        // -----------------------
+        const noDataCheckboxes = document.querySelectorAll(".govuk-form--single-checkbox input");
+        noDataCheckboxes.forEach(checkbox => {
+          const form = checkbox.closest("form");
+          checkbox.addEventListener('change', (e) => {
+            const data = {
+              'data-type': checkbox.dataset.dataType,
+              'not-found': checkbox.checked
+            };
+            console.log(e.target.dataset.dataType, e.target.checked);
+            postJSONRequest(form.action, data, (respData) => console.log(respData));
+          });
+        });
 
-  planUrlContainers.forEach((planUrlContainer) => {
-    const editableSection = new EditableSection(planUrlContainer, {
-      allClickable: true,
-      activeClass: "active"
-    });
 
-    const extractData = (form) => {
-      return data = {
-        "policy-url": form.querySelector("[name^='url-']").value
-      };
-    };
-
-    console.log(editableSection);
-
-    const successfullySaved = (data) => {
-      const section = editableSection.section;
-      section.classList.add("has-been-set");
-
-      const planUrl = section.parentNode.querySelector(".plan-policy-url-section");
-      planUrl.classList.remove("not-set");
-      const url = planUrl.querySelector(".policy-url");
-      url.textContent = data.plan.url;
-      url.href = data.plan.url;
-    };
-
-    editableSection.initialiseForm(extractData, successfullySaved);
-
-  });
-
-  // -----------------------------
-  // make plan policy url editable
-  // -----------------------------
-  const planPolicyURLS = document.querySelectorAll(".plan-policy-url-section");
-  planPolicyURLS.forEach((urlSection) => {
-    const editableSection = new EditableSection(urlSection);
-    const extractData = (form) => {
-      return data = {
-        "policy-url": form.querySelector("[name^='url-']").value
-      };
-    };
-    const onSuccessfulChange = (data) => {
-      const url = editableSection.section.querySelector(".policy-url");
-      url.textContent = data.plan.url;
-      url.href = data.plan.url;
-    }
-
-    editableSection.initialiseForm(extractData, onSuccessfulChange);
-  });
-
-</script>
+    </script>
 {% endblock %}

@@ -33,6 +33,11 @@ class LocalPlan(db.Model):
     plan_start_year = db.Column(db.Date())
     plan_end_year = db.Column(db.Date())
 
+    housing_numbers = db.Column(JSON)
+
+    plan_period_found = db.Column(db.Boolean)
+    housing_numbers_found = db.Column(db.Boolean)
+
     start_year = db.Column(db.Date())
     published_date = db.Column(db.Date())
     submitted_date = db.Column(db.Date())
@@ -73,11 +78,14 @@ class LocalPlan(db.Model):
     def is_joint_plan(self):
         return len(self.planning_authorities) > 1
 
+    def joint_plan_authorites(self, authority_id):
+        return [{'name': auth.name, 'id':auth.id} for auth in self.planning_authorities if authority_id != auth.id]
+
     def has_plan_period(self):
         return self.plan_start_year is not None or self.plan_end_year is not None
 
     def has_housing_numbers(self):
-        return len(self.get_housing_numbers()) > 0
+        return self.housing_numbers is not None
 
     def has_plan_documents(self):
         return len(self.plan_documents) > 0
@@ -99,16 +107,19 @@ class LocalPlan(db.Model):
             states.append(State(state='adopted', date=self.adopted_date))
         return states
 
-    def to_dict(self):
+    def to_dict(self, authority_id):
         title = self.title if self.title else self.local_plan
         data = {
             'id': self.id,
             'is_adopted': self.is_adopted(),
             'title': title,
-            'plan_start_year': self.plan_start_year.strftime('%Y'),
-            'plan_end_year': self.plan_end_year.strftime('%Y'),
-            'planning_authorities': [{'name': authority.name, 'id':authority.id} for authority in self.planning_authorities],
-            'url': self.url
+            'plan_start_year': self.plan_start_year.strftime('%Y') if self.plan_start_year else None,
+            'plan_end_year': self.plan_end_year.strftime('%Y') if self.plan_end_year else None,
+            'joint_plan_authorities': self.joint_plan_authorites(authority_id) if self.is_joint_plan() else None,
+            'url': self.url,
+            'housing_numbers': self.housing_numbers,
+            'plan_period_found': self.plan_period_found,
+            'housing_numbers_found': self.housing_numbers_found
         }
         return data
 
@@ -187,7 +198,7 @@ class PlanningAuthority(db.Model):
         data = {
             'id': self.id,
             'name': self.name,
-            'plans': [plan.to_dict() for plan in self.local_plans]
+            'plans': [plan.to_dict(self.id) for plan in self.local_plans]
         }
         return data
 

@@ -6869,17 +6869,20 @@
 }
 
 .missing-plan-period form,
-.missing-plan-url form {
+.missing-plan-url form,
+.missing-housing-requirement form {
   display: none;
 }
 
 .missing-plan-period.active form,
-.missing-plan-url.active form {
+.missing-plan-url.active form,
+.missing-housing-requirement.active form {
   display: block;
 }
 
 .missing-plan-period.has-been-set,
-.missing-plan-url.has-been-set {
+.missing-plan-url.has-been-set,
+.missing-housing-requirement.has-been-set {
   display: none;
 }
 
@@ -6900,6 +6903,23 @@
   display: none;
 }
 
+.edit-housing-requirement .highlight-box {
+  display: none;
+}
+
+.edit-housing-requirement.not-set .housing-numbers,
+.edit-housing-requirement.not-set .request-for-update {
+  display: none;
+}
+
+.edit-housing-requirement.edit-mode .highlight-box {
+  display: block;
+}
+
+.edit-housing-requirement.edit-mode .request-for-update {
+  display: none;
+}
+
 .plan-policy-url-section .highlight-box {
   display: none;
 }
@@ -6913,6 +6933,14 @@
 }
 
 .plan-policy-url-section.edit-mode .request-for-update {
+  display: none;
+}
+
+.img-preview {
+  max-width: 200px;
+}
+
+.img-preview.not-active {
   display: none;
 }
 
@@ -6934,6 +6962,10 @@
 
 .govuk-form--contained:first-child {
   margin-top: 0;
+}
+
+.govuk-form--single-checkbox {
+  margin-bottom: 30px;
 }
 
 .add-url-form {
@@ -6992,14 +7024,14 @@
 .plan-period-fieldset,
 .plan-start-date-input,
 .plan-end-date-input,
-.plan-housing-req-total,
-.housing-req-range-fieldset,
-.housing-req-yearly-average-input,
-.housing-req-yearly-range-fieldset {
+.plan-housing-requirement-total,
+.housing-requirement-range-fieldset,
+.housing-requirement-yearly-average-input,
+.housing-requirement-yearly-range-fieldset {
   display: none;
 }
 
-.housing-req-range-fieldset {
+.housing-requirement-range-fieldset {
   margin-bottom: 30px;
 }
 
@@ -7019,19 +7051,19 @@
   display: block;
 }
 
-.housing-requirement-total .plan-housing-req-total {
+.housing-requirement-total .plan-housing-requirement-total {
   display: block;
 }
 
-.housing-requirement-range .housing-req-range-fieldset {
+.housing-requirement-range .housing-requirement-range-fieldset {
   display: block;
 }
 
-.housing-requirement-yearly-average .housing-req-yearly-average-input {
+.housing-requirement-yearly-average .housing-requirement-yearly-average-input {
   display: block;
 }
 
-.housing-requirement-yearly-range .housing-req-yearly-range-fieldset {
+.housing-requirement-yearly-range .housing-requirement-yearly-range-fieldset {
   display: block;
 }
 
@@ -7235,6 +7267,67 @@
     font-size: 14pt;
     line-height: 16px;
   }
+}
+
+.data-item {
+  display: block;
+  font-family: "nta", Arial, sans-serif;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.data-item a {
+  color: #0b0c0c;
+}
+
+.loader {
+  display: none;
+  position: absolute;
+  bottom: -30px;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  overflow: hidden;
+  background-color: #dee0e2;
+}
+
+.loader:before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: -20%;
+  width: 20%;
+  height: 4px;
+  background-color: #005ea5;
+}
+
+@keyframes loading {
+  from {
+    left: -20%;
+  }
+  50% {
+    left: 55%;
+  }
+  95% {
+    left: 120%;
+  }
+  to {
+    left: 100%;
+  }
+}
+
+.govuk-form--contained {
+  position: relative;
+}
+
+.posting .loader {
+  display: block;
+}
+
+.posting .loader:before {
+  display: block;
+  animation: loading 1s linear infinite;
 }
 
 .map-container {

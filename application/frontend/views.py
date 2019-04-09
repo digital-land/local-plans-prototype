@@ -3,13 +3,12 @@ import csv
 import datetime
 import io
 import json
-import sqlalchemy
+import uuid
+from pathlib import Path
 from urllib.parse import urlparse
 
 import boto3
-
-from pathlib import Path
-
+import sqlalchemy
 from flask import (
     Blueprint,
     render_template,
@@ -24,7 +23,7 @@ from flask import (
 from sqlalchemy import func, or_
 
 from application.extensions import db, flask_optimize
-
+from application.frontend.forms import LocalDevelopmentSchemeURLForm, LocalPlanURLForm, AddPlanForm, MakeJointPlanForm
 from application.models import (
     PlanningAuthority,
     LocalPlan,
@@ -35,7 +34,7 @@ from application.models import (
     Fact
 )
 
-from application.frontend.forms import LocalDevelopmentSchemeURLForm, LocalPlanURLForm, AddPlanForm
+from application.filters import format_fact
 
 frontend = Blueprint('frontend', __name__, template_folder='templates')
 
@@ -74,9 +73,10 @@ def local_plan(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
     form = AddPlanForm(planning_authority=pla.code())
     if form.validate_on_submit():
-        local_plan_id = f'{pla.code()}-{form.start_year.data}'
         start_year = datetime.datetime(year=form.start_year.data, month=1, day=1)
-        plan = LocalPlan(local_plan=local_plan_id, start_year=start_year)
+        end_year = datetime.datetime(year=form.end_year.data, month=1, day=1)
+        title = form.title.data
+        plan = LocalPlan(title=title, start_year=start_year, plan_start_year=start_year, plan_end_year=end_year)
         plan.planning_authorities.append(pla)
         db.session.add(pla)
         db.session.commit()
@@ -108,6 +108,7 @@ def update_plan_period(planning_authority, plan_id):
         end_year = int(request.json.get('end-year'))
         plan.plan_start_year = datetime.datetime(start_year,1,1)
         plan.plan_end_year = datetime.datetime(end_year,1,1)
+        plan.plan_period_found = True
         db.session.add(plan)
         db.session.commit()
         resp = {"OK": 200, "plan": plan.to_dict()}
@@ -115,6 +116,69 @@ def update_plan_period(planning_authority, plan_id):
         resp = {"OK": 204, "error": "Can't find that plan"}
     return jsonify(resp)
 
+
+@frontend.route('/local-plans/<planning_authority>/<plan_id>/update-plan-housing-requirement', methods=['POST'])
+def update_plan_housing_requirement(planning_authority, plan_id):
+    plan = LocalPlan.query.get(plan_id)
+    if plan is not None:
+        data = {
+            'housing_number_type': request.form['housing_number_type'],
+            'housing_number_type_display': format_fact(request.form['housing_number_type']),
+            'created_date': datetime.datetime.utcnow().isoformat(),
+            'source_document': request.form['source_document'],
+        }
+        if 'range' in request.form['housing_number_type'].lower():
+            data['min'] = int(request.form['min'])
+            data['max'] = int(request.form['max'])
+        else:
+            data['number'] = int(request.form['number'])
+
+        if request.files:
+            # only retrieve image if set
+            bucket = 'local-plans'
+            key = f'images/{plan.id}/{uuid.uuid4()}.jpg'
+            s3 = boto3.client('s3')
+            s3.upload_fileobj(request.files['screenshot'], bucket, key, ExtraArgs={'ContentType': 'image/jpeg', 'ACL': 'public-read'})
+            data['image_url'] = f'https://s3.eu-west-2.amazonaws.com/{bucket}/{key}'
+        
+        plan.housing_numbers = data
+        plan.housing_numbers_found = True
+        db.session.add(plan)
+        db.session.commit()
+        resp = make_response(jsonify(data=data))
+        resp.status_code = 200
+        resp.headers = {'Content-Type': 'application/json'}
+        return resp
+    else:
+        return make_response(jsonify({'error': 'could not find plan to update'}), 404)
+
+
+@frontend.route('/local-plans/<planning_authority>/<plan_id>/update-plan-flags', methods=['POST'])
+def update_plan_data_flags(planning_authority, plan_id):
+    plan = LocalPlan.query.get(plan_id)
+
+    # TODO plan has two fields, plan_period_found and housing_numbers_found which would at this stage
+    # be null. You can set the appropriate flag to False and then save to db
+
+    if plan is not None:
+        if request.json.get('data-type') is not None:
+            # user saying data can't be found
+            found = False if bool(request.json.get('not-found')) else None
+
+            if request.json.get('data-type') == 'housing-number':
+                plan.housing_numbers_found = found
+            else:
+                plan.plan_period_found = found
+
+            db.session.add(plan)
+            db.session.commit()
+            resp = {'OK': 200, 'plan': plan.to_dict(planning_authority) }
+        else:
+            resp = {'OK': 400, 'error': 'Data type not provided'}
+    else:
+        resp = {'OK': 400, 'error': 'Plan not found'}
+
+    return jsonify(resp)
 
 @frontend.route('/start-collecting-data')
 def start_collecting_data():
@@ -484,8 +548,7 @@ def data_as_json():
     planning_authorities = PlanningAuthority.query.all()
     data = []
     for pla in planning_authorities:
-        for fact in pla.gather_facts(as_dict=True):
-            data.append(fact)
+        data.append(pla.to_dict())
     return jsonify(data=data)
 
 
@@ -528,25 +591,23 @@ def map_of_data():
         authority = {'planning_authority': pla.id,
                      'planning_authority_name': pla.name,
                      'plans': [],
-                     'has_housing_figures': False}
+                     'has_housing_numbers': False}
         for p in pla.local_plans:
-            plan = {'documents': 0,
-                    'facts': 0,
-                    'plan_id': p.local_plan,
-                    'status': p.latest_state().to_dict()}
-            for doc in p.plan_documents:
-                plan['documents'] = plan['documents'] + 1
-                for fact in doc.facts:
-                    plan['facts'] = plan['facts'] + 1
-                    housing_no_total = ['HOUSING_REQUIREMENT_TOTAL', 'HOUSING_REQUIREMENT_YEARLY_AVERAGE']
-                    housing_no_range = ['HOUSING_REQUIREMENT_RANGE', 'HOUSING_REQUIREMENT_YEARLY_RANGE']
-                    if fact.fact_type in housing_no_total:
-                        plan[fact.fact_type.lower()] = int(fact.fact.replace(',', '')) if fact.fact else None
-                        authority['has_housing_figures'] = True
-                    if fact.fact_type in housing_no_range:
-                        plan[f'{fact.fact_type.lower()}_from'] = int(fact.from_.replace(',', '')) if fact.from_ else None
-                        plan[f'{fact.fact_type.lower()}_to'] = int(fact.to.replace(',', '')) if fact.to else None
-                        authority['has_housing_figures'] = True
+            plan = {'plan_id': p.local_plan,
+                    'status': p.latest_state().to_dict(),
+                    'has_housing_numbers': p.has_housing_numbers()
+                    }
+            try:
+                if p.has_housing_numbers():
+                    authority['has_housing_numbers'] = True
+                    if 'range'in p.housing_numbers['housing_number_type'].lower():
+                        plan[f"{p.housing_numbers['housing_number_type']}_from".lower()] = p.housing_numbers['min']
+                        plan[f"{p.housing_numbers['housing_number_type']}_to".lower()] = p.housing_numbers['max']
+                    else:
+                        plan[p.housing_numbers['housing_number_type'].lower()] = p.housing_numbers['number']
+            except Exception as e:
+                print(e)
+
             authority['plans'].append(plan)
         if geojson is not None:
             authority['geojson'] = json.loads(geojson)
@@ -554,3 +615,19 @@ def map_of_data():
     return render_template('map-of-data.html', data=data)
 
 
+@frontend.route('/local-plans/<planning_authority>/<local_plan>/make-joint-plan', methods=['GET', 'POST'])
+def make_joint_plan(planning_authority, local_plan):
+    planning_authority = PlanningAuthority.query.get(planning_authority)
+    planning_authorities = PlanningAuthority.query.filter(PlanningAuthority.id != planning_authority.id).order_by(PlanningAuthority.name).all()
+    plan = LocalPlan.query.get(local_plan)
+    form = MakeJointPlanForm()
+    form.planning_authorities.choices = [(p.id, p.name) for p in planning_authorities]
+    if form.validate_on_submit():
+        for id in form.planning_authorities.data:
+            pla = PlanningAuthority.query.get(id)
+            plan.planning_authorities.append(pla)
+        db.session.add(plan)
+        db.session.commit()
+        return redirect(url_for('frontend.local_plan', planning_authority=planning_authority.id))
+
+    return render_template('make-joint-plan.html', planning_authority=planning_authority, local_plan=plan, form=form)

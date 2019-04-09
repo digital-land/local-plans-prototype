@@ -286,7 +286,8 @@ $editable-box-border-width: 1px;
 }
 
 .missing-plan-period,
-.missing-plan-url {
+.missing-plan-url,
+.missing-housing-requirement {
   form {
     display: none;
   }
@@ -325,6 +326,30 @@ $editable-box-border-width: 1px;
   }
 }
 
+.edit-housing-requirement {
+  .highlight-box {
+    display: none;
+  }
+
+  &.not-set {
+    .housing-numbers,
+    .request-for-update {
+      display: none;
+    }
+  }
+
+  &.edit-mode {
+    .highlight-box {
+      display: block;
+    }
+
+    .request-for-update {
+      display: none;
+    }
+  }
+}
+
+
 .plan-policy-url-section {
   .highlight-box {
     display: none;
@@ -342,5 +367,13 @@ $editable-box-border-width: 1px;
     .request-for-update {
       display: none;
     }
+  }
+}
+
+.img-preview {
+  max-width: 200px;
+
+  &.not-active {
+    display: none;
   }
 }
