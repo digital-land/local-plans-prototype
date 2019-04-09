@@ -103,6 +103,7 @@ def local_plan(planning_authority):
 @frontend.route('/local-plans/<planning_authority>/<plan_id>/update-plan-period', methods=['POST'])
 def update_plan_period(planning_authority, plan_id):
     plan = LocalPlan.query.get(plan_id)
+    pla = PlanningAuthority.query.get(planning_authority)
     if plan is not None:
         start_year = int(request.json.get('start-year'))
         end_year = int(request.json.get('end-year'))
@@ -111,7 +112,7 @@ def update_plan_period(planning_authority, plan_id):
         plan.plan_period_found = True
         db.session.add(plan)
         db.session.commit()
-        resp = {"OK": 200, "plan": plan.to_dict()}
+        resp = {"OK": 200, "plan": plan.to_dict(pla.id)}
     else:
         resp = {"OK": 204, "error": "Can't find that plan"}
     return jsonify(resp)
