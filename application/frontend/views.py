@@ -141,16 +141,16 @@ def update_plan_housing_requirement(planning_authority, plan_id):
             min = request.form.get('min', 0)
             if isinstance(min, str):
                 min = min.strip()
-            data['min'] = int(min) if min != '' else 0
+            data['min'] = int(min) if min else None
             max = request.form.get('max', 0)
             if isinstance(max, str):
                 max = max.strip()
-            data['max'] = int(max) if max != '' else 0
+            data['max'] = int(max) if max else None
         else:
             number = request.form.get('number', 0)
             if isinstance(number, str):
                 number = number.strip()
-            data['number'] = int(number) if number != '' else 0
+            data['number'] = int(number) if number else None
 
         if request.files:
             # only retrieve image if set
