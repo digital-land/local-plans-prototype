@@ -138,10 +138,19 @@ def update_plan_housing_requirement(planning_authority, plan_id):
             'source_document': request.form['source_document'],
         }
         if 'range' in request.form['housing_number_type'].lower():
-            data['min'] = int(request.form.get('min', 0))
-            data['max'] = int(request.form.get('max', 0))
+            min = request.form.get('min', 0)
+            if isinstance(min, str):
+                min = min.strip()
+            data['min'] = int(min) if min != '' else 0
+            max = request.form.get('max', 0)
+            if isinstance(max, str):
+                max = max.strip()
+            data['max'] = int(max) if max != '' else 0
         else:
-            data['number'] = int(request.form.get('number', 0))
+            number = request.form.get('number', 0)
+            if isinstance(number, str):
+                number = number.strip()
+            data['number'] = int(number) if number != '' else 0
 
         if request.files:
             # only retrieve image if set
