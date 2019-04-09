@@ -228,7 +228,7 @@
                 <div class="govuk-form-group">
                    <label class="govuk-label" for="screenshot-{{ suffix }}">Upload a screenshot from source document</label>
                    <input class="govuk-file-upload" type="file" name="screenshot-{{ suffix }}" id="screenshot-{{ suffix }}" />
-                   <img src="" alt="" class="img-preview not-active">
+                   <img src="{% if plan.housing_numbers.image_url %}{{ plan.housing_numbers.image_url }}{% endif %}" alt="" class="img-preview{% if not plan.housing_numbers.image_url %} not-active{% endif %}">
                 </div>
 
                 <div class="govuk-form-group">
