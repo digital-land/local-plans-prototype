@@ -59,12 +59,12 @@ class LocalPlan(db.Model):
 
     def __lt__(self, other):
 
-        if self.plan_start_year is not None and other.plan_end_year is not None:
+        if self.plan_start_year is not None and other.plan_start_year is not None:
             return self.plan_start_year < other.plan_start_year
 
-        elif self.plan_start_year is not None and other.plan_end_year is None:
+        elif self.plan_start_year is not None and other.plan_start_year is None:
             return False
-        elif self.plan_start_year is None and other.plan_end_year is not None:
+        elif self.plan_start_year is None and other.plan_start_year is not None:
             return True
         else:
             self_states = self.ordered_states()
