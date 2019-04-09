@@ -105,14 +105,20 @@ def update_plan_period(planning_authority, plan_id):
     plan = LocalPlan.query.get(plan_id)
     pla = PlanningAuthority.query.get(planning_authority)
     if plan is not None:
-        if request.json.get('start-year') is not None:
+        if request.json.get('start-year'):
             start_year = int(request.json.get('start-year'))
             plan.plan_start_year = datetime.datetime(start_year, 1, 1)
             plan.plan_period_found = True
-        if request.json.get('end-year') is not None:
+        else:
+            plan.plan_start_year = None
+        if request.json.get('end-year'):
             end_year = int(request.json.get('end-year'))
             plan.plan_end_year = datetime.datetime(end_year,1,1)
             plan.plan_period_found = True
+        else:
+            plan.plan_end_year = None
+        if plan.plan_start_year is None and plan.plan_end_year is None:
+            plan.plan_period_found = False
         db.session.add(plan)
         db.session.commit()
         resp = {"OK": 200, "plan": plan.to_dict(pla.id)}
