@@ -454,7 +454,10 @@ def planning_authority_from_document():
                                    local_plan=document.local_plan_id,
                                    document=str(document.id),
                                    _external=True)
-            resp = {'OK': 200, 'view-type': 'plan-document', 'document': document.to_dict(), 'local_plan': document.local_plan.to_dict(), 'add_fact_url': add_fact_url}
+            resp = {'OK': 200, 'view-type':
+                    'plan-document', 'document': document.to_dict(),
+                    'local_plan': document.local_plan.to_dict(document.local_plan.planning_authorities[0].id),
+                    'add_fact_url': add_fact_url}
 
         else:
             try:
