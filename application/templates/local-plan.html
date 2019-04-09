@@ -1263,11 +1263,13 @@
                 const section = editableSection.section;
                 section.classList.add("has-been-set");
 
-                {#const planUrl = section.parentNode.querySelector(".plan-policy-url-section");#}
-                {#planUrl.classList.remove("not-set");#}
-                {#const url = planUrl.querySelector(".policy-url");#}
-                {#url.textContent = data.plan.url;#}
-                {#url.href = data.plan.url;#}
+                const currentNumbers = section.parentNode.querySelector(".edit-housing-requirement");
+                currentNumbers.classList.remove("not-set");
+
+                const gridRow = createElementWithClasses('div', "govuk-grid-row");
+                gridRow.innerHTML = housingNumbersTemplate(data.data);
+
+                currentNumbers.insertBefore(gridRow, currentNumbers.firstChild);
             };
 
             editableSection.initialiseForm(extractData, successfullySaved);
