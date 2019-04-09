@@ -133,11 +133,14 @@ def update_plan_housing_requirement(planning_authority, plan_id):
         else:
             data['number'] = int(request.form['number'])
 
-        bucket = 'local-plans'
-        key = f'images/{plan.id}/{uuid.uuid4()}.jpg'
-        s3 = boto3.client('s3')
-        s3.upload_fileobj(request.files['screenshot'], bucket, key, ExtraArgs={'ContentType': 'image/jpeg', 'ACL': 'public-read'})
-        data['image_url'] = f'https://s3.eu-west-2.amazonaws.com/{bucket}/{key}'
+        if request.files:
+            # only retrieve image if set
+            bucket = 'local-plans'
+            key = f'images/{plan.id}/{uuid.uuid4()}.jpg'
+            s3 = boto3.client('s3')
+            s3.upload_fileobj(request.files['screenshot'], bucket, key, ExtraArgs={'ContentType': 'image/jpeg', 'ACL': 'public-read'})
+            data['image_url'] = f'https://s3.eu-west-2.amazonaws.com/{bucket}/{key}'
+        
         plan.housing_numbers = data
         plan.housing_numbers_found = True
         db.session.add(plan)
