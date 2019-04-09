@@ -84,7 +84,8 @@
 
 
         {% macro renderHousingRequirementForm(plan, heading, suffix, classes) %}
-            <form class="govuk-form{{- ' ' + classes if classes }} housing-requirement-total" \
+            <form class="govuk-form{{- ' ' + classes if classes }} 
+                  {%- if plan.has_housing_numbers() %} {{ plan.housing_numbers.housing_number_type|lower|replace('_', '-') }}{% else %} housing-requirement-total{% endif %}" 
                   action="{{ url_for('frontend.update_plan_housing_requirement', planning_authority=planning_authority.id, plan_id=plan.id) }}"
                   method="POST" enctype="multipart/form-data">
                 <h3 class="govuk-heading-s">{{ heading }}</h3>
@@ -111,8 +112,7 @@
                       "id": "housing-requirement-total-" + suffix,
                       "name": "housing-requirement-total-" + suffix,
                       "value": 0,
-                      "pattern":"[0-9]*",
-                      "required":True}) }}
+                      "pattern":"[0-9]*"}) }}
                     </div>
                 </div>
 

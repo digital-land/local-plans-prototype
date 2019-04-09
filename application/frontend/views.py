@@ -127,7 +127,7 @@ def update_plan_housing_requirement(planning_authority, plan_id):
             'created_date': datetime.datetime.utcnow().isoformat(),
             'source_document': request.form['source_document'],
         }
-        if 'range' in request.form['housing_number_type']:
+        if 'range' in request.form['housing_number_type'].lower():
             data['min'] = int(request.form['min'])
             data['max'] = int(request.form['max'])
         else:
