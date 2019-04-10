@@ -53,7 +53,8 @@
               {% set latest_state = plan.latest_state() %}
               <span class="stage-tag plan-details__item {% if plan.is_adopted() %}is-adopted{% endif %}">{{ latest_state.state }}</span>
               <span class="plan-details__item plan-details__state-date">{% if not plan.is_emerging() %}{{ latest_state.date | format_month_and_year }}{% endif %}</span>
-              <a class="plan-details__item local-plan-id" href="{{ url_for('frontend.local_plan', planning_authority= planning_authority.id, _anchor=plan.title ) }}">{{ plan.title }}</a>
+              {% set tab_anchor = 'plan_tab_' + plan.id|string %}
+              <a class="plan-details__item local-plan-id" href="{{ url_for('frontend.local_plan', planning_authority= planning_authority.id, _anchor=tab_anchor ) }}">{{ plan.title }}</a>
               
             </div>
             <span class="plan-details__item plan-no-of-docs">{{ plan.plan_documents|length }} associated documents</span>
