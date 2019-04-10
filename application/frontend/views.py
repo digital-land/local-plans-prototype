@@ -613,6 +613,7 @@ def map_of_data():
 @frontend.route('/local-plans/<planning_authority>/<local_plan>/make-joint-plan', methods=['GET', 'POST'])
 def make_joint_plan(planning_authority, local_plan):
     planning_authority = PlanningAuthority.query.get(planning_authority)
+    link_to_planning_authority = url_for('frontend.local_plan', planning_authority=planning_authority.id, _anchor=local_plan);
     planning_authorities = PlanningAuthority.query.filter(PlanningAuthority.id != planning_authority.id).order_by(PlanningAuthority.name).all()
     plan = LocalPlan.query.get(local_plan)
     form = MakeJointPlanForm()
@@ -625,4 +626,4 @@ def make_joint_plan(planning_authority, local_plan):
         db.session.commit()
         return redirect(url_for('frontend.local_plan', planning_authority=planning_authority.id))
 
-    return render_template('make-joint-plan.html', planning_authority=planning_authority, local_plan=plan, form=form)
+    return render_template('make-joint-plan.html', planning_authority=planning_authority, local_plan=plan, form=form, last_url=link_to_planning_authority)

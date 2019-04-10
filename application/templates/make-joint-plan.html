@@ -1,6 +1,10 @@
 {% extends "dlf-base.html" %}
 {%- set mainClasses = "govuk-main-wrapper--l" -%}
 
+{% block beforeContent %}
+    {{ super() }}
+    <a href="{{ last_url }}" class="govuk-back-link">Back to {{ local_plan.title }}</a>
+{% endblock %}
 
 {% block content %}
 
