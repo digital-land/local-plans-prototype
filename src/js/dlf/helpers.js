@@ -66,14 +66,14 @@ function postFormDataRequest(endpoint, data, cb) {
     method: "POST",
     body: data
   })
-  .then(response => response.json())
-  .then(respData => {
-    if (cb && typeof cb === "function") {
-      cb(respData);
-    } else {
-      console.log(respData); // eslint-disable-line
-    }
-  });
+    .then(response => response.json())
+    .then(respData => {
+      if (cb && typeof cb === "function") {
+        cb(respData);
+      } else {
+        console.log(respData); // eslint-disable-line
+      }
+    });
 }
 
 // @function setOptions(obj: Object, options: Object): Object
