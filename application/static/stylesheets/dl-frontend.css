@@ -6396,6 +6396,42 @@
   }
 }
 
+.plan-details__missing-data {
+  display: block;
+  font-family: "nta", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 14px;
+  font-size: 0.875rem;
+  line-height: 1.14286;
+  padding-top: 2px;
+  padding-left: 8px;
+  border-left: 5px solid #b10e1e;
+  color: #b10e1e;
+}
+
+@media print {
+  .plan-details__missing-data {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .plan-details__missing-data {
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+}
+
+@media print {
+  .plan-details__missing-data {
+    font-size: 14pt;
+    line-height: 1.2;
+  }
+}
+
 .lps-table-view__heading {
   margin: 0;
   color: #0b0c0c !important;

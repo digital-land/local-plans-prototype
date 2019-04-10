@@ -57,6 +57,9 @@
               
             </div>
             <span class="plan-details__item plan-no-of-docs">{{ plan.plan_documents|length }} associated documents</span>
+            {% if plan.has_missing_data() %}
+            <span class="plan-details__missing-data">there are gaps in the data</span>
+            {% endif %}
           </li>
           {% endfor %}
         </ul>

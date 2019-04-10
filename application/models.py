@@ -97,6 +97,15 @@ class LocalPlan(db.Model):
 
     def has_pins_data(self):
         return any([self.published_date, self.submitted_date, self.sound_date, self.adopted_date])
+
+    def has_missing_data(self):
+        # true if period is set or user indicated can't find it
+        pp = (self.has_plan_period() or self.plan_period_found == False)
+        hn = (self.has_housing_numbers() or self.housing_numbers_found == False) 
+        if pp and hn:
+            return False
+        return True
+
         
     def ordered_states(self):
         states = []

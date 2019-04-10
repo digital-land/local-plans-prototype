@@ -64,6 +64,15 @@
   }
 }
 
+.plan-details__missing-data {
+  display: block;
+  @include govuk-font(16);
+  padding-top: 2px;
+  padding-left: 8px;
+  border-left: 5px solid govuk-colour("red");
+  color: govuk-colour("red");
+}
+
 .lps-table-view__heading {
   margin: 0;
   color: $govuk-text-colour !important;
