@@ -555,6 +555,7 @@
     {% endraw %}
 
     <script src="{{ static_path }}/static/javascripts/dlf/helpers.js"></script>
+    <script src="{{ static_path }}/static/javascripts/dlf/editableSections.js"></script>
     <script>
         const urlAddBtns = document.querySelectorAll(".url-add-btn");
         const urlEditBtns = document.querySelectorAll(".url-edit-btn");
@@ -979,128 +980,6 @@
                 );
             });
         }
-
-        // --------------------
-        // Basic Editable Class
-        // --------------------
-        function EditableSection(section, opts) {
-            this.section = section;
-
-            // defaults
-            this.options = {
-                allClickable: false,
-                activeClass: "edit-mode"
-            };
-
-            // merge user set options with defaults
-            setOptions(this, opts);
-
-            this.enterEditMode = () => this.section.classList.add(this.options.activeClass);
-            this.exitEditMode = () => this.section.classList.remove(this.options.activeClass);
-
-            if (this.options.allClickable) {
-                this.setEditTrigger(this.section);
-            } else if (this.options.trigger) {
-                this.setEditTrigger(this.options.trigger);
-            } else {
-                this.setEditTrigger();
-            }
-
-        }
-
-        EditableSection.prototype.setEditTrigger = function (selector) {
-            if (selector instanceof Element) {
-                this.trigger = this.section;
-            } else if (selector) {
-                this.trigger = this.section.querySelector(selector);
-            } else {
-                this.trigger = this.section.querySelector(".request-for-update a");
-            }
-            this.addEditListener();
-
-            if (this.options.cancel) {
-                this.setCancelTrigger(this.options.cancel);
-            } else {
-                this.setCancelTrigger();
-            }
-        }
-
-        EditableSection.prototype.addEditListener = function () {
-            const that = this;
-
-            function editHandler(e) {
-                e.preventDefault();
-                that.enterEditMode();
-                that.trigger.removeEventListener("click", editHandler);
-            }
-
-            this.editHandler = editHandler;
-            this.trigger.addEventListener("click", editHandler);
-        }
-
-        EditableSection.prototype.setCancelTrigger = function (selector) {
-            if (selector) {
-                this.cancel = this.section.querySelector(selector);
-                //this.trigger.addEventListener("click", )
-            } else {
-                this.cancel = this.section.querySelector(".cancel-btn");
-            }
-            this.addCancelListener();
-        }
-
-        EditableSection.prototype.addCancelListener = function () {
-            const that = this;
-
-            function cancelHandler(e) {
-                e.stopPropagation();
-                e.preventDefault();
-                that.exitEditMode();
-                that.trigger.addEventListener("click", that.editHandler);
-            }
-
-            this.cancel.addEventListener("click", cancelHandler);
-        }
-
-        EditableSection.prototype.initialiseForm = function (extractDataFunc, succCb, errCb) {
-            const form = this.section.querySelector("form");
-            this.form = form;
-
-            const that = this;
-            form.addEventListener("submit", (e) => {
-                e.preventDefault();
-
-                const endpoint = form.action;
-                const data = extractDataFunc(form);
-
-                form.classList.add("posting");
-                if(form.enctype !== undefined && form.enctype == 'multipart/form-data'){
-                    postFormDataRequest(endpoint, data, function(respData) {
-                      form.classList.remove("posting");
-
-                      that.exitEditMode();
-                      that.trigger.addEventListener("click", that.editHandler);
-                      if (succCb && typeof succCb === "function") {
-                        succCb(respData);
-                      }
-                      console.log(respData);
-                    });
-                }
-                else {
-                    postJSONRequest(endpoint, data, function (respData) {
-                        // To Do: handle the response
-                        form.classList.remove("posting");
-                        if (respData["OK"] === 200) {
-                            that.exitEditMode();
-                            that.trigger.addEventListener("click", that.editHandler);
-                            if (succCb && typeof succCb === "function") {
-                                succCb(respData);
-                            }
-                        }
-                        console.log(respData);
-                    });
-                }
-            });
-        };
 
         // -----------------------
         // handle plan period form

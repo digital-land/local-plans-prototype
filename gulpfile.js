@@ -54,7 +54,7 @@ const lintSCSS = () =>
 // ======================================
 
 const lintJS = () => 
-  gulp.src(['src/js/*.js', 'src/js/dlf/helpers.js'])
+  gulp.src(['src/js/*.js', 'src/js/dlf/*.js'])
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
