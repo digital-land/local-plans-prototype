@@ -1,29 +1,39 @@
 {% extends "dlf-base.html" %}
-{%- set mainClasses = "govuk-main-wrapper--l" -%}
+
+
+{% block beforeContent %}
+  {{ super() }}
+  <a href="{{ url_for('frontend.index') }}" class="govuk-back-link">Back to index</a>
+{% endblock %}
 
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <h1 class="govuk-heading-m">Start collection information for</h1>
-        <p class="govuk-body">
-            {% for planning_authority in local_plan.planning_authorities %}
-                {%  set target = planning_authority.id + '#plan_tab_' + plan_id %}
-                 <h2>
-                     <a href="/local-plans/{{ target }}">
-                         {% if local_plan.is_joint_plan() %}Joint plan - {% endif %}{{ local_plan.title }} - {{ planning_authority.name }}
-                    </a>
-                 </h2>
-                <h3>What's missing</h3>
-                <ul>
-                    {% if not local_plan.has_plan_period() %}
-                        <li>No plan period for this plan</li>
-                    {% endif %}
-                     {% if not local_plan.has_housing_numbers() %}
-                        <li>No housing numbers for this plan</li>
-                    {% endif %}
-                </ul>
-            {% endfor %}
-        </p>
+        <span class="govuk-caption-l">Lucky dip</span>
+        <h1 class="govuk-heading-l">What is missing?</h1>
+
+        <h3 class="govuk-heading-s">Local plan</h3>
+
+        {% for planning_authority in local_plan.planning_authorities %}
+            {%  set target = planning_authority.id + '#plan_tab_' + plan_id %}
+             <h2 class="govuk-heading-m">
+                 <a href="/local-plans/{{ target }}">
+                     {% if local_plan.is_joint_plan() %}Joint plan - {% endif %}{{ local_plan.title }} - {{ planning_authority.name }}
+                </a>
+             </h2>
+            <h3 class="govuk-heading-s">is missing</h3>
+            <ul class="govuk-list govuk-list--bullet">
+                {% if not local_plan.has_plan_period() %}
+                    <li>No plan period for this plan</li>
+                {% endif %}
+                 {% if not local_plan.has_housing_numbers() %}
+                    <li>No housing numbers for this plan</li>
+                {% endif %}
+            </ul>
+        {% endfor %}
+
+        <a href="{{ url_for('frontend.local_plan', planning_authority=local_plan.planning_authorities[0].id, _anchor=local_plan.id) }}" class="govuk-button">Start collecting</a>
+        <a href="" class="link-align-btn">Refresh page</a>
      </div>
    </div>
 {%  endblock %}

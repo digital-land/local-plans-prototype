@@ -6575,6 +6575,7 @@
   font-weight: bolder;
 }
 
+.link-align-btn,
 .cancel-btn {
   display: none;
   font-family: "nta", Arial, sans-serif;
@@ -6596,12 +6597,14 @@
 }
 
 @media print {
+  .link-align-btn,
   .cancel-btn {
     font-family: sans-serif;
   }
 }
 
 @media (min-width: 40.0625em) {
+  .link-align-btn,
   .cancel-btn {
     font-size: 16px;
     font-size: 1rem;
@@ -6610,29 +6613,37 @@
 }
 
 @media print {
+  .link-align-btn,
   .cancel-btn {
     font-size: 14pt;
     line-height: 16px;
   }
 }
 
+.link-align-btn:focus,
 .cancel-btn:focus {
   outline: 3px solid #ffbf47;
   outline-offset: 0;
 }
 
 @media (min-width: 40.0625em) {
+  .link-align-btn,
   .cancel-btn {
     width: auto;
   }
 }
 
-.cancel-btn:link, .cancel-btn:visited, .cancel-btn:active, .cancel-btn:hover {
+.link-align-btn:link, .link-align-btn:visited, .link-align-btn:active, .link-align-btn:hover,
+.cancel-btn:link,
+.cancel-btn:visited,
+.cancel-btn:active,
+.cancel-btn:hover {
   color: #005ea5;
   text-decoration: underline;
 }
 
-.js-enabled .cancel-btn {
+.js-enabled .link-align-btn, .js-enabled
+.cancel-btn {
   display: inline-block;
 }
 
