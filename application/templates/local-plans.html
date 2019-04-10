@@ -46,7 +46,7 @@
       <dt class="govuk-grid-column-one-third"><a href="{{ url_for('frontend.local_plan', planning_authority= planning_authority.id ) }}" class="govuk-heading-s lps-table-view__heading">{{ planning_authority.name }}</a></dt>
       <dd class="govuk-grid-column-two-thirds">
         <ul class="govuk-list lps-table-view__list">
-          {% for plan in planning_authority.sorted_plans() %}
+          {% for plan in planning_authority.sorted_plans(reverse=True) %}
           <li>
             
             <div class="plan-details">

@@ -5,10 +5,10 @@ import io
 import json
 import uuid
 from pathlib import Path
+import boto3
+
 from urllib.parse import urlparse
 
-import boto3
-import sqlalchemy
 from flask import (
     Blueprint,
     render_template,
@@ -20,10 +20,11 @@ from flask import (
     current_app,
     make_response
 )
-from sqlalchemy import func, or_
 
+from sqlalchemy import func, or_
 from application.extensions import db, flask_optimize
 from application.frontend.forms import LocalDevelopmentSchemeURLForm, LocalPlanURLForm, AddPlanForm, MakeJointPlanForm
+
 from application.models import (
     PlanningAuthority,
     LocalPlan,
@@ -48,7 +49,6 @@ def index():
 def planning_authority_list():
     planning_authorities = PlanningAuthority.query.order_by(PlanningAuthority.name).all()
     if request.method == 'POST':
-        print("Redirecting to ..........", request.form['local-authority-select'])
         return redirect(url_for('frontend.planning_authority', planning_authority=request.form['local-authority-select']))
     return render_template('planning-authority-list.html', planning_authorities=planning_authorities)
 
@@ -76,7 +76,7 @@ def local_plan(planning_authority):
         start_year = datetime.datetime(year=form.start_year.data, month=1, day=1)
         end_year = datetime.datetime(year=form.end_year.data, month=1, day=1)
         title = form.title.data
-        plan = LocalPlan(title=title, start_year=start_year, plan_start_year=start_year, plan_end_year=end_year)
+        plan = LocalPlan(title=title, plan_start_year=start_year, plan_end_year=end_year)
         plan.planning_authorities.append(pla)
         db.session.add(pla)
         db.session.commit()

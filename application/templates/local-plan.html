@@ -36,7 +36,7 @@
         </h2>
 
         <ul class="govuk-tabs__list">
-            {% for plan in planning_authority.sorted_plans() %}
+            {% for plan in planning_authority.sorted_plans(reverse=True) %}
                 <li class="govuk-tabs__list-item {% if plan.is_adopted() %}adopted-plan{% endif %}">
                     <a class="govuk-tabs__tab govuk-tabs__tab--selected" href="#plan_tab_{{ plan.id }}">
                         {{ plan.title }}
@@ -239,7 +239,7 @@
             </form>
         {% endmacro %}
 
-        {% for plan in planning_authority.sorted_plans() %}
+        {% for plan in planning_authority.sorted_plans(reverse=True) %}
             <section class="govuk-tabs__panel local-plan {% if plan.is_adopted() %}adopted-plan{% endif %}"
                      id="plan_tab_{{ plan.id }}">
                 <h2 class="govuk-heading-l editable-plan-title"

@@ -35,10 +35,10 @@ class LocalPlan(db.Model):
 
     housing_numbers = db.Column(JSON)
 
+    # These are so a user can indicate they've been unable to find data
     plan_period_found = db.Column(db.Boolean)
     housing_numbers_found = db.Column(db.Boolean)
 
-    start_year = db.Column(db.Date())
     published_date = db.Column(db.Date())
     submitted_date = db.Column(db.Date())
     sound_date = db.Column(db.Date())
@@ -55,24 +55,16 @@ class LocalPlan(db.Model):
         if self.plan_start_year is not None and other.plan_start_year is not None:
             return self.plan_start_year == other.plan_start_year
         else:
-            return self.ordered_states() == other.ordered_states()
+            return False
 
     def __lt__(self, other):
 
         if self.plan_start_year is not None and other.plan_start_year is not None:
             return self.plan_start_year < other.plan_start_year
-
         elif self.plan_start_year is not None and other.plan_start_year is None:
             return False
-        elif self.plan_start_year is None and other.plan_start_year is not None:
-            return True
         else:
-            self_states = self.ordered_states()
-            other_states = other.ordered_states()
-            if len(self_states) == 1 and len(other_states) == 1 and self_states[0].date > other_states[0].date:
-                return True
-            else:
-                return len(self_states) < len(other_states)
+            return True
 
     def latest_state(self):
         return self.ordered_states()[-1]
@@ -106,11 +98,11 @@ class LocalPlan(db.Model):
             return False
         return True
 
-        
     def ordered_states(self):
         states = []
-        if self.start_year is not None:
-            states.append(State(state='emerging', date=self.start_year))
+        if not self.has_pins_data():
+            date = self.plan_start_year if self.plan_start_year else None
+            states.append(State(state='emerging', date=date))
         if self.published_date is not None:
             states.append(State(state='published', date=self.published_date))
         if self.submitted_date is not None:
@@ -138,19 +130,11 @@ class LocalPlan(db.Model):
         return data
 
     def is_emerging(self):
-        return self.start_year is not None and all(d is None for d in [self.published_date, self.submitted_date, self.sound_date, self.adopted_date])
+        return all(d is None for d in [self.published_date, self.submitted_date, self.sound_date, self.adopted_date])
 
     def covers_years(self, from_, to):
         dates = [s.date for s in self.ordered_states()]
         return from_ >= dates[0] or to <= dates[-1]
-
-    def get_housing_numbers(self):
-        housing_numbers = []
-        for doc in self.plan_documents:
-            for fact in doc.facts:
-                if 'HOUSING' in fact.fact_type:
-                    housing_numbers.append(fact)
-        return housing_numbers
 
 
 class PlanningAuthority(db.Model):
@@ -175,10 +159,10 @@ class PlanningAuthority(db.Model):
     def sorted_hdt(self, reverse=False):
         return sorted(self.housing_delivery_tests, reverse=reverse)
 
-    def sorted_plans(self):
+    def sorted_plans(self, reverse=False):
         if len(self.local_plans) == 1:
             return self.local_plans
-        return sorted(self.local_plans)
+        return sorted(self.local_plans, reverse=reverse)
 
     def get_local_scheme_documents(self):
         # TODO add a subtype on other documents to filter on rather than title
