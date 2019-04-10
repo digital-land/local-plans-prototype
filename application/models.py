@@ -75,7 +75,7 @@ class LocalPlan(db.Model):
     def is_joint_plan(self):
         return len(self.planning_authorities) > 1
 
-    def joint_plan_authorites(self, authority_id):
+    def joint_plan_authorities(self, authority_id):
         return [{'name': auth.name, 'id':auth.id} for auth in self.planning_authorities if authority_id != auth.id]
 
     def has_plan_period(self):
@@ -121,7 +121,7 @@ class LocalPlan(db.Model):
             'title': title,
             'plan_start_year': self.plan_start_year.strftime('%Y') if self.plan_start_year else None,
             'plan_end_year': self.plan_end_year.strftime('%Y') if self.plan_end_year else None,
-            'joint_plan_authorities': self.joint_plan_authorites(authority_id) if self.is_joint_plan() else None,
+            'joint_plan_authorities': self.joint_plan_authorities(authority_id) if self.is_joint_plan() else None,
             'url': self.url,
             'housing_numbers': self.housing_numbers,
             'plan_period_found': self.plan_period_found,
