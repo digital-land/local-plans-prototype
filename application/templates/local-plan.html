@@ -62,7 +62,8 @@
               "classes": "govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4",
               "id": "start-year_" + suffix,
               "name": "start-year_" + suffix,
-              "value": plan.plan_start_year | format_year
+              "value": plan.plan_start_year | format_year,
+              "pattern":"[0-9]*"
             }) }}
                 </div>
                 <div class="govuk-form-group">

@@ -107,14 +107,23 @@ def update_plan_period(planning_authority, plan_id):
     if plan is not None:
         if request.json.get('start-year'):
             start_year = int(request.json.get('start-year'))
-            plan.plan_start_year = datetime.datetime(start_year, 1, 1)
-            plan.plan_period_found = True
+            try:
+                plan.plan_start_year = datetime.datetime(start_year, 1, 1)
+                plan.plan_period_found = True
+            except ValueError as e:
+                current_app.logger.exception(e)
+                return jsonify({"BAD REQUEST": 400, "error": f"{plan.plan_start_year} not a valid year"})
         else:
             plan.plan_start_year = None
+
         if request.json.get('end-year'):
             end_year = int(request.json.get('end-year'))
-            plan.plan_end_year = datetime.datetime(end_year,1,1)
-            plan.plan_period_found = True
+            try:
+                plan.plan_end_year = datetime.datetime(end_year,1,1)
+                plan.plan_period_found = True
+            except ValueError as e:
+                current_app.logger.exception(e)
+                return jsonify({"BAD REQUEST": 400, "error": f"{plan.plan_end_year} not a valid year"})
         else:
             plan.plan_end_year = None
         if plan.plan_start_year is None and plan.plan_end_year is None:
@@ -123,7 +132,7 @@ def update_plan_period(planning_authority, plan_id):
         db.session.commit()
         resp = {"OK": 200, "plan": plan.to_dict(pla.id)}
     else:
-        resp = {"OK": 204, "error": "Can't find that plan"}
+        resp = {"OK": 404, "error": "Can't find that plan"}
     return jsonify(resp)
 
 
