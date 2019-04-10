@@ -16,6 +16,7 @@
     <div class="govuk-grid-column-two-thirds">
       <span class="govuk-caption-xl">Local plans</span>
       <h1 class="govuk-heading-xl">Current local plans</h1>
+      <p class="govuk-body">A list of the current local plans by planning authority. Where we know about it we have included the emerging plan.</p>
     </div>
   </div>
 
@@ -47,13 +48,15 @@
         <ul class="govuk-list lps-table-view__list">
           {% for plan in planning_authority.sorted_plans() %}
           <li>
+            
             <div class="plan-details">
-              <a class="plan-details__item local-plan-id" href="{{ url_for('frontend.local_plan', planning_authority= planning_authority.id, _anchor=plan.title ) }}">{{ plan.title }}</a>
-               {% set latest_state = plan.latest_state() %}
+              {% set latest_state = plan.latest_state() %}
               <span class="stage-tag plan-details__item {% if plan.is_adopted() %}is-adopted{% endif %}">{{ latest_state.state }}</span>
-              <span class="plan-details__item">{% if not plan.is_emerging() %}{{ latest_state.date | format_month_and_year }}{% endif %}</span>
-              <span class="plan-details__item plan-no-of-docs">{{ plan.plan_documents|length }} associated documents</span>
+              <span class="plan-details__item plan-details__state-date">{% if not plan.is_emerging() %}{{ latest_state.date | format_month_and_year }}{% endif %}</span>
+              <a class="plan-details__item local-plan-id" href="{{ url_for('frontend.local_plan', planning_authority= planning_authority.id, _anchor=plan.title ) }}">{{ plan.title }}</a>
+              
             </div>
+            <span class="plan-details__item plan-no-of-docs">{{ plan.plan_documents|length }} associated documents</span>
           </li>
           {% endfor %}
         </ul>

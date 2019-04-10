@@ -22,6 +22,10 @@
     display: inline-block;
     min-width: govuk-em(100, 19);
     margin-right: 15px;
+
+    @include govuk-media-query($from: 1000px) {
+      margin-left: 10px;
+    }
   }
 
   .plan-details__item {
@@ -43,14 +47,19 @@
     }
   }
 
+  .plan-details__state-date {
+    box-sizing: border-box;
+    width: govuk-em(90, 19);
+    padding-left: 5px;
+  }
+
   .plan-no-of-docs {
     @include govuk-font(16, $line-height: 25px);
     margin-left: 5px;
 
     @include govuk-media-query($from: 850px) {
       margin-left: 0;
-      padding-top: 3px;
-      float: right;
+      padding-top: 2px;
     }
   }
 }
@@ -62,6 +71,10 @@
 
 .lps-table-view__list {
   margin-bottom: 0;
+
+  li:first-child {
+    margin-bottom: 10px;
+  }
 
   li:last-child {
     margin-bottom: 0;

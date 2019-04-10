@@ -6326,6 +6326,12 @@
   margin-right: 15px;
 }
 
+@media (min-width: 62.5em) {
+  .lps-table-view__row .local-plan-id {
+    margin-left: 10px;
+  }
+}
+
 .lps-table-view__row .plan-details__item {
   display: inline-block;
 }
@@ -6343,6 +6349,12 @@
 
 .lps-table-view__row .stage-tag.is-adopted {
   background: #005ea5;
+}
+
+.lps-table-view__row .plan-details__state-date {
+  box-sizing: border-box;
+  width: 4.73684em;
+  padding-left: 5px;
 }
 
 .lps-table-view__row .plan-no-of-docs {
@@ -6380,8 +6392,7 @@
 @media (min-width: 53.125em) {
   .lps-table-view__row .plan-no-of-docs {
     margin-left: 0;
-    padding-top: 3px;
-    float: right;
+    padding-top: 2px;
   }
 }
 
@@ -6392,6 +6403,10 @@
 
 .lps-table-view__list {
   margin-bottom: 0;
+}
+
+.lps-table-view__list li:first-child {
+  margin-bottom: 10px;
 }
 
 .lps-table-view__list li:last-child {
