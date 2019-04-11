@@ -84,6 +84,9 @@
                 "pattern":"[0-9]*"
               }) }}
                   </div>
+                  <span class="govuk-error-message">
+                    <span class="govuk-visually-hidden">Error:</span> You must enter both a start and end year
+                  </span>
                 </fieldset>
 
                 <div class="govuk-form-group">
@@ -992,61 +995,6 @@
             });
         }
 
-        // -----------------------
-        // handle plan period form
-        // -----------------------
-        const ppFormContainers = document.querySelectorAll(".missing-plan-period");
-
-        ppFormContainers.forEach((ppFormContainer) => {
-            const editableSection = new EditableSection(ppFormContainer, {
-                allClickable: true,
-                activeClass: "active"
-            });
-
-            const extractData = (form) => {
-                return data = {
-                    "start-year": form.querySelector("[name^='start-year']").value,
-                    "end-year": form.querySelector("[name^='end-year']").value
-                };
-            };
-
-            const successfullySaved = (data) => {
-                const section = editableSection.section;
-                section.classList.add("has-been-set");
-                const planPeriod = section.parentNode.querySelector(".edit-plan-period");
-                planPeriod.classList.remove("not-set");
-                const startyear = planPeriod.querySelector("[data-year-type='start']");
-                const endyear = planPeriod.querySelector("[data-year-type='end']");
-                startyear.textContent = data.plan.plan_start_year;
-                endyear.textContent = data.plan.plan_end_year;
-            };
-
-            editableSection.initialiseForm(extractData, successfullySaved);
-
-        });
-
-        // -------------------------
-        // make plan period editable
-        // -------------------------
-        const planPeriods = document.querySelectorAll(".edit-plan-period");
-        planPeriods.forEach((plan) => {
-            const editableSection = new EditableSection(plan);
-            const extractData = (form) => {
-                return data = {
-                    "start-year": form.querySelector("[name^='start-year']").value,
-                    "end-year": form.querySelector("[name^='end-year']").value
-                };
-            };
-            const onSuccessfulChange = (data) => {
-                const startyear = editableSection.section.querySelector("[data-year-type='start']");
-                const endyear = editableSection.section.querySelector("[data-year-type='end']");
-                startyear.textContent = data.plan.plan_start_year;
-                endyear.textContent = data.plan.plan_end_year;
-            }
-
-            editableSection.initialiseForm(extractData, onSuccessfulChange);
-        });
-
 
         // ---------------------------
         // handle plan policy url form
@@ -1248,6 +1196,16 @@
               return /^\d{4}$/.test(val);
             },
             "error": "Must be 4 numbers"
+          },
+          "plan-period": {
+            "validator": function(fields) {
+              if (fields[0].value !== "" && fields[1].value !== "") {
+                return true;
+              } else {
+                return false;
+              }
+            },
+            "error": "Both fields must be complete"
           }
         };
 
@@ -1280,14 +1238,25 @@
         };
 
         FormValidator.prototype.setupMulitpleFieldValidation = function(fields) {
-          console.log("set up multi field val");
+          const testName = this.tests[0];
+          this.form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if( !this.validators[testName].validator(fields) ) {
+              e.stopPropagation();
+              this.formGroup.classList.add("govuk-form-group--error");
+              console.log("not valid so stopping submit");
+            } else {
+              this.formGroup.classList.remove("govuk-form-group--error");
+            }
+          });
         }
 
         FormValidator.prototype.setupFieldValidation = function(field) {
           console.log(this.validators[this.tests[0]]);
+          const testName = this.tests[0];
           field.addEventListener('change', (e) => {
             // do some stuff to stop form submission
-            if ( !this.validators[this.tests[0]].validator(field)) {
+            if ( !this.validators[testName].validator(field)) {
               this.formGroup.classList.add("govuk-form-group--error");
             } else {
               this.formGroup.classList.remove("govuk-form-group--error");
@@ -1298,6 +1267,64 @@
         const toBeValidated = document.querySelectorAll('[data-form-validator]');
         nodeListForEach(toBeValidated, function(formGroup) {
           new FormValidator(formGroup).setup();
+        });
+
+        // NOTE
+        // submitting forms needs to come after form validation is set up
+
+        // -----------------------
+        // handle plan period form
+        // -----------------------
+        const ppFormContainers = document.querySelectorAll(".missing-plan-period");
+
+        ppFormContainers.forEach((ppFormContainer) => {
+            const editableSection = new EditableSection(ppFormContainer, {
+                allClickable: true,
+                activeClass: "active"
+            });
+
+            const extractData = (form) => {
+                return data = {
+                    "start-year": form.querySelector("[name^='start-year']").value,
+                    "end-year": form.querySelector("[name^='end-year']").value
+                };
+            };
+
+            const successfullySaved = (data) => {
+                const section = editableSection.section;
+                section.classList.add("has-been-set");
+                const planPeriod = section.parentNode.querySelector(".edit-plan-period");
+                planPeriod.classList.remove("not-set");
+                const startyear = planPeriod.querySelector("[data-year-type='start']");
+                const endyear = planPeriod.querySelector("[data-year-type='end']");
+                startyear.textContent = data.plan.plan_start_year;
+                endyear.textContent = data.plan.plan_end_year;
+            };
+
+            editableSection.initialiseForm(extractData, successfullySaved);
+
+        });
+
+        // -------------------------
+        // make plan period editable
+        // -------------------------
+        const planPeriods = document.querySelectorAll(".edit-plan-period");
+        planPeriods.forEach((plan) => {
+            const editableSection = new EditableSection(plan);
+            const extractData = (form) => {
+                return data = {
+                    "start-year": form.querySelector("[name^='start-year']").value,
+                    "end-year": form.querySelector("[name^='end-year']").value
+                };
+            };
+            const onSuccessfulChange = (data) => {
+                const startyear = editableSection.section.querySelector("[data-year-type='start']");
+                const endyear = editableSection.section.querySelector("[data-year-type='end']");
+                startyear.textContent = data.plan.plan_start_year;
+                endyear.textContent = data.plan.plan_end_year;
+            }
+
+            editableSection.initialiseForm(extractData, onSuccessfulChange);
         });
 
 

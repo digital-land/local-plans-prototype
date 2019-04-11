@@ -5441,6 +5441,21 @@
   display: block;
 }
 
+.govuk-fieldset.govuk-form-group--error {
+  padding-left: 15px;
+  border-left: 5px solid #b10e1e;
+}
+
+.govuk-fieldset.govuk-form-group--error .govuk-error-message {
+  margin-top: 15px;
+}
+
+@media (min-width: 40.0625em) {
+  .govuk-fieldset.govuk-form-group--error .govuk-error-message {
+    margin-top: 20px;
+  }
+}
+
 .add-url-form {
   box-sizing: border-box;
   display: block;

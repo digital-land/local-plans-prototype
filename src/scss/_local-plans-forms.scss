@@ -37,6 +37,15 @@
   display: block;
 }
 
+.govuk-fieldset.govuk-form-group--error {
+  padding-left: $govuk-gutter-half;
+  border-left: 5px solid govuk-colour("red");
+
+  .govuk-error-message {
+    @include govuk-responsive-margin(4, "top");
+  }
+}
+
 .add-url-form {
   box-sizing: border-box;
   display: block;
