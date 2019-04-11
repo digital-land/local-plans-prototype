@@ -8,6 +8,10 @@
     margin-bottom: $govuk-gutter-half;
   }
 
+  .govuk-fieldset {
+    @include govuk-responsive-margin(6, "bottom");
+  }
+
   .govuk-form-group:not(:last-of-type) {
     margin-bottom: $govuk-gutter-half;
   }
@@ -23,6 +27,14 @@
 
 .govuk-form--single-checkbox {
   margin-bottom: $govuk-gutter;
+}
+
+.govuk-error-message {
+  display: none;
+}
+
+.govuk-form-group--error > .govuk-error-message {
+  display: block;
 }
 
 .add-url-form {

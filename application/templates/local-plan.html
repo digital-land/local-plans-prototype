@@ -56,26 +56,36 @@
                   action="{{ url_for('frontend.update_plan_period', planning_authority=planning_authority.id, plan_id=plan.id) }}"
                   data-plan-id="{{ plan.id }}" method="POST">
                 <h3 class="govuk-heading-s">{{ heading }}</h3>
-                <div class="govuk-form-group">
-                    {{ govukLabel({ "label": "Start year", "for": "start_year_" + suffix }) }}
-                    {{ govukTextInput({
-              "classes": "govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4",
-              "id": "start-year_" + suffix,
-              "name": "start-year_" + suffix,
-              "value": plan.plan_start_year | format_year,
-              "pattern":"[0-9]*"
-            }) }}
-                </div>
-                <div class="govuk-form-group">
-                    {{ govukLabel({ "label": "End year", "for": "end_year_" + suffix }) }}
-                    {{ govukTextInput({
-              "classes": "govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4",
-              "id": "end-year_" + suffix,
-              "name": "end-year_" + suffix,
-              "value": plan.plan_end_year | format_year,
-              "pattern":"[0-9]*"
-            }) }}
-                </div>
+
+                <fieldset class="govuk-fieldset" data-form-validator="plan-period">
+                  <div class="govuk-form-group" data-form-validator="year">
+                      {{ govukLabel({ "label": "Start year", "for": "start_year_" + suffix }) }}
+                      <span class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> You must enter a 4 digit year
+                      </span>
+                      {{ govukTextInput({
+                "classes": "govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4",
+                "id": "start-year_" + suffix,
+                "name": "start-year_" + suffix,
+                "value": plan.plan_start_year | format_year,
+                "pattern":"[0-9]*"
+              }) }}
+                  </div>
+                  <div class="govuk-form-group" data-form-validator="year">
+                      {{ govukLabel({ "label": "End year", "for": "end_year_" + suffix }) }}
+                      <span class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> You must enter a 4 digit year
+                      </span>
+                      {{ govukTextInput({
+                "classes": "govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4",
+                "id": "end-year_" + suffix,
+                "name": "end-year_" + suffix,
+                "value": plan.plan_end_year | format_year,
+                "pattern":"[0-9]*"
+              }) }}
+                  </div>
+                </fieldset>
+
                 <div class="govuk-form-group">
                     <input type="submit" class="govuk-button dlf-secondary-button" value="Save plan period">
                     <button class="cancel-btn">Cancel</button>
@@ -1214,6 +1224,80 @@
             console.log(e.target.dataset.dataType, e.target.checked);
             postJSONRequest(form.action, data, (respData) => console.log(respData));
           });
+        });
+
+
+
+        // ---------------
+        // Form Validation
+        // ---------------
+        function nodeListForEach (nodes, callback) {
+          if (window.NodeList.prototype.forEach) {
+            return nodes.forEach(callback)
+          }
+          for (var i = 0; i < nodes.length; i++) {
+            callback.call(window, nodes[i], i, nodes)
+          }
+        }
+
+
+        const $validators = {
+          "year": {
+            "validator": function(field) {
+              const val = field.value;
+              return /^\d{4}$/.test(val);
+            },
+            "error": "Must be 4 numbers"
+          }
+        };
+
+
+        function FormValidator (formGroup) {
+          this.formGroup = formGroup;
+          this.validators = $validators;
+
+          if (formGroup.dataset.formValidator !== "") {
+            this.tests = formGroup.dataset.formValidator.split(" ");
+          } else {
+            console.log("no validators set");
+          }
+          
+          // need this to be able to stop submission
+          this.form = formGroup.closest('form');
+          this.submitButton = this.form.querySelector("input[type='submit']");
+
+        }
+
+        FormValidator.prototype.setup = function() {
+          //console.log(this.validators);
+          // should probably handle more than just input fields
+          const fields = this.formGroup.querySelectorAll("input");
+          if (fields.length > 1) {
+            this.setupMulitpleFieldValidation(fields);
+          } else {
+            this.setupFieldValidation(fields[0]);
+          }
+        };
+
+        FormValidator.prototype.setupMulitpleFieldValidation = function(fields) {
+          console.log("set up multi field val");
+        }
+
+        FormValidator.prototype.setupFieldValidation = function(field) {
+          console.log(this.validators[this.tests[0]]);
+          field.addEventListener('change', (e) => {
+            // do some stuff to stop form submission
+            if ( !this.validators[this.tests[0]].validator(field)) {
+              this.formGroup.classList.add("govuk-form-group--error");
+            } else {
+              this.formGroup.classList.remove("govuk-form-group--error");
+            }
+          });
+        }
+
+        const toBeValidated = document.querySelectorAll('[data-form-validator]');
+        nodeListForEach(toBeValidated, function(formGroup) {
+          new FormValidator(formGroup).setup();
         });
 
 
