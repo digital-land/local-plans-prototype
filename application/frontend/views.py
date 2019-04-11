@@ -283,12 +283,13 @@ def update_local_scheme_url(planning_authority):
     return render_template('update-scheme-url.html', planning_authority=pla, form=form)
 
 
+# TODO this a form only submit don't allow json as well and make input required
 @frontend.route('/local-plans/<planning_authority>/<local_plan>/update-plan-url', methods=['GET', 'POST'])
 def update_local_plan_url(planning_authority, local_plan):
     pla = PlanningAuthority.query.get(planning_authority)
     plan = LocalPlan.query.get(local_plan)
-
-    if request.method == 'POST' and request.json['policy-url'] is not None:
+    policy_url = request.json.get('policy-url', '')
+    if request.method == 'POST' and policy_url:
         plan.url = request.json['policy-url']
         db.session.add(pla)
         db.session.commit()
