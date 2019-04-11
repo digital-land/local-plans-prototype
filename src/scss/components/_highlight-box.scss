@@ -89,3 +89,10 @@
     }
   }
 }
+
+// Review whether this should be a highlight box
+.highlight-box--filters {
+  padding: $govuk-gutter-half;
+  border: 0;
+  background: govuk-colour("grey-3");
+}
