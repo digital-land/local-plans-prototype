@@ -232,8 +232,11 @@
                 {% else %}
                   {% set source_document = "" %}
                 {% endif %}
-                <div class="govuk-form-group">
+                <div class="govuk-form-group" data-form-validator="isUrl">
                     <label class="govuk-label" for="url-{{ suffix }}">Source document url</label>
+                    <span class="govuk-error-message">
+                      <span class="govuk-visually-hidden">Error:</span> You must enter a valid URL
+                    </span>
                     <input class="govuk-input" id="url-{{ suffix }}" name="url-{{ suffix }}" type="text"
                            value="{{ source_document }}">
 
@@ -1188,6 +1191,11 @@
           }
         }
 
+        function isUrl(s) {
+          var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+          return regexp.test(s);
+        }
+
 
         const $validators = {
           "year": {
@@ -1206,6 +1214,13 @@
               }
             },
             "error": "Both fields must be complete"
+          },
+          "isUrl": {
+            "validator": function(field) {
+              const val = field.value;
+              return isUrl(val);
+            },
+            "error": "Must be a valid URL"
           }
         };
 
