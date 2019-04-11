@@ -99,9 +99,14 @@ EditableSection.prototype.initialiseForm = function (extractDataFunc, succCb, er
     const endpoint = form.action;
     const data = extractDataFunc(form);
 
+    const isVisible = function(el) {
+      return el.clientWidth > 0
+    }
+
     const hasNoFormGroupErrors = function() {
-      const formGroupErrors = form.querySelectorAll(".govuk-form-group--error");
-      if (formGroupErrors.length > 0) {
+      const formGroupErrors = Array.from(form.querySelectorAll(".govuk-form-group--error"));
+      if (formGroupErrors.length > 0 && formGroupErrors.some(isVisible)) {
+        console.log("something with an error must be visible");
         return false;
       }
       return true;
