@@ -40,6 +40,19 @@
   </div>
 
   <h2 class="govuk-heading-l">All Planning authorities</h2>
+
+  <div class="filters-section highlight-box highlight-box--filters highlight-box--flush">
+    <h3 class="govuk-heading-s">Filter list</h3>
+    <div class="govuk-checkboxes">
+      <div class="govuk-checkboxes__item">
+        <input class="govuk-checkboxes__input" id="missing-data-filter" name="missing-data-filter" type="checkbox" value="only show plans with gaps in the data">
+        <label class="govuk-label govuk-checkboxes__label" for="missing-data-filter">
+          Only show plans with gaps in the data
+        </label>
+      </div>
+    </div>
+  </div>
+
   <dl class="lps-table-view">
     {% for planning_authority in planning_authorities %}
     <div class="govuk-grid-row lps-table-view__row">
@@ -88,6 +101,44 @@
       }
     })
   }).call(this, window);
+
+  // ------------------------------
+  // Filter out all completed plans
+  // ------------------------------
+
+  const allPlanningAuthorityRows = document.querySelectorAll(".lps-table-view__row");
+
+  function hideAllCompletePlans() {
+    console.log("filter list");
+    allPlanningAuthorityRows.forEach((pla) => {
+      const plans = pla.querySelectorAll("li");
+
+      pla.classList.add("hidden-by-filter");
+      plans.forEach((plan) => {
+        if (!plan.querySelector(".plan-details__missing-data")) {
+          plan.classList.add("hidden-by-filter");
+        } else {
+          pla.classList.remove("hidden-by-filter");
+        }
+      });
+    });
+  }
+
+  function showAllPlans() {
+    const allFilteredOut = Array.from(document.querySelectorAll(".hidden-by-filter"));
+    allFilteredOut.forEach((el) => el.classList.remove("hidden-by-filter"));
+  }
+
+  
+  const missingDataFilter = document.getElementById("missing-data-filter");
+  missingDataFilter.addEventListener("click", (e) => {
+    if (missingDataFilter.checked) {
+      hideAllCompletePlans();
+    } else {
+      showAllPlans();
+    }
+  });
+
 </script>
 {% endblock %}
 
