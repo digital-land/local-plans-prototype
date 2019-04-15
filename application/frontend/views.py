@@ -20,7 +20,8 @@ from flask import (
     current_app,
     make_response
 )
-from sqlalchemy import func, or_
+from sqlalchemy import func, or_, and_, String, cast
+from sqlalchemy.sql.operators import isnot
 
 from application.extensions import db, flask_optimize
 from application.frontend.forms import LocalDevelopmentSchemeURLForm, LocalPlanURLForm, AddPlanForm, MakeJointPlanForm
@@ -515,7 +516,14 @@ def planning_authority_from_document():
 @frontend.route('/local-plans/lucky-dip')
 def lucky_dip():
     import random
-    query = db.session.query(LocalPlan).filter(or_(LocalPlan.plan_start_year.is_(None), LocalPlan.plan_end_year.is_(None), LocalPlan.housing_numbers.is_(None)))
+    query = db.session.query(LocalPlan).filter(or_(LocalPlan.plan_start_year.is_(None),
+                                                   LocalPlan.plan_end_year.is_(None),
+                                                   LocalPlan.housing_numbers.is_(None),
+                                                   and_(LocalPlan.housing_numbers.isnot(None),
+                                                        LocalPlan.housing_numbers['image_url'].is_(None)),
+                                                   and_(LocalPlan.housing_numbers.isnot(None),
+                                                        cast(LocalPlan.housing_numbers['source_document'], String) == '')))
+
     row_count = int(query.count())
     local_plan = query.offset(int(row_count * random.random())).first()
     return render_template('lucky-dip.html', local_plan=local_plan, plan_id=str(local_plan.id))

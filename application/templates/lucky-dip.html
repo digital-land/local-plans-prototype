@@ -26,8 +26,14 @@
                 {% if not local_plan.has_plan_period() %}
                     <li>No plan period for this plan</li>
                 {% endif %}
-                 {% if not local_plan.has_housing_numbers() %}
+                {% if not local_plan.has_housing_numbers() %}
                     <li>No housing numbers for this plan</li>
+                {% endif %}
+                {% if local_plan.has_housing_numbers() and not local_plan.housing_numbers.get('image_url') %}
+                     <li>No screenshot for housing numbers</li>
+                {% endif %}
+                {% if local_plan.has_housing_numbers() and not local_plan.housing_numbers.get('source_document') %}
+                     <li>No url for housing numbers source document</li>
                 {% endif %}
             </ul>
         {% endfor %}
