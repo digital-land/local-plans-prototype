@@ -106,7 +106,6 @@ class LocalPlan(db.Model):
             return False
         return True
 
-        
     def ordered_states(self):
         states = []
         if self.start_year is not None:
@@ -127,14 +126,18 @@ class LocalPlan(db.Model):
             'id': self.id,
             'is_adopted': self.is_adopted(),
             'title': title,
-            'plan_start_year': self.plan_start_year.strftime('%Y') if self.plan_start_year else None,
-            'plan_end_year': self.plan_end_year.strftime('%Y') if self.plan_end_year else None,
-            'joint_plan_authorities': self.joint_plan_authorities(authority_id) if self.is_joint_plan() else None,
-            'url': self.url,
-            'housing_numbers': self.housing_numbers,
-            'plan_period_found': self.plan_period_found,
-            'housing_numbers_found': self.housing_numbers_found
+            'joint_plan_authorities': self.joint_plan_authorities(authority_id) if self.is_joint_plan() else [],
+            'url': self.url
         }
+        if self.housing_numbers:
+            data['housing_numbers'] = self.housing_numbers
+        else:
+            data['housing_numbers_found'] = False
+        if self.plan_start_year and self.plan_end_year:
+            data['plan_start_year'] = self.plan_start_year.strftime('%Y')
+            data['plan_end_year'] = self.plan_end_year.strftime('%Y')
+        else:
+            data['plan_period_found'] = False
         return data
 
     def is_emerging(self):
@@ -144,6 +147,7 @@ class LocalPlan(db.Model):
         dates = [s.date for s in self.ordered_states()]
         return from_ >= dates[0] or to <= dates[-1]
 
+    # TODO I think this can be removed
     def get_housing_numbers(self):
         housing_numbers = []
         for doc in self.plan_documents:
