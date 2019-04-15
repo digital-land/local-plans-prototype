@@ -569,16 +569,23 @@ def data_as_json():
 def data_as_csv():
     planning_authorities = PlanningAuthority.query.all()
     data = []
-    for pla in planning_authorities:
-        for fact in pla.gather_facts(as_dict=True):
-            fact.pop('id')
-            fact.pop('document')
-            fact.pop('fact_type_display')
-            if fact.get('from') is not None and fact.get('to') is not None:
-                fact.pop('fact')
-            data.append(fact)
+    for planning_authority in planning_authorities:
+        for plan in planning_authority.local_plans:
+            d = {'planning_authority': planning_authority.id, 'id': str(plan.id)}
+            if plan.housing_numbers is not None:
+                d['plan_title'] = plan.title
+                d['housing_number_type'] = plan.housing_numbers['housing_number_type']
+                if 'range' in plan.housing_numbers['housing_number_type'].lower():
+                    d['min'] = plan.housing_numbers['min']
+                    d['max'] = plan.housing_numbers['max']
+                else:
+                    d['number'] = plan.housing_numbers['number']
+                d['source_document'] = plan.housing_numbers.get('source_document')
+                d['screenshot'] = plan.housing_numbers.get('image_url')
+                d['created_date'] = plan.housing_numbers.get('created_date')
+            data.append(d)
 
-    fieldnames = ['planning_authority', 'plan', 'fact_type', 'fact', 'from', 'to', 'document_url', 'notes', 'created_date', 'screenshot']
+    fieldnames = ['planning_authority', 'plan_title', 'id', 'start_year', 'end_year', 'housing_number_type', 'number', 'min', 'max', 'source_document', 'notes', 'created_date', 'screenshot']
 
     with io.StringIO() as output:
         writer = csv.DictWriter(output, fieldnames=fieldnames, quoting=csv.QUOTE_ALL, lineterminator="\n")

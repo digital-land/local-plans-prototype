@@ -121,11 +121,10 @@ class LocalPlan(db.Model):
         return states
 
     def to_dict(self, authority_id):
-        title = self.title if self.title else self.local_plan
         data = {
             'id': self.id,
             'is_adopted': self.is_adopted(),
-            'title': title,
+            'title': self.title if self.title else self.local_plan,
             'joint_plan_authorities': self.joint_plan_authorities(authority_id) if self.is_joint_plan() else [],
             'url': self.url
         }
