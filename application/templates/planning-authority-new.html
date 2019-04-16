@@ -1,8 +1,50 @@
 <!DOCTYPE html>
 
 <body>
-    <figure>
-        {{ chart }}
-    </figure>
+    <h1>New planning authority page</h1>
+
+    <h2>Create chart like layout of this information</h2>
+    <p>
+        {% if first_start_year %}
+            Chart range from {{ first_start_year }}
+        {% endif %}
+        {% if last_end_year %}
+            to {{ last_end_year }}
+        {% endif %}
+    </p>
+
+    {% if first_start_year and  last_end_year %}
+        <p>Number of years spanned {{ last_end_year - first_start_year }}</p>
+    {% endif %}
+
+    <ul>
+        {% for plan in sorted_plans  %}
+            <li>{{ plan.title }}
+                {% if plan.has_plan_period() %}
+                    {{ plan.plan_start_year.year }} {{ plan.plan_end_year.year }}
+                {% else %}
+                    - no plan period
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Housing numbers</h2>
+
+    <ul>
+        {% for plan in sorted_plans  %}
+            <li>{{ plan.title }}
+                {% if plan.has_housing_numbers() %}
+                    <ul>
+                    {% for key, val in plan.housing_numbers.items() %}
+                        <li>{{ key}} - {{ val }}</li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    - no housing numbers
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
 </body>
 </html>

@@ -36,7 +36,6 @@ class LocalPlan(db.Model):
     plan_period_found = db.Column(db.Boolean)
     housing_numbers_found = db.Column(db.Boolean)
 
-    start_year = db.Column(db.Date())
     published_date = db.Column(db.Date())
     submitted_date = db.Column(db.Date())
     sound_date = db.Column(db.Date())
@@ -179,6 +178,26 @@ class PlanningAuthority(db.Model):
         docs = [doc for doc in self.other_documents if doc.title is not None and 'local development scheme' == doc.title.lower()]
         return docs
 
+    def get_earliest_plan_start_year(self):
+        try:
+            first = next(p for p in self.sorted_plans() if p.plan_start_year is not None)
+            if first is not None:
+                return first.plan_start_year.year
+            else:
+                return None
+        except StopIteration:
+            return None
+
+    def get_latest_plan_end_year(self):
+        try:
+            first = next(p for p in self.sorted_plans(reverse=True) if p.plan_end_year is not None)
+            if first is not None:
+                return first.plan_end_year.year
+            else:
+                return None
+        except StopIteration:
+            return None
+
     def gather_facts(self, as_dict=False):
 
         facts = []
@@ -277,7 +296,7 @@ class State:
         self.date = date
 
     def to_dict(self):
-        return {'state': self.state, 'date': self.date.strftime('%Y')}
+        return {'state': self.state, 'date': self.date.strftime('%Y') if self.date else None}
 
     def __lt__(self, other):
         return self.date < other.date

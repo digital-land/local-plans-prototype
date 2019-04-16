@@ -62,6 +62,23 @@ def planning_authority(planning_authority):
     return render_template('planning-authority.html', planning_authority=pla, facts=facts)
 
 
+@frontend.route('/planning-authority/<planning_authority>/new')
+def planning_authority_new(planning_authority):
+    planning_auth = PlanningAuthority.query.get(planning_authority)
+    sorted_plans = planning_auth.sorted_plans()
+    start_year = planning_auth.get_earliest_plan_start_year()
+    end_year = planning_auth.get_latest_plan_end_year()
+
+    context = {
+        'planning_authority': planning_auth,
+        'first_start_year': start_year,
+        'last_end_year': end_year,
+        'sorted_plans': sorted_plans
+    }
+
+    return render_template('planning-authority-new.html', **context)
+
+
 @frontend.route('/local-plans', methods=['GET', 'POST'])
 def list_all():
     planning_authorities = PlanningAuthority.query.order_by(PlanningAuthority.name).all()
@@ -639,7 +656,7 @@ def map_of_data():
 @frontend.route('/local-plans/<planning_authority>/<local_plan>/make-joint-plan', methods=['GET', 'POST'])
 def make_joint_plan(planning_authority, local_plan):
     planning_authority = PlanningAuthority.query.get(planning_authority)
-    link_to_planning_authority = url_for('frontend.local_plan', planning_authority=planning_authority.id, _anchor=local_plan);
+    link_to_planning_authority = url_for('frontend.local_plan', planning_authority=planning_authority.id, _anchor=local_plan)
     planning_authorities = PlanningAuthority.query.filter(PlanningAuthority.id != planning_authority.id).order_by(PlanningAuthority.name).all()
     plan = LocalPlan.query.get(local_plan)
     form = MakeJointPlanForm()
