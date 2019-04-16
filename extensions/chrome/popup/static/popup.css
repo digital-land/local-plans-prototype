@@ -5407,6 +5407,16 @@
   margin-bottom: 15px;
 }
 
+.govuk-form--contained .govuk-fieldset {
+  margin-bottom: 20px;
+}
+
+@media (min-width: 40.0625em) {
+  .govuk-form--contained .govuk-fieldset {
+    margin-bottom: 30px;
+  }
+}
+
 .govuk-form--contained .govuk-form-group:not(:last-of-type) {
   margin-bottom: 15px;
 }
@@ -5421,6 +5431,29 @@
 
 .govuk-form--single-checkbox {
   margin-bottom: 30px;
+}
+
+.govuk-error-message {
+  display: none;
+}
+
+.govuk-form-group--error > .govuk-error-message {
+  display: block;
+}
+
+.govuk-fieldset.govuk-form-group--error {
+  padding-left: 15px;
+  border-left: 5px solid #b10e1e;
+}
+
+.govuk-fieldset.govuk-form-group--error .govuk-error-message {
+  margin-top: 15px;
+}
+
+@media (min-width: 40.0625em) {
+  .govuk-fieldset.govuk-form-group--error .govuk-error-message {
+    margin-top: 20px;
+  }
 }
 
 .add-url-form {

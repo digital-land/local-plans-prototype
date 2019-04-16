@@ -99,34 +99,51 @@ EditableSection.prototype.initialiseForm = function (extractDataFunc, succCb, er
     const endpoint = form.action;
     const data = extractDataFunc(form);
 
-    form.classList.add("posting");
-    if (form.enctype !== undefined && form.enctype == "multipart/form-data"){
-      postFormDataRequest(endpoint, data, function(respData) {
-        form.classList.remove("posting");
+    const isVisible = function(el) {
+      return el.clientWidth > 0
+    }
 
-        that.exitEditMode();
-        that.trigger.addEventListener("click", that.editHandler);
-        if (succCb && typeof succCb === "function") {
-          succCb(respData);
-        }
-      });
-    } else {
-      postJSONRequest(endpoint, data, function (respData) {
-        // handle the response
-        form.classList.remove("posting");
-        if (respData["OK"] === 200) {
+    const hasNoFormGroupErrors = function() {
+      const formGroupErrors = Array.from(form.querySelectorAll(".govuk-form-group--error"));
+      if (formGroupErrors.length > 0 && formGroupErrors.some(isVisible)) {
+        console.log("something with an error must be visible");
+        return false;
+      }
+      return true;
+    }
+
+    if (hasNoFormGroupErrors()) {
+
+      form.classList.add("posting");
+      if (form.enctype !== undefined && form.enctype == "multipart/form-data"){
+        postFormDataRequest(endpoint, data, function(respData) {
+          form.classList.remove("posting");
+
           that.exitEditMode();
           that.trigger.addEventListener("click", that.editHandler);
           if (succCb && typeof succCb === "function") {
             succCb(respData);
           }
-        } else {
-          if (errCb && typeof errCb === "function") {
-            // to do: handle errors better
-            errCb();
+        });
+      } else {
+        postJSONRequest(endpoint, data, function (respData) {
+          // handle the response
+          form.classList.remove("posting");
+          if (respData["OK"] === 200) {
+            that.exitEditMode();
+            that.trigger.addEventListener("click", that.editHandler);
+            if (succCb && typeof succCb === "function") {
+              succCb(respData);
+            }
+          } else {
+            if (errCb && typeof errCb === "function") {
+              // to do: handle errors better
+              errCb();
+            }
           }
-        }
-      });
-    }
+        });
+      }
+
+    } // end has errors check
   });
 };

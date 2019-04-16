@@ -21,7 +21,9 @@ from flask import (
     make_response
 )
 
-from sqlalchemy import func, or_
+from sqlalchemy import func, or_, and_, String, cast
+from sqlalchemy.sql.operators import isnot
+
 from application.extensions import db, flask_optimize
 from application.frontend.forms import LocalDevelopmentSchemeURLForm, LocalPlanURLForm, AddPlanForm, MakeJointPlanForm
 
@@ -107,14 +109,23 @@ def update_plan_period(planning_authority, plan_id):
     if plan is not None:
         if request.json.get('start-year'):
             start_year = int(request.json.get('start-year'))
-            plan.plan_start_year = datetime.datetime(start_year, 1, 1)
-            plan.plan_period_found = True
+            try:
+                plan.plan_start_year = datetime.datetime(start_year, 1, 1)
+                plan.plan_period_found = True
+            except ValueError as e:
+                current_app.logger.exception(e)
+                return jsonify({"BAD REQUEST": 400, "error": f"{plan.plan_start_year} not a valid year"})
         else:
             plan.plan_start_year = None
+
         if request.json.get('end-year'):
             end_year = int(request.json.get('end-year'))
-            plan.plan_end_year = datetime.datetime(end_year,1,1)
-            plan.plan_period_found = True
+            try:
+                plan.plan_end_year = datetime.datetime(end_year,1,1)
+                plan.plan_period_found = True
+            except ValueError as e:
+                current_app.logger.exception(e)
+                return jsonify({"BAD REQUEST": 400, "error": f"{plan.plan_end_year} not a valid year"})
         else:
             plan.plan_end_year = None
         if plan.plan_start_year is None and plan.plan_end_year is None:
@@ -123,7 +134,7 @@ def update_plan_period(planning_authority, plan_id):
         db.session.commit()
         resp = {"OK": 200, "plan": plan.to_dict(pla.id)}
     else:
-        resp = {"OK": 204, "error": "Can't find that plan"}
+        resp = {"OK": 404, "error": "Can't find that plan"}
     return jsonify(resp)
 
 
@@ -274,12 +285,13 @@ def update_local_scheme_url(planning_authority):
     return render_template('update-scheme-url.html', planning_authority=pla, form=form)
 
 
+# TODO this a form only submit don't allow json as well and make input required
 @frontend.route('/local-plans/<planning_authority>/<local_plan>/update-plan-url', methods=['GET', 'POST'])
 def update_local_plan_url(planning_authority, local_plan):
     pla = PlanningAuthority.query.get(planning_authority)
     plan = LocalPlan.query.get(local_plan)
-
-    if request.method == 'POST' and request.json['policy-url'] is not None:
+    policy_url = request.json.get('policy-url', '')
+    if request.method == 'POST' and policy_url:
         plan.url = request.json['policy-url']
         db.session.add(pla)
         db.session.commit()
@@ -505,7 +517,14 @@ def planning_authority_from_document():
 @frontend.route('/local-plans/lucky-dip')
 def lucky_dip():
     import random
-    query = db.session.query(LocalPlan).filter(or_(LocalPlan.plan_start_year.is_(None), LocalPlan.plan_end_year.is_(None), LocalPlan.housing_numbers.is_(None)))
+    query = db.session.query(LocalPlan).filter(or_(LocalPlan.plan_start_year.is_(None),
+                                                   LocalPlan.plan_end_year.is_(None),
+                                                   LocalPlan.housing_numbers.is_(None),
+                                                   and_(LocalPlan.housing_numbers.isnot(None),
+                                                        LocalPlan.housing_numbers['image_url'].is_(None)),
+                                                   and_(LocalPlan.housing_numbers.isnot(None),
+                                                        cast(LocalPlan.housing_numbers['source_document'], String) == '')))
+
     row_count = int(query.count())
     local_plan = query.offset(int(row_count * random.random())).first()
     return render_template('lucky-dip.html', local_plan=local_plan, plan_id=str(local_plan.id))
@@ -551,16 +570,23 @@ def data_as_json():
 def data_as_csv():
     planning_authorities = PlanningAuthority.query.all()
     data = []
-    for pla in planning_authorities:
-        for fact in pla.gather_facts(as_dict=True):
-            fact.pop('id')
-            fact.pop('document')
-            fact.pop('fact_type_display')
-            if fact.get('from') is not None and fact.get('to') is not None:
-                fact.pop('fact')
-            data.append(fact)
+    for planning_authority in planning_authorities:
+        for plan in planning_authority.local_plans:
+            d = {'planning_authority': planning_authority.id, 'id': str(plan.id)}
+            if plan.housing_numbers is not None:
+                d['plan_title'] = plan.title
+                d['housing_number_type'] = plan.housing_numbers['housing_number_type']
+                if 'range' in plan.housing_numbers['housing_number_type'].lower():
+                    d['min'] = plan.housing_numbers['min']
+                    d['max'] = plan.housing_numbers['max']
+                else:
+                    d['number'] = plan.housing_numbers['number']
+                d['source_document'] = plan.housing_numbers.get('source_document')
+                d['screenshot'] = plan.housing_numbers.get('image_url')
+                d['created_date'] = plan.housing_numbers.get('created_date')
+            data.append(d)
 
-    fieldnames = ['planning_authority', 'plan', 'fact_type', 'fact', 'from', 'to', 'document_url', 'notes', 'created_date', 'screenshot']
+    fieldnames = ['planning_authority', 'plan_title', 'id', 'start_year', 'end_year', 'housing_number_type', 'number', 'min', 'max', 'source_document', 'notes', 'created_date', 'screenshot']
 
     with io.StringIO() as output:
         writer = csv.DictWriter(output, fieldnames=fieldnames, quoting=csv.QUOTE_ALL, lineterminator="\n")
