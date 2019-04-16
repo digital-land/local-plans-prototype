@@ -70,7 +70,7 @@
               <a class="plan-details__item local-plan-id" href="{{ url_for('frontend.local_plan', planning_authority= planning_authority.id, _anchor=tab_anchor ) }}">{{ plan.title }}</a>
               
             </div>
-            <span class="plan-details__item plan-no-of-docs">{{ plan.plan_documents|length }} associated documents</span>
+{#            <span class="plan-details__item plan-no-of-docs">{{ plan.plan_documents|length }} associated documents</span>#}
             {% if plan.has_missing_data() %}
             <span class="plan-details__missing-data">there are gaps in the data</span>
             {% endif %}

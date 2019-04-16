@@ -67,6 +67,7 @@
 .plan-details__missing-data {
   display: block;
   @include govuk-font(16);
+  margin-top: 2px;
   padding-top: 2px;
   padding-left: 8px;
   border-left: 5px solid govuk-colour("red");
