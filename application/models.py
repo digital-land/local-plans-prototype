@@ -64,7 +64,7 @@ class LocalPlan(db.Model):
             return True
 
     def latest_state(self):
-        return self.ordered_states()[-1]
+       return self.ordered_states()[-1]
 
     def is_adopted(self):
         return True if self.adopted_date is not None else False
@@ -98,8 +98,7 @@ class LocalPlan(db.Model):
     def ordered_states(self):
         states = []
         if not self.has_pins_data():
-            date = self.plan_start_year if self.plan_start_year else None
-            states.append(State(state='emerging', date=date))
+            states.append(State(state='emerging', date=self.plan_start_year))
         if self.published_date is not None:
             states.append(State(state='published', date=self.published_date))
         if self.submitted_date is not None:
@@ -134,7 +133,9 @@ class LocalPlan(db.Model):
 
     def covers_years(self, from_, to):
         dates = [s.date for s in self.ordered_states()]
-        return from_ >= dates[0] or to <= dates[-1]
+        if dates:
+            return from_ >= dates[0] or to <= dates[-1]
+        return False
 
     # TODO I think this can be removed
     def get_housing_numbers(self):
