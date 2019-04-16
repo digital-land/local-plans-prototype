@@ -3,12 +3,9 @@ import uuid
 from datetime import datetime
 from enum import Enum
 from functools import total_ordering
-
 from geoalchemy2 import Geometry
-from sqlalchemy import func
-
 from application.extensions import db
-from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSON
+from sqlalchemy.dialects.postgresql import UUID, JSON
 
 
 def _generate_uuid():
