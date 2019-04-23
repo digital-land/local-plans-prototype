@@ -586,6 +586,10 @@ def data_as_csv():
                 d['source_document'] = plan.housing_numbers.get('source_document')
                 d['screenshot'] = plan.housing_numbers.get('image_url')
                 d['created_date'] = plan.housing_numbers.get('created_date')
+            if plan.plan_start_year is not None:
+                d['start_year'] = plan.plan_start_year.year
+            if plan.plan_end_year is not None:
+                d['end_year'] = plan.plan_end_year.year
             data.append(d)
 
     fieldnames = ['planning_authority', 'name', 'ons_code', 'plan_title', 'id', 'start_year', 'end_year', 'housing_number_type', 'number', 'min', 'max', 'source_document', 'notes', 'created_date', 'screenshot']
