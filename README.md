@@ -25,9 +25,15 @@ Run flask server
     flask run
 
 
-Install PostGIS extensions
+Create database and install PostGIS extensions
 
-If you're using Postgres.app on OSX it should be installed already but you'll need to add it to the brownfield db. Using `psql -d brownfield`, run:
+Create a local postgres db
+
+```
+createdb local_plans
+```
+
+Using `psql -d local_plans`, run:
 
     CREATE EXTENSION postgis;
 
