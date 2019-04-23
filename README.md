@@ -28,8 +28,6 @@ Run flask server
 
 Create database and install PostGIS extensions
 
-Create a local postgres db
-
 ```
 createdb local_plans
 ```
