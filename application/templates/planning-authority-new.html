@@ -1,6 +1,29 @@
-<!DOCTYPE html>
+{% extends "dlf-base.html" %}
 
-<body>
+
+{% block beforeContent %}
+ {{ super() }}
+
+ {{ govukBreadcrumbs({
+   "items": [
+    {
+       "text": "Home",
+       "href": url_for("frontend.index")
+     },
+     {
+       "text": "Planning Authority",
+       "href": url_for("frontend.planning_authority_list")
+     },
+     {
+       "text": planning_authority.name
+     }
+   ]
+ }) }}
+
+{% endblock %}
+
+{% block content %}
+
     <h1>New planning authority page</h1>
 
     <h2>Create chart like layout of this information</h2>
@@ -46,5 +69,4 @@
             </li>
         {% endfor %}
     </ul>
-</body>
-</html>
+{% endblock %}
