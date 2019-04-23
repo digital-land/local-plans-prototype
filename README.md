@@ -4,6 +4,7 @@ Requirements
 
 - [Python 3](https://www.python.org/)
 - [Node](https://nodejs.org/en/) and [Npm](https://www.npmjs.com/)
+- Postgres
 
 Getting started
 ---------------
