@@ -226,6 +226,7 @@ class PlanningAuthority(db.Model):
         data = {
             'id': self.id,
             'name': self.name,
+            'ons_code': self.ons_code,
             'plans': [plan.to_dict(self.id) for plan in self.local_plans]
         }
         return data
