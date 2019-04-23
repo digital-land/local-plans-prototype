@@ -4,6 +4,7 @@ Requirements
 
 - [Python 3](https://www.python.org/)
 - [Node](https://nodejs.org/en/) and [Npm](https://www.npmjs.com/)
+- Postgres
 
 Getting started
 ---------------
@@ -25,9 +26,13 @@ Run flask server
     flask run
 
 
-Install PostGIS extensions
+Create database and install PostGIS extensions
 
-If you're using Postgres.app on OSX it should be installed already but you'll need to add it to the brownfield db. Using `psql -d brownfield`, run:
+```
+createdb local_plans
+```
+
+Using `psql -d local_plans`, run:
 
     CREATE EXTENSION postgis;
 
