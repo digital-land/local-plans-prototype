@@ -279,7 +279,7 @@ def add_fact_to_document(planning_authority, document):
     return jsonify(resp)
 
 
-@frontend.route('/local-plans/<document>/<fact>', methods=['GET', 'DELETE'])
+@frontend.route('/local-plans/<document>/fact/<fact>', methods=['GET', 'DELETE'])
 def remove_fact_from_document(document, fact):
     fact = Fact.query.filter_by(id=fact, document_id=document).first()
     if fact is not None:
