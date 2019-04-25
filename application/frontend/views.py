@@ -55,15 +55,15 @@ def planning_authority_list():
     return render_template('planning-authority-list.html', planning_authorities=planning_authorities)
 
 
-@frontend.route('/planning-authority/<planning_authority>')
-def planning_authority(planning_authority):
+@frontend.route('/planning-authority/<planning_authority>/old')
+def planning_authority_old(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
     facts = pla.gather_facts()
-    return render_template('planning-authority.html', planning_authority=pla, facts=facts)
+    return render_template('planning-authority-old.html', planning_authority=pla, facts=facts)
 
 
-@frontend.route('/planning-authority/<planning_authority>/new')
-def planning_authority_new(planning_authority):
+@frontend.route('/planning-authority/<planning_authority>')
+def planning_authority(planning_authority):
     planning_auth = PlanningAuthority.query.get(planning_authority)
     sorted_plans = planning_auth.sorted_plans()
     start_year = planning_auth.get_earliest_plan_start_year()
@@ -76,7 +76,7 @@ def planning_authority_new(planning_authority):
         'sorted_plans': sorted_plans
     }
 
-    return render_template('planning-authority-new.html', **context)
+    return render_template('planning-authority.html', **context)
 
 
 @frontend.route('/local-plans', methods=['GET', 'POST'])
