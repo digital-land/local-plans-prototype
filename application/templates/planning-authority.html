@@ -84,10 +84,18 @@
                 <h3>{{ plan.plan_start_year.year }} - {{ plan.plan_end_year.year }}</h3>
                 <ul class="timeline">
                     <ul class="timeline__plots">
-                        {% set width = (plan.housing_numbers.number/(max_housing_number.count + 2000) * 100) | round %}
-                        <li class="bar--blue" style="width:{{width}}%">
-                            {{ plan.housing_numbers.number }}<sup><a href="#fn{{ iterations.count }}">{{ iterations.count }}</a></sup>
-                        </li>
+                        {% if plan.housing_numbers.number is defined %}
+                            {% set width = (plan.housing_numbers.number/(max_housing_number.count + 2000) * 100) | round %}
+                            <li class="bar--blue" style="width:{{width}}%">
+                                {{ plan.housing_numbers.number }}<sup><a href="#fn{{ iterations.count }}">{{ iterations.count }}</a></sup>
+                            </li>
+                        {% else %}
+
+                        {# TO DO - handle range better #}
+
+                            {% set width = (plan.housing_numbers.max/(max_housing_number.count + 2000) * 100) | round %}
+                            <li class="bar--blue" style="width:{{width}}%">{{ plan.housing_numbers.min }} to {{ plan.housing_numbers.max }}<sup><a href="#fn{{ iterations.count }}">{{ iterations.count }}</a></sup></li>
+                        {% endif %}
                     </ul>
                     <ul class="timeline__xaxis">
                         {% for count in range(0, max_housing_number.count + 2000, 2000) %}
