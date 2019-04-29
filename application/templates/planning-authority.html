@@ -39,7 +39,7 @@
     <ul class="timeline">
         <ul class="timeline__plots">
             {% for plan in sorted_plans %}
-                {% if plan.has_plan_period() %}
+                {% if plan.plan_period_found %}
                     {% set span = (last_end_year - first_start_year) %}
                     {% set width = (plan.plan_end_year.year - plan.plan_start_year.year) / span * 100 %}
                     {% set offset = (plan.plan_start_year.year - first_start_year) / span * 100 %}
@@ -48,14 +48,14 @@
                     <li class="bar--grey">
                 {% endif %}
                     {{ plan.title }}
-                    {% if plan.has_plan_period() %}
+                    {% if plan.plan_period_found %}
                         ({{ plan.plan_start_year.year }} - {{ plan.plan_end_year.year }})
                     {% endif %}
                 </li>
             {% endfor %}
         </ul>
         <ul class="timeline__xaxis">
-            {% for year in range(first_start_year, last_end_year + 1) %}
+            {% for year in range(first_start_year, last_end_year, 5) %}
                 <li>{{ year }}</li>
             {% endfor %}
         </ul>

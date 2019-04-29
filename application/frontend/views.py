@@ -71,8 +71,8 @@ def planning_authority(planning_authority):
 
     context = {
         'planning_authority': planning_auth,
-        'first_start_year': start_year,
-        'last_end_year': end_year,
+        'first_start_year': round(start_year, -1) - 5,
+        'last_end_year': round(end_year, -1) + 5,
         'sorted_plans': sorted_plans
     }
 
