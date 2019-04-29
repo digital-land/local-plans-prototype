@@ -1,5 +1,6 @@
 {% extends "dlf-base.html" %}
 
+
 {% block beforeContent %}
  {{ super() }}
 
@@ -23,198 +24,100 @@
 
 {% block content %}
 
-  <div class="govuk-grid-row top-content">
-    <div class="govuk-grid-column-two-thirds">
-      <span class="govuk-caption-xl">Local plan</span>
-      <h1 class="govuk-heading-xl">{{ planning_authority.name }}</h1>
-    </div>
-    <div class="govuk-grid-column-two-thirds">
-      <p class="govuk-body-l">MHCLG collects housing data about each Planning authority. Data is gathered from the planning authority and other sources.</p>
-    </div>
-  </div>
-
-  <nav role="navigation" class="contents-list contents-section">
-    <h3 class="contents-list__title">Contents</h3>
-    <ol class="contents-list__list">
-      <li class="contents-list__list-item"><a href="#housing-numbers" class="contents-list__link">Housing numbers</a></li>
-      {% if facts -%}
-      <li class="contents-list__list-item"><a href="#other-data" class="contents-list__link">Other data / facts</a></li>
-      {%- endif -%}
-      <!--<li class="contents-list__list-item"><a href="#local-plans" class="contents-list__link">Local plans</a></li>-->
-    </ol>
-  </nav>
-
- {#    Not sure how we're going to construct this schedule are we hoping to find this from scheme? or
-        combination of scheme and pins dates?
-    #}
-
-{#      <h2 class="govuk-heading-l">Schedule</h2>#}
-{#      <div class="graph-placeholder">#}
-{#        <span class="govuk-body">Placeholder for schedule graph</span>#}
-{#      </div>#}
-
-
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <h2 id="other-data" class="govuk-heading-l contents-list__section">Other facts / data</h2>
-
-      <p class="govuk-body">Other facts and data that has been collected about {{ planning_authority.name }}.</p>
-    </div>
-  </div>
-
-  {% if facts %}
-
-  <ul class="fact-list">
-  {% for fact in facts %}
-    {% if fact.fact_type != "HOUSING_REQUIRED" and fact.fact_type != "HOUSING_DELIVERED" %}
-    <li class="fact-list__item govuk-grid-row">
-      <div class="govuk-grid-column-one-half">
-
-        {% if fact.from_ and fact.to %}
-            <h4 class="govuk-heading-s fact-list__item__fact">{{ fact.from_ }} to {{ fact.to }}</h4>
-        {% else %}
-            <h4 class="govuk-heading-s fact-list__item__fact">{{ fact.fact }}</h4>
-        {% endif %}
-        <span class="fact-list__item-type">
-          {{ fact.fact_type | format_fact }}
-          <span class="fact-list__item-type__label">Fact Type</span>
-        </span>
+    <div class="govuk-grid-row top-content">
+      <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-xl">Local plan</span>
+        <h1 class="govuk-heading-xl">{{ planning_authority.name }}</h1>
       </div>
-      <div class="govuk-grid-column-one-half">
-        <div class="fact-list__item-source">
-          <h5 class="fact-list__item-source__label">Source</h5>
-          <span class="fact-list__item-source__url"><a href="{{ fact.document.url }}" target="_blank">{% if fact.document.title %}{{ fact.document.title }}{% else %}{{ fact.document.url }}{% endif %}</a></span>
-          {% if fact.image_url %}
-          <details class="govuk-details">
-            <summary class="govuk-details__summary">
-              <span class="govuk-details__summary-text">
-                Has source screenshot
-              </span>
-            </summary>
-            <div class="govuk-details__text">
-              <a href="{{ fact.image_url }}" target="_blank"><img class="fact-list__item__img" src="{{ fact.image_url }}"></a>
-            </div>
-          </details>
-          {% endif %}
-          {% if fact.notes %}
-          <details class="govuk-details">
-            <summary class="govuk-details__summary">
-              <span class="govuk-details__summary-text">
-                Notes on fact
-              </span>
-            </summary>
-            <div class="govuk-details__text">
-              <p class="govuk-body">{{ fact.notes }}</p>
-            </div>
-          </details>
-          {% endif %}
-        </div>
-      </div>
-    </li>
-    {% endif %}
-  {% endfor %}
-  </ul>
-
-  {% endif %}
-
-
-  <h2 id="housing-numbers" class="govuk-heading-l contents-list__section">Number of houses</h2>
-  {% macro singleBarComponent(label, value, width, _classes, source_url) -%}
-    <div class="govuk-grid-row contribution-category-row">
-      <div class="govuk-grid-column-two-thirds contribution-bar-container">
-        <div class="contribution-bar{% if _classes %} {{ _classes }}{% endif %}" style="width: {{ width }};">
-          <span class="govuk-!-font-size-24 govuk-!-font-weight-bold data-item">{{ value }}</span>
-        </div>
-        <div class="govuk-!-font-size-24 data-item cb-floating-figure">{{ value }}</div>
-      </div>
-      <div class="govuk-grid-column-one-third">
-        <h4 class="govuk-heading-s contribution-category-heading">
-            {% if source_url %}
-                <a href="{{ source_url }}" target="_blank">{{ label }} source document</a>
-            {% else %}
-                {{ label }} commitment
-            {% endif %}
-        </h4>
+      <div class="govuk-grid-column-two-thirds">
+        <p class="govuk-body-l">MHCLG collects housing data about each Planning authority. Data is gathered from the planning authority and other sources.</p>
       </div>
     </div>
-  {%- endmacro %}
 
-  {% for hdt in planning_authority.sorted_hdt(reverse=True) %}
-    {% set max_figure = [hdt.homes_required, hdt.homes_delivered]|max %}
+    <h2>Recorded plans</h2>
 
-    <section class="hdt-figure-section">
-      <h3 class="govuk-heading-m">{{ hdt.from_year.year }} - {{ hdt.to_year.year }}
-        <span class="data-source">Source: <a href="https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/779711/HDT_2018_measurement.xlsx">Housing Delivery Test: 2018 measurement</a></span>
-      </h3>
-      {% set required = hdt.homes_required | return_percent(denominator=max_figure) | format_percent %}
-      {{ singleBarComponent("HDT required", hdt.homes_required, required) }}
-
-{#        assuming this percentage is % of delivered measure against required#}
-
-      {% set delivered = hdt.homes_delivered | return_percent(denominator=max_figure) | format_percent %}
-      {{ singleBarComponent("HDT delivered", hdt.homes_delivered, delivered, "bar--blue") }}
-
-      {% set average = hdt.get_housing_average_for_plan() %}
-      {{ singleBarComponent("Local plan", average.housing, "70%", "bar--blank", average.source) }}
-{#      need to work out how to get local plan commitment - it will be attached to a plan and a document#}
-{#      specifically so we have to hope that they are recorded accoring to this breakdown of years#}
-{#      so that we can match with these figures - possibly a jump to far in terms of how this is currently#}
-{#      modelled?#}
-
-    </section>
-
-  {% endfor %}
-    
-
-<!--<h2 id="local-plans" class="govuk-heading-l contents-list__section">Local plans</h2>
-
-
-<div class="govuk-tabs" data-module="tabs">
-    <h2 class="govuk-tabs__title">
-      Contents
-    </h2>
-
-    <ul class="govuk-tabs__list">
-      {% for plan in planning_authority.sorted_plans() %}
-      <li class="govuk-tabs__list-item {% if plan.is_adopted() %}adopted-plan{% endif %}">
-        <a class="govuk-tabs__tab govuk-tabs__tab--selected" href="#{{ plan.local_plan }}">
-          {{ plan.local_plan }}
-        </a>
-      </li>
-      {% endfor %}
+    <ul class="timeline">
+        <ul class="timeline__plots">
+            {% for plan in sorted_plans %}
+                {% if plan.plan_period_found %}
+                    {% set span = (last_end_year - first_start_year) %}
+                    {% set width = (plan.plan_end_year.year - plan.plan_start_year.year) / span * 100 %}
+                    {% set offset = (plan.plan_start_year.year - first_start_year) / span * 100 %}
+                    <li class="bar--blue" style="width:{{ width }}%;margin-left:{{offset}}%">
+                {% else %}
+                    <li class="bar--grey">
+                {% endif %}
+                    {{ plan.title }}
+                    {% if plan.plan_period_found %}
+                        ({{ plan.plan_start_year.year }} - {{ plan.plan_end_year.year }})
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+        <ul class="timeline__xaxis">
+            {% for year in range(first_start_year, last_end_year, 5) %}
+                <li>{{ year }}</li>
+            {% endfor %}
+        </ul>
     </ul>
 
-    {% for plan in planning_authority.sorted_plans()  %}
-    <section class="govuk-tabs__panel govuk-tabs__panel--no-bottom-padding {% if plan.is_adopted() %}adopted-plan{% endif %}" id="{{ plan.local_plan }}">
-      <h3 class="govuk-heading-m">{{ plan.local_plan }}</h3>
+    <h2>Housing numbers</h2>
 
-      <section class="local-plan-part">
-        <h4 class="govuk-heading-s"><a class="dl-heading-link" href="#">Local plan part 1</a></h4>
-        <div class="govuk-grid-column-half per-year-figure">
-          <span class="govuk-body">2018 - 2019</span>
-          <span class="govuk-body">231</span>
-        </div>
-        <div class="govuk-grid-column-half per-year-figure">
-          <span class="govuk-body">2017 - 2018</span>
-          <span class="govuk-body">325</span>
-        </div>
-      </section>
-
-      <section class="local-plan-part">
-        <h4 class="govuk-heading-s"><a class="dl-heading-link" href="#">Local plan part 2</a></h4>
-        <div class="per-year-figure">
-          <span class="govuk-body">2018 - 2019</span>
-          <span class="govuk-body">231</span>
-        </div>
-        <div class="per-year-figure">
-          <span class="govuk-body">2017 - 2018</span>
-          <span class="govuk-body">325</span>
-        </div>
-      </section>
-
-    </section>
+    {% set max_housing_number = namespace(count=0) %}
+    {% for plan in sorted_plans %}
+        {% if plan.has_housing_numbers() %}
+            {% for k, v in plan.housing_numbers.items() %}
+                {% if k == 'housing_number_type' and v == 'HOUSING_REQUIREMENT_TOTAL' %}
+                    {% if max_housing_number.count < plan.housing_numbers.number %}
+                        {% set max_housing_number.count = plan.housing_numbers.number %}
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
     {% endfor %}
 
-  </div>-->
+    {% set iterations = namespace(count=0) %}
+    {% for plan in sorted_plans %}
+        {% if plan.has_housing_numbers() %}
+            {% if plan.has_plan_period() %}
+                {% set iterations.count = iterations.count + 1 %}
+                <h3>{{ plan.plan_start_year.year }} - {{ plan.plan_end_year.year }}</h3>
+                <ul class="timeline">
+                    <ul class="timeline__plots">
+                        {% if plan.housing_numbers.number is defined %}
+                            {% set width = (plan.housing_numbers.number/(max_housing_number.count + 2000) * 100) | round %}
+                            <li class="bar--blue" style="width:{{width}}%">
+                                {{ plan.housing_numbers.number }}<sup><a href="#fn{{ iterations.count }}">{{ iterations.count }}</a></sup>
+                            </li>
+                        {% else %}
+
+                        {# TO DO - handle range better #}
+
+                            {% set width = (plan.housing_numbers.max/(max_housing_number.count + 2000) * 100) | round %}
+                            <li class="bar--blue" style="width:{{width}}%">{{ plan.housing_numbers.min }} to {{ plan.housing_numbers.max }}<sup><a href="#fn{{ iterations.count }}">{{ iterations.count }}</a></sup></li>
+                        {% endif %}
+                    </ul>
+                    <ul class="timeline__xaxis">
+                        {% for count in range(0, max_housing_number.count + 2000, 2000) %}
+                            <li>{{count}}</li>
+                        {% endfor %}
+                    </ul>
+                </ul>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    <h2>Sources</h2>
+    {% set iterations = namespace(count=0) %}
+    <ol>
+        {% for plan in sorted_plans %}
+            {% if plan.has_housing_numbers() %}
+                {% set iterations.count = iterations.count + 1 %}
+                <li id="fn{{iterations.count}}">
+                    <a href="{{ plan.housing_numbers.source_document }}">{{ plan.title }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ol>
 
 {% endblock %}

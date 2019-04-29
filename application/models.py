@@ -3,12 +3,9 @@ import uuid
 from datetime import datetime
 from enum import Enum
 from functools import total_ordering
-
 from geoalchemy2 import Geometry
-from sqlalchemy import func
-
 from application.extensions import db
-from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSON
+from sqlalchemy.dialects.postgresql import UUID, JSON
 
 
 def _generate_uuid():
@@ -35,10 +32,10 @@ class LocalPlan(db.Model):
 
     housing_numbers = db.Column(JSON)
 
+    # These are so a user can indicate they've been unable to find data
     plan_period_found = db.Column(db.Boolean)
     housing_numbers_found = db.Column(db.Boolean)
 
-    start_year = db.Column(db.Date())
     published_date = db.Column(db.Date())
     submitted_date = db.Column(db.Date())
     sound_date = db.Column(db.Date())
@@ -55,27 +52,19 @@ class LocalPlan(db.Model):
         if self.plan_start_year is not None and other.plan_start_year is not None:
             return self.plan_start_year == other.plan_start_year
         else:
-            return self.ordered_states() == other.ordered_states()
+            return False
 
     def __lt__(self, other):
 
         if self.plan_start_year is not None and other.plan_start_year is not None:
             return self.plan_start_year < other.plan_start_year
-
         elif self.plan_start_year is not None and other.plan_start_year is None:
             return False
-        elif self.plan_start_year is None and other.plan_start_year is not None:
-            return True
         else:
-            self_states = self.ordered_states()
-            other_states = other.ordered_states()
-            if len(self_states) == 1 and len(other_states) == 1 and self_states[0].date > other_states[0].date:
-                return True
-            else:
-                return len(self_states) < len(other_states)
+            return True
 
     def latest_state(self):
-        return self.ordered_states()[-1]
+       return self.ordered_states()[-1]
 
     def is_adopted(self):
         return True if self.adopted_date is not None else False
@@ -108,8 +97,8 @@ class LocalPlan(db.Model):
 
     def ordered_states(self):
         states = []
-        if self.start_year is not None:
-            states.append(State(state='emerging', date=self.start_year))
+        if not self.has_pins_data():
+            states.append(State(state='emerging', date=self.plan_start_year))
         if self.published_date is not None:
             states.append(State(state='published', date=self.published_date))
         if self.submitted_date is not None:
@@ -140,11 +129,13 @@ class LocalPlan(db.Model):
         return data
 
     def is_emerging(self):
-        return self.start_year is not None and all(d is None for d in [self.published_date, self.submitted_date, self.sound_date, self.adopted_date])
+        return all(d is None for d in [self.published_date, self.submitted_date, self.sound_date, self.adopted_date])
 
     def covers_years(self, from_, to):
         dates = [s.date for s in self.ordered_states()]
-        return from_ >= dates[0] or to <= dates[-1]
+        if dates:
+            return from_ >= dates[0] or to <= dates[-1]
+        return False
 
     # TODO I think this can be removed
     def get_housing_numbers(self):
@@ -178,15 +169,35 @@ class PlanningAuthority(db.Model):
     def sorted_hdt(self, reverse=False):
         return sorted(self.housing_delivery_tests, reverse=reverse)
 
-    def sorted_plans(self):
+    def sorted_plans(self, reverse=False):
         if len(self.local_plans) == 1:
             return self.local_plans
-        return sorted(self.local_plans)
+        return sorted(self.local_plans, reverse=reverse)
 
     def get_local_scheme_documents(self):
         # TODO add a subtype on other documents to filter on rather than title
         docs = [doc for doc in self.other_documents if doc.title is not None and 'local development scheme' == doc.title.lower()]
         return docs
+
+    def get_earliest_plan_start_year(self):
+        try:
+            first = next(p for p in self.sorted_plans() if p.plan_start_year is not None)
+            if first is not None:
+                return first.plan_start_year.year
+            else:
+                return None
+        except StopIteration:
+            return None
+
+    def get_latest_plan_end_year(self):
+        try:
+            first = next(p for p in self.sorted_plans(reverse=True) if p.plan_end_year is not None)
+            if first is not None:
+                return first.plan_end_year.year
+            else:
+                return None
+        except StopIteration:
+            return None
 
     def gather_facts(self, as_dict=False):
 
@@ -287,7 +298,7 @@ class State:
         self.date = date
 
     def to_dict(self):
-        return {'state': self.state, 'date': self.date.strftime('%Y')}
+        return {'state': self.state, 'date': self.date.strftime('%Y') if self.date else None}
 
     def __lt__(self, other):
         return self.date < other.date

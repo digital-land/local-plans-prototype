@@ -129,7 +129,7 @@
 }
 
 .fact-list__item-type__label {
-  margin-bottom: 30px; // weird spacing to make the border work, change it 
+  margin-bottom: 30px; // weird spacing to make the border work, change it
 }
 
 .fact-list__item__img {
@@ -154,3 +154,25 @@
   }
 }
 
+// Timelines
+.timeline, .timeline ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.timeline__plots li {
+    margin-bottom: 15px;
+    padding: 15px;
+    box-sizing: border-box;
+    color: #fff;
+    font-weight: 700;
+}
+.timeline__plots a {
+    color: white;
+    padding-left:3px;
+}
+.timeline__xaxis {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+}

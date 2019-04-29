@@ -5,10 +5,10 @@ import io
 import json
 import uuid
 from pathlib import Path
+import boto3
+
 from urllib.parse import urlparse
 
-import boto3
-import sqlalchemy
 from flask import (
     Blueprint,
     render_template,
@@ -20,11 +20,13 @@ from flask import (
     current_app,
     make_response
 )
+
 from sqlalchemy import func, or_, and_, String, cast
 from sqlalchemy.sql.operators import isnot
 
 from application.extensions import db, flask_optimize
 from application.frontend.forms import LocalDevelopmentSchemeURLForm, LocalPlanURLForm, AddPlanForm, MakeJointPlanForm
+
 from application.models import (
     PlanningAuthority,
     LocalPlan,
@@ -49,16 +51,32 @@ def index():
 def planning_authority_list():
     planning_authorities = PlanningAuthority.query.order_by(PlanningAuthority.name).all()
     if request.method == 'POST':
-        print("Redirecting to ..........", request.form['local-authority-select'])
         return redirect(url_for('frontend.planning_authority', planning_authority=request.form['local-authority-select']))
     return render_template('planning-authority-list.html', planning_authorities=planning_authorities)
 
 
-@frontend.route('/planning-authority/<planning_authority>')
-def planning_authority(planning_authority):
+@frontend.route('/planning-authority/<planning_authority>/old')
+def planning_authority_old(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
     facts = pla.gather_facts()
-    return render_template('planning-authority.html', planning_authority=pla, facts=facts)
+    return render_template('planning-authority-old.html', planning_authority=pla, facts=facts)
+
+
+@frontend.route('/planning-authority/<planning_authority>')
+def planning_authority(planning_authority):
+    planning_auth = PlanningAuthority.query.get(planning_authority)
+    sorted_plans = planning_auth.sorted_plans()
+    start_year = planning_auth.get_earliest_plan_start_year()
+    end_year = planning_auth.get_latest_plan_end_year()
+
+    context = {
+        'planning_authority': planning_auth,
+        'first_start_year': round(start_year, -1) - 5,
+        'last_end_year': round(end_year, -1) + 5,
+        'sorted_plans': sorted_plans
+    }
+
+    return render_template('planning-authority.html', **context)
 
 
 @frontend.route('/local-plans', methods=['GET', 'POST'])
@@ -77,7 +95,7 @@ def local_plan(planning_authority):
         start_year = datetime.datetime(year=form.start_year.data, month=1, day=1)
         end_year = datetime.datetime(year=form.end_year.data, month=1, day=1)
         title = form.title.data
-        plan = LocalPlan(title=title, start_year=start_year, plan_start_year=start_year, plan_end_year=end_year)
+        plan = LocalPlan(title=title, plan_start_year=start_year, plan_end_year=end_year)
         plan.planning_authorities.append(pla)
         db.session.add(pla)
         db.session.commit()
@@ -645,7 +663,7 @@ def map_of_data():
 @frontend.route('/local-plans/<planning_authority>/<local_plan>/make-joint-plan', methods=['GET', 'POST'])
 def make_joint_plan(planning_authority, local_plan):
     planning_authority = PlanningAuthority.query.get(planning_authority)
-    link_to_planning_authority = url_for('frontend.local_plan', planning_authority=planning_authority.id, _anchor=local_plan);
+    link_to_planning_authority = url_for('frontend.local_plan', planning_authority=planning_authority.id, _anchor=local_plan)
     planning_authorities = PlanningAuthority.query.filter(PlanningAuthority.id != planning_authority.id).order_by(PlanningAuthority.name).all()
     plan = LocalPlan.query.get(local_plan)
     form = MakeJointPlanForm()
