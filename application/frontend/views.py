@@ -590,7 +590,7 @@ def data_as_csv():
     for planning_authority in planning_authorities:
         for plan in planning_authority.local_plans:
             d = {'planning_authority': planning_authority.id,
-                 'id': str(plan.id),
+                 'plan_id': str(plan.id),
                  'ons_code': planning_authority.ons_code,
                  'name': planning_authority.name}
             if plan.housing_numbers is not None:
@@ -615,9 +615,31 @@ def data_as_csv():
             if not plan.plan_period_found:
                 d['plan_period_found'] = False
 
+            d['created_date'] = plan.created_date
+            d['updated_date'] = plan.updated_date
+            d['is_joint_plan'] = plan.is_joint_plan()
+
             data.append(d)
 
-    fieldnames = ['planning_authority', 'name', 'ons_code', 'plan_title', 'id', 'start_year', 'end_year', 'housing_number_type', 'number', 'min', 'max', 'source_document', 'notes', 'created_date', 'screenshot', 'housing_numbers_found', 'plan_period_found']
+    fieldnames = ['planning_authority',
+                  'name',
+                  'ons_code',
+                  'plan_title',
+                  'plan_id',
+                  'start_year',
+                  'end_year',
+                  'housing_number_type',
+                  'number',
+                  'min',
+                  'max',
+                  'source_document',
+                  'notes',
+                  'screenshot',
+                  'housing_numbers_found',
+                  'plan_period_found',
+                  'created_date',
+                  'updated_date',
+                  'is_joint_plan']
 
     with io.StringIO() as output:
         writer = csv.DictWriter(output, fieldnames=fieldnames, quoting=csv.QUOTE_ALL, lineterminator="\n")

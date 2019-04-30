@@ -47,6 +47,9 @@ class LocalPlan(db.Model):
 
     plan_documents = db.relationship('PlanDocument', back_populates='local_plan', lazy=True, order_by='PlanDocument.created_date')
 
+    created_date = db.Column(db.DateTime(), default=datetime.utcnow)
+    updated_date = db.Column(db.DateTime(), onupdate=datetime.utcnow)
+
     def __eq__(self, other):
 
         if self.plan_start_year is not None and other.plan_start_year is not None:
