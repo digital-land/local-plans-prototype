@@ -706,3 +706,27 @@ def make_joint_plan(planning_authority, local_plan):
         return redirect(url_for('frontend.local_plan', planning_authority=planning_authority.id))
 
     return render_template('make-joint-plan.html', planning_authority=planning_authority, local_plan=plan, form=form, last_url=link_to_planning_authority)
+
+
+@frontend.route('/local-plans/<planning_authority>/<local_plan>/delete')
+def safe_delete_plan(planning_authority, local_plan):
+    plan = LocalPlan.query.get(local_plan)
+    plan.deleted = True
+    db.session.add(plan)
+    db.session.commit()
+    return redirect(url_for('frontend.local_plan', planning_authority=planning_authority))
+
+
+@frontend.route('/local-plans/<planning_authority>/<local_plan>/undelete')
+def undelete_plan(planning_authority, local_plan):
+    plan = LocalPlan.query.get(local_plan)
+    plan.deleted = False
+    db.session.add(plan)
+    db.session.commit()
+    return redirect(url_for('frontend.local_plan', planning_authority=planning_authority))
+
+
+@frontend.route('/local-plans-deleted')
+def deleted_plans():
+    plans = LocalPlan.query.filter(LocalPlan.deleted == True).all()
+    return render_template('deleted.html', plans=plans)

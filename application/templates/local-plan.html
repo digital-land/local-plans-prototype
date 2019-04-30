@@ -437,7 +437,6 @@
                     </form>
                 {% endif %}
 
-
                 {% if not plan.is_emerging() %}
                     <h3 class="govuk-heading-m">PINS data</h3>
                     <div class="pims-stages govuk-!-margin-bottom-8">
@@ -468,7 +467,11 @@
                     </div>
                 {% endif %}
 
+             <p><a href="{{ url_for('frontend.safe_delete_plan', planning_authority=planning_authority.id, local_plan=plan.id)}}">Remove this plan</a></p>
+
             </section>
+
+
         {% endfor %}
         <section id="new-plan-tab" class="govuk-tabs__panel">
             <h3 class="govuk-heading-m">Add a local plan</h3>

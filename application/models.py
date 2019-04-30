@@ -50,6 +50,8 @@ class LocalPlan(db.Model):
     created_date = db.Column(db.DateTime(), default=datetime.utcnow)
     updated_date = db.Column(db.DateTime(), onupdate=datetime.utcnow)
 
+    deleted = db.Column(db.Boolean, default=False)
+
     def __eq__(self, other):
 
         if self.plan_start_year is not None and other.plan_start_year is not None:
@@ -159,8 +161,8 @@ class PlanningAuthority(db.Model):
     local_scheme_url = db.Column(db.String())
     local_plans = db.relationship('LocalPlan',
                                   secondary=planning_authority_plan,
-                                  lazy=True,
-                                  back_populates='planning_authorities')
+                                  lazy='dynamic',
+                                  back_populates='planning_authorities',)
 
     housing_delivery_tests = db.relationship('HousingDeliveryTest',
                                              lazy=True,
@@ -172,10 +174,9 @@ class PlanningAuthority(db.Model):
     def sorted_hdt(self, reverse=False):
         return sorted(self.housing_delivery_tests, reverse=reverse)
 
-    def sorted_plans(self, reverse=False):
-        if len(self.local_plans) == 1:
-            return self.local_plans
-        return sorted(self.local_plans, reverse=reverse)
+    def sorted_plans(self, reverse=False, deleted=False):
+        plans = self.local_plans.filter(LocalPlan.deleted == deleted).all()
+        return sorted(plans, reverse=reverse)
 
     def get_local_scheme_documents(self):
         # TODO add a subtype on other documents to filter on rather than title
