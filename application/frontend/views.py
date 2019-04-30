@@ -594,6 +594,7 @@ def data_as_csv():
                  'ons_code': planning_authority.ons_code,
                  'name': planning_authority.name}
             if plan.housing_numbers is not None:
+                d['housing_numbers_found'] = True
                 d['plan_title'] = plan.title
                 d['housing_number_type'] = plan.housing_numbers['housing_number_type']
                 if 'range' in plan.housing_numbers['housing_number_type'].lower():
@@ -605,12 +606,18 @@ def data_as_csv():
                 d['screenshot'] = plan.housing_numbers.get('image_url')
                 d['created_date'] = plan.housing_numbers.get('created_date')
             if plan.plan_start_year is not None:
+                d['plan_period_found'] = True
                 d['start_year'] = plan.plan_start_year.year
             if plan.plan_end_year is not None:
                 d['end_year'] = plan.plan_end_year.year
+            if not plan.housing_numbers_found:
+                d['housing_numbers_found'] = False
+            if not plan.plan_period_found:
+                d['plan_period_found'] = False
+
             data.append(d)
 
-    fieldnames = ['planning_authority', 'name', 'ons_code', 'plan_title', 'id', 'start_year', 'end_year', 'housing_number_type', 'number', 'min', 'max', 'source_document', 'notes', 'created_date', 'screenshot']
+    fieldnames = ['planning_authority', 'name', 'ons_code', 'plan_title', 'id', 'start_year', 'end_year', 'housing_number_type', 'number', 'min', 'max', 'source_document', 'notes', 'created_date', 'screenshot', 'housing_numbers_found', 'plan_period_found']
 
     with io.StringIO() as output:
         writer = csv.DictWriter(output, fieldnames=fieldnames, quoting=csv.QUOTE_ALL, lineterminator="\n")
