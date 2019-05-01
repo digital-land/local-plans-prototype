@@ -211,7 +211,7 @@ def update_plan_housing_requirement(planning_authority, plan_id):
         plan.housing_numbers_found = True
         db.session.add(plan)
         db.session.commit()
-        resp = make_response(jsonify(data=data))
+        resp = make_response(jsonify(data=plan.housing_numbers))
         resp.status_code = 200
         resp.headers = {'Content-Type': 'application/json'}
         return resp
