@@ -160,11 +160,15 @@ def update_plan_period(planning_authority, plan_id):
 def update_plan_housing_requirement(planning_authority, plan_id):
     plan = LocalPlan.query.get(plan_id)
     if plan is not None:
+
         data = {
             'housing_number_type': request.form['housing_number_type'],
             'housing_number_type_display': format_fact(request.form['housing_number_type']),
             'source_document': request.form['source_document']
         }
+
+        # TODO if this is a joint plan we'll do something about split of housing numbers
+        # somewhere in here in the handling of housing numbers I guess?
         if 'range' in request.form['housing_number_type'].lower():
             min = request.form.get('min', 0)
             if isinstance(min, str):
@@ -192,9 +196,6 @@ def update_plan_housing_requirement(planning_authority, plan_id):
             data['created_date'] = datetime.datetime.utcnow().isoformat()
         else:
             data['updated_date'] = datetime.datetime.utcnow().isoformat()
-
-        # TODO if this is a joint plan we'll do something about split of housing numbers
-        # somewhere in here I guess?
 
         for key, val in data.items():
             print(key, val)
