@@ -4,9 +4,9 @@ import datetime
 import io
 import json
 import uuid
-from pathlib import Path
 import boto3
 
+from pathlib import Path
 from urllib.parse import urlparse
 
 from flask import (
@@ -23,10 +23,14 @@ from flask import (
 
 from sqlalchemy import func, or_, and_, String, cast
 from sqlalchemy.orm.attributes import flag_modified
-from sqlalchemy.sql.operators import isnot
-
 from application.extensions import db, flask_optimize
-from application.frontend.forms import LocalDevelopmentSchemeURLForm, LocalPlanURLForm, AddPlanForm, MakeJointPlanForm
+
+from application.frontend.forms import (
+    LocalDevelopmentSchemeURLForm,
+    LocalPlanURLForm,
+    AddPlanForm,
+    MakeJointPlanForm
+)
 
 from application.models import (
     PlanningAuthority,
