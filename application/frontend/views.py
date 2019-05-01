@@ -193,6 +193,9 @@ def update_plan_housing_requirement(planning_authority, plan_id):
         else:
             data['updated_date'] = datetime.datetime.utcnow().isoformat()
 
+        # TODO if this is a joint plan we'll do something about split of housing numbers
+        # somewhere in here I guess?
+
         for key, val in data.items():
             print(key, val)
             plan.housing_numbers[key] = val
@@ -206,6 +209,8 @@ def update_plan_housing_requirement(planning_authority, plan_id):
             if key != 'created_date':
                 plan.housing_numbers.pop(key, None)
 
+        # Again as modifications inside json field not tracked
+        # by default flag modified
         flag_modified(plan, 'housing_numbers')
 
         plan.housing_numbers_found = True
@@ -245,6 +250,7 @@ def update_plan_data_flags(planning_authority, plan_id):
         resp = {'OK': 400, 'error': 'Plan not found'}
 
     return jsonify(resp)
+
 
 @frontend.route('/start-collecting-data')
 def start_collecting_data():
@@ -732,7 +738,7 @@ def make_joint_plan(planning_authority, local_plan):
             housing_number_by_planning_authority[planning_authority.id] = {'name': planning_authority.name, 'number': None}
             plan.housing_numbers['housing_number_by_planning_authority'] = housing_number_by_planning_authority
             # have to flag modified as sqlalchemy does not track changes to json attributes
-            # didn't defind field as mutable but that broke hashing.
+            # didn't define field as mutable but that broke hashing.
             flag_modified(plan, 'housing_numbers')
 
         db.session.add(plan)
