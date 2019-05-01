@@ -591,7 +591,7 @@ def data_as_csv():
     planning_authorities = PlanningAuthority.query.all()
     data = []
     for planning_authority in planning_authorities:
-        for plan in planning_authority.local_plans:
+        for plan in planning_authority.sorted_plans():
             d = {'planning_authority': planning_authority.id,
                  'plan_id': str(plan.id),
                  'ons_code': planning_authority.ons_code,
