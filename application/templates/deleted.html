@@ -17,7 +17,7 @@
                     {% for plan in plans %}
                         <li>{{ plan.title }} - <a href="{{ url_for('frontend.undelete_plan',
                                                         planning_authority=plan.planning_authorities[0].id,
-                                                        local_plan=plan.id) }}">undelete</a></li>
+                                                        local_plan=plan.id) }}">restore</a></li>
                     {% endfor %}
                 </ul>
             {% else %}
