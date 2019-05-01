@@ -18,9 +18,11 @@ from flask import (
     jsonify,
     send_file,
     current_app,
-    make_response
+    make_response,
+    flash
 )
 
+from markupsafe import Markup
 from sqlalchemy import func, or_, and_, String, cast
 from sqlalchemy.orm.attributes import flag_modified
 from sqlalchemy.sql.operators import isnot
@@ -730,6 +732,7 @@ def safe_delete_plan(planning_authority, local_plan):
     plan.deleted = True
     db.session.add(plan)
     db.session.commit()
+    flash(Markup(f'{plan.title} has been removed. If you want to get it back go <a href="/local-plans-deleted">here</a>'))
     return redirect(url_for('frontend.local_plan', planning_authority=planning_authority))
 
 

@@ -25,6 +25,16 @@
 
 {% block content %}
 
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
     <span class="govuk-caption-xl">Local plan data</span>
     <h1 class="govuk-heading-xl">{{ planning_authority.name }}</h1>
 
