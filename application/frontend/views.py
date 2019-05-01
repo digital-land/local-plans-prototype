@@ -205,6 +205,11 @@ def update_plan_housing_requirement(planning_authority, plan_id):
             print(key, val)
             plan.housing_numbers[key] = val
 
+        # Actually I think I can do this in a better and less destructive way in the
+        # bit above where the numbers are handled. e.g. if I'm setting a number, remove min/max
+        # if setting a min/max remove number
+        # if setting a breakdown remove number or min/max
+        # lastly if setting a breakdown set split value to None
         to_remove = []
         for key, val in plan.housing_numbers.items():
             if key not in data:
