@@ -726,18 +726,18 @@ def make_joint_plan(planning_authority, local_plan):
     return render_template('make-joint-plan.html', planning_authority=planning_authority, local_plan=plan, form=form, last_url=link_to_planning_authority)
 
 
-@frontend.route('/local-plans/<planning_authority>/<local_plan>/delete')
-def safe_delete_plan(planning_authority, local_plan):
+@frontend.route('/local-plans/<planning_authority>/<local_plan>/remove')
+def remove_plan(planning_authority, local_plan):
     plan = LocalPlan.query.get(local_plan)
     plan.deleted = True
     db.session.add(plan)
     db.session.commit()
-    flash(Markup(f'{plan.title} has been removed. If you want to get it back go <a href="/local-plans-deleted">here</a>'))
+    flash(Markup(f'{plan.title} has been removed. If you want to get it back go <a href="/local-plans-removed">here</a>'))
     return redirect(url_for('frontend.local_plan', planning_authority=planning_authority))
 
 
-@frontend.route('/local-plans/<planning_authority>/<local_plan>/undelete')
-def undelete_plan(planning_authority, local_plan):
+@frontend.route('/local-plans/<planning_authority>/<local_plan>/restore')
+def restore_plan(planning_authority, local_plan):
     plan = LocalPlan.query.get(local_plan)
     plan.deleted = False
     db.session.add(plan)
@@ -745,7 +745,7 @@ def undelete_plan(planning_authority, local_plan):
     return redirect(url_for('frontend.local_plan', planning_authority=planning_authority))
 
 
-@frontend.route('/local-plans-deleted')
-def deleted_plans():
+@frontend.route('/local-plans-removed')
+def removed_plans():
     plans = LocalPlan.query.filter(LocalPlan.deleted == True).all()
-    return render_template('deleted.html', plans=plans)
+    return render_template('removed.html', plans=plans)
