@@ -623,11 +623,17 @@ def data_as_csv():
                 d['housing_numbers_found'] = True
                 d['plan_title'] = plan.title
                 d['housing_number_type'] = plan.housing_numbers['housing_number_type']
-                if 'range' in plan.housing_numbers['housing_number_type'].lower():
+
+                if plan.is_joint_plan() and plan.has_joint_plan_breakdown_for_authority(planning_authority.id):
+                    breakdown_number = plan.get_joint_plan_breakdown_for_authority(planning_authority.id)
+                    print('breakdown number is', breakdown_number)
+                    d['joint_plan_housing_number'] = breakdown_number
+                elif 'range' in plan.housing_numbers['housing_number_type'].lower():
                     d['min'] = plan.housing_numbers['min']
                     d['max'] = plan.housing_numbers['max']
                 else:
                     d['number'] = plan.housing_numbers['number']
+
                 d['source_document'] = plan.housing_numbers.get('source_document')
                 d['screenshot'] = plan.housing_numbers.get('image_url')
                 d['created_date'] = plan.housing_numbers.get('created_date')
@@ -658,14 +664,15 @@ def data_as_csv():
                   'number',
                   'min',
                   'max',
+                  'is_joint_plan',
+                  'joint_plan_housing_number',
                   'source_document',
                   'notes',
                   'screenshot',
                   'housing_numbers_found',
                   'plan_period_found',
                   'created_date',
-                  'updated_date',
-                  'is_joint_plan']
+                  'updated_date']
 
     with io.StringIO() as output:
         writer = csv.DictWriter(output, fieldnames=fieldnames, quoting=csv.QUOTE_ALL, lineterminator="\n")

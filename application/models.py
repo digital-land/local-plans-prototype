@@ -77,6 +77,17 @@ class LocalPlan(db.Model):
     def is_joint_plan(self):
         return len(self.planning_authorities) > 1
 
+    def has_joint_plan_breakdown_for_authority(self, planning_authority):
+        return self.get_joint_plan_breakdown_for_authority(planning_authority) is not None
+
+    def get_joint_plan_breakdown_for_authority(self, planning_authority):
+        if not self.is_joint_plan() and not self.has_housing_numbers:
+            return None
+        if self.housing_numbers.get('housing_number_by_planning_authority') is None:
+            return None
+        return self.housing_numbers.get('housing_number_by_planning_authority')[planning_authority]['number']
+
+
     def joint_plan_authorities(self, authority_id):
         return [{'name': auth.name, 'id':auth.id} for auth in self.planning_authorities if authority_id != auth.id]
 
