@@ -163,8 +163,7 @@ def update_plan_housing_requirement(planning_authority, plan_id):
         data = {
             'housing_number_type': request.form['housing_number_type'],
             'housing_number_type_display': format_fact(request.form['housing_number_type']),
-            'created_date': datetime.datetime.utcnow().isoformat(),
-            'source_document': request.form['source_document'],
+            'source_document': request.form['source_document']
         }
         if 'range' in request.form['housing_number_type'].lower():
             min = request.form.get('min', 0)
@@ -188,8 +187,27 @@ def update_plan_housing_requirement(planning_authority, plan_id):
             s3 = boto3.client('s3')
             s3.upload_fileobj(request.files['screenshot'], bucket, key, ExtraArgs={'ContentType': 'image/jpeg', 'ACL': 'public-read'})
             data['image_url'] = f'https://s3.eu-west-2.amazonaws.com/{bucket}/{key}'
-        
-        plan.housing_numbers = data
+
+        if plan.housing_numbers is None:
+            data['created_date'] = datetime.datetime.utcnow().isoformat()
+        else:
+            data['updated_date'] = datetime.datetime.utcnow().isoformat()
+
+        for key, val in data.items():
+            print(key, val)
+            plan.housing_numbers[key] = val
+
+        to_remove = []
+        for key, val in plan.housing_numbers.items():
+            if key not in data:
+                to_remove.append(key)
+
+        for key in to_remove:
+            if key != 'created_date':
+                plan.housing_numbers.pop(key, None)
+
+        flag_modified(plan, 'housing_numbers')
+
         plan.housing_numbers_found = True
         db.session.add(plan)
         db.session.commit()
