@@ -22,6 +22,7 @@ from flask import (
 )
 
 from sqlalchemy import func, or_, and_, String, cast
+from sqlalchemy.orm.attributes import flag_modified
 from sqlalchemy.sql.operators import isnot
 
 from application.extensions import db, flask_optimize
@@ -691,16 +692,31 @@ def map_of_data():
 
 @frontend.route('/local-plans/<planning_authority>/<local_plan>/make-joint-plan', methods=['GET', 'POST'])
 def make_joint_plan(planning_authority, local_plan):
+
     planning_authority = PlanningAuthority.query.get(planning_authority)
     link_to_planning_authority = url_for('frontend.local_plan', planning_authority=planning_authority.id, _anchor=local_plan)
     planning_authorities = PlanningAuthority.query.filter(PlanningAuthority.id != planning_authority.id).order_by(PlanningAuthority.name).all()
     plan = LocalPlan.query.get(local_plan)
     form = MakeJointPlanForm()
     form.planning_authorities.choices = [(p.id, p.name) for p in planning_authorities]
+
     if form.validate_on_submit():
+        housing_number_by_planning_authority = {}
+
         for id in form.planning_authorities.data:
-            pla = PlanningAuthority.query.get(id)
-            plan.planning_authorities.append(pla)
+            authority = PlanningAuthority.query.get(id)
+            if authority not in plan.planning_authorities:
+                plan.planning_authorities.append(authority)
+                if plan.housing_numbers is not None:
+                    housing_number_by_planning_authority[authority.id] = {'name': authority.name, 'number': None}
+
+        if housing_number_by_planning_authority:
+            housing_number_by_planning_authority[planning_authority.id] = {'name': planning_authority.name, 'number': None}
+            plan.housing_numbers['housing_number_by_planning_authority'] = housing_number_by_planning_authority
+            # have to flag modified as sqlalchemy does not track changes to json attributes
+            # didn't defind field as mutable but that broke hashing.
+            flag_modified(plan, 'housing_numbers')
+
         db.session.add(plan)
         db.session.commit()
         return redirect(url_for('frontend.local_plan', planning_authority=planning_authority.id))
