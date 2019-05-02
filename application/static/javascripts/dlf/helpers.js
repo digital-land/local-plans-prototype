@@ -62,6 +62,11 @@ function postJSONRequest(endpoint, data, cb) {
 }
 
 function postFormDataRequest(endpoint, data, cb) {
+  // useful for seeing what FormData is
+  // for (var pair of data.entries()) {
+  //     console.log(pair[0]+ ', '+ pair[1]); 
+  // }
+
   fetch(endpoint, {
     method: "POST",
     body: data

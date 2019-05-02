@@ -1082,8 +1082,18 @@
 
             if (form.classList.contains('housing-requirement-total')) {
                 formData.append("housing_number_type", selectEl.options[selectEl.selectedIndex].value);
-                formData.append("number", cleanNumber(form.querySelector("[name^='housing-requirement-total']").value));
                 formData.append("source_document", form.querySelector("[name^='url-']").value);
+                if(form.dataset.isJointPlan === "true") {
+                  const joint_plan_number_type = form.querySelector(".govuk-checkboxes__item :checked").value;
+                  formData.append("joint_plan_number_type", joint_plan_number_type);
+                  if(joint_plan_number_type === "whole-plan") {
+                    formData.append("number", cleanNumber(form.querySelector("[name^='joint-plan-total-number']").value))
+                  } else {
+                    formData.append("number", cleanNumber(form.querySelector("[name^='joint-plan-la-number']").value))
+                  }
+                } else {
+                  formData.append("number", cleanNumber(form.querySelector("[name^='housing-requirement-total']").value));
+                }
             }
             else if (form.classList.contains('housing-requirement-yearly-average')) {
                 formData.append("housing_number_type", selectEl.options[selectEl.selectedIndex].value);

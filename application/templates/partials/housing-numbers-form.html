@@ -5,6 +5,7 @@
     <form class="govuk-form{{- ' ' + classes if classes }} 
           {%- if plan.has_housing_numbers() %} {{ plan.housing_numbers.housing_number_type|lower|replace('_', '-') }}{% else %} housing-requirement-total{% endif %}" 
           action="{{ url_for('frontend.update_plan_housing_requirement', planning_authority=planning_authority.id, plan_id=plan.id) }}"
+          data-is-joint-plan={% if plan.is_joint_plan() %}"true"{% else %}false{% endif %}
           method="POST" enctype="multipart/form-data">
         <h3 class="govuk-heading-s">{{ heading }}</h3>
 
@@ -16,7 +17,7 @@
                     name="housing-requirement-type-{{ suffix }}">
                 {% for housing_requirement in fact_types %}
                     <option value="{{ housing_requirement.name }}"
-                            {% if 'range' in housing_requirement.name|lower %}disabled{% endif %}
+                            {% if 'range' in housing_requirement.name|lower and plan.is_joint_plan() %}disabled{% endif %}
                             data-type-class="{{ housing_requirement.name|lower|replace('_', '-') }}"
                             {%- if housing_requirement.name == plan.housing_numbers.housing_number_type %} selected{% endif %}>{{ housing_requirement.value }}</option>
                 {% endfor %}
@@ -33,7 +34,7 @@
               <span>Housing requirement total</span>
             </legend>
             <div class="govuk-checkboxes__item">
-              <input class="govuk-checkboxes__input" id="joint-plan-total" name="joint-plan-total" type="checkbox" value="Total for the whole local plan">
+              <input class="govuk-checkboxes__input" id="joint-plan-total" name="joint-plan-total" type="checkbox" value="whole-plan">
               <label class="govuk-label govuk-checkboxes__label" for="joint-plan-total">
                 Total for the whole local plan
               </label>
@@ -43,11 +44,12 @@
                 <label class="govuk-label" for="joint-plan-total-number">
                   Number
                 </label>
-                <input class="govuk-input govuk-!-width-one-third" id="joint-plan-la-number" name="joint-plan-la-number" type="text">
+                <input class="govuk-input govuk-!-width-one-third" id="joint-plan-total-number" name="joint-plan-total-number" type="text">
               </div>
             </div>
+
             <div class="govuk-checkboxes__item">
-              <input class="govuk-checkboxes__input" id="joint-plan-breakdown" name="joint-plan-breakdown" type="checkbox" value="Total for this local authority">
+              <input class="govuk-checkboxes__input" id="joint-plan-breakdown" name="joint-plan-breakdown" type="checkbox" value="local-authority">
               <label class="govuk-label govuk-checkboxes__label" for="joint-plan-breakdown">
                 Total for this local authority
               </label>
