@@ -25,6 +25,45 @@
 
         <!-- for Housing requirement total -->
         <div class="govuk-form-group plan-housing-requirement-total">
+
+          {% if plan.is_joint_plan() %}
+
+          <fieldset class="govuk-fieldset housing-req-fieldset">
+            <legend class="govuk-fieldset__legend">
+              <span>Housing requirement total</span>
+            </legend>
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="joint-plan-total" name="joint-plan-total" type="checkbox" value="Total for the whole local plan">
+              <label class="govuk-label govuk-checkboxes__label" for="joint-plan-total">
+                Total for the whole local plan
+              </label>
+            </div>
+            <div class="govuk-checkboxes__conditional">
+              <div class="govuk-form-group">
+                <label class="govuk-label" for="joint-plan-total-number">
+                  Number
+                </label>
+                <input class="govuk-input govuk-!-width-one-third" id="joint-plan-la-number" name="joint-plan-la-number" type="text">
+              </div>
+            </div>
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="joint-plan-breakdown" name="joint-plan-breakdown" type="checkbox" value="Total for this local authority">
+              <label class="govuk-label govuk-checkboxes__label" for="joint-plan-breakdown">
+                Total for this local authority
+              </label>
+            </div>
+            <div class="govuk-checkboxes__conditional">
+              <div class="govuk-form-group">
+                <label class="govuk-label" for="joint-plan-la-number">
+                  Number
+                </label>
+                <input class="govuk-input govuk-!-width-one-third" id="joint-plan-la-number" name="joint-plan-la-number" type="text">
+              </div>
+            </div>
+          </fieldset>
+
+          {% else %}
+
             {%- if plan.housing_numbers.housing_number_type == "HOUSING_REQUIREMENT_TOTAL" %}
               {% set housing_value = plan.housing_numbers.number %}
             {% else %}
@@ -42,6 +81,7 @@
                 "value": housing_value,
                 "pattern":"[0-9]*"}) }}
             </div>
+          {% endif %}
         </div>
 
         <!-- for Housing requirement range -->

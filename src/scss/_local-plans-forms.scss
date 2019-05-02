@@ -12,6 +12,10 @@
     @include govuk-responsive-margin(6, "bottom");
   }
 
+  .housing-req-fieldset {
+    margin-bottom: 15px;
+  }
+
   .govuk-form-group:not(:last-of-type) {
     margin-bottom: $govuk-gutter-half;
   }
@@ -188,6 +192,16 @@ $indicator-box-spacing: 10px;
 .proposed-adoption-date {
   .proposed-adoption-date-input {
     display: block;
+  }
+}
+
+.housing-req-fieldset {
+  .govuk-fieldset__legend {
+    span {
+      display: inline-block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
   }
 }
 

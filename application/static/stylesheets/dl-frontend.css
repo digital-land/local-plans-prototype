@@ -7035,6 +7035,10 @@
   }
 }
 
+.govuk-form--contained .housing-req-fieldset {
+  margin-bottom: 15px;
+}
+
 .govuk-form--contained .govuk-form-group:not(:last-of-type) {
   margin-bottom: 15px;
 }
@@ -7195,6 +7199,12 @@
 
 .proposed-adoption-date .proposed-adoption-date-input {
   display: block;
+}
+
+.housing-req-fieldset .govuk-fieldset__legend span {
+  display: inline-block;
+  margin-top: 15px;
+  font-weight: bold;
 }
 
 .url-list {
