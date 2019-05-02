@@ -33,33 +33,36 @@
             <legend class="govuk-fieldset__legend">
               <span>Housing requirement total</span>
             </legend>
-            <div class="govuk-checkboxes__item">
-              <input class="govuk-checkboxes__input" id="joint-plan-total" name="joint-plan-total" type="checkbox" value="whole-plan">
-              <label class="govuk-label govuk-checkboxes__label" for="joint-plan-total">
-                Total for the whole local plan
-              </label>
-            </div>
-            <div class="govuk-checkboxes__conditional">
-              <div class="govuk-form-group">
-                <label class="govuk-label" for="joint-plan-total-number">
-                  Number
-                </label>
-                <input class="govuk-input govuk-!-width-one-third" id="joint-plan-total-number" name="joint-plan-total-number" type="text">
-              </div>
-            </div>
 
-            <div class="govuk-checkboxes__item">
-              <input class="govuk-checkboxes__input" id="joint-plan-breakdown" name="joint-plan-breakdown" type="checkbox" value="local-authority">
-              <label class="govuk-label govuk-checkboxes__label" for="joint-plan-breakdown">
-                Total for this local authority
-              </label>
-            </div>
-            <div class="govuk-checkboxes__conditional">
-              <div class="govuk-form-group">
-                <label class="govuk-label" for="joint-plan-la-number">
-                  Number
+            <div class="govuk-radios govuk-radios--conditional" data-module="radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="joint-plan-total" name="joint-plan-number-type" type="radio" value="whole-plan">
+                <label class="govuk-label govuk-radios__label" for="joint-plan-total">
+                  Total for the whole local plan
                 </label>
-                <input class="govuk-input govuk-!-width-one-third" id="joint-plan-la-number" name="joint-plan-la-number" type="text">
+              </div>
+              <div class="govuk-radios__conditional" >
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="joint-plan-total-number">
+                    Number
+                  </label>
+                  <input class="govuk-input govuk-!-width-one-third" id="joint-plan-total-number" name="joint-plan-total-number" type="text">
+                </div>
+              </div>
+            
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="joint-plan-breakdown" name="joint-plan-number-type" type="radio" value="local-authority">
+                <label class="govuk-label govuk-radios__label" for="joint-plan-breakdown">
+                  Total for this local authority
+                </label>
+              </div>
+              <div class="govuk-radios__conditional">
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="joint-plan-la-number">
+                    Number
+                  </label>
+                  <input class="govuk-input govuk-!-width-one-third" id="joint-plan-la-number" name="joint-plan-la-number" type="text">
+                </div>
               </div>
             </div>
           </fieldset>
