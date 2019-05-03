@@ -12,16 +12,16 @@
         <div class="govuk-grid-column-full">
 
             {% if plans %}
-                <h1 class="govuk-heading-m">Deleted plans</h1>
+                <h1 class="govuk-heading-m">Removed plans</h1>
                 <ul class="govuk-list govuk-list--bullet">
                     {% for plan in plans %}
-                        <li>{{ plan.title }} - <a href="{{ url_for('frontend.undelete_plan',
+                        <li>{{ plan.title }} - <a href="{{ url_for('frontend.restore_plan',
                                                         planning_authority=plan.planning_authorities[0].id,
-                                                        local_plan=plan.id) }}">undelete</a></li>
+                                                        local_plan=plan.id) }}">restore</a></li>
                     {% endfor %}
                 </ul>
             {% else %}
-                <h1 class="govuk-heading-m">There aren't any deleted plans</h1>
+                <h1 class="govuk-heading-m">No plans have been removed</h1>
             {% endif %}
 
         </div>

@@ -28,6 +28,16 @@
 
 {% block content %}
 
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
     <span class="govuk-caption-xl">Local plan data</span>
     <h1 class="govuk-heading-xl">{{ planning_authority.name }}</h1>
 
@@ -287,7 +297,7 @@
                     </div>
                 {% endif %}
 
-             <p><a href="{{ url_for('frontend.safe_delete_plan', planning_authority=planning_authority.id, local_plan=plan.id)}}">Remove this plan</a></p>
+             <p><a href="{{ url_for('frontend.remove_plan', planning_authority=planning_authority.id, local_plan=plan.id)}}">Remove this plan</a></p>
 
             </section>
 
