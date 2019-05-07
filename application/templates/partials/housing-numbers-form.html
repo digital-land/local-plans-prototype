@@ -134,23 +134,70 @@
             </span>
         </fieldset>
 
+        
         <!-- for Housing requirement yearly average -->
-        {%- if plan.housing_numbers.housing_number_type == "HOUSING_REQUIREMENT_YEARLY_AVERAGE" %}
-          {% set housing_value = plan.housing_numbers.number %}
+        <div class="govuk-form-group housing-requirement-yearly-average-fieldset">
+        {% if plan.is_joint_plan() %}
+
+          <fieldset class="govuk-fieldset housing-req-fieldset">
+            <legend class="govuk-fieldset__legend">
+              <span>Housing requirement yearly average</span>
+            </legend>
+
+            <div class="govuk-radios govuk-radios--conditional" data-module="radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="joint-plan-total-avg" name="joint-plan-avg-number-type" type="radio" value="whole-plan" data-aria-controls="joint-plan-total-avg-conditional-{{ suffix }}">
+                <label class="govuk-label govuk-radios__label" for="joint-plan-total-avg">
+                  Total for the whole local plan
+                </label>
+              </div>
+              <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="joint-plan-total-avg-conditional-{{ suffix }}" >
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="joint-plan-total-avg-number">
+                    Number
+                  </label>
+                  <input class="govuk-input govuk-!-width-one-third" id="joint-plan-total-avg-number" name="joint-plan-total-avg-number" type="text">
+                </div>
+              </div>
+            
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="joint-plan-breakdown-avg" name="joint-plan-avg-number-type" type="radio" value="local-authority" data-aria-controls="joint-plan-breakdown-avg-conditional-{{ suffix }}">
+                <label class="govuk-label govuk-radios__label" for="joint-plan-breakdown-avg">
+                  Total for this local authority
+                </label>
+              </div>
+              <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="joint-plan-breakdown-avg-conditional-{{ suffix }}">
+                <div class="govuk-form-group">
+                  <label class="govuk-label" for="joint-plan-avg-la-number">
+                    Number
+                  </label>
+                  <input class="govuk-input govuk-!-width-one-third" id="joint-plan-avg-la-number" name="joint-plan-avg-la-number" type="text">
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
         {% else %}
-          {% set housing_value = 0 %}
-        {% endif -%}
-        <div class="govuk-form-group housing-requirement-yearly-average-input" data-form-validator="isNumber">
-            {{ govukLabel({ "label": "Housing requirement yearly average", "for": "housing-requirement-yearly-average-" + suffix }) }}
-            <span class="govuk-error-message">
-              <span class="govuk-visually-hidden">Error:</span> You must enter a number
-            </span>
-            {{ govukTextInput({
-                  "classes": "govuk-input govuk-input--width-10",
-                  "id": "housing-requirement-yearly-average-" + suffix,
-                  "name": "housing-requirement-yearly-average-" + suffix,
-                  "value": housing_value,
-                  "pattern":"[0-9]*"}) }}
+
+          {%- if plan.housing_numbers.housing_number_type == "HOUSING_REQUIREMENT_YEARLY_AVERAGE" %}
+            {% set housing_value = plan.housing_numbers.number %}
+          {% else %}
+            {% set housing_value = 0 %}
+          {% endif -%}
+          <div class="govuk-form-group housing-requirement-yearly-average-input" data-form-validator="isNumber">
+              {{ govukLabel({ "label": "Housing requirement yearly average", "for": "housing-requirement-yearly-average-" + suffix }) }}
+              <span class="govuk-error-message">
+                <span class="govuk-visually-hidden">Error:</span> You must enter a number
+              </span>
+              {{ govukTextInput({
+                    "classes": "govuk-input govuk-input--width-10",
+                    "id": "housing-requirement-yearly-average-" + suffix,
+                    "name": "housing-requirement-yearly-average-" + suffix,
+                    "value": housing_value,
+                    "pattern":"[0-9]*"}) }}
+          </div>
+
+        {% endif %}
         </div>
 
         <!-- for Housing requirement yearly range -->

@@ -5519,6 +5519,7 @@
 .plan-housing-requirement-total,
 .housing-requirement-range-fieldset,
 .housing-requirement-yearly-average-input,
+.housing-requirement-yearly-average-fieldset,
 .housing-requirement-yearly-range-fieldset {
   display: none;
 }
@@ -5551,7 +5552,8 @@
   display: block;
 }
 
-.housing-requirement-yearly-average .housing-requirement-yearly-average-input {
+.housing-requirement-yearly-average .housing-requirement-yearly-average-input,
+.housing-requirement-yearly-average .housing-requirement-yearly-average-fieldset {
   display: block;
 }
 
