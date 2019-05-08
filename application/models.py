@@ -87,7 +87,6 @@ class LocalPlan(db.Model):
             return None
         return self.housing_numbers.get('housing_number_by_planning_authority')[planning_authority]['number']
 
-
     def joint_plan_authorities(self, authority_id):
         return [{'name': auth.name, 'id':auth.id} for auth in self.planning_authorities if authority_id != auth.id]
 
@@ -110,6 +109,14 @@ class LocalPlan(db.Model):
         if pp and hn:
             return False
         return True
+
+    def get_correct_housing_numbers(self, planning_authority):
+        if not self.is_joint_plan():
+            return self.housing_numbers.get('number', None)
+        numbers_by_authority = self.housing_numbers.get('housing_number_by_planning_authority')
+        if numbers_by_authority is None:
+            self.housing_numbers.get('number', None)
+        return numbers_by_authority.get(planning_authority, None)
 
     def ordered_states(self):
         states = []

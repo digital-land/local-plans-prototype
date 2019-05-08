@@ -213,7 +213,7 @@
                             {%- if 'range' in plan.housing_numbers.housing_number_type|lower %}
                               {{ plan.housing_numbers.min }} to {{ plan.housing_numbers.max }}
                             {% else %}
-                              {{ plan.housing_numbers.number }}
+                                {{ plan.get_correct_housing_numbers(planning_authority.id) | format_housing_number }}
                             {% endif -%}
                           </span>
                           <span class="data-item bold-xsmall govuk-!-font-size-16 govuk-!-font-weight-bold">{{ plan.housing_numbers.housing_number_type | format_fact }}</span>

@@ -188,7 +188,10 @@ def update_plan_housing_requirement(planning_authority, plan_id):
             number = request.form.get('number', 0)
             if isinstance(number, str):
                 number = number.strip()
-            data['number'] = int(number) if number else None
+            if not plan.is_joint_plan() or request.form.get('joint_plan_number_type') == 'whole-plan':
+                data['number'] = int(number) if number else None
+            else:
+                data['housing_number_by_planning_authority'] = {planning_authority: {'number': number}}
 
         if request.files:
             # only retrieve image if set
@@ -204,8 +207,13 @@ def update_plan_housing_requirement(planning_authority, plan_id):
             data['updated_date'] = datetime.datetime.utcnow().isoformat()
 
         for key, val in data.items():
-            print(key, val)
-            plan.housing_numbers[key] = val
+            if key == 'housing_number_by_planning_authority':
+                if plan.housing_numbers.get('housing_number_by_planning_authority') is None:
+                    plan.housing_numbers['housing_number_by_planning_authority'] = val
+                else:
+                    plan.housing_numbers['housing_number_by_planning_authority'] = {**plan.housing_numbers['housing_number_by_planning_authority'], **val}
+            else:
+                plan.housing_numbers[key] = val
 
         # Actually I think I can do this in a better and less destructive way in the
         # bit above where the numbers are handled. e.g. if I'm setting a number, remove min/max
