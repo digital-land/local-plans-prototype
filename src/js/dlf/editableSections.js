@@ -127,6 +127,7 @@ EditableSection.prototype.initialiseForm = function (extractDataFunc, succCb, er
         });
       } else {
         postJSONRequest(endpoint, data, function (respData) {
+
           // handle the response
           form.classList.remove("posting");
           if (respData["OK"] === 200) {

@@ -43,3 +43,14 @@ def format_percent(value):
 def return_percent(val1, denominator, precision=1):
     percentage = (val1 / denominator) * 100
     return round(percentage, precision)
+
+
+def format_housing_number(number):
+    if number is None:
+        return 'No number set for this planning authority'
+    if isinstance(number, int):
+        return number
+    elif isinstance(number, dict):
+        return number['number']
+    else:
+        return 'Could not find number for this planning authority'

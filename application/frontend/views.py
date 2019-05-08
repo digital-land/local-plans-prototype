@@ -4,9 +4,9 @@ import datetime
 import io
 import json
 import uuid
-from pathlib import Path
 import boto3
 
+from pathlib import Path
 from urllib.parse import urlparse
 
 from flask import (
@@ -25,10 +25,14 @@ from flask import (
 from markupsafe import Markup
 from sqlalchemy import func, or_, and_, String, cast
 from sqlalchemy.orm.attributes import flag_modified
-from sqlalchemy.sql.operators import isnot
-
 from application.extensions import db, flask_optimize
-from application.frontend.forms import LocalDevelopmentSchemeURLForm, LocalPlanURLForm, AddPlanForm, MakeJointPlanForm
+
+from application.frontend.forms import (
+    LocalDevelopmentSchemeURLForm,
+    LocalPlanURLForm,
+    AddPlanForm,
+    MakeJointPlanForm
+)
 
 from application.models import (
     PlanningAuthority,
@@ -162,12 +166,15 @@ def update_plan_period(planning_authority, plan_id):
 def update_plan_housing_requirement(planning_authority, plan_id):
     plan = LocalPlan.query.get(plan_id)
     if plan is not None:
+
         data = {
             'housing_number_type': request.form['housing_number_type'],
             'housing_number_type_display': format_fact(request.form['housing_number_type']),
-            'created_date': datetime.datetime.utcnow().isoformat(),
-            'source_document': request.form['source_document'],
+            'source_document': request.form['source_document']
         }
+
+        # TODO if this is a joint plan we'll do something about split of housing numbers
+        # somewhere in here in the handling of housing numbers I guess?
         if 'range' in request.form['housing_number_type'].lower():
             min = request.form.get('min', 0)
             if isinstance(min, str):
@@ -181,7 +188,10 @@ def update_plan_housing_requirement(planning_authority, plan_id):
             number = request.form.get('number', 0)
             if isinstance(number, str):
                 number = number.strip()
-            data['number'] = int(number) if number else None
+            if not plan.is_joint_plan() or request.form.get('joint_plan_number_type') == 'whole-plan':
+                data['number'] = int(number) if number else None
+            else:
+                data['housing_number_by_planning_authority'] = {planning_authority: {'number': number}}
 
         if request.files:
             # only retrieve image if set
@@ -190,12 +200,43 @@ def update_plan_housing_requirement(planning_authority, plan_id):
             s3 = boto3.client('s3')
             s3.upload_fileobj(request.files['screenshot'], bucket, key, ExtraArgs={'ContentType': 'image/jpeg', 'ACL': 'public-read'})
             data['image_url'] = f'https://s3.eu-west-2.amazonaws.com/{bucket}/{key}'
-        
-        plan.housing_numbers = data
+
+        if plan.housing_numbers is None:
+            data['created_date'] = datetime.datetime.utcnow().isoformat()
+        else:
+            data['updated_date'] = datetime.datetime.utcnow().isoformat()
+
+        for key, val in data.items():
+            if key == 'housing_number_by_planning_authority':
+                if plan.housing_numbers.get('housing_number_by_planning_authority') is None:
+                    plan.housing_numbers['housing_number_by_planning_authority'] = val
+                else:
+                    plan.housing_numbers['housing_number_by_planning_authority'] = {**plan.housing_numbers['housing_number_by_planning_authority'], **val}
+            else:
+                plan.housing_numbers[key] = val
+
+        # Actually I think I can do this in a better and less destructive way in the
+        # bit above where the numbers are handled. e.g. if I'm setting a number, remove min/max
+        # if setting a min/max remove number
+        # if setting a breakdown remove number or min/max
+        # lastly if setting a breakdown set split value to None
+        to_remove = []
+        for key, val in plan.housing_numbers.items():
+            if key not in data:
+                to_remove.append(key)
+
+        for key in to_remove:
+            if key != 'created_date':
+                plan.housing_numbers.pop(key, None)
+
+        # Again as modifications inside json field not tracked
+        # by default flag modified
+        flag_modified(plan, 'housing_numbers')
+
         plan.housing_numbers_found = True
         db.session.add(plan)
         db.session.commit()
-        resp = make_response(jsonify(data=data))
+        resp = make_response(jsonify(data=plan.housing_numbers))
         resp.status_code = 200
         resp.headers = {'Content-Type': 'application/json'}
         return resp
@@ -229,6 +270,7 @@ def update_plan_data_flags(planning_authority, plan_id):
         resp = {'OK': 400, 'error': 'Plan not found'}
 
     return jsonify(resp)
+
 
 @frontend.route('/start-collecting-data')
 def start_collecting_data():
@@ -600,11 +642,17 @@ def data_as_csv():
                 d['housing_numbers_found'] = True
                 d['plan_title'] = plan.title
                 d['housing_number_type'] = plan.housing_numbers['housing_number_type']
-                if 'range' in plan.housing_numbers['housing_number_type'].lower():
+
+                if plan.is_joint_plan() and plan.has_joint_plan_breakdown_for_authority(planning_authority.id):
+                    breakdown_number = plan.get_joint_plan_breakdown_for_authority(planning_authority.id)
+                    print('breakdown number is', breakdown_number)
+                    d['joint_plan_housing_number'] = breakdown_number
+                elif 'range' in plan.housing_numbers['housing_number_type'].lower():
                     d['min'] = plan.housing_numbers['min']
                     d['max'] = plan.housing_numbers['max']
                 else:
                     d['number'] = plan.housing_numbers['number']
+
                 d['source_document'] = plan.housing_numbers.get('source_document')
                 d['screenshot'] = plan.housing_numbers.get('image_url')
                 d['created_date'] = plan.housing_numbers.get('created_date')
@@ -635,14 +683,15 @@ def data_as_csv():
                   'number',
                   'min',
                   'max',
+                  'is_joint_plan',
+                  'joint_plan_housing_number',
                   'source_document',
                   'notes',
                   'screenshot',
                   'housing_numbers_found',
                   'plan_period_found',
                   'created_date',
-                  'updated_date',
-                  'is_joint_plan']
+                  'updated_date']
 
     with io.StringIO() as output:
         writer = csv.DictWriter(output, fieldnames=fieldnames, quoting=csv.QUOTE_ALL, lineterminator="\n")
@@ -716,7 +765,7 @@ def make_joint_plan(planning_authority, local_plan):
             housing_number_by_planning_authority[planning_authority.id] = {'name': planning_authority.name, 'number': None}
             plan.housing_numbers['housing_number_by_planning_authority'] = housing_number_by_planning_authority
             # have to flag modified as sqlalchemy does not track changes to json attributes
-            # didn't defind field as mutable but that broke hashing.
+            # didn't define field as mutable but that broke hashing.
             flag_modified(plan, 'housing_numbers')
 
         db.session.add(plan)

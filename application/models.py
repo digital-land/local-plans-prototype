@@ -77,6 +77,16 @@ class LocalPlan(db.Model):
     def is_joint_plan(self):
         return len(self.planning_authorities) > 1
 
+    def has_joint_plan_breakdown_for_authority(self, planning_authority):
+        return self.get_joint_plan_breakdown_for_authority(planning_authority) is not None
+
+    def get_joint_plan_breakdown_for_authority(self, planning_authority):
+        if not self.is_joint_plan() and not self.has_housing_numbers:
+            return None
+        if self.housing_numbers.get('housing_number_by_planning_authority') is None:
+            return None
+        return self.housing_numbers.get('housing_number_by_planning_authority')[planning_authority]['number']
+
     def joint_plan_authorities(self, authority_id):
         return [{'name': auth.name, 'id':auth.id} for auth in self.planning_authorities if authority_id != auth.id]
 
@@ -99,6 +109,14 @@ class LocalPlan(db.Model):
         if pp and hn:
             return False
         return True
+
+    def get_correct_housing_numbers(self, planning_authority):
+        if not self.is_joint_plan():
+            return self.housing_numbers.get('number', None)
+        numbers_by_authority = self.housing_numbers.get('housing_number_by_planning_authority')
+        if numbers_by_authority is None:
+            return self.housing_numbers.get('number', None)
+        return numbers_by_authority.get(planning_authority, None)
 
     def ordered_states(self):
         states = []
@@ -150,6 +168,9 @@ class LocalPlan(db.Model):
                 if 'HOUSING' in fact.fact_type:
                     housing_numbers.append(fact)
         return housing_numbers
+
+    def id_to_str(self):
+        return str(self.id)
 
 
 class PlanningAuthority(db.Model):

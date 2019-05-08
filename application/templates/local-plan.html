@@ -1,6 +1,9 @@
 {% extends "dlf-base.html" %}
+
 {% from "govuk-jinja-components/warning-text/macro.jinja" import govukWarningText %}
 {% from "dl-macros/date-input.html" import renderDateInput %}
+{% from "govuk-jinja-components/govuk-form/govuk-label.jinja" import govukLabel %}
+{% from "govuk-jinja-components/govuk-form/govuk-input.jinja" import govukTextInput %}
 
 {% block beforeContent %}
     {{ super() }}
@@ -58,9 +61,6 @@
             </li>
         </ul>
 
-        {% from "govuk-jinja-components/govuk-form/govuk-label.jinja" import govukLabel %}
-        {% from "govuk-jinja-components/govuk-form/govuk-input.jinja" import govukTextInput %}
-
         {% macro renderPlanPeriodForm(plan, heading, suffix, classes) %}
             <form class="govuk-form{{- ' ' + classes if classes }}"
                   action="{{ url_for('frontend.update_plan_period', planning_authority=planning_authority.id, plan_id=plan.id) }}"
@@ -107,187 +107,7 @@
         {% endmacro %}
 
 
-        {% macro renderHousingRequirementForm(plan, heading, suffix, classes) %}
-            <form class="govuk-form{{- ' ' + classes if classes }} 
-                  {%- if plan.has_housing_numbers() %} {{ plan.housing_numbers.housing_number_type|lower|replace('_', '-') }}{% else %} housing-requirement-total{% endif %}" 
-                  action="{{ url_for('frontend.update_plan_housing_requirement', planning_authority=planning_authority.id, plan_id=plan.id) }}"
-                  method="POST" enctype="multipart/form-data">
-                <h3 class="govuk-heading-s">{{ heading }}</h3>
-
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="housing-requirement-type-{{ suffix }}">
-                        Select a type of house number
-                    </label>
-                    <select class="govuk-select housing-requirement-select-types" id="housing-requirement-type-{{ suffix }}"
-                            name="housing-requirement-type-{{ suffix }}">
-                        {% for housing_requirement in fact_types %}
-                            <option value="{{ housing_requirement.name }}"
-                                    data-type-class="{{ housing_requirement.name|lower|replace('_', '-') }}"
-                                    {%- if housing_requirement.name == plan.housing_numbers.housing_number_type %} selected{% endif %}>{{ housing_requirement.value }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <!-- for Housing requirement total -->
-                <div class="govuk-form-group plan-housing-requirement-total">
-                    {%- if plan.housing_numbers.housing_number_type == "HOUSING_REQUIREMENT_TOTAL" %}
-                      {% set housing_value = plan.housing_numbers.number %}
-                    {% else %}
-                      {% set housing_value = 0 %}
-                    {% endif -%}
-                    <div class="govuk-form-group" data-form-validator="isNumber">
-                      {{ govukLabel({ "label": "Housing requirement total", "for": "housing-requirement-total-" + suffix }) }}
-                      <span class="govuk-error-message">
-                        <span class="govuk-visually-hidden">Error:</span> You must enter a number
-                      </span>
-                      {{ govukTextInput({
-                        "classes": "govuk-input govuk-input--width-10",
-                        "id": "housing-requirement-total-" + suffix,
-                        "name": "housing-requirement-total-" + suffix,
-                        "value": housing_value,
-                        "pattern":"[0-9]*"}) }}
-                    </div>
-                </div>
-
-                <!-- for Housing requirement range -->
-                <fieldset class="govuk-fieldset fieldset-range housing-requirement-range-fieldset" data-form-validator="isCompleteRange">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                        <h1 class="govuk-fieldset__heading">
-                            Housing requirement range
-                        </h1>
-                    </legend>
-
-                    {%- if plan.housing_numbers.housing_number_type == "HOUSING_REQUIREMENT_RANGE" %}
-                      {% set housing_value_min = plan.housing_numbers.min %}
-                      {% set housing_value_max = plan.housing_numbers.max %}
-                    {% else %}
-                      {% set housing_value_min = 0 %}
-                      {% set housing_value_max = 0 %}
-                    {% endif -%}
-                    <div class="govuk-form-group" data-form-validator="isNumber">
-                        {{ govukLabel({ "label": "Min", "for": "housing-requirement-range-min-" + suffix }) }}
-                        <span class="govuk-error-message">
-                          <span class="govuk-visually-hidden">Error:</span> You must enter a number
-                        </span>
-                        {{ govukTextInput({
-                          "classes": "govuk-input govuk-input--width-10 housing-requirement-range-min",
-                          "id": "housing-requirement-range-min-" + suffix,
-                          "name": "housing-requirement-range-min-" + suffix,
-                          "value": housing_value_min,
-                          "pattern":"[0-9]*"}) }}
-                    </div>
-
-                    <div class="govuk-form-group" data-form-validator="isNumber">
-                        {{ govukLabel({ "label": "Max", "for": "housing-requirement-range-max-" + suffix }) }}
-                        <span class="govuk-error-message">
-                          <span class="govuk-visually-hidden">Error:</span> You must enter a number
-                        </span>
-                        {{ govukTextInput({
-                          "classes": "govuk-input govuk-input--width-10 housing-requirement-range-max",
-                          "id": "housing-requirement-range-max-" + suffix,
-                          "name": "housing-requirement-range-max-" + suffix,
-                          "value": housing_value_max,
-                          "pattern":"[0-9]*"}) }}
-                    </div>
-                    <span class="govuk-error-message">
-                      <span class="govuk-visually-hidden">Error:</span> You must complete both fields for a range
-                    </span>
-                </fieldset>
-
-                <!-- for Housing requirement yearly average -->
-                {%- if plan.housing_numbers.housing_number_type == "HOUSING_REQUIREMENT_YEARLY_AVERAGE" %}
-                  {% set housing_value = plan.housing_numbers.number %}
-                {% else %}
-                  {% set housing_value = 0 %}
-                {% endif -%}
-                <div class="govuk-form-group housing-requirement-yearly-average-input" data-form-validator="isNumber">
-                    {{ govukLabel({ "label": "Housing requirement yearly average", "for": "housing-requirement-yearly-average-" + suffix }) }}
-                    <span class="govuk-error-message">
-                      <span class="govuk-visually-hidden">Error:</span> You must enter a number
-                    </span>
-                    {{ govukTextInput({
-                          "classes": "govuk-input govuk-input--width-10",
-                          "id": "housing-requirement-yearly-average-" + suffix,
-                          "name": "housing-requirement-yearly-average-" + suffix,
-                          "value": housing_value,
-                          "pattern":"[0-9]*"}) }}
-                </div>
-
-                <!-- for Housing requirement yearly range -->
-                <fieldset class="govuk-fieldset fieldset-range housing-requirement-yearly-range-fieldset" data-form-validator="isCompleteRange">
-
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                        <h1 class="govuk-fieldset__heading">
-                            Housing requirement yearly range
-                        </h1>
-                    </legend>
-
-
-                    {%- if plan.housing_numbers.housing_number_type == "HOUSING_REQUIREMENT_YEARLY_RANGE" %}
-                      {% set housing_value_min = plan.housing_numbers.min %}
-                      {% set housing_value_max = plan.housing_numbers.max %}
-                    {% else %}
-                      {% set housing_value_min = 0 %}
-                      {% set housing_value_max = 0 %}
-                    {% endif -%}
-                    <div class="govuk-form-group" data-form-validator="isNumber">
-                        {{ govukLabel({ "label": "Min", "for": "housing-requirement-yearly-range-min-" + suffix }) }}
-                        <span class="govuk-error-message">
-                          <span class="govuk-visually-hidden">Error:</span> You must enter a number
-                        </span>
-                        {{ govukTextInput({
-                          "classes": "govuk-input govuk-input--width-10 housing-requirement-yearly-range-min",
-                          "id": "housing-requirement-yearly-range-min-" + suffix,
-                          "name": "housing-requirement-yearly-range-min-" + suffix,
-                          "value": housing_value_min,
-                          "pattern":"[0-9]*"}) }}
-                    </div>
-
-                    <div class="govuk-form-group" data-form-validator="isNumber">
-                        {{ govukLabel({ "label": "Max", "for": "housing-requirement-yearly-range-max-" + suffix }) }}
-                        <span class="govuk-error-message">
-                          <span class="govuk-visually-hidden">Error:</span> You must enter a number
-                        </span>
-                        {{ govukTextInput({
-                          "classes": "govuk-input govuk-input--width-10 housing-requirement-yearly-range-max",
-                          "id": "housing-req-requirement-range-max-" + suffix,
-                          "name": "housing-req-requirement-range-max-" + suffix,
-                          "value": housing_value_max,
-                          "pattern":"[0-9]*"}) }}
-                    </div>
-                    <span class="govuk-error-message">
-                      <span class="govuk-visually-hidden">Error:</span> You must complete both fields for a range
-                    </span>
-                </fieldset>
-
-                {% if plan.has_housing_numbers() %}
-                  {% set source_document = plan.housing_numbers.source_document %}
-                {% else %}
-                  {% set source_document = "" %}
-                {% endif %}
-                <div class="govuk-form-group" data-form-validator="isUrl">
-                    <label class="govuk-label" for="url-{{ suffix }}">Source document url</label>
-                    <span class="govuk-error-message">
-                      <span class="govuk-visually-hidden">Error:</span> You must enter a valid URL
-                    </span>
-                    <input class="govuk-input" id="url-{{ suffix }}" name="url-{{ suffix }}" type="text"
-                           value="{{ source_document }}">
-
-                </div>
-
-                <div class="govuk-form-group">
-                   <label class="govuk-label" for="screenshot-{{ suffix }}">Upload a screenshot from source document</label>
-                   <input class="govuk-file-upload" type="file" name="screenshot-{{ suffix }}" id="screenshot-{{ suffix }}" />
-                   <img src="{% if plan.housing_numbers.image_url %}{{ plan.housing_numbers.image_url }}{% endif %}" alt="" class="img-preview{% if not plan.housing_numbers.image_url %} not-active{% endif %}">
-                </div>
-
-                <div class="govuk-form-group">
-                    <input type="submit" class="govuk-button dlf-secondary-button" value="Save housing numbers">
-                    <button class="cancel-btn">Cancel</button>
-                </div>
-              <div class="loader"></div>
-            </form>
-        {% endmacro %}
+        {% from "partials/housing-numbers-form.html" import renderHousingRequirementForm %}
 
         {% for plan in planning_authority.sorted_plans(reverse=True) %}
             <section class="govuk-tabs__panel local-plan {% if plan.is_adopted() %}adopted-plan{% endif %}"
@@ -320,7 +140,8 @@
                     <h3>Joint plan with</h3>
                     <ul>
                         {% for authority in plan.joint_plan_authorities(planning_authority.id) %}
-                            <li><a href="{{ url_for('frontend.local_plan', planning_authority=authority.id) }}">{{ authority.name }}</a></li>
+                            {%  set target = authority.id + '#plan_tab_' + plan.id_to_str() %}
+                            <li><a href="/local-plans/{{ target }}">{{ authority.name }}</a></li>
                         {% endfor %}
                     </ul>
                 {%  else %}
@@ -393,7 +214,7 @@
                             {%- if 'range' in plan.housing_numbers.housing_number_type|lower %}
                               {{ plan.housing_numbers.min }} to {{ plan.housing_numbers.max }}
                             {% else %}
-                              {{ plan.housing_numbers.number }}
+                                {{ plan.get_correct_housing_numbers(planning_authority.id) | format_housing_number }}
                             {% endif -%}
                           </span>
                           <span class="data-item bold-xsmall govuk-!-font-size-16 govuk-!-font-weight-bold">{{ plan.housing_numbers.housing_number_type | format_fact }}</span>
@@ -424,7 +245,7 @@
                     <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="#" class="govuk-link">Update
                         housing requirement numbers</a>.</p>
                     <div class="highlight-box highlight-box--flush highlight-box--minimal">
-                        {{ renderHousingRequirementForm(plan, "Edit housing requirement", "edit" + loop.index | string, "govuk-form--contained add-housing-requirement-form") }}
+                        {{ renderHousingRequirementForm(plan, planning_authority, fact_types, "Edit housing requirement", "edit" + loop.index | string, "govuk-form--contained add-housing-requirement-form") }}
                     </div>
                 </div>
                 {% if not plan.has_housing_numbers() %}
@@ -432,7 +253,7 @@
                         <h3 class="govuk-heading-s highlight-box__title">Housing requirement unknown</h3>
                         <p class="govuk-body govuk-!-margin-bottom-0">We do not have any housing requirement numbers for this plan.
                             Can you add some?</p>
-                        {{ renderHousingRequirementForm(plan, "Add housing requirement numbers", "add" + loop.index | string, "govuk-form--contained add-housing-requirement-form") }}
+                        {{ renderHousingRequirementForm(plan, planning_authority, fact_types, "Add housing requirement numbers", "add" + loop.index | string, "govuk-form--contained add-housing-requirement-form") }}
                     </div>
 
                     <form action="{{ url_for('frontend.update_plan_data_flags', planning_authority=planning_authority.id, plan_id=plan.id) }}" class="govuk-form govuk-form--single-checkbox">
@@ -1272,13 +1093,35 @@
 
             if (form.classList.contains('housing-requirement-total')) {
                 formData.append("housing_number_type", selectEl.options[selectEl.selectedIndex].value);
-                formData.append("number", cleanNumber(form.querySelector("[name^='housing-requirement-total']").value));
                 formData.append("source_document", form.querySelector("[name^='url-']").value);
+                if(form.dataset.isJointPlan === "true") {
+                  const joint_plan_number_type = form.querySelector(".govuk-radios__item :checked").value;
+                  formData.append("joint_plan_number_type", joint_plan_number_type);
+                  if(joint_plan_number_type === "whole-plan") {
+                    formData.append("number", cleanNumber(form.querySelector("[name^='joint-plan-total-number']").value))
+                  } else {
+                    formData.append("number", cleanNumber(form.querySelector("[name^='joint-plan-la-number']").value))
+                  }
+                } else {
+                  formData.append("number", cleanNumber(form.querySelector("[name^='housing-requirement-total']").value));
+                }
             }
             else if (form.classList.contains('housing-requirement-yearly-average')) {
                 formData.append("housing_number_type", selectEl.options[selectEl.selectedIndex].value);
-                formData.append("number", cleanNumber(form.querySelector("[name^='housing-requirement-yearly-average']").value));
                 formData.append("source_document", form.querySelector("[name^='url-']").value);
+
+                
+                if(form.dataset.isJointPlan === "true") {
+                  const joint_plan_number_type = form.querySelector(".govuk-radios__item :checked").value;
+                  formData.append("joint_plan_number_type", joint_plan_number_type);
+                  if(joint_plan_number_type === "whole-plan") {
+                    formData.append("number", cleanNumber(form.querySelector("[name^='joint-plan-total-avg-number']").value))
+                  } else {
+                    formData.append("number", cleanNumber(form.querySelector("[name^='joint-plan-avg-la-number']").value))
+                  }
+                } else {
+                  formData.append("number", cleanNumber(form.querySelector("[name^='housing-requirement-yearly-average']").value));
+                }
             }
             else if (form.classList.contains('housing-requirement-range')) {
                 formData.append("housing_number_type", selectEl.options[selectEl.selectedIndex].value);

@@ -5417,6 +5417,10 @@
   }
 }
 
+.govuk-form--contained .housing-req-fieldset {
+  margin-bottom: 15px;
+}
+
 .govuk-form--contained .govuk-form-group:not(:last-of-type) {
   margin-bottom: 15px;
 }
@@ -5515,6 +5519,7 @@
 .plan-housing-requirement-total,
 .housing-requirement-range-fieldset,
 .housing-requirement-yearly-average-input,
+.housing-requirement-yearly-average-fieldset,
 .housing-requirement-yearly-range-fieldset {
   display: none;
 }
@@ -5547,7 +5552,8 @@
   display: block;
 }
 
-.housing-requirement-yearly-average .housing-requirement-yearly-average-input {
+.housing-requirement-yearly-average .housing-requirement-yearly-average-input,
+.housing-requirement-yearly-average .housing-requirement-yearly-average-fieldset {
   display: block;
 }
 
@@ -5577,6 +5583,12 @@
 
 .proposed-adoption-date .proposed-adoption-date-input {
   display: block;
+}
+
+.housing-req-fieldset .govuk-fieldset__legend span {
+  display: inline-block;
+  margin-top: 15px;
+  font-weight: bold;
 }
 
 body {
