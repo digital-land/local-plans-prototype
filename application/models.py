@@ -115,7 +115,7 @@ class LocalPlan(db.Model):
             return self.housing_numbers.get('number', None)
         numbers_by_authority = self.housing_numbers.get('housing_number_by_planning_authority')
         if numbers_by_authority is None:
-            self.housing_numbers.get('number', None)
+            return self.housing_numbers.get('number', None)
         return numbers_by_authority.get(planning_authority, None)
 
     def ordered_states(self):
