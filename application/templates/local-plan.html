@@ -214,12 +214,34 @@
                             {%- if 'range' in plan.housing_numbers.housing_number_type|lower %}
                               {{ plan.housing_numbers.min }} to {{ plan.housing_numbers.max }}
                             {% else %}
+
+                              {% if plan.is_joint_plan() %}
+                                {% if plan.has_joint_plan_breakdown() %}
+                                  {% if plan.has_joint_plan_breakdown_for_authority(planning_authority.id) %}
+                                    {{ plan.get_correct_housing_numbers(planning_authority.id) | format_housing_number }}*
+                                    {% set reference_note = "Breakdown set for this local authority" %}
+                                  {% else %}
+                                    Not set*
+                                    {% set reference_note = "No breakdown number set for this local authority" %}
+                                  {% endif %}
+                                {% else %}
+                                  {# is whole plan number #}
+                                  {{ plan.get_correct_housing_numbers(planning_authority.id) | format_housing_number }}*
+                                  {% set reference_note = "Total for whole of joint plan" %}
+                                {% endif %}
+
+                              {% else %}
                                 {{ plan.get_correct_housing_numbers(planning_authority.id) | format_housing_number }}
+                              {% endif %}
+ 
                             {% endif -%}
                           </span>
                           <span class="data-item bold-xsmall govuk-!-font-size-16 govuk-!-font-weight-bold">{{ plan.housing_numbers.housing_number_type | format_fact }}</span>
                         </div>
                         <span class="data-source"><a href="{{ plan.housing_numbers.source_document }}" target="_blank">View source document</a></span>
+                        {% if reference_note is defined %}
+                          *{{ reference_note }}
+                        {% endif %}
                         {% if plan.housing_numbers.notes %}
                         <details class="govuk-details">
                           <summary class="govuk-details__summary">
