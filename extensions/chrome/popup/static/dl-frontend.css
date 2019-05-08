@@ -7036,6 +7036,18 @@
   display: none;
 }
 
+.flash-messages {
+  margin: 0 0 30px;
+  padding-left: 0;
+  list-style: none;
+}
+
+.flash-messages__item {
+  margin-bottom: 5px;
+  padding: 5px 15px 4px;
+  background: #ffbf47;
+}
+
 .govuk-form--contained {
   margin-top: 15px;
 }

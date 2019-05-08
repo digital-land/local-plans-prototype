@@ -378,3 +378,16 @@ $editable-box-border-width: 1px;
     display: none;
   }
 }
+
+.flash-messages {
+  margin: 0 0 $govuk-gutter;
+  padding-left: 0;
+  list-style: none;
+}
+
+.flash-messages__item {
+  margin-bottom: 5px;
+  padding: 5px 15px 4px;
+  background: govuk-colour("yellow");
+}
+

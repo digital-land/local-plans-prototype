@@ -773,7 +773,7 @@ def remove_plan(planning_authority, local_plan):
     plan.deleted = True
     db.session.add(plan)
     db.session.commit()
-    flash(Markup(f'{plan.title} has been removed. If you want to get it back go <a href="/local-plans-removed">here</a>'))
+    flash(Markup(f'{plan.title} has been removed. If you want to restore it you can do so from the <a href="/local-plans-removed">list of removed plans</a>.'))
     return redirect(url_for('frontend.local_plan', planning_authority=planning_authority))
 
 
