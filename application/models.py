@@ -169,6 +169,9 @@ class LocalPlan(db.Model):
                     housing_numbers.append(fact)
         return housing_numbers
 
+    def id_to_str(self):
+        return str(self.id)
+
 
 class PlanningAuthority(db.Model):
 

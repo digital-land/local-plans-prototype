@@ -140,7 +140,8 @@
                     <h3>Joint plan with</h3>
                     <ul>
                         {% for authority in plan.joint_plan_authorities(planning_authority.id) %}
-                            <li><a href="{{ url_for('frontend.local_plan', planning_authority=authority.id) }}">{{ authority.name }}</a></li>
+                            {%  set target = authority.id + '#plan_tab_' + plan.id_to_str() %}
+                            <li><a href="/local-plans/{{ target }}">{{ authority.name }}</a></li>
                         {% endfor %}
                     </ul>
                 {%  else %}
