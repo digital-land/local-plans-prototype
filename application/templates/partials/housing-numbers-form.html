@@ -46,7 +46,7 @@
                   <label class="govuk-label" for="joint-plan-total-number">
                     Number
                   </label>
-                  <input class="govuk-input govuk-!-width-one-third" id="joint-plan-total-number" name="joint-plan-total-number" type="text">
+                  <input class="govuk-input govuk-!-width-one-third" id="joint-plan-total-number" name="joint-plan-total-number" type="text" value={{ plan.housing_numbers.number if plan.housing_numbers.number else "" }}>
                 </div>
               </div>
             
