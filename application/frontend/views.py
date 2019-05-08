@@ -660,9 +660,9 @@ def data_as_csv():
                 d['start_year'] = plan.plan_start_year.year
             if plan.plan_end_year is not None:
                 d['end_year'] = plan.plan_end_year.year
-            if plan.housing_numbers_found == False:
+            if plan.housing_numbers_found:
                 d['housing_numbers_found'] = False
-            if plan.plan_period_found == False:
+            if plan.plan_period_found:
                 d['plan_period_found'] = False
 
             d['created_date'] = plan.created_date
