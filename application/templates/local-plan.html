@@ -218,7 +218,7 @@
                               {% if plan.is_joint_plan() %}
                                 {% if plan.has_joint_plan_breakdown() %}
                                   {% if plan.has_joint_plan_breakdown_for_authority(planning_authority.id) %}
-                                    {{ plan.get_correct_housing_numbers(planning_authority.id) | format_housing_number }}*
+                                    {{ plan.get_correct_housing_numbers(planning_authority.id) | format_housing_number | big_number }}*
                                     {% set reference_note = "Breakdown set for this local authority" %}
                                   {% else %}
                                     Not set*
@@ -226,12 +226,12 @@
                                   {% endif %}
                                 {% else %}
                                   {# is whole plan number #}
-                                  {{ plan.get_correct_housing_numbers(planning_authority.id) | format_housing_number }}*
+                                  {{ plan.get_correct_housing_numbers(planning_authority.id) | format_housing_number | big_number }}*
                                   {% set reference_note = "Total for whole of joint plan" %}
                                 {% endif %}
 
                               {% else %}
-                                {{ plan.get_correct_housing_numbers(planning_authority.id) | format_housing_number }}
+                                {{ plan.get_correct_housing_numbers(planning_authority.id) | format_housing_number | big_number }}
                               {% endif %}
  
                             {% endif -%}
