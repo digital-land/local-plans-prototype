@@ -68,6 +68,9 @@ class LocalPlan(db.Model):
         else:
             return True
 
+    def __hash__(self):
+        return hash(str(self.plan_start_year))
+
     def latest_state(self):
        return self.ordered_states()[-1]
 
