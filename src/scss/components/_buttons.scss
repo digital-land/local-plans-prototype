@@ -45,3 +45,7 @@
 .dlf-secondary-button {
   @include govuk-style-button($button-text-colour: $govuk-text-colour, $button-colour:  govuk-colour("grey-3"));
 }
+
+.dlf-destructive-button {
+  @include govuk-style-button($button-text-colour: govuk-colour("white"), $button-colour:  govuk-colour("red"));
+}

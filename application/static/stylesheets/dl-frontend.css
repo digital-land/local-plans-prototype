@@ -5390,6 +5390,21 @@
   background-color: #d0d3d6;
 }
 
+.dlf-destructive-button {
+  color: #ffffff;
+  background-color: #b10e1e;
+  box-shadow: 0 2px 0 #6a0812;
+}
+
+.dlf-destructive-button:link, .dlf-destructive-button:visited, .dlf-destructive-button:active, .dlf-destructive-button:hover {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.dlf-destructive-button:hover, .dlf-destructive-button:focus {
+  background-color: #990c1a;
+}
+
 .contribution-category-row {
   margin-bottom: 15px;
 }
@@ -6303,6 +6318,10 @@
   padding: 15px;
   border: 0;
   background: #dee0e2;
+}
+
+.govuk-warning-text__text {
+  max-width: 30em;
 }
 
 .autocomplete__menu {
