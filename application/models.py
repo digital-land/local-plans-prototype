@@ -85,6 +85,8 @@ class LocalPlan(db.Model):
             return None
         if self.housing_numbers.get('housing_number_by_planning_authority') is None:
             return None
+        if self.housing_numbers.get('housing_number_by_planning_authority').get(planning_authority) is None:
+            return None
         return self.housing_numbers.get('housing_number_by_planning_authority')[planning_authority]['number']
 
     def joint_plan_authorities(self, authority_id):

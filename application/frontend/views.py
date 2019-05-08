@@ -645,13 +645,12 @@ def data_as_csv():
 
                 if plan.is_joint_plan() and plan.has_joint_plan_breakdown_for_authority(planning_authority.id):
                     breakdown_number = plan.get_joint_plan_breakdown_for_authority(planning_authority.id)
-                    print('breakdown number is', breakdown_number)
                     d['joint_plan_housing_number'] = breakdown_number
                 elif 'range' in plan.housing_numbers['housing_number_type'].lower():
                     d['min'] = plan.housing_numbers['min']
                     d['max'] = plan.housing_numbers['max']
                 else:
-                    d['number'] = plan.housing_numbers['number']
+                    d['number'] = plan.housing_numbers.get('number', None)
 
                 d['source_document'] = plan.housing_numbers.get('source_document')
                 d['screenshot'] = plan.housing_numbers.get('image_url')
