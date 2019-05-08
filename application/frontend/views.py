@@ -752,21 +752,10 @@ def make_joint_plan(planning_authority, local_plan):
     form.planning_authorities.choices = [(p.id, p.name) for p in planning_authorities]
 
     if form.validate_on_submit():
-        housing_number_by_planning_authority = {}
-
         for id in form.planning_authorities.data:
             authority = PlanningAuthority.query.get(id)
             if authority not in plan.planning_authorities:
                 plan.planning_authorities.append(authority)
-                if plan.housing_numbers is not None:
-                    housing_number_by_planning_authority[authority.id] = {'name': authority.name, 'number': None}
-
-        if housing_number_by_planning_authority:
-            housing_number_by_planning_authority[planning_authority.id] = {'name': planning_authority.name, 'number': None}
-            plan.housing_numbers['housing_number_by_planning_authority'] = housing_number_by_planning_authority
-            # have to flag modified as sqlalchemy does not track changes to json attributes
-            # didn't define field as mutable but that broke hashing.
-            flag_modified(plan, 'housing_numbers')
 
         db.session.add(plan)
         db.session.commit()
