@@ -101,14 +101,16 @@ def load():
 @click.command()
 @with_appcontext
 def set_ons_codes():
-    local_authorities = 'https://raw.githubusercontent.com/digital-land/alpha-data/master/local-authorities.csv'
+    local_authorities = 'https://raw.githubusercontent.com/communitiesuk/digital-land-data/master/data/organisation.tsv'
     print('Loading', local_authorities)
     with closing(requests.get(local_authorities, stream=True)) as r:
-        reader = csv.DictReader(r.iter_lines(decode_unicode=True), delimiter=',')
+        reader = csv.DictReader(r.iter_lines(decode_unicode=True), delimiter='\t')
         for row in reader:
-            pa = PlanningAuthority.query.get(row['local-authority'])
+            pa = PlanningAuthority.query.get(row['organisation'])
             if pa is not None:
-                pa.ons_code = row['ons-code'].strip()
+                ons_code = row['area'].strip().split(':')[-1]
+                print(ons_code)
+                pa.ons_code = ons_code if ons_code else None
                 db.session.add(pa)
                 db.session.commit()
 
