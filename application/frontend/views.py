@@ -226,7 +226,7 @@ def update_plan_housing_requirement(planning_authority, plan_id):
                 to_remove.append(key)
 
         for key in to_remove:
-            if key != 'created_date':
+            if key not in ['created_date', 'image_url']:
                 plan.housing_numbers.pop(key, None)
 
         # Again as modifications inside json field not tracked
