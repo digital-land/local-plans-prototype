@@ -49,3 +49,7 @@
 .dlf-destructive-button {
   @include govuk-style-button($button-text-colour: govuk-colour("white"), $button-colour:  govuk-colour("red"));
 }
+
+.dlf-warning-button {
+  @include govuk-style-button($button-text-colour: govuk-colour("black"), $button-colour:  govuk-colour("yellow"));
+}

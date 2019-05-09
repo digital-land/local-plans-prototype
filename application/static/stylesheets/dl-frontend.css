@@ -5405,6 +5405,21 @@
   background-color: #990c1a;
 }
 
+.dlf-warning-button {
+  color: #0b0c0c;
+  background-color: #ffbf47;
+  box-shadow: 0 2px 0 #faa300;
+}
+
+.dlf-warning-button:link, .dlf-warning-button:visited, .dlf-warning-button:active, .dlf-warning-button:hover {
+  color: #0b0c0c;
+  text-decoration: none;
+}
+
+.dlf-warning-button:hover, .dlf-warning-button:focus {
+  background-color: #ffb62e;
+}
+
 .contribution-category-row {
   margin-bottom: 15px;
 }

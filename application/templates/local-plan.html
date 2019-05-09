@@ -333,13 +333,13 @@
 
             <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 
-            <a class="govuk-button dlf-destructive-button govuk-!-margin-bottom-3" href="{{ url_for('frontend.remove_plan', planning_authority=planning_authority.id, local_plan=plan.id)}}">Remove this plan</a>
+            <a class="govuk-button dlf-warning-button govuk-!-margin-bottom-3" href="{{ url_for('frontend.remove_plan', planning_authority=planning_authority.id, local_plan=plan.id)}}">Remove this plan</a>
 
             <div class="govuk-warning-text">
               <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
               <strong class="govuk-warning-text__text">
                 <span class="govuk-warning-text__assistive">Warning</span>
-                This is a destructive action. You will be able to restore it but please proceed with caution.
+                You will be able to restore it later but please proceed with caution.
               </strong>
             </div>
 
