@@ -46,6 +46,10 @@ def return_percent(val1, denominator, precision=1):
 
 
 def big_number(value):
+    try:
+        int(value)
+    except ValueError:
+        return value
     return "{:,}".format(int(value))
 
 

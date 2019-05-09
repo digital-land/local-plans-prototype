@@ -141,7 +141,18 @@
                     <ul>
                         {% for authority in plan.joint_plan_authorities(planning_authority.id) %}
                             {%  set target = authority.id + '#plan_tab_' + plan.id_to_str() %}
-                            <li><a href="/local-plans/{{ target }}">{{ authority.name }}</a></li>
+                            <li>
+                              <a href="/local-plans/{{ target }}">{{ authority.name }}</a>
+
+                                {%- if plan.has_joint_plan_breakdown() %}
+                                  ({%- if plan.has_joint_plan_breakdown_for_authority(authority.id) -%}
+                                    {{ plan.get_correct_housing_numbers(authority.id) | format_housing_number | big_number }}
+                                  {%- else -%}
+                                    not set
+                                  {%- endif -%})
+                                {%- endif -%}
+
+                            </li>
                         {% endfor %}
                     </ul>
                 {%  else %}
