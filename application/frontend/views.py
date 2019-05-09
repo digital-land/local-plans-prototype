@@ -192,10 +192,16 @@ def update_plan_housing_requirement(planning_authority, plan_id):
             number = request.form.get('number', 0)
             if isinstance(number, str):
                 number = number.strip()
+
+            page_refresh = False
             if not plan.is_joint_plan() or request.form.get('joint_plan_number_type') == 'whole-plan':
                 data['number'] = int(number) if number else None
+                message = f"Set housing number to {number} for whole plan"
+                page_refresh = True
             else:
                 data['housing_number_by_planning_authority'] = {planning_authority: {'number': number}}
+                message = f"Set housing number to {number} for local authority ({planning_authority})"
+                page_refresh = True
 
         if request.files:
             # only retrieve image if set
@@ -240,6 +246,10 @@ def update_plan_housing_requirement(planning_authority, plan_id):
         plan.housing_numbers_found = True
         db.session.add(plan)
         db.session.commit()
+
+        if page_refresh:
+            plan.housing_numbers['message'] = message
+
         resp = make_response(jsonify(data=plan.housing_numbers))
         resp.status_code = 200
         resp.headers = {'Content-Type': 'application/json'}
@@ -773,7 +783,7 @@ def remove_plan(planning_authority, local_plan):
     plan.deleted = True
     db.session.add(plan)
     db.session.commit()
-    flash(Markup(f'{plan.title} has been removed. If you want to get it back go <a href="/local-plans-removed">here</a>'))
+    flash(Markup(f'{plan.title} has been removed. If you want to restore it you can do so from the <a href="/local-plans-removed">list of removed plans</a>.'))
     return redirect(url_for('frontend.local_plan', planning_authority=planning_authority))
 
 

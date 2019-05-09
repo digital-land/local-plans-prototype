@@ -45,6 +45,14 @@ def return_percent(val1, denominator, precision=1):
     return round(percentage, precision)
 
 
+def big_number(value):
+    try:
+        int(value)
+    except ValueError:
+        return value
+    return "{:,}".format(int(value))
+
+
 def format_housing_number(number):
     if number is None:
         return 'No number set for this planning authority'

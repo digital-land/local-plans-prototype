@@ -28,15 +28,15 @@
 
 {% block content %}
 
+    <ul class="flash-messages">
     {% with messages = get_flashed_messages() %}
       {% if messages %}
-        <ul class=flashes>
         {% for message in messages %}
-          <li>{{ message }}</li>
+          <li class="flash-messages__item">{{ message }}</li>
         {% endfor %}
-        </ul>
       {% endif %}
     {% endwith %}
+    </ul>
 
     <span class="govuk-caption-xl">Local plan data</span>
     <h1 class="govuk-heading-xl">{{ planning_authority.name }}</h1>
@@ -141,7 +141,18 @@
                     <ul>
                         {% for authority in plan.joint_plan_authorities(planning_authority.id) %}
                             {%  set target = authority.id + '#plan_tab_' + plan.id_to_str() %}
-                            <li><a href="/local-plans/{{ target }}">{{ authority.name }}</a></li>
+                            <li>
+                              <a href="/local-plans/{{ target }}">{{ authority.name }}</a>
+
+                                {%- if plan.has_joint_plan_breakdown() %}
+                                  ({%- if plan.has_joint_plan_breakdown_for_authority(authority.id) -%}
+                                    {{ plan.get_correct_housing_numbers(authority.id) | format_housing_number | big_number }}
+                                  {%- else -%}
+                                    not set
+                                  {%- endif -%})
+                                {%- endif -%}
+
+                            </li>
                         {% endfor %}
                     </ul>
                 {%  else %}
@@ -214,12 +225,34 @@
                             {%- if 'range' in plan.housing_numbers.housing_number_type|lower %}
                               {{ plan.housing_numbers.min }} to {{ plan.housing_numbers.max }}
                             {% else %}
-                                {{ plan.get_correct_housing_numbers(planning_authority.id) | format_housing_number }}
+
+                              {% if plan.is_joint_plan() %}
+                                {% if plan.has_joint_plan_breakdown() %}
+                                  {% if plan.has_joint_plan_breakdown_for_authority(planning_authority.id) %}
+                                    {{ plan.get_correct_housing_numbers(planning_authority.id) | format_housing_number | big_number }}*
+                                    {% set reference_note = "Breakdown set for this local authority" %}
+                                  {% else %}
+                                    Not set*
+                                    {% set reference_note = "No breakdown number set for this local authority" %}
+                                  {% endif %}
+                                {% else %}
+                                  {# is whole plan number #}
+                                  {{ plan.get_correct_housing_numbers(planning_authority.id) | format_housing_number | big_number }}*
+                                  {% set reference_note = "Total for whole of joint plan" %}
+                                {% endif %}
+
+                              {% else %}
+                                {{ plan.get_correct_housing_numbers(planning_authority.id) | format_housing_number | big_number }}
+                              {% endif %}
+ 
                             {% endif -%}
                           </span>
                           <span class="data-item bold-xsmall govuk-!-font-size-16 govuk-!-font-weight-bold">{{ plan.housing_numbers.housing_number_type | format_fact }}</span>
                         </div>
-                        <span class="data-source">Source: <a href="{{ plan.housing_numbers.source_document }}" target="_blank">{{ plan.housing_numbers.source_document }}</a></span>
+                        <span class="data-source"><a href="{{ plan.housing_numbers.source_document }}" target="_blank">View source document</a></span>
+                        {% if reference_note is defined %}
+                          *{{ reference_note }}
+                        {% endif %}
                         {% if plan.housing_numbers.notes %}
                         <details class="govuk-details">
                           <summary class="govuk-details__summary">
@@ -298,7 +331,17 @@
                     </div>
                 {% endif %}
 
-             <p><a href="{{ url_for('frontend.remove_plan', planning_authority=planning_authority.id, local_plan=plan.id)}}">Remove this plan</a></p>
+            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+            <a class="govuk-button dlf-warning-button govuk-!-margin-bottom-3" href="{{ url_for('frontend.remove_plan', planning_authority=planning_authority.id, local_plan=plan.id)}}">Remove this plan</a>
+
+            <div class="govuk-warning-text">
+              <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+              <strong class="govuk-warning-text__text">
+                <span class="govuk-warning-text__assistive">Warning</span>
+                You will be able to restore it later but please proceed with caution.
+              </strong>
+            </div>
 
             </section>
 
@@ -1152,16 +1195,23 @@
             const extractData = extractor;
 
             const successfullySaved = (data) => {
-                const section = editableSection.section;
-                section.classList.add("has-been-set");
 
-                const currentNumbers = section.parentNode.querySelector(".edit-housing-requirement");
-                currentNumbers.classList.remove("not-set");
+                // if there is a message
+                if(data.data.message) {
+                  const redirectURL = addParamToURL('message', data.data.message);
+                  window.location = redirectURL;
+                } else {
+                  const section = editableSection.section;
+                  section.classList.add("has-been-set");
 
-                const gridRow = createElementWithClasses('div', "govuk-grid-row");
-                gridRow.innerHTML = housingNumbersTemplate(data.data);
+                  const currentNumbers = section.parentNode.querySelector(".edit-housing-requirement");
+                  currentNumbers.classList.remove("not-set");
 
-                currentNumbers.insertBefore(gridRow, currentNumbers.firstChild);
+                  const gridRow = createElementWithClasses('div', "govuk-grid-row");
+                  gridRow.innerHTML = housingNumbersTemplate(data.data);
+
+                  currentNumbers.insertBefore(gridRow, currentNumbers.firstChild);
+                }
             };
 
             editableSection.initialiseForm(extractData, successfullySaved);
@@ -1183,7 +1233,14 @@
 
             const extractData = extractor;
             const onSuccessfulChange = (data) => {
-              currentNumbers.innerHTML = housingNumbersTemplate(data.data);
+              console.log("edited");
+              // if there is a message
+              if(data.data.message) {
+                const redirectURL = addParamToURL('message', data.data.message);
+                window.location = redirectURL;
+              } else {
+                currentNumbers.innerHTML = housingNumbersTemplate(data.data);
+              }
             };
             editableSection.initialiseForm(extractData, onSuccessfulChange);
         });
@@ -1243,6 +1300,40 @@
 
             editableSection.initialiseForm(extractData, onSuccessfulChange);
         });
+
+
+        // ---------------------------------------------
+        // hacky way to refresh page and display message
+        // ---------------------------------------------
+
+        function addParamToURL(param, value) {
+          const wl = window.location;
+          const removedHash = wl.href.split("#")[0];
+          const main = removedHash.split("?")[0];
+
+          return url = `${main}?${param}=${encodeURI(value)}${wl.hash}`;
+        }
+
+        function getMessageParam() {
+          const wls = window.location.search;
+          if (wls !== "") {
+            return wls.substring(1).split("=")[1];
+          }
+          return "";
+        }
+
+        function addFlashLikeMessage(messageStr) {
+          const messages = document.querySelector(".flash-messages");
+
+          messages.innerHTML = `<li class="flash-messages__item">${messageStr}</li>`;
+        }
+
+        window.onload = function(e) {
+          const message = getMessageParam();
+          if (message !== "") {
+            addFlashLikeMessage( decodeURI(message) );
+          }
+        }
 
 
     </script>
