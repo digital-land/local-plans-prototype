@@ -61,7 +61,15 @@
                   <label class="govuk-label" for="joint-plan-la-number">
                     Number
                   </label>
-                  <input class="govuk-input govuk-!-width-one-third" id="joint-plan-la-number" name="joint-plan-la-number" type="text">
+                  {%- if plan.has_joint_plan_breakdown() %}
+                    {% if plan.has_joint_plan_breakdown_for_authority(planning_authority.id) %}
+                      {% set currentValue = plan.get_correct_housing_numbers(planning_authority.id) | format_housing_number | big_number %}
+                    {% else %}
+                      {% set currentValue = "" %}
+                    {% endif %}
+                  {% endif %}
+
+                  <input class="govuk-input govuk-!-width-one-third" id="joint-plan-la-number" name="joint-plan-la-number" type="text" value={{ currentValue }}>
                 </div>
               </div>
             </div>
