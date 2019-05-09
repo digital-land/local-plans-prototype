@@ -24,100 +24,114 @@
 
 {% block content %}
 
-    <div class="govuk-grid-row top-content">
-      <div class="govuk-grid-column-two-thirds">
-        <span class="govuk-caption-xl">Local plan</span>
-        <h1 class="govuk-heading-xl">{{ planning_authority.name }}</h1>
-      </div>
-      <div class="govuk-grid-column-two-thirds">
-        <p class="govuk-body-l">MHCLG collects housing data about each Planning authority. Data is gathered from the planning authority and other sources.</p>
-      </div>
-    </div>
+    {% if nodata %}
 
-    <h2>Recorded plans</h2>
+         <div class="govuk-grid-row top-content">
+          <div class="govuk-grid-column-two-thirds">
+            <span class="govuk-caption-xl">Local plan</span>
+            <h1 class="govuk-heading-xl">{{ planning_authority.name }}</h1>
+          </div>
+          <div class="govuk-grid-column-two-thirds">
+            <p class="govuk-body-l">There haven't been any plans entered for this planning authority</p>
+          </div>
+        </div>
 
-    <ul class="timeline">
-        <ul class="timeline__plots">
-            {% for plan in sorted_plans %}
-                {% if plan.plan_period_found %}
-                    {% set span = (last_end_year - first_start_year) %}
-                    {% set width = (plan.plan_end_year.year - plan.plan_start_year.year) / span * 100 %}
-                    {% set offset = (plan.plan_start_year.year - first_start_year) / span * 100 %}
-                    <li class="bar--blue" style="width:{{ width }}%;margin-left:{{offset}}%">
-                {% else %}
-                    <li class="bar--grey">
-                {% endif %}
-                    {{ plan.title }}
+    {% else %}
+        <div class="govuk-grid-row top-content">
+          <div class="govuk-grid-column-two-thirds">
+            <span class="govuk-caption-xl">Local plan</span>
+            <h1 class="govuk-heading-xl">{{ planning_authority.name }}</h1>
+          </div>
+          <div class="govuk-grid-column-two-thirds">
+            <p class="govuk-body-l">MHCLG collects housing data about each Planning authority. Data is gathered from the planning authority and other sources.</p>
+          </div>
+        </div>
+
+        <h2>Recorded plans</h2>
+
+        <ul class="timeline">
+            <ul class="timeline__plots">
+                {% for plan in sorted_plans %}
                     {% if plan.plan_period_found %}
-                        ({{ plan.plan_start_year.year }} - {{ plan.plan_end_year.year }})
+                        {% set span = (last_end_year - first_start_year) %}
+                        {% set width = (plan.plan_end_year.year - plan.plan_start_year.year) / span * 100 %}
+                        {% set offset = (plan.plan_start_year.year - first_start_year) / span * 100 %}
+                        <li class="bar--blue" style="width:{{ width }}%;margin-left:{{offset}}%">
+                    {% else %}
+                        <li class="bar--grey">
                     {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
-        <ul class="timeline__xaxis">
-            {% for year in range(first_start_year, last_end_year, 5) %}
-                <li>{{ year }}</li>
-            {% endfor %}
-        </ul>
-    </ul>
-
-    <h2>Housing numbers</h2>
-
-    {% set max_housing_number = namespace(count=0) %}
-    {% for plan in sorted_plans %}
-        {% if plan.has_housing_numbers() %}
-            {% for k, v in plan.housing_numbers.items() %}
-                {% if k == 'housing_number_type' and v == 'HOUSING_REQUIREMENT_TOTAL' %}
-                    {% if max_housing_number.count < plan.housing_numbers.number %}
-                        {% set max_housing_number.count = plan.housing_numbers.number %}
-                    {% endif %}
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-    {% endfor %}
-
-    {% set iterations = namespace(count=0) %}
-    {% for plan in sorted_plans %}
-        {% if plan.has_housing_numbers() %}
-            {% if plan.has_plan_period() %}
-                {% set iterations.count = iterations.count + 1 %}
-                <h3>{{ plan.plan_start_year.year }} - {{ plan.plan_end_year.year }}</h3>
-                <ul class="timeline">
-                    <ul class="timeline__plots">
-                        {% if plan.housing_numbers.number is defined %}
-                            {% set width = (plan.housing_numbers.number/(max_housing_number.count + 2000) * 100) | round %}
-                            <li class="bar--blue" style="width:{{width}}%">
-                                {{ plan.housing_numbers.number }}<sup><a href="#fn{{ iterations.count }}">{{ iterations.count }}</a></sup>
-                            </li>
-                        {% else %}
-
-                        {# TO DO - handle range better #}
-
-                            {% set width = (plan.housing_numbers.max/(max_housing_number.count + 2000) * 100) | round %}
-                            <li class="bar--blue" style="width:{{width}}%">{{ plan.housing_numbers.min }} to {{ plan.housing_numbers.max }}<sup><a href="#fn{{ iterations.count }}">{{ iterations.count }}</a></sup></li>
+                        {{ plan.title }}
+                        {% if plan.plan_period_found %}
+                            ({{ plan.plan_start_year.year }} - {{ plan.plan_end_year.year }})
                         {% endif %}
-                    </ul>
-                    <ul class="timeline__xaxis">
-                        {% for count in range(0, max_housing_number.count + 2000, 2000) %}
-                            <li>{{count}}</li>
-                        {% endfor %}
-                    </ul>
-                </ul>
-            {% endif %}
-        {% endif %}
-    {% endfor %}
+                    </li>
+                {% endfor %}
+            </ul>
+            <ul class="timeline__xaxis">
+                {% for year in range(first_start_year, last_end_year, 5) %}
+                    <li>{{ year }}</li>
+                {% endfor %}
+            </ul>
+        </ul>
 
-    <h2>Sources</h2>
-    {% set iterations = namespace(count=0) %}
-    <ol>
+        <h2>Housing numbers</h2>
+
+        {% set max_housing_number = namespace(count=0) %}
         {% for plan in sorted_plans %}
             {% if plan.has_housing_numbers() %}
-                {% set iterations.count = iterations.count + 1 %}
-                <li id="fn{{iterations.count}}">
-                    <a href="{{ plan.housing_numbers.source_document }}">{{ plan.title }}</a>
-                </li>
+                {% for k, v in plan.housing_numbers.items() %}
+                    {% if k == 'housing_number_type' and v == 'HOUSING_REQUIREMENT_TOTAL' %}
+                        {% if max_housing_number.count < plan.housing_numbers.number %}
+                            {% set max_housing_number.count = plan.housing_numbers.number %}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
             {% endif %}
         {% endfor %}
-    </ol>
+
+        {% set iterations = namespace(count=0) %}
+        {% for plan in sorted_plans %}
+            {% if plan.has_housing_numbers() %}
+                {% if plan.has_plan_period() %}
+                    {% set iterations.count = iterations.count + 1 %}
+                    <h3>{{ plan.plan_start_year.year }} - {{ plan.plan_end_year.year }}</h3>
+                    <ul class="timeline">
+                        <ul class="timeline__plots">
+                            {% if plan.housing_numbers.number is defined %}
+                                {% set width = (plan.housing_numbers.number/(max_housing_number.count + 2000) * 100) | round %}
+                                <li class="bar--blue" style="width:{{width}}%">
+                                    {{ plan.housing_numbers.number }}<sup><a href="#fn{{ iterations.count }}">{{ iterations.count }}</a></sup>
+                                </li>
+                            {% else %}
+
+                            {# TO DO - handle range better #}
+
+                                {% set width = (plan.housing_numbers.max/(max_housing_number.count + 2000) * 100) | round %}
+                                <li class="bar--blue" style="width:{{width}}%">{{ plan.housing_numbers.min }} to {{ plan.housing_numbers.max }}<sup><a href="#fn{{ iterations.count }}">{{ iterations.count }}</a></sup></li>
+                            {% endif %}
+                        </ul>
+                        <ul class="timeline__xaxis">
+                            {% for count in range(0, max_housing_number.count + 2000, 2000) %}
+                                <li>{{count}}</li>
+                            {% endfor %}
+                        </ul>
+                    </ul>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        <h2>Sources</h2>
+        {% set iterations = namespace(count=0) %}
+        <ol>
+            {% for plan in sorted_plans %}
+                {% if plan.has_housing_numbers() %}
+                    {% set iterations.count = iterations.count + 1 %}
+                    <li id="fn{{iterations.count}}">
+                        <a href="{{ plan.housing_numbers.source_document }}">{{ plan.title }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ol>
+    {% endif %}
 
 {% endblock %}

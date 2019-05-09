@@ -73,17 +73,21 @@ def planning_authority_old(planning_authority):
 def planning_authority(planning_authority):
     planning_auth = PlanningAuthority.query.get(planning_authority)
     sorted_plans = planning_auth.sorted_plans()
-    start_year = planning_auth.get_earliest_plan_start_year()
-    end_year = planning_auth.get_latest_plan_end_year()
 
-    context = {
-        'planning_authority': planning_auth,
-        'first_start_year': round(start_year, -1) - 5,
-        'last_end_year': round(end_year, -1) + 5,
-        'sorted_plans': sorted_plans
-    }
+    if sorted_plans:
+        start_year = planning_auth.get_earliest_plan_start_year()
+        end_year = planning_auth.get_latest_plan_end_year()
 
-    return render_template('planning-authority.html', **context)
+        context = {
+            'planning_authority': planning_auth,
+            'first_start_year': round(start_year, -1) - 5,
+            'last_end_year': round(end_year, -1) + 5,
+            'sorted_plans': sorted_plans
+        }
+
+        return render_template('planning-authority.html', **context)
+    else:
+        return render_template('planning-authority.html', nodata=True, planning_authority=planning_auth)
 
 
 @frontend.route('/local-plans', methods=['GET', 'POST'])
