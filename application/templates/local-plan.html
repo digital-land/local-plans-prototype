@@ -28,15 +28,15 @@
 
 {% block content %}
 
+    <ul class="flash-messages">
     {% with messages = get_flashed_messages() %}
       {% if messages %}
-        <ul class=flash-messages>
         {% for message in messages %}
           <li class="flash-messages__item">{{ message }}</li>
         {% endfor %}
-        </ul>
       {% endif %}
     {% endwith %}
+    </ul>
 
     <span class="govuk-caption-xl">Local plan data</span>
     <h1 class="govuk-heading-xl">{{ planning_authority.name }}</h1>
@@ -1195,16 +1195,23 @@
             const extractData = extractor;
 
             const successfullySaved = (data) => {
-                const section = editableSection.section;
-                section.classList.add("has-been-set");
 
-                const currentNumbers = section.parentNode.querySelector(".edit-housing-requirement");
-                currentNumbers.classList.remove("not-set");
+                // if there is a message
+                if(data.data.message) {
+                  const redirectURL = addParamToURL('message', data.data.message);
+                  window.location = redirectURL;
+                } else {
+                  const section = editableSection.section;
+                  section.classList.add("has-been-set");
 
-                const gridRow = createElementWithClasses('div', "govuk-grid-row");
-                gridRow.innerHTML = housingNumbersTemplate(data.data);
+                  const currentNumbers = section.parentNode.querySelector(".edit-housing-requirement");
+                  currentNumbers.classList.remove("not-set");
 
-                currentNumbers.insertBefore(gridRow, currentNumbers.firstChild);
+                  const gridRow = createElementWithClasses('div', "govuk-grid-row");
+                  gridRow.innerHTML = housingNumbersTemplate(data.data);
+
+                  currentNumbers.insertBefore(gridRow, currentNumbers.firstChild);
+                }
             };
 
             editableSection.initialiseForm(extractData, successfullySaved);
@@ -1226,7 +1233,14 @@
 
             const extractData = extractor;
             const onSuccessfulChange = (data) => {
-              currentNumbers.innerHTML = housingNumbersTemplate(data.data);
+              console.log("edited");
+              // if there is a message
+              if(data.data.message) {
+                const redirectURL = addParamToURL('message', data.data.message);
+                window.location = redirectURL;
+              } else {
+                currentNumbers.innerHTML = housingNumbersTemplate(data.data);
+              }
             };
             editableSection.initialiseForm(extractData, onSuccessfulChange);
         });
@@ -1286,6 +1300,40 @@
 
             editableSection.initialiseForm(extractData, onSuccessfulChange);
         });
+
+
+        // ---------------------------------------------
+        // hacky way to refresh page and display message
+        // ---------------------------------------------
+
+        function addParamToURL(param, value) {
+          const wl = window.location;
+          const removedHash = wl.href.split("#")[0];
+          const main = removedHash.split("?")[0];
+
+          return url = `${main}?${param}=${encodeURI(value)}${wl.hash}`;
+        }
+
+        function getMessageParam() {
+          const wls = window.location.search;
+          if (wls !== "") {
+            return wls.substring(1).split("=")[1];
+          }
+          return "";
+        }
+
+        function addFlashLikeMessage(messageStr) {
+          const messages = document.querySelector(".flash-messages");
+
+          messages.innerHTML = `<li class="flash-messages__item">${messageStr}</li>`;
+        }
+
+        window.onload = function(e) {
+          const message = getMessageParam();
+          if (message !== "") {
+            addFlashLikeMessage( decodeURI(message) );
+          }
+        }
 
 
     </script>
