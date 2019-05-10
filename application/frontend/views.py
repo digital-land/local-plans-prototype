@@ -684,6 +684,7 @@ def data_as_csv():
                     d['number'] = plan.housing_numbers.get('number', None)
 
                 d['source_document'] = plan.housing_numbers.get('source_document')
+                d['notes'] = plan.housing_numbers.get('notes')
                 d['screenshot'] = plan.housing_numbers.get('image_url')
                 d['created_date'] = plan.housing_numbers.get('created_date')
 
