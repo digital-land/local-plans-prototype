@@ -130,16 +130,18 @@ def local_plan(planning_authority):
                            emerging_fact_types=EmergingFactType,
                            form=form)
 
+
 @frontend.route('/local-plans/<planning_authority>/<plan_id>/update-plan-period', methods=['POST'])
 def update_plan_period(planning_authority, plan_id):
+
     plan = LocalPlan.query.get(plan_id)
     pla = PlanningAuthority.query.get(planning_authority)
+
     if plan is not None:
         if request.json.get('start-year'):
             start_year = int(request.json.get('start-year'))
             try:
                 plan.plan_start_year = datetime.datetime(start_year, 1, 1)
-                plan.plan_period_found = True
             except ValueError as e:
                 current_app.logger.exception(e)
                 return jsonify({"BAD REQUEST": 400, "error": f"{plan.plan_start_year} not a valid year"})
@@ -150,19 +152,23 @@ def update_plan_period(planning_authority, plan_id):
             end_year = int(request.json.get('end-year'))
             try:
                 plan.plan_end_year = datetime.datetime(end_year,1,1)
-                plan.plan_period_found = True
             except ValueError as e:
                 current_app.logger.exception(e)
                 return jsonify({"BAD REQUEST": 400, "error": f"{plan.plan_end_year} not a valid year"})
         else:
             plan.plan_end_year = None
-        if plan.plan_start_year is None and plan.plan_end_year is None:
-            plan.plan_period_found = False
+
+        if plan.plan_start_year is not None and plan.plan_end_year is not None:
+            plan.plan_period_found = True
+
         db.session.add(plan)
         db.session.commit()
+
         resp = {"OK": 200, "plan": plan.to_dict(pla.id)}
+
     else:
         resp = {"OK": 404, "error": "Can't find that plan"}
+
     return jsonify(resp)
 
 
@@ -651,15 +657,21 @@ def data_as_csv():
             d = {'planning_authority': planning_authority.id,
                  'plan_id': str(plan.id),
                  'ons_code': planning_authority.ons_code,
-                 'name': planning_authority.name}
+                 'name': planning_authority.name,
+                 'housing_numbers_found': False,
+                 'plan_period_found': False
+                 }
             if plan.housing_numbers is not None:
                 d['housing_numbers_found'] = True
                 d['plan_title'] = plan.title
                 d['housing_number_type'] = plan.housing_numbers['housing_number_type']
 
-                if plan.is_joint_plan() and plan.has_joint_plan_breakdown_for_authority(planning_authority.id):
-                    breakdown_number = plan.get_joint_plan_breakdown_for_authority(planning_authority.id)
-                    d['joint_plan_housing_number'] = breakdown_number
+                if plan.is_joint_plan():
+                    if plan.has_joint_plan_breakdown_for_authority(planning_authority.id):
+                        breakdown_number = plan.get_joint_plan_breakdown_for_authority(planning_authority.id)
+                        d['number'] = breakdown_number
+                    else:
+                        d['joint_plan_total'] = plan.housing_numbers.get('number', None)
                 elif 'range' in plan.housing_numbers['housing_number_type'].lower():
                     d['min'] = plan.housing_numbers['min']
                     d['max'] = plan.housing_numbers['max']
@@ -669,15 +681,14 @@ def data_as_csv():
                 d['source_document'] = plan.housing_numbers.get('source_document')
                 d['screenshot'] = plan.housing_numbers.get('image_url')
                 d['created_date'] = plan.housing_numbers.get('created_date')
+
             if plan.plan_start_year is not None:
-                d['plan_period_found'] = True
                 d['start_year'] = plan.plan_start_year.year
             if plan.plan_end_year is not None:
                 d['end_year'] = plan.plan_end_year.year
-            if plan.housing_numbers_found:
-                d['housing_numbers_found'] = False
-            if plan.plan_period_found:
-                d['plan_period_found'] = False
+
+            if plan.plan_start_year is not None and plan.plan_end_year is not None:
+                d['plan_period_found'] = True
 
             d['created_date'] = plan.created_date
             d['updated_date'] = plan.updated_date
@@ -692,17 +703,17 @@ def data_as_csv():
                   'plan_id',
                   'start_year',
                   'end_year',
+                  'plan_period_found',
                   'housing_number_type',
                   'number',
                   'min',
                   'max',
+                  'joint_plan_total',
+                  'housing_numbers_found',
                   'is_joint_plan',
-                  'joint_plan_housing_number',
                   'source_document',
                   'notes',
                   'screenshot',
-                  'housing_numbers_found',
-                  'plan_period_found',
                   'created_date',
                   'updated_date']
 
