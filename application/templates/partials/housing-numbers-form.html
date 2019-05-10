@@ -277,6 +277,13 @@
         </div>
 
         <div class="govuk-form-group">
+          <label class="govuk-label" for="document-note-{{counter}}">
+            Provide any additional information
+          </label>
+          <textarea class="govuk-textarea housing-number-notes" id="housing-number-note-{{ suffix }}" name="housing-number-notes-{{ suffix }}" rows="5">{% if plan.housing_numbers and plan.housing_numbers.notes %}{{ plan.housing_numbers.notes }}{% endif %}</textarea>
+        </div>
+
+        <div class="govuk-form-group">
             <input type="submit" class="govuk-button dlf-secondary-button" value="Save housing numbers">
             <button class="cancel-btn">Cancel</button>
         </div>
