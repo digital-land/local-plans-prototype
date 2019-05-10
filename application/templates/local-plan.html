@@ -1134,6 +1134,11 @@
 
             const selectEl = form.querySelector("select");
 
+            const notesFieldValue = form.querySelector("[name^='housing-number-note']").value;
+            if (notesFieldValue !== "") {
+              formData.append("notes", notesFieldValue);
+            }
+
             if (form.classList.contains('housing-requirement-total')) {
                 formData.append("housing_number_type", selectEl.options[selectEl.selectedIndex].value);
                 formData.append("source_document", form.querySelector("[name^='url-']").value);
@@ -1152,7 +1157,6 @@
             else if (form.classList.contains('housing-requirement-yearly-average')) {
                 formData.append("housing_number_type", selectEl.options[selectEl.selectedIndex].value);
                 formData.append("source_document", form.querySelector("[name^='url-']").value);
-
                 
                 if(form.dataset.isJointPlan === "true") {
                   const joint_plan_number_type = form.querySelector(".govuk-radios__item :checked").value;
