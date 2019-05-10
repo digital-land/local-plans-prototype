@@ -184,6 +184,9 @@ def update_plan_housing_requirement(planning_authority, plan_id):
             'source_document': request.form['source_document']
         }
 
+        if 'notes' in request.form:
+            data['notes'] = request.form['notes']
+
         # TODO if this is a joint plan we'll do something about split of housing numbers
         # somewhere in here in the handling of housing numbers I guess?
         if 'range' in request.form['housing_number_type'].lower():
