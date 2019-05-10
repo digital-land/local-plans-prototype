@@ -176,6 +176,7 @@ def update_plan_period(planning_authority, plan_id):
 def update_plan_housing_requirement(planning_authority, plan_id):
     plan = LocalPlan.query.get(plan_id)
     if plan is not None:
+        page_refresh = False
 
         data = {
             'housing_number_type': request.form['housing_number_type'],
@@ -198,8 +199,6 @@ def update_plan_housing_requirement(planning_authority, plan_id):
             number = request.form.get('number', 0)
             if isinstance(number, str):
                 number = number.strip()
-
-            page_refresh = False
             if not plan.is_joint_plan() or request.form.get('joint_plan_number_type') == 'whole-plan':
                 data['number'] = int(number) if number else None
                 message = f"Set housing number to {number} for whole plan"
@@ -229,7 +228,10 @@ def update_plan_housing_requirement(planning_authority, plan_id):
                 else:
                     plan.housing_numbers['housing_number_by_planning_authority'] = {**plan.housing_numbers['housing_number_by_planning_authority'], **val}
             else:
-                plan.housing_numbers[key] = val
+                if plan.housing_numbers is None:
+                    plan.housing_numbers = {key: val}
+                else:
+                    plan.housing_numbers[key] = val
 
         # Actually I think I can do this in a better and less destructive way in the
         # bit above where the numbers are handled. e.g. if I'm setting a number, remove min/max
