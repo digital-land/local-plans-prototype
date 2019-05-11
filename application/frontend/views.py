@@ -675,7 +675,7 @@ def data_as_csv():
                     if plan.has_joint_plan_breakdown_for_authority(planning_authority.id):
                         breakdown_number = plan.get_joint_plan_breakdown_for_authority(planning_authority.id)
                         d['number'] = breakdown_number
-                    else:
+                    elif not plan.has_joint_plan_breakdown():
                         d['joint_plan_total'] = plan.housing_numbers.get('number', None)
                 elif 'range' in plan.housing_numbers['housing_number_type'].lower():
                     d['min'] = plan.housing_numbers['min']
