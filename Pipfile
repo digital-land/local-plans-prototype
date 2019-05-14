@@ -25,6 +25,8 @@ geoalchemy2 = "*"
 flask-optimize = "*"
 jinja2 = ">2.10"
 urllib3 = ">=1.24.2"
+authlib = "*"
+six = "*"
 
 [requires]
 python_version = "3.7"
