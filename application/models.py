@@ -4,6 +4,8 @@ from datetime import datetime
 from enum import Enum
 from functools import total_ordering
 from geoalchemy2 import Geometry
+
+from application.auth.utils import get_current_user
 from application.extensions import db
 from sqlalchemy.dialects.postgresql import UUID, JSON
 
@@ -49,8 +51,8 @@ class LocalPlan(db.Model):
 
     created_date = db.Column(db.DateTime(), default=datetime.utcnow)
     updated_date = db.Column(db.DateTime(), onupdate=datetime.utcnow)
-
     deleted = db.Column(db.Boolean, default=False)
+    last_updated_by = db.Column(db.String(), onupdate=get_current_user)
 
     def __eq__(self, other):
 

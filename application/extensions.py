@@ -20,3 +20,6 @@ config = {
 from flask_optimize import FlaskOptimize
 flask_optimize = FlaskOptimize(config=config)
 
+
+from authlib.flask.client import OAuth
+

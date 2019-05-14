@@ -19,12 +19,14 @@ from flask import (
     send_file,
     current_app,
     make_response,
-    flash
-)
+    flash,
+    session)
 
 from markupsafe import Markup
 from sqlalchemy import func, or_, and_, String, cast
 from sqlalchemy.orm.attributes import flag_modified
+
+from application.auth.utils import requires_auth, get_current_user
 from application.extensions import db, flask_optimize
 
 from application.frontend.forms import (
@@ -51,7 +53,7 @@ frontend = Blueprint('frontend', __name__, template_folder='templates')
 
 @frontend.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html')
+    return render_template('index.html', current_user=get_current_user())
 
 
 @frontend.route('/planning-authority', methods=['GET', 'POST'])
@@ -99,6 +101,7 @@ def list_all():
 
 
 @frontend.route('/local-plans/<planning_authority>', methods=['GET', 'POST'])
+@requires_auth
 def local_plan(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
     form = AddPlanForm(planning_authority=pla.code())
@@ -132,6 +135,7 @@ def local_plan(planning_authority):
 
 
 @frontend.route('/local-plans/<planning_authority>/<plan_id>/update-plan-period', methods=['POST'])
+@requires_auth
 def update_plan_period(planning_authority, plan_id):
 
     plan = LocalPlan.query.get(plan_id)
@@ -173,6 +177,7 @@ def update_plan_period(planning_authority, plan_id):
 
 
 @frontend.route('/local-plans/<planning_authority>/<plan_id>/update-plan-housing-requirement', methods=['POST'])
+@requires_auth
 def update_plan_housing_requirement(planning_authority, plan_id):
     plan = LocalPlan.query.get(plan_id)
     if plan is not None:
@@ -270,6 +275,7 @@ def update_plan_housing_requirement(planning_authority, plan_id):
 
 
 @frontend.route('/local-plans/<planning_authority>/<plan_id>/update-plan-flags', methods=['POST'])
+@requires_auth
 def update_plan_data_flags(planning_authority, plan_id):
     plan = LocalPlan.query.get(plan_id)
 
@@ -607,6 +613,7 @@ def lucky_dip():
     query = db.session.query(LocalPlan).filter(or_(LocalPlan.plan_start_year.is_(None),
                                                    LocalPlan.plan_end_year.is_(None),
                                                    LocalPlan.housing_numbers.is_(None),
+                                                   LocalPlan.deleted.is_(False),
                                                    and_(LocalPlan.housing_numbers.isnot(None),
                                                         LocalPlan.housing_numbers['image_url'].is_(None)),
                                                    and_(LocalPlan.housing_numbers.isnot(None),
@@ -699,6 +706,7 @@ def data_as_csv():
             d['created_date'] = plan.created_date
             d['updated_date'] = plan.updated_date
             d['is_joint_plan'] = plan.is_joint_plan()
+            d['last_updated_by'] = plan.last_updated_by
 
             data.append(d)
 
@@ -721,7 +729,8 @@ def data_as_csv():
                   'notes',
                   'screenshot',
                   'created_date',
-                  'updated_date']
+                  'updated_date',
+                  'last_updated_by']
 
     with io.StringIO() as output:
         writer = csv.DictWriter(output, fieldnames=fieldnames, quoting=csv.QUOTE_ALL, lineterminator="\n")

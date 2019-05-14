@@ -13,6 +13,13 @@
   },
   "html": 'This is a prototype - your feedback will help us to improve it.'
 }) }}
+
+    <div class="govuk-width-container">
+        {% if session['profile'] %}
+            <p style="float: right;"><a href="/auth/logout">Logout</a></p>
+        {% endif %}
+    </div>
+
 {% endblock %}
 
 {% block bodyEnd %}
