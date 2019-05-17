@@ -14,7 +14,7 @@ def requires_auth(f):
 
 
 def get_current_user():
-    if session.get('profile') is not None:
+    if session and session.get('profile') is not None:
         if session['profile'].get('nickname') is not None:
             return session['profile'].get('nickname')
         else:

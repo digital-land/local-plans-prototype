@@ -691,6 +691,8 @@ def data_as_csv():
                     d['number'] = plan.housing_numbers.get('number', None)
 
                 d['source_document'] = plan.housing_numbers.get('source_document')
+                d['cached_source_document'] = plan.housing_numbers.get('cached_source_document')
+                d['source_document_checksum'] = plan.housing_numbers.get('source_document_checksum')
                 d['notes'] = plan.housing_numbers.get('notes')
                 d['screenshot'] = plan.housing_numbers.get('image_url')
                 d['created_date'] = plan.housing_numbers.get('created_date')
@@ -726,6 +728,8 @@ def data_as_csv():
                   'housing_numbers_found',
                   'is_joint_plan',
                   'source_document',
+                  'cached_source_document',
+                  'source_document_checksum',
                   'notes',
                   'screenshot',
                   'created_date',

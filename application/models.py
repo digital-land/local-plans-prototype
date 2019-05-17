@@ -4,10 +4,9 @@ from datetime import datetime
 from enum import Enum
 from functools import total_ordering
 from geoalchemy2 import Geometry
-
 from application.auth.utils import get_current_user
 from application.extensions import db
-from sqlalchemy.dialects.postgresql import UUID, JSON
+from sqlalchemy.dialects.postgresql import UUID, JSONB
 
 
 def _generate_uuid():
@@ -32,7 +31,7 @@ class LocalPlan(db.Model):
     plan_start_year = db.Column(db.Date())
     plan_end_year = db.Column(db.Date())
 
-    housing_numbers = db.Column(JSON)
+    housing_numbers = db.Column(JSONB)
 
     # These are so a user can indicate they've been unable to find data
     plan_period_found = db.Column(db.Boolean)

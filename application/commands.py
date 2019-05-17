@@ -11,7 +11,7 @@ import requests
 
 from flask.cli import with_appcontext
 from contextlib import closing
-from application.extensions import db
+
 from application.models import (
     PlanningAuthority,
     LocalPlan,
@@ -224,7 +224,7 @@ def load_geojson():
     from application.extensions import db
 
     s3_region = current_app.config['S3_REGION']
-    s3_bucket = current_app.config['S3_BUCKET']
+    s3_bucket = 'digital-land-output'
     s3_bucket_url = 'http://%s.s3.amazonaws.com' % s3_bucket
 
     s3 = boto3.resource('s3', region_name=s3_region)
@@ -297,3 +297,91 @@ def clear():
     db.session.query(PlanningAuthority).delete()
     db.session.commit()
 
+
+@click.command()
+@with_appcontext
+def cache_docs_in_s3():
+
+    import tempfile
+    import os
+    from sqlalchemy.orm.attributes import flag_modified
+    from application.extensions import db
+
+    print('Cache plan documents in s3')
+
+    s3 = boto3.client('s3')
+
+    for plan in db.session.query(LocalPlan).all():
+        if plan.housing_numbers is not None:
+            if plan.housing_numbers.get('source_document') is not None:
+                url = plan.housing_numbers.get('source_document')
+                if url not in  [
+                    'https://www.blackpool.gov.uk/Residents/Planning-environment-and-community/Documents/J118003-107575-2016-updated-17-Feb-2016-High-Res.pdf','http://staffsmoorlands-consult.objective.co.uk/file/4884627']:
+                    try:
+                        file = tempfile.NamedTemporaryFile(delete=False)
+                        plan = process_file(file, plan, url, s3, existing_checksum=plan.housing_numbers.get('source_document_checksum'))
+                        flag_modified(plan, 'housing_numbers')
+                        db.session.add(plan)
+                        db.session.commit()
+                        print('Saved', plan.housing_numbers['cached_source_document'], 'with checksum',
+                            plan.housing_numbers['source_document_checksum'])
+                    except Exception as e:
+                        print('error fetching', url)
+                        print(e)
+                    finally:
+                        os.remove(file.name)
+
+
+def hash_md5(file):
+    import hashlib
+    hash_md5 = hashlib.md5()
+    with open(file, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b''):
+            hash_md5.update(chunk)
+    return hash_md5
+
+
+def process_file(file, plan, url, s3, existing_checksum=None):
+    from flask import current_app
+    import requests
+    import shutil
+    import base64
+
+    try:
+        print('Fetching', url, 'to', file.name)
+        r = requests.get(url, stream=True)
+        r.raise_for_status()
+        content_type = r.headers['content-type']
+        if content_type not in ['application/pdf', 'binary/octet-stream']:
+            raise Exception('Probably not a pdf')
+        shutil.copyfileobj(r.raw, file)
+        file.flush()
+        file.close()
+
+        print('Download done')
+        checksum = hash_md5(file.name)
+        print('checksum', checksum.hexdigest())
+        bucket = current_app.config['S3_BUCKET']
+        key = f'plan-documents/{plan.id}.pdf'
+        encoded_checksum = base64.b64encode(checksum.digest())
+
+        upload_exists = True if existing_checksum is not None and existing_checksum == checksum.hexdigest() else False
+
+        if not upload_exists:
+            with open(file.name, 'rb') as f:
+                resp = s3.put_object(
+                    Bucket=bucket,
+                    Key=key,
+                    Body=f,
+                    ACL='public-read',
+                    ContentMD5=encoded_checksum.decode('utf-8'),
+                    ContentType=content_type
+                )
+            print('Upload done')
+            s3_url = f'https://s3.eu-west-2.amazonaws.com/{bucket}/{key}'
+            plan.housing_numbers['cached_source_document'] = s3_url
+            plan.housing_numbers['source_document_checksum'] = checksum.hexdigest()
+            return plan
+
+    except Exception as e:
+        print(e)

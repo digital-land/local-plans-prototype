@@ -91,12 +91,13 @@ def register_extensions(app):
 
 
 def register_commands(app):
-    from application.commands import load, clear, set_ons_codes, load_hdt, load_geojson
+    from application.commands import load, clear, set_ons_codes, load_hdt, load_geojson, cache_docs_in_s3
     app.cli.add_command(load, name='load')
     app.cli.add_command(clear, name='clear')
     app.cli.add_command(set_ons_codes, name='set_ons')
     app.cli.add_command(load_hdt, name='load_hdt')
     app.cli.add_command(load_geojson, name='load_geojson')
+    app.cli.add_command(cache_docs_in_s3, name='cache_docs_in_s3')
 
 
 def register_filters(app):

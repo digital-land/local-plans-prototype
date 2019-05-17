@@ -42,21 +42,27 @@ def logout():
 
 @auth.route('/callback', methods=['GET', 'POST'])
 def callback():
-    auth0 = current_app.config['auth0']
-    auth0.authorize_access_token()
-    resp = auth0.get('userinfo')
-    userinfo = resp.json()
 
-    session['jwt_payload'] = userinfo
-    session['profile'] = {
-        'user_id': userinfo['sub'],
-        'name': userinfo['name'],
-        'picture': userinfo['picture'],
-        'nickname': userinfo['nickname']
-    }
-    redirect_url = session.pop('redirect_url', None)
-    if redirect_url is not None:
-        return redirect(redirect_url)
+    try:
+        auth0 = current_app.config['auth0']
+        auth0.authorize_access_token()
+        resp = auth0.get('userinfo')
+        userinfo = resp.json()
 
-    return redirect(url_for('auth.dashboard'))
+
+        session['jwt_payload'] = userinfo
+        session['profile'] = {
+            'user_id': userinfo['sub'],
+            'name': userinfo['name'],
+            'picture': userinfo['picture'],
+            'nickname': userinfo['nickname']
+        }
+        redirect_url = session.pop('redirect_url', None)
+        if redirect_url is not None:
+            return redirect(redirect_url)
+
+    except Exception as e:
+        print(e)
+
+    return redirect(url_for('frontend.index'))
 
