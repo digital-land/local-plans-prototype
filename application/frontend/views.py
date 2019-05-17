@@ -20,7 +20,8 @@ from flask import (
     current_app,
     make_response,
     flash,
-    session)
+    session
+)
 
 from markupsafe import Markup
 from sqlalchemy import func, or_, and_, String, cast
@@ -785,6 +786,7 @@ def map_of_data():
 
 
 @frontend.route('/local-plans/<planning_authority>/<local_plan>/make-joint-plan', methods=['GET', 'POST'])
+@requires_auth
 def make_joint_plan(planning_authority, local_plan):
 
     planning_authority = PlanningAuthority.query.get(planning_authority)
@@ -808,6 +810,7 @@ def make_joint_plan(planning_authority, local_plan):
 
 
 @frontend.route('/local-plans/<planning_authority>/<local_plan>/remove')
+@requires_auth
 def remove_plan(planning_authority, local_plan):
     plan = LocalPlan.query.get(local_plan)
     plan.deleted = True
@@ -818,6 +821,7 @@ def remove_plan(planning_authority, local_plan):
 
 
 @frontend.route('/local-plans/<planning_authority>/<local_plan>/restore')
+@requires_auth
 def restore_plan(planning_authority, local_plan):
     plan = LocalPlan.query.get(local_plan)
     plan.deleted = False
