@@ -301,35 +301,90 @@
                     </form>
                 {% endif %}
 
-                {% if not plan.is_emerging() %}
-                    <h3 class="govuk-heading-m">PINS data</h3>
-                    <div class="pims-stages govuk-!-margin-bottom-8">
-                        {% set latest_state = plan.latest_state() %}
-                        <div class="current-stage">
-                            <span class="stage-tag">{{ latest_state.state }}</span>
-                            <span class="stage-date">{{ latest_state.date | format_month_and_year }}</span>
-                        </div>
-                        <details class="govuk-details">
-                            <summary class="govuk-details__summary">
-        <span class="govuk-details__summary-text">
-         PINS Timeline
-        </span>
-                            </summary>
-                            <div class="govuk-details__text">
-                                <table class="govuk-table">
-                                    <tbody class="govuk-table__body">
-                                    {% for state in plan.ordered_states() -%}
-                                        <tr class="govuk-table__row">
-                                            <th class="govuk-table__cell" scope="row">{{ state.state }}</th>
-                                            <td class="govuk-table__cell">{{ state.date | format_month_and_year }}</td>
-                                        </tr>
-                                    {%- endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </details>
+                <h3 class="govuk-heading-m">PINS data</h3>
+                <div class="pins-stages govuk-!-margin-bottom-8">
+                    {% set latest_state = plan.latest_state() %}
+                    <div class="current-stage">
+                        <span class="stage-tag">{{ latest_state.state }}</span>
+                        <span class="stage-date">{{ latest_state.date | format_month_and_year }}</span>
                     </div>
-                {% endif %}
+                    <details class="govuk-details">
+                        <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+     PINS Timeline
+    </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            <table class="govuk-table">
+                                <tbody class="govuk-table__body">
+                                {% for state in plan.ordered_states() -%}
+                                    <tr class="govuk-table__row">
+                                        <th class="govuk-table__cell" scope="row">{{ state.state }}</th>
+                                        <td class="govuk-table__cell">{{ state.date | format_month_and_year }}</td>
+                                    </tr>
+
+                                {%- endfor %}
+                                </tbody>
+                            </table>
+                            {% if plan.next_state() %}
+                                <form class="govuk-form govuk-form--contained"
+                                      action="{{ url_for('frontend.add_pins_state',
+                                                         planning_authority=planning_authority.id,
+                                                         local_plan=plan.id,
+                                                         state=plan.next_state()) }}" method="POST">
+                                    <div class="govuk-form-group">
+                                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                                            <h1 class="govuk-fieldset__heading">
+                                                Add the next pins stage "{{ plan.next_state() | capitalize }}" for this plan
+                                            </h1>
+                                        </legend>
+                                        <fieldset class="govuk-fieldset" aria-describedby="pins-state-hint"
+                                                  role="group">
+                                        <span id="pin-state-hint" class="govuk-hint">
+                                          For example 05 2019 for May 2019
+                                        </span>
+                                            <div class="govuk-date-input" id="pins-state">
+                                                <div class="govuk-date-input__item">
+                                                    <div class="govuk-form-group">
+                                                        <label class="govuk-label govuk-date-input__label"
+                                                               for="pins-state-month">
+                                                            Month
+                                                        </label>
+                                                        <input class="govuk-input govuk-date-input__input govuk-input--width-2"
+                                                               id="pins-state-month"
+                                                               name="pins-state-month"
+                                                               type="text"
+                                                               pattern="0[1-9]|1[012]"
+                                                               required=""
+                                                               title="Month should be an number between 01 and 12">
+                                                    </div>
+                                                </div>
+                                                <div class="govuk-date-input__item">
+                                                    <div class="govuk-form-group">
+                                                        <label class="govuk-label govuk-date-input__label"
+                                                               for="pins-state-year">
+                                                            Year
+                                                        </label>
+                                                        <input class="govuk-input govuk-date-input__input govuk-input--width-4"
+                                                               id="pins-state-year"
+                                                               name="pins-state-year"
+                                                               type="text"
+                                                               pattern="[0-9]{4}"
+                                                               required=""
+                                                               title="Year should be four digits">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                      <div class="govuk-form-group">
+                                                <button class="govuk-button dlf-secondary-button" type="submit">Save</button>
+                                      </div>
+                                    </div>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </details>
+                </div>
 
             <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 

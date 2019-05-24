@@ -1,0 +1,436 @@
+prototype_plan_id,prototype_plan_title,normalised_council_name,removed_from_prototype_csv,Local Council,Last Updated,Published,Submitted,Found Sound,Adopted
+252e87cd-a0d3-4a20-bcc4-b2e104996fa6,Adur Local Plan 2017 (adopted) - Part 1,Adur District Council,False,Adur District Council,Jan-18,Mar-16,Oct-16,Sep-17,Dec-17
+5538be07-3fac-4f4c-89d4-376868e6fdc1,ALL-2013,Allerdale Borough Council,False,Allerdale Borough Council,Jul-14,May-13,Oct-13,Jul-14,Jul-14
+09a82662-75f1-485d-af89-5f035cdd6126,AMB-2017,Amber Valley Borough Council,False,Amber Valley Borough Council,Mar-18,Nov-17,Mar-18,,
+b6fe3079-37c0-48cb-affe-b5b077ab5d15,ARU-2014,Arun District Council,False,Arun District Council,Sep-18,Oct-14,Jan-15,Jul-18,Jul-18
+,,,,Ashfield District Council,Oct-18,,,,
+20294751-7081-496f-a3d8-f948e2a9fa42,ASF-2006 (Superseded),Ashford Borough Council,True,Ashford Borough Council,Dec-10,Oct-06,Nov-06,Jun-08,Jul-08
+,,,,Ashford Borough Council,Feb-19,Jun-16,Dec-17,Jan-19,
+6ec9e814-2154-404d-bbc0-1dd04e3b95df,VALP 2013-33,Aylesbury Vale District Council,False,Aylesbury Vale District Council,Mar-18,Nov-17,Feb-18,,
+b49461a3-759c-4d01-92c1-aff99699e46c,Babergh Local Plan - Core Strategy & Policies,Babergh District Council,False,Babergh District Council,Feb-14,Oct-11,Nov-12,Jan-14,Feb-14
+d00b83a7-aabe-4bbd-866c-ef2cc11d59a3,BDG-2008,London Borough of Barking and Dagenham,False,"Barking and Dagenham, London Borough of",Dec-10,Nov-08,Jun-09,Feb-10,Jul-10
+48647056-2c80-4d6f-a403-ace690639a61,BNE-2010,London Borough of Barnet,False,"Barnet, London Borough of",Sep-12,Sep-10,Aug-11,Jun-12,Sep-12
+0c7c56ed-5f11-463b-8bd7-5bda5e2b9311,BNS-2010 (Superseded),Barnsley Metropolitan Borough Council,True,Barnsley Metropolitan Borough Council,Sep-11,Feb-10,Sep-10,May-11,Sep-11
+9ff460cb-2bb8-48d2-80d4-359f6821b89b,BNS-2016,Barnsley Metropolitan Borough Council,False,Barnsley Metropolitan Borough Council,Feb-19,Jun-16,Dec-16,Dec-18,Jan-19
+d3e0e620-0896-4fb6-88a5-b852fd2130af,BAR-2017,Barrow-in-Furness Borough Council,False,Barrow-in-Furness Borough Council,Feb-18,Dec-17,Feb-18,,
+140025a9-c5a2-49a2-8dea-baeb2b86a268,BAI-2018,Basildon Borough Council,False,Basildon Borough Council,Nov-18,Nov-18,,,
+7ab3c965-3d06-49c9-a4b5-4985f0c4b22f,Amended Local Plan,Basingstoke and Deane Borough Council,False,Basingstoke and Deane Borough Council,Sep-16,Apr-14,Oct-14,Apr-16,May-16
+45d85ac7-9c13-4f28-aca3-aa0db2b6d7ab,Bassetlaw Core Strategy & Development Management Policies DPD,Bassetlaw District Council,False,Bassetlaw District Council,Dec-11,Nov-10,Jan-11,Nov-11,Dec-11
+c39f1ea7-c037-429f-be7e-45d3f3ad928e,BAS-2010,Bath and North East Somerset Council,False,Bath and North East Somerset Council,Jul-14,Dec-10,May-11,Jun-14,Jul-14
+,,,,Bath and North East Somerset Council (West of England JSP),May-18,Nov-17,Apr-18,,
+4221883b-e5f5-469f-95af-93eed23da83b,BDF-2006,Bedford Borough Council,False,Bedford Borough Council,Dec-10,Jul-06,Jul-06,Feb-08,Apr-08
+3c3c274f-d3e5-4517-a075-8868aaa8af42,BDF-2018,Bedford Borough Council,False,Bedford Borough Council,Jan-19,Jan-18,Dec-18,,
+636d2ba4-c268-41a4-80eb-13fa2a9598fd,BEX-2010,London Borough of Bexley,False,"Bexley, London Borough of",Mar-12,Nov-10,May-11,Oct-11,Feb-12
+2a72a06b-823f-4146-94a5-2c35446404b5,BIR-2014,Birmingham City Council,False,Birmingham City Council,Mar-17,Jan-14,Jul-14,Mar-16,Jan-17
+61aa0eb6-1a59-4d58-8f38-667938d42198,BLA-2012,Blaby District Council,False,Blaby District Council,Feb-13,Jan-12,Jun-12,Feb-13,Feb-13
+6e6621ed-7095-4f3a-901c-8477bad6e802,BBD-2009,Blackburn with Darwen Borough Council,False,Blackburn with Darwen Borough Council,Jan-11,Nov-09,Apr-10,Oct-10,Jan-11
+62a44b10-cdc6-4f7f-ba96-c60decf184ff,BPL-2014,Blackpool Borough Council,False,Blackpool Borough Council,Mar-16,Jul-14,Dec-14,Nov-15,Jan-16
+35773cba-51ed-4e4b-9da0-cd9127621f9f,Local Plan for Bolsover District,Bolsover District Council,False,Bolsover District Council,Sep-18,May-18,Aug-18,,
+03776d95-0e60-4c47-8d94-37cb160d2197,Bolton Core Strategy,Bolton Metropolitan Borough Council,False,Bolton Metropolitan Borough Council,Mar-11,Jan-10,May-10,Dec-10,Mar-11
+,,,,Boston Borough Council (South East Lincs Local Plan),Feb-19,Apr-17,Jun-17,Jan-19,
+6f964803-73ae-4e23-b16b-8f795a2fd1f3,BMH-2011,Bournemouth Borough Council,False,Bournemouth Borough Council,Nov-12,Aug-11,Nov-11,Aug-12,Oct-12
+450e04d8-3727-494c-ae14-02bebd605939,BRC-2006,Bracknell Forest Council,False,Bracknell Forest Council,Dec-10,Nov-06,Nov-06,Nov-07,Feb-08
+c4960e3b-ad51-4d94-a886-0125d830ebba,BRD-2014,City of Bradford Metropolitan District Council,False,City of Bradford Metropolitan District Council,Jul-17,Feb-14,Dec-14,Aug-16,Jul-17
+99c678f1-b369-4846-a949-2b2b8538c4e3,BRA-2010,Braintree District Council,False,Braintree District Council,Sep-11,May-10,Jan-11,Jul-11,Sep-11
+,,,,Braintree DC (Joint North Essex Local Plan part 1),Oct-17,Jun-17,Oct-17,,
+20d50033-8d8a-4cff-88e3-40ba05e1e921,BRE-2009,Breckland District Council,False,Breckland District Council,Dec-10,Jan-09,Mar-09,Oct-09,Dec-09
+5b973444-94c8-4331-9cfb-af0fe6d4cf7f,BRE-2017,Breckland District Council,False,Breckland District Council,Dec-17,Aug-17,Nov-17,,
+a8dbb275-ef77-4be6-a77a-6cbe28dc4e70,BEN-2009,London Borough of Brent,False,"Brent, London Borough of",Dec-10,Jun-09,Sep-09,Apr-10,Jul-10
+,,,,Brentwood Borough Council,Dec-10,,,,
+0e2b5875-0d92-4202-bff0-b717324eeb5d,BNH-2013,Brighton and Hove City Council,False,Brighton and Hove City Council,May-16,Feb-13,Jun-13,Feb-16,Mar-16
+34e96a04-b95b-4812-8abd-72b1b2807189,BST-2009,Bristol City Council,False,Bristol City Council,Jul-11,Nov-09,Mar-10,Apr-11,Jun-11
+,,,,Bristol City Council (West of England JSP),May-18,Nov-17,Apr-18,,
+c6c58c54-916e-46f8-b94e-45209490ae4a,BRO-2009 (Superseded),Broadland District Council,True,Broadland District Council,Mar-11,Nov-09,Mar-10,Feb-11,Mar-11
+a72eca2f-24ac-4362-b612-43ebcf7479de,"Joint Core Strategy for Broadland, Norwich and South Norfolk",Broadland District Council,False,Broadland District Council (Revision),Nov-13,Aug-12,Feb-13,Nov-13,Jan-14
+86544a3c-9ad0-4ec6-8ce6-86b511ae169a,OT216-2006,Broads Authority,False,Broads Authority,Dec-10,Sep-06,Sep-06,Jul-07,Sep-07
+7dd9e611-a2f6-4904-9b54-ddf987d87945,OT216-2017,Broads Authority,False,Broads Authority,Apr-18,Nov-17,Mar-18,,
+b0c67350-039c-4410-9d82-b814b1e29668,BRY-2016,London Borough of Bromley,False,"Bromley, London Borough of",Feb-19,Nov-16,Aug-17,Dec-18,Jan-19
+602147fb-c091-4eee-b8a4-c19f09ca1509,BRM-2013,Bromsgrove District Council,False,Bromsgrove District Council,Feb-17,Sep-13,Mar-14,Dec-16,Jan-17
+8b400e77-b8c6-4d30-b6e6-c919233e46be,The Broxbourne Local Plan,Broxbourne Borough Council,False,Broxbourne Borough Council,Apr-18,Nov-17,Mar-18,,
+1ac65a2e-3457-4033-a5db-f06dc73a257e,Greater Nottingham Aligned Core Strategies - Part 1 Local Plan,Broxtowe Borough Council,False,Broxtowe Borough Council,Sep-14,Jun-12,Jun-13,Jul-14,Sep-14
+63334b68-029e-4d9b-a461-0b65b7c378a1,BUN-2017,Burnley Borough Council,False,Burnley Borough Council,Sep-18,Apr-17,Jul-17,Jul-18,Jul-18
+,,,,Bury Metropolitan Borough Council,Apr-15,,,,
+74564582-cddd-45f4-b09c-35e08902cf91,CLD-2018,Calderdale Metropolitan Borough Council,False,Calderdale Metropolitan Borough Council,Feb-19,Aug-18,Jan-19,,
+11feb6a5-9c57-41b9-8a03-c30a3509231a,CAB-2013,Cambridge City Council,False,Cambridge City Council,Nov-18,Jul-13,Mar-14,Aug-18,Oct-18
+511463b3-4c3d-4ca2-983e-e05775a0739a,CMD-2009 (Superseded),London Borough of Camden,True,"Camden, London Borough of",Dec-10,Oct-09,Jan-10,Aug-10,Nov-10
+a1cfa4ac-822b-4727-a5fd-0c55909a15bb,CMD-2016,London Borough of Camden,False,"Camden, London Borough of - Local Plan",Sep-17,Feb-16,Jun-16,May-17,Jul-17
+974ae5d1-c3bb-428c-8dc5-f830bc1663a7,Cannock Chase Local Plan (Part 1) 2014,Cannock Chase District Council,False,Cannock Chase District Council,Jun-14,Feb-13,May-13,Feb-14,Jun-14
+3fd7dd48-a240-42ed-b9ed-411731039393,CAT-2014,Canterbury City Council,False,Canterbury City Council,Jul-17,Jun-14,Nov-14,Jun-17,Jul-17
+8c82762b-9d1c-4ea8-b18f-e3411c4169a0,CAR-2015,Carlisle City Council,False,Carlisle City Council,Dec-16,Mar-15,Jun-15,Jul-16,Nov-16
+,,,,Castle Point Borough Council,Apr-17,,,,
+f18ffccb-ad43-4fb1-aabf-32be13d6bae8,North Core Strategy,Central Bedfordshire Council,False,Central Bedfordshire Council,Dec-10,Oct-08,Feb-09,Aug-09,Nov-09
+1d4759cb-5018-43e5-9c6a-ca0372b083c6,CBF-2018,Central Bedfordshire Council,False,Central Bedfordshire Council,May-18,Jan-18,Apr-18,,
+35227a41-4853-40a6-aa52-4b357ea222e5,CHA-2013,Charnwood Borough Council,False,Charnwood Borough Council,Dec-15,Jun-13,Dec-13,Sep-15,Nov-15
+6d069da4-1762-43ea-aaa5-ce4de88235f1,CHL-2006 (Superseded),Chelmsford City Council,True,Chelmsford City Council,Dec-10,Nov-06,Nov-06,Feb-08,Feb-08
+caf26791-7db6-4b77-9afd-0b5b988009ac,Review,Chelmsford City Council,False,Chelmsford City Council (Review),Dec-13,Nov-12,Apr-13,Oct-13,Dec-13
+8f711fa3-3fd0-4fd3-8c24-1e553d858690,CHL-2018,Chelmsford City Council,False,Chelmsford City Council,Jul-18,Jan-18,Jun-18,,
+8cecfc29-1e2c-442c-9525-6138c62b00d8,"Gloucester, Cheltenham and Tewkesbury Joint Core Strategy",Cheltenham Borough Council,False,Cheltenham Borough Council,Jan-18,Jun-14,Nov-14,Oct-17,Dec-17
+65ea6e15-82eb-4537-9345-b964f0e883e1,CHR-2012,Cherwell District Council,False,Cherwell District Council,Aug-15,Aug-12,Jan-14,Jun-15,Jul-15
+6fcfc710-d741-422d-8a28-03dcd4263845,CHR-2017 Cherwell Local Plan 2011 – 2031 (Part1),Cherwell District Council,False,Cherwell District Council Local Plan part 1 Review,Mar-18,Jul-17,Mar-18,,
+796b09f8-af75-4dea-ba4b-0ace06381dd0,Local Plan Strategy,Cheshire East Council,False,Cheshire East Council,Aug-17,Mar-14,May-14,Jun-17,Jul-17
+ba74a7a2-6e3e-4ad0-9f8a-9620be69e85d,Local Plan (Part One) Strategic Policies,Cheshire West and Chester Council,False,Cheshire West and Chester Council,Apr-15,Sep-13,Dec-13,Dec-14,Jan-15
+a9818144-8028-40ac-bfd5-46c57db30357,CHS-2012,Chesterfield Borough Council,False,Chesterfield Borough Council,Jun-13,Feb-12,Sep-12,Jun-13,Jul-13
+e03a081f-3bd1-4c85-ba87-295a4914f8a0,CHS-2019,Chesterfield Borough Council,False,Chesterfield Borough Council,Feb-19,Jan-19,,,
+09bbd8b4-75f5-48aa-954c-ac63018d376f,CHI-2013,Chichester District Council,False,Chichester District Council,Aug-15,Nov-13,May-14,May-15,Jul-15
+8f4eecb8-0d98-4af4-b5b5-0ffc9451a190,Core Strategy for Chiltern District,Chiltern District Council,False,Chiltern District Council,Dec-11,Oct-10,Jan-11,Oct-11,Nov-11
+43a07557-8479-4374-b7b5-50099a966ce5,Central Lancashire Core Strategy,Chorley Borough Council,False,Chorley Borough Council,Jul-12,Dec-10,Mar-11,Jun-12,Jul-12
+8b48f728-8835-4b44-8f1a-d41101baeda1,Christchurch and East Dorset Local Plan Part 1 - Core Strategy,Christchurch Borough Council,False,Christchurch Borough Council,May-14,Apr-12,Mar-13,Mar-14,Apr-14
+6c8a40fe-2a9f-4113-a8c4-da88a0549fd3,LND-2010 (Superseded),City of London Corporation,True,City of London Corporation,Sep-11,Sep-10,Dec-10,Jun-11,Sep-11
+e8367ba9-56da-4507-9855-dcc6f2f5e903,LND-2013,City of London Corporation,False,City of London Corporation Review,Feb-15,Dec-13,May-14,Nov-14,Jan-15
+346b2235-bd4c-435b-88c7-0fbc40f011a2,COL-2007 (Superseded),Colchester Borough Council,True,Colchester Borough Council,Dec-10,Nov-07,Nov-07,Oct-08,Dec-08
+35b33d09-b9ef-480a-bb4a-62eb6e43bf48,Review,Colchester Borough Council,False,Colchester Borough Council (Review),Jul-14,Aug-13,Oct-13,May-14,Jul-14
+,,,,Colchester BC (Joint North Essex Local Plan part 1),Oct-17,Jun-17,Oct-17,,
+23147f33-a203-4148-b639-53bfb88017be,COP-2012,Copeland Borough Council,False,Copeland Borough Council,Dec-13,Apr-12,Oct-12,Sep-13,Dec-13
+e507324d-584d-4c30-aa52-0536f36a6720,COR-2007 (Superseded),Corby Borough Council,True,Corby Borough Council,Dec-10,Feb-07,Feb-07,Apr-08,Jun-08
+b818aff3-bd8a-4243-8e7a-e4ac402182de,North Northamptonshire Joint Core Strategy 2011-2031,Corby Borough Council,False,Corby Borough Council - First review,Aug-16,Jan-15,Jul-15,Jun-16,Jul-16
+ff7a8a59-3da4-4d24-a2ec-0a1b75d108bb,CON-2014,Cornwall Council,False,Cornwall Council,Dec-16,Mar-14,Feb-15,Sep-16,Nov-16
+2092c149-68e6-4107-a1ff-fb929fb4032e,COT-2016,Cotswold District Council,False,Cotswold District Council,Sep-18,Jun-16,Jul-17,Jun-18,Aug-18
+1c40a6a9-a132-47a2-a580-0f80d473e61d,COV-2016,Coventry City Council,False,Coventry City Council,Jan-18,Jan-16,Apr-16,Oct-17,Dec-17
+fabfb03b-4e3d-4fd8-a874-88d1457874bd,CRA-2018,Craven District Council,False,Craven District Council,Apr-18,Jan-18,Mar-18,,
+3e5d422d-c319-49b2-ab82-e512b9c64f8f,CRW-2006 (Superseded),Crawley Borough Council,True,Crawley Borough Council,Dec-10,May-06,May-06,Aug-07,Nov-07
+034cf060-0268-4964-9fd0-6c10e3c3f405,CS Review/Local Plan,Crawley Borough Council,False,Crawley Borough Council - CS Review/Local Plan,Jan-16,Sep-14,Nov-14,Nov-15,Dec-15
+f0768588-f63f-4e37-a355-92b15043434e,CRY-2011,London Borough of Croydon,False,"Croydon, London Borough of",Apr-13,Sep-11,Apr-12,Dec-12,Apr-13
+91ac26b7-d253-4569-9a70-92763649a92a,Strategic Policies Partial Review,London Borough of Croydon,False,"Croydon, London Borough of - Strategic Policies Partial Review",Mar-18,Sep-16,Feb-17,Jan-18,Feb-18
+b21362a8-ed0d-4c6d-90da-ec9ded5cf4fd,Core Strategy 2006-2031,Dacorum Borough Council,False,Dacorum Borough Council,Jul-13,Oct-11,Jun-12,Jul-13,Sep-13
+beccd40e-da67-45a7-bdfa-c11004e60d49,DAL-2010,Darlington Borough Council,False,Darlington Borough Council,Mar-11,Aug-10,Oct-10,Apr-11,May-11
+a7e15312-9fd9-4ca0-9fff-56348e710f6b,DAR-2010,Dartford Borough Council,False,Dartford Borough Council,Sep-11,Sep-10,Feb-11,Aug-11,Sep-11
+208f8df8-5784-4ea4-8521-a2d58603b234,OT217-2007,Dartmoor National Park Authority,False,Dartmoor National Park Authority,Dec-10,Jun-07,Jun-07,Feb-08,Apr-08
+194c957b-2fd6-499d-b6d6-4f8344b4db32,West Northamptonshire Joint Core Strategy Local Plan (Part 1),Daventry District Council,False,Daventry District Council,Jan-15,Feb-11,Dec-12,Oct-14,Dec-14
+2be3bc2f-67c2-4e1e-ab07-aa5df549bf8d,DER-2015,Derby City Council,False,Derby City Council,Feb-17,Aug-15,Dec-15,Dec-16,Jan-17
+c8ab0e67-4891-4e0d-8b5e-cea7674c5351,DEB-2016,Derbyshire Dales District Council,False,Derbyshire Dales District Council,Jan-18,Aug-16,Dec-16,Nov-17,Dec-17
+982a65e7-36fa-451b-bfb0-08d6edd8751f,DNC-2011,Doncaster Metropolitan Borough Council,False,Doncaster Metropolitan Borough Council,Jun-12,Mar-11,Jul-11,Mar-12,May-12
+3cf99a4f-97f0-445a-9283-6f7eb069134b,DOV-2009,Dover District Council,False,Dover District Council,Dec-10,Jan-09,Jun-09,Jan-10,Feb-10
+95690c16-7ad0-4b4d-9581-fc267e0f0537,Black Country Core Strategy 2011,Dudley Metropolitan Borough Council,False,Dudley Metropolitan Borough Council,Mar-11,Nov-09,Feb-10,Oct-10,Feb-11
+d9b60cc5-1285-4146-8b0f-1faa9c27ccf4,DUR-2019,Durham County Council,False,Durham County Council,Feb-19,Jan-19,,,
+a6e0dc08-d86e-43b2-8b7b-5d59308e59a0,EAL-2010,London Borough of Ealing,False,"Ealing, London Borough of",Mar-12,Sep-10,Jul-11,Feb-12,Apr-12
+dfafb801-4ee5-4cb4-97c4-76b720a00eb1,ECA-2008 (Superseded),East Cambridgeshire District Council,True,East Cambridgeshire District Council,Dec-10,Apr-08,May-08,Aug-09,Oct-09
+5dce72aa-fd22-4fd0-8147-32b014158462,East Cambridgeshire Local Plan,East Cambridgeshire District Council,False,East Cambridgeshire District Council (Revision),May-15,Feb-13,Aug-13,Mar-15,Apr-15
+ca6713f0-530b-43df-9b3d-f291f227a9da,ECA-2017,East Cambridgeshire District Council,False,East Cambridgeshire District Council,Mar-18,Nov-17,Feb-18,,
+193ef3e3-af8c-4dbc-94dd-a7dceb2d34a7,East Devon Local Plan 2013-31,East Devon District Council,False,East Devon District Council,Mar-16,Nov-12,Aug-13,Jan-16,Jan-16
+c678e953-1156-4600-bab2-a5012deac03d,EDO-2012 (Duplicate),East Dorset District Council,True,East Dorset District Council,May-14,Apr-12,Mar-13,Mar-14,Apr-14
+2a7f1eb4-e1fb-4f69-a51b-8c64a480320f,Joint Core Strategy,East Hampshire District Council,False,East Hampshire District Council,May-14,Feb-12,May-12,Apr-14,May-14
+daf38f0d-dcf2-4d3c-abc6-7d71958088d5,EHE-2016,East Hertfordshire District Council,False,East Hertfordshire District Council,Nov-18,Nov-16,Mar-17,Jul-18,Oct-18
+aa7f9c07-780e-44de-a32b-1f9b1ff13e13,ELI-2016,East Lindsey District Council,False,East Lindsey District Council,Aug-18,Nov-16,Apr-17,May-18,Jul-18
+4cc6ee86-c57f-4fbd-9233-36da9cf4fd50,ENO-2007 (Superseded),East Northamptonshire Council,True,East Northamptonshire Council,Dec-10,Feb-07,Feb-07,Apr-08,Jun-08
+b818aff3-bd8a-4243-8e7a-e4ac402182de,North Northamptonshire Joint Core Strategy 2011-2031,East Northamptonshire Council,False,East Northamptonshire Council - First review,Aug-16,Jan-15,Jul-15,Jun-16,Jul-16
+d9529aa8-ced5-44a8-b346-b8c71faa82da,ERY-2014,East Riding of Yorkshire Council,False,East Riding of Yorkshire Council,May-16,Jan-14,Apr-14,Jan-16,Apr-16
+a8cffe27-82e3-494d-ad90-550379c07894,EST-2013,East Staffordshire Borough Council,False,East Staffordshire Borough Council,Oct-15,Oct-13,Apr-14,Oct-15,Oct-15
+c1fc7b53-ad45-44a2-ba9c-58874a6f602d,EAS-2011,Eastbourne Borough Council,False,Eastbourne Borough Council,Feb-13,Sep-11,Jan-12,Nov-12,Feb-13
+e8a54df5-6d14-49a9-94de-55217b23f821,EAT-2018,Eastleigh Borough Council,False,Eastleigh Borough Council,Nov-18,Jun-18,Oct-18,,
+0de24323-0cc2-41cc-8af6-5e2752b2658b,EDN-2008,Eden District Council,False,Eden District Council,Dec-10,Sep-08,Apr-09,Mar-10,Mar-10
+e9cdd4c9-4ab7-4764-90d0-193af9bb2c04,Local Plan 2014-2032,Eden District Council,False,Eden District Council - Local Plan 2014-2032,Nov-18,Oct-15,Dec-15,Aug-18,Oct-18
+94ec63f6-5081-4e42-a23e-433f80d6b918,Elmbridge Core Strategy,Elmbridge Borough Council,False,Elmbridge Borough Council,Jul-11,Jan-10,Mar-10,Jun-11,Jul-11
+a418a33c-0b10-4493-8adf-12a820a125aa,ENF-2009,London Borough of Enfield,False,"Enfield, London Borough of",Dec-10,Dec-09,Mar-10,Sep-10,Nov-10
+b2b398b5-9209-4fc2-afb2-da939e6dbc0b,Epping Forest District Local Plan,Epping Forest District Council,False,Epping Forest District Council,Oct-18,Dec-17,Sep-18,,
+d06d0c20-25a1-4c64-a419-37ee6df26663,EPS-2006,Epsom and Ewell Borough Council,False,Epsom and Ewell Borough Council,Dec-10,Jun-06,Jul-06,May-07,Jul-07
+49ad7abb-9298-49e8-868a-c41a4848a258,ERE-2012,Erewash Borough Council,False,Erewash Borough Council,Mar-14,Jun-12,Nov-12,Jan-14,Mar-14
+b3e36757-e758-44fd-9ed9-70e29904c0f4,EXE-2010,Exeter City Council,False,Exeter City Council,Mar-12,Jul-10,Feb-11,Nov-11,Feb-12
+fa593a9c-6a8a-401b-b688-cb7aafdd3182,Exmoor National Park Local Plan,Exmoor National Park Authority,False,Exmoor National Park Authority,Jul-17,Jun-15,May-16,Jun-17,Jul-17
+44070104-6c42-4d20-8c1a-a4591317abf0,FAR-2010,Fareham Borough Council,False,Fareham Borough Council,Sep-11,Dec-10,Feb-11,Jul-11,Aug-11
+7d89e3cb-d5e6-4271-9cf9-532eb25c452c,FEN-2013,Fenland District Council,False,Fenland District Council,May-14,Feb-13,Sep-13,Apr-14,May-14
+ed84f6ef-44cd-406a-89b0-40ceb70149f8,Shepway Core Strategy,Folkestone and Hythe Council,False,Folkestone and Hythe Council,Jun-13,Jul-11,Jan-12,Jun-13,Sep-13
+7f457d2c-057c-49ec-9361-30c296506671,Core Strategy Review,Folkestone and Hythe Council,False,Folkestone and Hythe Council - Core Strategy Review,Feb-19,Jan-19,,,
+755f2847-3f10-4ae7-8e09-4a87e6e15602,FOR-2009,Forest Heath District Council,False,Forest Heath District Council,Dec-10,Mar-09,Aug-09,Apr-10,May-10
+6e207c51-d629-4ace-be0a-39dc0573c18c,Core Strategy Single Issue Review,Forest Heath District Council,False,Forest Heath District Council - Core Strategy Single Issue Review,Apr-17,Jan-17,Mar-17,,
+3a6c1cb8-c3bc-4e48-a935-d89adda8f211,FOE-2011,Forest of Dean District Council,False,Forest of Dean District Council,Mar-12,Mar-11,Jul-11,Dec-11,Feb-12
+a1db663c-71f9-45fe-a8aa-e51f9d03907c,FYL-2016,Fylde Borough Council,False,Fylde Borough Council,Nov-18,Aug-16,Dec-16,Sep-18,Oct-18
+6f3b7d3c-a04c-46a6-9f98-c23bd794cf30,Core Strategy and Urban Core Plan for Gateshead and Newcastle upon Tyne,Gateshead Metropolitan Borough Council,False,Gateshead Metropolitan Borough Council,Apr-15,Sep-13,Feb-14,Feb-15,Mar-15
+1ac65a2e-3457-4033-a5db-f06dc73a257e,Greater Nottingham Aligned Core Strategies - Part 1 Local Plan,Gedling Borough Council,False,Gedling Borough Council,Sep-14,Jun-12,Jun-13,Jul-14,Sep-14
+18b710bd-f202-44ad-aa5a-5584b56d357f,"Gloucester, Cheltenham and Tewkesbury Joint Core Strategy (Duplicate)",Gloucester City Council,True,Gloucester City Council,Jan-18,Jun-14,Nov-14,Oct-17,Nov-17
+be96f84a-f4be-47b7-98aa-b28702fe0b15,GOS-2014,Gosport Borough Council,False,Gosport Borough Council,Nov-15,Aug-14,Nov-14,Sep-15,Oct-15
+b48f775a-6694-4ea3-8d4c-1a5acf993d5d,Core strategy,Gravesham Borough Council,False,Gravesham Borough Council,Sep-14,Dec-12,May-13,Jul-14,Sep-14
+b160db07-8136-4698-b19b-ddf7db61ec9c,GRY-2013,Great Yarmouth Borough Council,False,Great Yarmouth Borough Council,Feb-15,Sep-13,Mar-14,Nov-15,Dec-15
+d78c2bb3-f734-4adc-9cf9-3146a5c9f929,Core Strategy ,Royal Borough of Greenwich,False,"Greenwich, Royal Borough of",May-14,Feb-13,Sep-13,May-14,Jul-14
+44dcb65f-6e33-4393-a613-138d131f028a,Local Plan 2015-34,Guildford Borough Council,False,Guildford Borough Council,Jan-18,Jun-16,Dec-17,,
+62f52efd-2a09-4f42-b7ad-8e4d3edf028a,HCK-2009,London Borough of Hackney,False,"Hackney , London Borough of",Dec-10,Jun-09,Feb-10,Sep-10,Nov-10
+e564f51e-3ef2-4caf-a6fe-0941988a59ec,Local Plan 2033,London Borough of Hackney,False,"Hackney , London Borough of - Local Plan 2033",Feb-19,Nov-18,Jan-19,,
+9a6adacc-51d0-4d89-bc0c-cf717e549372,Core Strategy,Halton Borough Council,False,Halton Borough Council,Dec-12,Nov-10,Sep-11,Oct-12,Dec-12
+d06d6c34-9bcc-4839-83c4-9334554d546b,HAE-2006,Hambleton District Council,False,Hambleton District Council,Dec-10,Feb-06,Feb-06,Feb-07,Apr-07
+870370ba-7660-48a7-8fbd-a95f6aecaf6c,HMF-2010 (Superseded),London Borough of Hammersmith & Fulham,True,"Hammersmith & Fulham, London Borough of",Dec-11,Sep-10,Jan-11,Jul-11,Oct-11
+ba0cf7b4-31fb-4ac0-a2e0-eac7c34db0da,HMF-2016,London Borough of Hammersmith & Fulham,False,"Hammersmith & Fulham, London Borough of",Mar-18,Sep-16,Feb-17,Dec-17,Feb-18
+7cab18fd-005d-4b92-9a3f-971afd674753,HAO-2010,Harborough District Council,False,Harborough District Council,Dec-11,Oct-10,Apr-11,Nov-11,Nov-11
+18fbd9e5-2d50-47c0-87b2-351edf4242a6,HAO-2017,Harborough District Council,False,Harborough District Council,Apr-18,Sep-17,Mar-18,,
+0f382827-7acd-4930-86c7-2da7ed85d7c5,HRY-2010 (Superseded),London Borough of Haringey,True,"Haringey, London Borough of",Mar-13,May-10,Mar-11,Dec-12,Mar-13
+b1f7862a-5ab5-43ec-851d-3810d6aaa0f8,Alterations to Strategic Policies,London Borough of Haringey,False,"Haringey, London Borough of, Alterations to Strategic Policies",Apr-18,Jan-16,May-16,Apr-17,Jul-17
+82cf9340-c857-43f2-a3d8-b15b81296f44,Harlow Local Plan,Harlow District Council,False,Harlow District Council,Nov-18,May-18,Oct-18,,
+c28b7f1b-30dd-40b9-bc1c-e59b1b8e1d63,HAG-2007,Harrogate Borough Council,False,Harrogate Borough Council,Dec-10,Sep-07,Sep-07,Jan-09,Feb-09
+fcbf1602-9aa2-44c4-8b9b-589e293d0029,HAG-2018,Harrogate Borough Council,False,Harrogate Borough Council,Sep-18,Jan-18,Aug-18,,
+cc2ab3d9-4427-476e-b241-e79fcf7c37af,HRW-2011,London Borough of Harrow,False,"Harrow, London Borough of",Mar-12,Apr-11,Jun-11,Dec-11,Feb-12
+fa2050ac-99a9-4b32-850c-ad9237675dfb,HAT-2018,Hart District Council,False,Hart District Council,Jul-18,Feb-18,Jun-18,,
+50bcfea0-7f33-47f6-aa0f-e041d9dc868e,Hartlepool Local Plan,Hartlepool Borough Council,False,Hartlepool Borough Council,Jul-18,Dec-16,Mar-17,Apr-18,May-18
+d405a621-d7b4-443d-a581-7321d257a772,HAS-2012,Hastings Borough Council,False,Hastings Borough Council,Feb-14,May-12,Oct-12,Oct-13,Feb-14
+502fdf73-dd61-4b7e-adbc-a6a311dccb5a,HAA-2010,Havant Borough Council,False,Havant Borough Council,Mar-11,Mar-10,Jun-10,Dec-10,Mar-11
+15d670bb-4304-47d6-8791-1078623a5c28,Core Strategy and Development Control Policies 2008,London Borough of Havering,False,"Havering, London Borough of",Dec-10,Nov-06,Nov-06,Mar-08,Jul-08
+6f6a4419-9a2f-4b8b-9cb4-7669753b82d1,Havering Local Plan,London Borough of Havering,False,"Havering, London Borough of",Apr-18,Aug-17,Mar-18,,
+5d138aa0-fa2f-4767-9bbf-710a21e87ea0,Herefordshire Local Plan: Core Strategy,Herefordshire Council,False,Herefordshire Council,Nov-15,May-14,Sep-14,Sep-15,Oct-15
+e2c62572-f35d-4efb-9d5b-f7c61cff9383,HER-2011,Hertsmere Borough Council,False,Hertsmere Borough Council,Feb-13,Nov-11,Feb-12,Dec-12,Jan-13
+660da294-c5e8-41b6-aab2-e3cd18935cfa,HIG-2014,High Peak Borough Council,False,High Peak Borough Council,May-16,Apr-14,Aug-14,Mar-16,Apr-16
+d299fb9a-a499-4518-8b24-595185cd55ea,HIL-2011,London Borough of Hillingdon,False,"Hillingdon, London Borough of",Nov-12,Feb-11,Oct-11,Jul-12,Nov-12
+3a5b4662-b373-4237-ad84-8e1a7649cac9,Core Strategy,Hinckley and Bosworth Borough Council,False,Hinckley and Bosworth Borough Council,Dec-10,Oct-08,Jan-09,Nov-09,Dec-09
+0ecb3111-ca9f-4b76-b0ee-a7b310577b87,HOR-2005 (Superseded),Horsham District Council,True,Horsham District Council,Dec-10,Nov-05,Nov-05,Jan-07,Feb-07
+f7ab3008-a04e-4536-b285-10566f24f705,Development Framework,Horsham District Council,False,Horsham District Council - Development Framework,Nov-15,May-14,Aug-14,Oct-15,Nov-15
+c131e54c-78e3-476d-85cd-505e4e7247b3,HNS-2014,London Borough of Hounslow,False,"Hounslow, London Borough of",Oct-15,Mar-14,Aug-14,Jul-15,Sep-15
+0c095e34-f368-4b52-be05-b69614c8aba4,HUN-2008,Huntingdonshire District Council,False,Huntingdonshire District Council,Dec-10,Jul-08,Jul-08,Jul-09,Sep-09
+1b887e1a-ad38-4db9-afe1-1edde983f05f,HUN-2017,Huntingdonshire District Council,False,Huntingdonshire District Council,Apr-18,Dec-17,Mar-18,,
+17213289-e289-47bb-8638-bad7cb4d88bc,HYN-2010,Hyndburn Borough Council,False,Hyndburn Borough Council,Mar-12,Aug-10,May-11,Dec-11,Jan-12
+884909c5-3409-4ddd-9bba-b7cb17ec4535,IPS-2009 (Duplicate),Ipswich Borough Council,True,Ipswich Borough Council,Mar-12,Oct-09,Mar-10,Nov-11,Dec-11
+2d1a7516-39b2-45b6-9017-1eb06cef3a05,Core Strategy & Policies,Ipswich Borough Council,False,Ipswich Borough Council - Core Strategy & Policies,Mar-17,Dec-14,Dec-15,Jan-17,Feb-17
+ddf32c2e-07a1-459c-bac8-e198d0acf1fc,IOW-2011,Isle of Wight Council,False,Isle of Wight Council,Mar-12,Apr-11,Jun-11,Dec-11,Mar-12
+,,,,Council of the Isles of Scilly,Dec-10,,,,
+c6eb3467-ba83-40a3-9d52-767e7f340c61,ISL-2009,London Borough of Islington,False,"Islington, London Borough of",Mar-11,Oct-09,Jun-10,Jan-11,Feb-11
+868fb19e-9f8f-41f6-9df6-338edba300e8,KEC-2009,Royal Borough of Kensington and Chelsea,False,"Kensington and Chelsea, Royal Borough of",Dec-10,Oct-09,Mar-10,Oct-10,Dec-10
+12c410f7-7d60-4e7e-b636-de6d45944548,KEC-2017,Royal Borough of Kensington and Chelsea,False,"Kensington and Chelsea, Royal Borough of, Partial Review ",Jun-17,Feb-17,May-17,,
+1cc2be37-416b-4935-bba9-b392ee043322,(Superseded),Kettering Borough Council,True,Kettering Borough Council,Dec-10,Feb-07,Feb-07,Apr-08,Jun-08
+b818aff3-bd8a-4243-8e7a-e4ac402182de,North Northamptonshire Joint Core Strategy 2011-2031,Kettering Borough Council,False,Kettering Borough Council - First review,Aug-16,Jan-15,Jul-15,Jun-16,Jul-16
+5c88bf51-0629-436a-9900-f0b4eaa4381c,KIN-2010,Borough Council of King's Lynn and West Norfolk,False,Borough Council of King's Lynn and West Norfolk,Jul-11,Jan-10,Nov-10,May-11,Jul-11
+39b6a87b-43e3-4483-b229-de8f207a9053,KHL-2016,Hull City Council,False,Hull City Council,Jan-18,Jun-16,Dec-16,Oct-17,Nov-17
+55685acf-e02f-4be0-80ae-4e98d50c7fcf,KTT-2011,Royal Borough of Kingston upon Thames,False,Royal Borough of Kingston upon Thames,Dec-11,Jan-11,May-11,Dec-11,Apr-12
+e5e55605-6881-471d-8f23-7222468ec3e0,KIR-2016,Kirklees Council,False,Kirklees Council,Feb-19,Nov-16,Apr-17,Jan-19,
+49b1a52a-614b-4ea3-a4a1-e2f421115fc8,KWL-2012,Knowsley Metropolitan Borough Council,False,Knowsley Metropolitan Borough Council,Jan-16,Nov-12,Jul-13,Nov-15,Jan-16
+b1dc0df6-bbe8-4f4e-889c-1046e3b7d114,Local Plan Part One - Core Strategy,Lake District National Park Authority,False,Lake District National Park Authority,Dec-10,Sep-09,Jan-10,Sep-10,Oct-10
+e3f358cf-7a98-4965-98f6-3d2129a34c30,LBH-2009,London Borough of Lambeth,False,"Lambeth, London Borough of",Jan-11,Nov-09,Mar-10,Dec-10,Jan-11
+f5eeca0a-377f-4b4a-8628-38ccf2a56fe5,LBH-2013,London Borough of Lambeth,False,"Lambeth, London Borough of, Local Plan 2015",Mar-17,Nov-13,Mar-14,Aug-15,Sep-15
+71b4f889-b9f7-4a2b-9720-18a3aae13237,LAC-2007,Lancaster City Council,False,Lancaster City Council,Dec-10,May-07,May-07,Jun-08,Jul-08
+72209839-2460-4c35-9d63-79e389f0062c,Strategic Policies & Land Allocation,Lancaster City Council,False,Lancaster City Council - Strategic Policies & Land Allocation,Jun-18,Feb-18,May-18,,
+721cea23-beb2-4cbf-8e8c-b1e1e7bde6cb,LDS-2013,Leeds City Council,False,Leeds City Council,Nov-14,Jan-13,Apr-13,Sep-14,Nov-14
+d8fff231-e5a6-48b0-b47d-37968cb0573f,Selective Review,Leeds City Council,False,Leeds City Council Selective Review,Sep-18,Feb-18,Aug-18,,
+35407284-9b41-4f6c-a38e-ec5c1ddc60d6,LCE-2009 (Superseded),Leicester City Council,True,Leicester City Council,Dec-10,Sep-09,Dec-09,Aug-10,Nov-10
+022aa306-998a-46f1-9fab-302f0bf8cdec,Leicester City Core Strategy,Leicester City Council,False,Leicester City Council - Fast Track Single Policy Review,Jun-14,Sep-12,Nov-13,Mar-14,Jun-14
+4e23eab5-e588-4b27-a3bc-5cb678926b11,LEE-2014,Lewes District Council,False,Lewes District Council,Jun-16,May-14,Sep-14,Mar-16,May-16
+330ea240-d27f-4214-86e2-f7b841604812,Lewisham Core Strategy 2011,London Borough of Lewisham,False,"Lewisham, London Borough of",Jul-11,Feb-10,Oct-10,Mar-11,Jun-11
+6bcaab31-cd8c-47a3-9047-7f4cd728b35f,LIF-2012,Lichfield District Council,False,Lichfield District Council,Feb-15,Jul-12,Mar-13,Jan-15,Feb-15
+52151bd5-515d-406d-a500-ecf884804219,LIC-2016 (Duplicate),City of Lincoln Council,True,City of Lincoln Council,May-17,Apr-16,Jun-16,Apr-17,Apr-17
+81c562eb-d68f-406e-b15e-8b6a3f61f4d0,LIV-2018,Liverpool City Council,False,Liverpool City Council,Jun-18,Jan-18,May-18,,
+dde7dcc5-e3c2-433e-a9bc-145fa63863bf,LLDC Local Plan 2015-31,London Legacy Development Corporation,False,London Legacy Development Corporation,Aug-15,Aug-14,Nov-14,Jul-15,Jul-15
+4c19e2f5-5e6e-4b18-afb6-056c7263e7f8,LLDC Revised Local Plan 2020-36,London Legacy Development Corporation,False,London Legacy Development Corporation,Dec-18,Nov-18,,,
+211efb01-2f53-482c-95b0-0f12ca199dae,LUT-2015,Luton Borough Council,False,Luton Borough Council,Dec-17,Oct-15,Apr-16,Aug-17,Nov-17
+97695714-434d-48b5-8621-6504aec6849c,MAI-2016,Maidstone Borough Council,False,Maidstone Borough Council,Oct-17,Feb-16,May-16,Jul-17,Oct-17
+99cb8ce2-eafb-4b1a-ac95-3aef85ceb28e,MAL-2014,Maldon District Council,False,Maldon District Council,Jul-17,Jan-14,Apr-14,Jul-17,Jul-17
+868e439e-f1c0-41a1-b952-d9db2beb06c2,South Worcestershire Development Plan,Malvern Hills District Council,False,Malvern Hills District Council,Mar-16,Jan-13,May-13,Feb-16,Feb-16
+58b14fc2-abb1-49dc-9052-d2833a799438,MAN-2011,Manchester City Council,False,Manchester City Council,Jul-12,Feb-11,Jul-11,Mar-12,Jul-12
+5f25d9c6-6334-4507-8b61-01a9ba6f8d40,MAS-2018,Mansfield District Council,False,Mansfield District Council,Jan-19,Sep-18,Dec-18,,
+,,,,Medway Council,Mar-12,,,,
+0a64c812-d576-4efc-b5e9-229259d3b7a5,MEL-2016,Melton Borough Council,False,Melton Borough Council,Nov-18,Nov-16,Oct-17,Sep-18,Oct-18
+a1fd6006-2964-43ed-8cf4-6191f59bb5b8,MEN-2012,Mendip District Council,False,Mendip District Council,Jan-15,Nov-12,Dec-13,Oct-14,Dec-14
+947c00eb-7d3e-417a-9240-05057ac08a86,Core Planning Strategy,London Borough of Merton,False,"Merton, London Borough of",Jul-11,Aug-10,Nov-10,Jun-11,Jul-11
+bd7f2dda-27ce-4b5e-9bda-dcfd2a63d8e3,MDE-2006,Mid Devon District Council,False,Mid Devon District Council,Dec-10,Aug-06,Aug-06,May-07,Jul-07
+e21c636d-aee8-43e1-abb6-5b094b158ba7,Local Plan Review,Mid Devon District Council,False,Mid Devon District Council (review),Apr-17,Feb-15,Mar-17,,
+c1505647-8b0b-4657-ac6c-c768dfe59fd1,MSU-2007 (Superseded),Mid Suffolk District Council,True,Mid Suffolk District Council,Dec-10,Oct-07,Oct-07,Aug-08,Sep-08
+e960591a-c774-4e2d-af8c-162e06689991,Core Strategy Focussed Review,Mid Suffolk District Council,False,Mid Suffolk District Council Focussed Review,Jan-13,Jan-12,Mar-12,Sep-12,Dec-12
+7c4e3e98-d750-446f-aaed-8ba26f1e2558,MSS-2015,Mid Sussex District Council,False,Mid Sussex District Council,Apr-18,Jun-15,Aug-16,Mar-18,Mar-18
+2f58d8e2-d225-4eed-8e94-8c86eb949d46,MDB-2007 (Superseded),Middlesbrough Borough Council,True,Middlesbrough Borough Council,Dec-10,May-07,May-07,Feb-08,Feb-08
+864b5265-0f48-42d0-ac2e-e987fe5073f8,Housing Local Plan,Middlesbrough Borough Council,False,Middlesbrough Borough Council - Housing Local Plan,Dec-14,Nov-13,Mar-14,Oct-14,Nov-14
+dae4fee0-67da-4a86-9866-21747547ea10,Middlesbrough Local Plan,Middlesbrough Borough Council,False,Middlesbrough Borough Council,Dec-18,Nov-18,,,
+30977ec8-5586-4096-bc7b-0895938c2f37,MIK-2010 (Superseded),Milton Keynes Council,True,Milton Keynes Council,Jul-13,Feb-10,Mar-11,May-13,Jul-13
+18a7a012-9dd1-4f9c-ae0b-7f6537e4790f,Plan:MK,Milton Keynes Council,False,Milton Keynes Council (Plan:MK),Apr-18,Nov-17,Mar-18,,
+2c041667-e350-44c5-83ec-78ea5e6f3b2d,MOL-2008,Mole Valley District Council,False,Mole Valley District Council,Dec-10,Nov-08,Feb-09,Jul-09,Oct-09
+16949b4c-333a-4885-97cc-3f7bc3161514,NEW-2008,New Forest District Council,False,New Forest District Council,Dec-10,Nov-08,Feb-09,Sep-09,Oct-09
+f6868aaf-a9af-4447-baa0-dd735becbf48,NEW-2018,New Forest District Council,False,New Forest District Council,Dec-18,Jun-18,Nov-18,,
+bf23264b-3c0d-4ce3-9d6a-f821312cbbb1,OT222-2010,New Forest National Park Authority,False,New Forest National Park Authority,Dec-10,Feb-10,May-10,Oct-10,Dec-10
+9a026ec2-d842-4206-8366-5f2255ce11a6,OT222-2018,New Forest National Park Authority,False,New Forest National Park Authority,Jun-18,Jan-18,May-18,,
+76ffcbed-eaf3-4b67-b2db-343b1482fb69,NEA-2010 (Superseded),Newark and Sherwood District Council,True,Newark and Sherwood District Council,Mar-11,Apr-10,Jul-10,Mar-11,Mar-11
+ec7b71e5-da20-46c8-a9dd-6b2ef591d5bd,Core Strategy Review,Newark and Sherwood District Council,False,Newark and Sherwood District Council Core Strategy Review,Oct-17,Jul-17,Sep-17,,
+253ad5a9-c772-435c-ad2c-f68468e3c0ff,Newcastle-under-Lyme and Stoke-on-Trent Core Spatial Strategy 2006-2026 (Duplicate),Newcastle-under-Lyme Borough Council,True,Newcastle-under-Lyme Borough Council,Dec-10,Aug-08,Dec-08,Jun-09,Oct-09
+6f3b7d3c-a04c-46a6-9f98-c23bd794cf30,Core Strategy and Urban Core Plan for Gateshead and Newcastle upon Tyne,Newcastle City Council,False,Newcastle City Council,Apr-15,Sep-13,Feb-14,Feb-15,Mar-15
+8db04a94-5a81-473f-a57c-ca66f7e54e77,NWM-2011 (Superseded),London Borough of Newham,True,"Newham, London Borough of",Mar-12,Feb-11,Mar-11,Jan-12,Jan-12
+cce851d7-7c70-41e5-87f4-767f9fc85bbe,Local Plan Review,London Borough of Newham,False,"Newham, London Borough of (Local Plan Review)",Jan-19,Nov-17,Feb-18,Nov-18,Dec-18
+bfad269b-2eb1-4d33-ac9c-8f1fc83a35f7,North Devon and Torridge Local Plan 2011-2031,North Devon District Council,False,North Devon District Council,Nov-18,Jun-14,Jun-16,Sep-18,Oct-18
+04ab2fba-19b9-4013-8285-ed0e316d50d0,NDO-2013,North Dorset District Council,False,North Dorset District Council,Feb-16,Nov-13,Dec-14,Dec-15,Jan-16
+269fe47a-004f-4a5e-8ac6-bb37482c33f2,NED-2018,North East Derbyshire District Council,False,North East Derbyshire District Council,Jun-18,Feb-18,May-18,,
+07c8f922-782d-4cb8-9134-56b28df58f2f,NEL-2016,North East Lincolnshire Council,False,North East Lincolnshire Council,Apr-18,Feb-16,Dec-16,Feb-18,Mar-18
+22f9f356-6c82-4256-a696-f6bc9a554df3,NHE-2016,North Hertfordshire District Council,False,North Hertfordshire District Council,Jun-17,Oct-16,Jun-17,,
+13ed529a-72eb-484c-a96b-dc2d46d9913e,Central Lincolnshire Local Plan,North Kesteven District Council,False,North Kesteven District Council,May-17,Apr-16,Jun-16,Apr-17,Apr-17
+61bd5d04-0ba0-4210-b305-495fe8ad8bc7,NLN-2010,North Lincolnshire Council,False,North Lincolnshire Council,Jul-11,May-10,Aug-10,May-11,Jun-11
+7a2071b3-b840-4224-9548-89f9c3d4ede1,NNO-2007,North Norfolk District Council,False,North Norfolk District Council,Dec-10,Jun-07,Jun-07,Jul-08,Sep-08
+,,,,North Somerset Council,Mar-12,Feb-11,Jul-11,Mar-12,Apr-12
+,,,,North Somerset Council - Core Strategy re-opened,Jun-17,NA,Jun-13,Mar-15,Sep-15
+,,,,North Somerset Council - Consequential changes,Mar-17,NA,Jan-16,Nov-16,Jan-17
+,,,,North Somerset Council (West of England JSP),May-18,Nov-17,Apr-18,,
+,,,,North Tyneside Metropolitan Borough Council,Jul-17,Nov-15,Jun-16,May-17,Jul-17
+9243ef22-ee90-444a-acd4-bcf14b962695,NWA-2012,North Warwickshire Borough Council,False,North Warwickshire Borough Council,Oct-14,Nov-12,Feb-13,Sep-14,Oct-14
+0da2ac86-8bf0-4c4b-bc48-2da92f46727f,NWA-2017,North Warwickshire Borough Council,False,North Warwickshire Borough Council,Apr-18,Dec-17,Mar-18,,
+7126a8e1-f2cc-4e04-9a8f-784acc04e6b0,NWL-2016,North West Leicestershire District Council,False,North West Leicestershire District Council,Dec-17,Jul-16,Oct-16,Oct-17,Nov-17
+ec74225d-d0a7-49c3-bf6b-889beb430bef,OT223-2008,North York Moors National Park Authority,False,North York Moors National Park Authority,Dec-10,Jan-08,Jan-08,Oct-08,Nov-08
+194c957b-2fd6-499d-b6d6-4f8344b4db32,West Northamptonshire Joint Core Strategy Local Plan (Part 1),Northampton Borough Council,False,Northampton Borough Council,Jan-15,Feb-11,Dec-12,Oct-14,Dec-14
+d2a08f60-f8a2-470b-b214-d189416d1b66,NBL-2019,Northumberland County Council,False,Northumberland County Council,Feb-19,Jan-19,,,
+df77835d-91df-4acc-a426-841dd31f22fd,OT543-2008,Northumberland National Park Authority,False,Northumberland National Park Authority,Dec-10,Jun-08,Jun-08,Feb-09,Mar-09
+6bccb45e-2a31-4bf3-8460-be0faa1db88e,NOW-2009 (Superseded),Norwich City Council,True,Norwich City Council,Mar-11,Nov-09,Mar-10,Feb-11,Mar-11
+a72eca2f-24ac-4362-b612-43ebcf7479de,"Joint Core Strategy for Broadland, Norwich and South Norfolk",Norwich City Council,False,Norwich City Council (Revision),Nov-13,Aug-12,Feb-13,Nov-13,Jan-14
+1ac65a2e-3457-4033-a5db-f06dc73a257e,Greater Nottingham Aligned Core Strategies - Part 1 Local Plan,Nottingham City Council,False,Nottingham City Council,Sep-14,Jun-12,Jun-13,Jul-14,Sep-14
+0079694f-85e8-4ba5-a0d9-7dfd870a6643,NUN-2017,Nuneaton and Bedworth Borough Council,False,Nuneaton and Bedworth Borough Council,Jun-17,Jan-17,Jun-17,,
+d4780734-1ffa-4fae-af19-64455ed2f430,OAD-2009,Oadby and Wigston Borough Council,False,Oadby and Wigston Borough Council,Dec-10,Oct-09,Jan-10,Aug-10,Sep-10
+df5e4626-c8f9-458c-9b75-c6aaf19841f7,New Local Plan,Oadby and Wigston Borough Council,False,Oadby and Wigston Borough Council (New Local Plan),Feb-18,Nov-17,Jan-18,,
+07c4c137-0337-42cd-ad8f-10a773954b6d,2-2018,Old Oak and Park Royal Development Corporation,False,Old Oak and Park Royal Development Corporation,Nov-18,Jun-18,Oct-18,,
+74b773dc-a0f4-4613-8316-af10f6e461bf,Development Plan Document - Joint Core Strategy and Development Management Policies,Oldham Metropolitan Borough Council,False,Oldham Metropolitan Borough Council,Dec-11,Oct-10,Feb-11,Aug-11,Nov-11
+76b9910c-53ea-45c8-ac22-5a35ea0e12f8,Oxford Core Strategy 2026,Oxford City Council,False,Oxford City Council,Mar-11,Sep-08,Nov-08,Dec-10,Mar-11
+2ed5ae6b-8b7a-4a54-8d9f-89af587810fd,Core Strategy DPD ,Peak District National Park Authority,False,Peak District National Park Authority,Dec-11,Sep-10,Dec-10,Jul-11,Oct-11
+30da2be2-5875-4fcb-b9f5-bb41273b90be,PEN-2014,Pendle Borough Council,False,Pendle Borough Council,Jan-16,Oct-14,Dec-14,Oct-15,Dec-15
+817612ba-ef60-45e6-84b2-5229ab0eb559,PTE-2010,Peterborough City Council,False,Peterborough City Council,Mar-11,Jan-10,Apr-10,Dec-10,Feb-11
+12667eb0-cc73-47bb-8ff0-69487a91411e,PTE-2018,Peterborough City Council,False,Peterborough City Council,Apr-18,Jan-18,Mar-18,,
+87c46fd7-7ff7-48b2-8e36-f1a6ff77c6ac,PLY-2006 (Superseded),Plymouth City Council,True,Plymouth City Council,Dec-10,Aug-06,Aug-06,Apr-07,Apr-07
+,,,,"Plymouth City Council, Plymouth & South West Devon Plan",Apr-17,Mar-17,Jul-17,,
+08d66025-c31d-4c15-b5d1-863cd557ab1e,POL-2008 (Superseded),Borough of Poole,True,"Poole, Borough of",Dec-10,May-08,May-08,Jan-09,Feb-09
+1d9933b6-9107-439d-8566-d847fe7b3757,POL-2017,Borough of Poole,False,"Poole, Borough of",Dec-18,Jul-17,Nov-17,Oct-18,Nov-18
+17f4d075-1877-489c-8c6c-8a5a8b2068d1,The Portsmouth Plan,Portsmouth City Council,False,Portsmouth City Council,Mar-12,Apr-11,Jul-11,Jan-12,Jan-12
+ea729eea-79ab-4d5b-bac6-880360641a0c,Central Lancashire Core Strategy (Duplicate),Preston City Council,True,Preston City Council,Jul-12,Dec-10,Mar-11,Jun-12,Jul-12
+c2992718-cac6-4bff-9fb1-8b8a5cdbef95,PUR-2010,Purbeck District Council,False,Purbeck District Council,Nov-12,Nov-10,Jan-12,Oct-12,Nov-12
+c6778cf4-8637-4b34-a625-aeb5374270bd,PUR-2018,Purbeck District Council,False,Purbeck District Council,Feb-19,Oct-18,Jan-19,,
+876e1503-2382-454f-88cd-876e91fff245,RDG-2007,Reading Borough Council,False,Reading Borough Council,Dec-10,Jan-07,Jan-07,Dec-07,Jan-08
+eb59f334-6abc-4303-99a2-20864f8a83c3,RDG-2017,Reading Borough Council,False,Reading Borough Council,Apr-18,Nov-17,Mar-18,,
+423e1585-edd3-40bf-80f3-d0fffbacd6b9,RDB-2007 (Superseded),London Borough of Redbridge,True,"Redbridge, London Borough of",Dec-10,Jan-07,Jan-07,Feb-08,Mar-08
+15403182-0a1c-4078-a043-413a644bc4a7,Local Plan 2015-2030,London Borough of Redbridge,False,"Redbridge, London Borough of (Local Plan 2015-2030)",Apr-18,Jul-16,Mar-17,Jan-18,Mar-18
+7aef1b1e-d3f1-47c5-bc3a-7bc9fe8bd816,RCC-2006 (Superseded),Redcar and Cleveland Borough Council,True,Redcar and Cleveland Borough Council,Dec-10,May-06,May-06,May-07,Jul-07
+46f938fa-79f8-461d-b9ed-7a3354d92e40,Redcar and Cleveland Local Plan,Redcar and Cleveland Borough Council,False,Redcar and Cleveland Borough Council,Jun-18,Dec-16,Apr-17,Mar-18,May-18
+b94bbcac-a9b9-48a2-a7c6-66430ecc983e,RED-2013,Redditch Borough Council,False,Redditch Borough Council,Feb-17,Sep-13,Mar-14,Dec-16,Jan-17
+51ddab07-f679-41d6-a419-32f7bd25f277,REI-2012,Reigate and Banstead Borough Council,False,Reigate and Banstead Borough Council,Feb-14,Mar-12,May-12,Jan-14,Jul-14
+7a53a5cc-8931-4548-94cc-8fd20b44a4dd,RIB-2012,Ribble Valley Borough Council,False,Ribble Valley Borough Council,Jan-15,May-12,Sep-12,Nov-14,Dec-14
+e356f502-ccf9-4f95-9a3e-603236e7f018,RIC-2008 (Superseded),London Borough of Richmond upon Thames,True,"Richmond Upon Thames, London Borough of",Dec-10,Mar-08,Mar-08,Feb-09,Apr-09
+f4e01c41-d817-4a06-a17e-436572c7c435,London Borough of Richmond Upon Thames,London Borough of Richmond upon Thames,False,"Richmond Upon Thames, London Borough of",Aug-18,Jan-17,May-17,Apr-18,Jul-18
+86b612dd-a8bd-405b-aa8e-cb39448005c2,RIH-2012,Richmondshire District Council,False,Richmondshire District Council,Jan-15,Aug-12,Feb-13,Oct-14,Dec-14
+0516a876-6782-4d0c-b31e-e865d85d4bf2,Adopted Core Strategy,Rochdale Metropolitan Borough Council,False,Rochdale Metropolitan Borough Council,Nov-16,Jan-13,May-13,Aug-16,Oct-16
+f95887c6-88cb-4a54-9da5-7acef0ae60df,ROC-2009,Rochford District Council,False,Rochford District Council,Mar-12,Sep-09,Jan-10,Oct-11,Dec-11
+b42cefd8-2cc4-4141-932f-0ceb4b59b910,ROS-2010,Rossendale Borough Council,False,Rossendale Borough Council,Dec-11,Sep-10,Dec-10,Oct-11,Nov-11
+e3787097-4490-41c4-8bb5-233cb51ac116,ROS-2018,Rossendale Borough Council,False,Rossendale Borough Council,Sep-18,Aug-18,,,
+7321ff7a-d9d2-4aec-8fa5-ebd96ecde1f8,ROH-2011,Rother District Council,False,Rother District Council,Oct-14,Aug-11,Jul-12,Jul-14,Sep-14
+2d208e84-641b-4bcc-9a6b-40627a3e8f68,ROT-2012,Rotherham Metropolitan Borough Council,False,Rotherham Metropolitan Borough Council,Sep-14,Jun-12,Jun-13,Jun-14,Sep-14
+6ce62f98-8337-4f65-9716-58bc02b24f51,RUG-2009,Rugby Borough Council,False,Rugby Borough Council,Jul-11,Jul-09,Jan-10,May-11,Jun-11
+4e8dd423-dcbe-44af-96db-3a7eb554c3b9,RUG-2016,Rugby Borough Council,False,Rugby Borough Council,Jul-17,Sep-16,Jul-17,,
+290c3718-c7ff-47bc-9bba-f577fde9af9c,RUN-2018,Runnymede Borough Council,False,Runnymede Borough Council,Aug-18,May-18,Jul-18,,
+e0e3f95a-d104-4eda-9b86-553812060a8d,Local Plan Part 1: Rushcliffe Core Strategy,Rushcliffe Borough Council,False,Rushcliffe Borough Council,Jan-15,Mar-12,Oct-12,Dec-14,Dec-14
+a69585e4-a6f1-406d-83de-93113e174399,RUH-2010 (Superseded),Rushmoor Borough Council,True,Rushmoor Borough Council,Dec-11,Nov-10,Mar-11,Sep-11,Oct-11
+eeb2557f-d431-4893-a38b-a9e0a31f2b70,RUH-2017,Rushmoor Borough Council,False,Rushmoor Borough Council,Feb-19,Jun-17,Feb-18,Jan-19,
+9132b9e3-f3b8-4a11-822d-ee288294313e,RUT-2010,Rutland County Council,False,Rutland County Council,Jul-11,Aug-10,Nov-10,May-11,Jul-11
+4a7df200-6ad1-4a01-a7a9-fcd7385faf6f,RYE-2012,Ryedale District Council,False,Ryedale District Council,Sep-13,Jan-12,May-12,Aug-13,Sep-13
+,,,,Salford City Council,Jun-13,,,,
+95690c16-7ad0-4b4d-9581-fc267e0f0537,Black Country Core Strategy 2011,Sandwell Metropolitan Borough Council,False,Sandwell Metropolitan Borough Council,Mar-11,Nov-09,Feb-10,Oct-10,Feb-11
+4a379f6b-7970-4522-9762-f85da25ba5ab,SCE-2015,Scarborough Borough Council,False,Scarborough Borough Council,Jul-17,Nov-15,May-16,Feb-17,Jul-17
+370c3a06-8264-451c-a6f4-fa445577010e,SEG-2010,Sedgemoor District Council,False,Sedgemoor District Council,Dec-11,Sep-10,Mar-11,Sep-11,Oct-11
+ef664de8-93b8-43eb-875a-8b36e0595b3f,The Sedgemoor Local Plan 2011-2032,Sedgemoor District Council,False,Sedgemoor District Council - Local Plan,Feb-19,Jan-17,Aug-17,Jan-19,
+8224e195-a24e-4e10-a1f0-e40721f2e250,SFT-2015,Sefton Metropolitan Borough Council,False,Sefton Metropolitan Borough Council,May-17,Jan-15,Aug-15,Mar-17,Apr-17
+8e97b761-1082-40cb-a1a5-d66ba4bc41b0,SEL-2011,Selby District Council,False,Selby District Council,Nov-13,Jan-11,May-11,Jun-13,Oct-13
+87c3ba8f-e036-4abb-92e6-f6a2bf70e7e2,Sevenoaks Core Strategy,Sevenoaks District Council,False,Sevenoaks District Council,Mar-11,Feb-10,Jun-10,Jan-11,Feb-11
+20d25373-8850-4ac5-8b22-fa63a59bac44,SEV-2018,Sevenoaks District Council,False,Sevenoaks District Council,Jan-19,Dec-18,,,
+de6cbb4d-42b0-4e30-8de6-9c03018ce068,SHF-2007,Sheffield City Council,False,Sheffield City Council,Dec-10,Sep-07,Sep-07,Feb-09,Mar-09
+530eca56-a7e3-4b70-860d-d928a1e9ad67,Shropshire Local Development Framework: Adopted Core Strategy,Shropshire Council,False,Shropshire Council,Mar-11,Feb-10,Jul-10,Feb-11,Feb-11
+1fe0c26f-d9ae-46b3-93d8-d47d208af5c3,SLG-2007,Slough Borough Council,False,Slough Borough Council,Dec-10,Nov-07,Nov-07,Aug-08,Dec-08
+a11d7559-1ec8-436c-b643-8a2b78660d80,SOL-2012,Solihull Metropolitan Borough Council,False,Solihull Metropolitan Borough Council,Dec-13,Jan-12,Sep-12,Nov-13,Dec-13
+f2bd3b8f-95ef-4b55-979e-f5022e9f02e1,Core Strategy,South Bucks District Council,False,South Bucks District Council,Mar-11,Mar-10,Jul-10,Jan-11,Feb-11
+fdb32b18-52c0-4d71-92c7-f0930f201fe1,SCA-2006 (Superseded),South Cambridgeshire District Council,True,South Cambridgeshire District Council,Dec-10,Jan-06,Jan-06,Nov-06,Jan-07
+37c9c2dc-d71f-4940-83fd-3d570bbc351a,SCA-2013,South Cambridgeshire District Council,False,South Cambridgeshire District Council - Local Plan,Oct-18,Jul-13,Mar-14,Aug-18,Sep-18
+402fd3ba-a16d-4e7c-8aa3-1c2dec3654b4,SDE-2014,South Derbyshire District Council,False,South Derbyshire District Council,Jul-16,Mar-14,Aug-14,May-16,Jun-16
+6a2d40d5-1f4c-4d69-a634-2be64dc0bae9,South Downs Local Plan,South Downs National Park Authority,False,South Downs National Park Authority,May-18,Sep-17,Apr-18,,
+8c07a862-73a3-4437-bb83-e3ecdd898bec,SGC-2010,South Gloucestershire Council,False,South Gloucestershire Council,Dec-13,Jun-10,Mar-11,Nov-13,Dec-13
+,,,,South Gloucestershire Council (West of England JSP),May-18,Nov-17,Apr-18,,
+e225487d-1f81-4fa8-993a-422290e557df,SHA-2006 (Superseded),South Hams District Council,True,South Hams District Council,Dec-10,Jan-06,Jan-06,Nov-06,Dec-06
+,,,,"South Hams District Council, Plymouth & South West Devon Plan",Aug-17,Mar-17,Jul-17,,
+,,,,South Holland District Council (South East Lincs Local Plan),Feb-19,Apr-17,Jun-17,Jan-19,
+0d66deae-90e1-4059-b5e7-8e8611641229,SKE-2009,South Kesteven District Council,False,South Kesteven District Council,Dec-10,Jan-09,Aug-09,Jun-10,Jul-10
+d12564e2-e7d4-4c42-ae45-823c50dbd2c9,SKE-2018,South Kesteven District Council,False,South Kesteven District Council,Feb-19,Jun-18,Jan-19,,
+de0f06ad-3b78-400e-8caa-9296441e5f29,SLA-2009,South Lakeland District Council,False,South Lakeland District Council,Dec-10,Aug-09,Nov-09,Aug-10,Oct-10
+1c9c84df-6547-4b69-9c73-7ef9fb5792ca,SNO-2009 (Superseded),South Norfolk District Council,True,South Norfolk District Council,Mar-11,Nov-09,Mar-10,Feb-11,Mar-11
+a72eca2f-24ac-4362-b612-43ebcf7479de,"Joint Core Strategy for Broadland, Norwich and South Norfolk",South Norfolk District Council,False,South Norfolk District Council (Revision),Nov-13,Aug-12,Feb-13,Nov-13,Jan-14
+a264bf5e-effe-42a4-a7b9-53e556d3a589,SNR-2011 (Duplicate),South Northamptonshire Council,True,South Northamptonshire Council,Jan-15,Feb-11,Dec-12,Oct-14,Dec-14
+6288af75-399b-4878-9b85-0891d95ff058,SOX-2010,South Oxfordshire District Council,False,South Oxfordshire District Council,Jan-13,Dec-10,Mar-11,Oct-12,Dec-12
+d9cd6156-7cb2-445d-9101-9111b8e2102c,SOX-2019,South Oxfordshire District Council,False,South Oxfordshire District Council,Feb-19,Jan-19,,,
+43a07557-8479-4374-b7b5-50099a966ce5,Central Lancashire Core Strategy,South Ribble Borough Council,False,South Ribble Borough Council,Jul-12,Dec-10,Mar-11,Jun-12,Jul-12
+71333f62-e138-42b7-8132-2b2a99687171,SSO-2012,South Somerset District Council,False,South Somerset District Council,Apr-15,Jun-12,Jan-13,Jan-15,Mar-15
+24a89ae4-2592-4c6e-bfdc-f844a8f5b9a2,SST-2011,South Staffordshire Council,False,South Staffordshire Council,Dec-12,Mar-11,Sep-11,Oct-12,Dec-12
+a9c0dfea-a696-4c82-9931-f6a5b7f8b106,STY-2006,South Tyneside Council,False,South Tyneside Council,Dec-10,Mar-06,Mar-06,Apr-07,Jun-07
+347b2893-531b-4f87-bffe-10642ef7cc45,STH-2008 (Superseded),Southampton City Council,True,Southampton City Council,Dec-10,Dec-08,Mar-09,Oct-09,Jan-10
+d12562aa-dbf0-4c99-b61c-d6f0116d4870,Partial review,Southampton City Council,False,Southampton City Council (Partial review),Apr-15,Sep-13,Dec-13,Dec-14,Mar-15
+79c434af-fe88-4968-957f-a354a762ef4d,SOS-2006,Southend-on-Sea Borough Council,False,Southend-on-Sea Borough Council,Dec-10,Aug-06,Aug-06,Oct-07,Dec-07
+f150ab0a-4484-4661-810d-f33c11212694,SWK-2010,London Borough of Southwark,False,"Southwark, London Borough of",Jan-11,Jan-10,Mar-10,Feb-11,Apr-11
+2e3ad928-7219-42c1-aab7-899c1569af05,New Southwark Plan,London Borough of Southwark,False,"Southwark, London Borough of - New Southwark Plan",Jan-18,Jan-18,,,
+6299f130-8216-43d3-8858-89fb9dad5652,SPE-2007,Spelthorne Borough Council,False,Spelthorne Borough Council,Dec-10,Jun-07,Jun-07,Dec-08,Feb-09
+c9cd8aa4-cfe3-4e7f-b81b-bb6dae5b620b,SAL-2018,St Albans City and District Council,False,St Albans City and District Council,Oct-18,Sep-18,,,
+5707f9cd-ba5a-4499-8a24-4e331173dfc7,SED-2009,St Edmundsbury Borough Council,False,St Edmundsbury Borough Council,Dec-10,Aug-09,Jan-10,Aug-10,Dec-10
+4f7371c0-5815-4ccc-a6ac-9a684de38898,St.Helens Local Plan Core Strategy,St Helens Council,False,St Helens Council,Nov-12,Jan-11,May-11,Oct-12,Oct-12
+dabf2ff2-4aba-4065-b2a3-1601c2743ae3,SHN-2019,St Helens Council,False,St Helens Council,Feb-19,Jan-19,,,
+9d615ee9-76df-4968-9dd2-c58eae902804,STA-2013,Stafford Borough Council,False,Stafford Borough Council,Jun-14,Jan-13,Aug-13,Jun-14,Jun-14
+d52f82b7-2ab5-4489-87fe-fa9ef836e5fd,STF-2011,Staffordshire Moorlands District Council,False,Staffordshire Moorlands District Council,Mar-14,Dec-11,Sep-12,Jan-14,Mar-14
+e16df853-5eff-4b7a-b1cf-4390ef7ea592,Staffordshire Moorlands Local Plan,Staffordshire Moorlands District Council,False,Staffordshire Moorlands District Council,Jul-18,Feb-18,Jun-18,,
+93a3b417-4093-4b7b-beff-14bd0a000eb5,STV-2016,Stevenage Borough Council,False,Stevenage Borough Council,Oct-17,Jan-16,Jul-16,Oct-17,
+2259cad0-ee6d-44bf-99aa-1aba08dab7f0,SKP-2010,Stockport Metropolitan Borough Council,False,Stockport Metropolitan Borough Council,Mar-11,Jun-10,Aug-10,Feb-11,Mar-11
+f4511624-c4cc-4809-84ab-fd6a2c605419,STT-2008 (Superseded),Stockton-on-Tees Borough Council,True,Stockton-on-Tees Borough Council,Dec-10,Oct-08,May-09,Feb-10,Mar-10
+b35b2ea5-ea2c-419d-958a-286ff6f3cd41,STT-2017,Stockton-on-Tees Borough Council,False,Stockton-on-Tees Borough Council ,Feb-19,Sep-17,Dec-17,Dec-18,Jan-19
+54ee799a-3874-4a32-82ee-c5632b7c4b69,Newcastle-under-Lyme and Stoke-on-Trent Core Spatial Strategy 2006-2026,Stoke-on-Trent City Council,False,Stoke-on-Trent City Council,Dec-10,Aug-08,Dec-08,Jun-09,Oct-09
+fa1fa437-3953-4667-899a-d3182c55ccfe,STR-2014,Stratford-on-Avon District Council,False,Stratford-on-Avon District Council,Jul-16,Jun-14,Sep-14,Jun-16,Jul-16
+3566d0ae-643f-4ae4-85ec-fadfecaff610,STO-2013,Stroud District Council,False,Stroud District Council,Dec-15,Sep-13,Dec-13,Nov-15,Nov-15
+24a33892-8d79-44d6-aa65-f76596059269,Suffolk Coastal Local Plan: Core Strategy & Development Management Policies,Suffolk Coastal District Council,False,Suffolk Coastal District Council,Jul-13,Jan-12,May-12,Jun-13,Jul-13
+f7455507-72b1-4513-af01-3ae610717999,Suffolk Coastal Local Plan,Suffolk Coastal District Council,False,Suffolk Coastal District Council,Feb-19,Jan-19,,,
+a24ddbcc-dcad-4bb6-a161-a414109eed85,SND-2018,Sunderland City Council,False,Sunderland City Council,Jan-19,Jun-18,Dec-18,,
+d18d4eb8-3872-47bb-8fa0-e198affdcf1a,SUR-2010,Surrey Heath Borough Council,False,Surrey Heath Borough Council,Mar-12,Aug-10,Oct-10,Jan-12,Feb-12
+4c9386fa-c3b0-4b51-8966-f69fd7fd80f5,STN-2008,London Borough of Sutton,False,"Sutton, London Borough of",Dec-10,Nov-08,Mar-09,Sep-09,Dec-09
+83699784-e72d-4388-abd9-a17c4c8c54df,STN-2017,London Borough of Sutton,False,"Sutton, London Borough of",Mar-18,Jan-17,Apr-17,Jan-18,Feb-18
+22dd9906-59fd-421b-aee8-c45d2e40868b,SWL-2014,Swale Borough Council,False,Swale Borough Council,Sep-17,Dec-14,Apr-15,Jun-17,Jul-17
+60e20958-1eba-4aca-bed4-dca99d89ca8d,SWD-2012,Swindon Borough Council,False,Swindon Borough Council,Apr-15,Dec-12,Jun-13,Feb-15,Mar-15
+,,,,Tameside Metropolitan Borough Council,Dec-10,,,,
+e3b7c403-fb3e-404f-8a2a-d78fd5091da5,Tamworth Borough Council Local Plan 2006-2031 ,Tamworth Borough Council,False,Tamworth Borough Council,Mar-16,Oct-14,Feb-15,Feb-16,Feb-16
+6617edd1-f845-417c-9f11-cb50ba744750,TAN-2007,Tandridge District Council,False,Tandridge District Council,Dec-10,Dec-07,Jan-08,Sep-08,Oct-08
+716c27fa-4e56-4fbc-8a1d-f86fe99a2b7e,TAN-2018,Tandridge District Council,False,Tandridge District Council,Feb-19,Jul-18,Jan-19,,
+5627dd48-f80d-43ca-9357-49390aee0e02,Taunton Dene Adopted Core Strategy,Taunton Deane Borough Council,False,Taunton Deane Borough Council,Sep-12,Jul-11,Nov-11,Jul-12,Sep-12
+3ee9fb02-ee40-446a-8e35-ee3ffc817f8b,TEI-2012,Teignbridge District Council,False,Teignbridge District Council,May-14,Nov-12,Jun-13,Apr-14,May-14
+cf92ba3c-36b6-4430-96ae-408cd238902b,TFW-2006 (Superseded),Telford & Wrekin Council,True,Telford & Wrekin Council,Dec-10,Oct-06,Oct-06,Nov-07,Dec-07
+67b93853-f801-43fd-ab35-7798b6071256,TFW-2016,Telford & Wrekin Council,False,Telford & Wrekin Council ,Feb-18,Feb-16,Jun-16,Nov-17,Jan-18
+,,,,Tendring District Council (Joint North Essex Local Plan part 1),Oct-17,Jun-17,Oct-17,,
+4779bcae-d575-4424-951b-4bf2de775680,TES-2014,Test Valley Borough Council,False,Test Valley Borough Council,Feb-16,Jan-14,Jul-14,Dec-15,Jan-16
+8cecfc29-1e2c-442c-9525-6138c62b00d8,"Gloucester, Cheltenham and Tewkesbury Joint Core Strategy",Tewkesbury Borough Council,False,Tewkesbury Borough Council,Jan-18,Jun-14,Nov-14,Oct-17,Dec-17
+9854a430-cc99-44e3-a7b8-328f7cbd09fb,Draft Local Plan to 2031,Thanet District Council,False,Thanet District Council,Nov-18,Aug-18,Oct-18,,
+f77685f0-3166-4b2e-b668-e3cd71b871d8,THE-2010,Three Rivers District Council,False,Three Rivers District Council,Dec-11,Jun-10,Feb-11,Sep-11,Oct-11
+e7448134-09bb-43a9-a657-d6cfcd18029a,THR-2010 (Superseded),Thurrock Council,True,Thurrock Council,Dec-11,Feb-10,Apr-10,Dec-11,Dec-11
+9ce4ba00-7857-4f9b-916d-9f8ef953c050,Core Strategy (Amended),Thurrock Council,False,Thurrock Council (Review),Feb-15,May-13,Jul-13,Oct-14,Jan-15
+df7a6d48-c8b9-4d57-87d8-04c9592b31a3,TON-2006,Tonbridge and Malling Borough Council,False,Tonbridge and Malling Borough Council,Dec-10,Aug-06,Aug-06,Aug-07,Sep-07
+b393fec5-4ddb-4368-8a57-c35ee04956a4,TON-2018,Tonbridge and Malling Borough Council,False,Tonbridge and Malling Borough Council,Feb-19,Oct-18,Jan-19,,
+cd0ce8db-58e3-4705-8a95-5e92dfe5ab39,TOB-2014,Torbay Council,False,Torbay Council,Jan-16,Feb-14,Jul-14,Oct-15,Dec-15
+2d50d826-214e-43b1-961e-0d11a86993fb,TOR-2014 (Duplicate),Torridge District Council,True,Torridge District Council,Nov-18,Jun-14,Jun-16,Sep-18,Oct-18
+3eea76fd-11f8-40d9-acae-916a8576db5c,TWH-2009,London Borough of Tower Hamlets,False,"Tower Hamlets, London Borough of",Dec-10,Sep-09,Dec-09,Jul-10,Sep-10
+228cdd2a-b858-4c87-b6a7-899488ecedb1,TWH-2017,London Borough of Tower Hamlets,False,"Tower Hamlets, London Borough of - Local Plan",Mar-18,Oct-17,Feb-18,,
+949e2438-8d71-4be0-b5dc-67400e8607fc,TRF-2010,Trafford Metropolitan Borough Council,False,Trafford Metropolitan Borough Council,Mar-12,Sep-10,Dec-10,Nov-11,Jan-12
+a8fa4aed-7fdb-4203-94d8-795e137e66aa,TUN-2009,Tunbridge Wells Borough Council,False,Tunbridge Wells Borough Council,Dec-10,Apr-09,Aug-09,Apr-10,Jun-10
+c7762330-14f6-4b3f-bc7a-57b42fadf22e,UTT-2018,Uttlesford District Council,False,Uttlesford District Council,Feb-19,Jun-18,Jan-19,,
+5c914e72-2d3c-4d5a-b85c-038d82b79e64,VAL-2014,Vale of White Horse District Council,False,Vale of White Horse District Council,Jan-17,Nov-14,Mar-15,Nov-16,Dec-16
+56ffcf42-1e88-4237-87a5-d6932011ae30,WKF-2008,Wakefield Metropolitan District Council,False,Wakefield Metropolitan District Council,Dec-10,Jan-08,Jan-08,Mar-09,Apr-09
+95690c16-7ad0-4b4d-9581-fc267e0f0537,Black Country Core Strategy 2011,Walsall Metropolitan Borough Council,False,Walsall Metropolitan Borough Council,Mar-11,Nov-09,Feb-10,Oct-10,Feb-11
+85edc099-3eee-4b89-9184-294530b10434,WFT-2011,London Borough of Waltham Forest,False,"Waltham Forest, London Borough of",Dec-11,Jan-11,May-11,Dec-11,Mar-12
+dd3d7fc4-66d9-47b8-9692-022573ee4a9a,WND-2008,London Borough of Wandsworth,False,"Wandsworth, London Borough of",Dec-10,Aug-08,Mar-09,Jun-10,Oct-10
+90acde0a-70aa-4da3-a861-79f7970ff5dc,Local Plan review,London Borough of Wandsworth,False,"Wandsworth, London Borough of - Local Plan review",Apr-16,Oct-14,Mar-15,Dec-15,Mar-16
+36b8bb00-2be7-4242-89fa-1fd54ca7bff2,WRT-2012,Warrington Borough Council,False,Warrington Borough Council,Jul-14,May-12,Sep-12,May-14,Jul-14
+52708857-29ec-4fc7-8c06-0e0654cc5303,WAW-2014,Warwick District Council,False,Warwick District Council,Sep-17,May-14,Jan-15,Jul-17,Sep-17
+d1efd344-82c2-4844-a8e2-386ba0813dfb,WAT-2011,Watford Borough Council,False,Watford Borough Council,Feb-13,May-11,Feb-12,Nov-12,Jan-13
+9752fab6-d430-438a-80ec-41e9b909cc96,WAV-2008,Waveney District Council,False,Waveney District Council,Dec-10,Feb-08,Feb-08,Dec-08,Jan-09
+5bfa79f8-b2e9-464e-b362-0b79272febff,WAV-2018,Waveney District Council,False,Waveney District Council,Jul-18,Mar-18,Jun-18,,
+5e0e69fb-6794-428b-82e1-aa81dadad2c6,WAE-2016,Waverley Borough Council,False,Waverley Borough Council,Mar-18,Aug-16,Dec-16,Feb-18,Feb-18
+68988a3d-e798-47b4-84b0-a2ddfaa8eabf,WEA-2011,Wealden District Council,False,Wealden District Council,Feb-13,Feb-11,Aug-11,Oct-12,Nov-12
+7b18c2ee-2db5-481d-b79b-546395189b20,Wealden Local Plan,Wealden District Council,False,Wealden District Council,Feb-19,Aug-18,Jan-19,,
+7c007886-67a3-4908-91da-0fcf1724bd34,WEL-2007 (Superseded),Wellingborough Borough Council,True,Wellingborough Borough Council,Dec-10,Feb-07,Feb-07,Apr-08,Jun-08
+b818aff3-bd8a-4243-8e7a-e4ac402182de,North Northamptonshire Joint Core Strategy 2011-2031,Wellingborough Borough Council,False,Wellingborough Borough Council - first review,Aug-16,Jan-15,Jul-15,Jun-16,Jul-16
+9cd9b1e0-e19c-40ff-a367-b55da0a168ef,WEW-2016,Welwyn Hatfield Borough Council,False,Welwyn Hatfield Borough Council,Jun-17,Aug-16,May-17,,
+69d8a719-df50-4f2a-a6ce-3f905b07f1e3,WBK-2010,West Berkshire Council,False,West Berkshire Council,Jul-12,Apr-10,Jul-10,Jul-12,Jul-12
+132b1e7c-4765-4319-8759-635d20039320,WDE-2009 (Superseded),West Devon Borough Council,True,West Devon Borough Council,Mar-11,May-09,Jul-10,Mar-11,Apr-11
+,,,,"West Devon Borough Council, Plymouth & South West Devon Plan",Aug-17,Mar-17,Jul-17,,
+e25988ed-d64e-4bcd-914f-38ddb7b0c83e,"West Dorset, Weymouth and Portland Local Plan 2015",West Dorset District Council,False,West Dorset District Council,Jan-16,Jun-12,Jun-13,Aug-15,Oct-15
+77371a69-8dc4-4cca-86ad-2b9654b5e6a1,WLA-2012,West Lancashire Borough Council,False,West Lancashire Borough Council,Oct-13,Aug-12,Oct-12,Sep-13,Oct-13
+13ed529a-72eb-484c-a96b-dc2d46d9913e,Central Lincolnshire Local Plan,West Lindsey District Council,False,West Lindsey District Council,May-17,Apr-16,Jun-16,Apr-17,Apr-17
+43ff978e-dedf-42cd-bff2-5b746c62ec70,WOX-2015,West Oxfordshire District Council,False,West Oxfordshire District Council,Nov-18,Mar-15,Jul-15,Aug-18,Sep-18
+4cb09287-7a8f-4aa6-9076-3c7466ad26ec,WSO-2015,West Somerset District Council,False,West Somerset District Council,Dec-16,Feb-15,Jul-15,Sep-16,Nov-16
+eebf5dd2-7687-486d-8efd-3e34f4948c91,Westminster City Plan,City of Westminster,False,"Westminster, City of",Jan-11,Nov-09,Apr-10,Nov-10,Jan-11
+47dfa4bd-d33b-45d8-8fee-e0b50ab24f39,City Plan (NPPF Revision),City of Westminster,False,"Westminster, City of (NPPF Revision)",Nov-13,Jul-12,Jan-13,Aug-13,Nov-13
+35b4471b-4e18-4da9-b075-6539a219bed7,WEY-2012,Weymouth and Portland Borough Council,True,Weymouth and Portland Borough Council,Jan-16,Jun-12,Jun-13,Aug-15,Oct-15
+1dc02551-0279-4da2-a0e0-14f22fce3893,WGN-2011,Wigan Metropolitan Borough Council,False,Wigan Metropolitan Borough Council,Aug-13,Feb-11,Sep-11,Aug-13,Sep-13
+46cd098f-c373-41d6-9996-664df6ff1ba7,WIL-2012,Wiltshire Council,False,Wiltshire Council,Feb-15,Feb-12,Jul-12,Dec-14,Jan-15
+34092d36-5d59-4d60-b93c-92612d5a8b10,including South Downs NPA,Winchester City Council,False,Winchester City Council (inc South Downs NPA),Apr-13,Jan-12,Jun-12,Feb-13,Mar-13
+b2a226dd-f994-49c6-8b18-7e564c66d265,WNM-2017,Royal Borough of Windsor and Maidenhead,False,"Windsor and Maidenhead, Royal Borough of",Feb-18,Jun-17,Jan-18,,
+,,,,Wirral Borough Council,Jan-13,,,,
+a7e6d646-54de-45b6-9085-adb7808b9f56,WOI-2011,Woking Borough Council,False,Woking Borough Council,Nov-12,Jul-11,Dec-11,Jul-12,Oct-12
+9ec2c91c-44b5-488c-af0a-0f8d0cdfd9ca,WOK-2008,Wokingham Borough Council,False,Wokingham Borough Council,Dec-10,Aug-08,Aug-08,Oct-09,Jan-10
+95690c16-7ad0-4b4d-9581-fc267e0f0537,Black Country Core Strategy 2011,City of Wolverhampton Council,False,City of Wolverhampton Council,Mar-11,Nov-09,Feb-10,Oct-10,Feb-11
+868e439e-f1c0-41a1-b952-d9db2beb06c2,South Worcestershire Development Plan,Worcester City Council,False,Worcester City Council,Mar-16,Jan-13,May-13,Feb-16,Feb-16
+88d1e45c-4d33-4a8c-bfd1-7845fd686e41,Core Strategy,Worthing Borough Council,False,Worthing Borough Council,Mar-11,Apr-10,Jul-10,Mar-11,Apr-11
+868e439e-f1c0-41a1-b952-d9db2beb06c2,South Worcestershire Development Plan,Wychavon District Council,False,Wychavon District Council,Mar-16,Jan-13,May-13,Feb-16,Feb-16
+0e8e9b79-adb6-4a0c-8bbb-b9cc72643a64,WYO-2006,Wycombe District Council,False,Wycombe District Council,Dec-10,Apr-06,Apr-06,May-08,Jul-08
+8778ae29-5e6b-4fde-8245-e95b4574203a,Wycombe District Local Plan,Wycombe District Council,False,Wycombe District Council,Apr-18,Oct-17,Mar-18,,
+12c83f26-092c-46db-95d0-7e79221d7799,WYR-2017,Wyre Borough Council,False,Wyre Borough Council,Feb-19,Sep-17,Jan-18,Feb-19,
+17e834e2-dc3d-4c40-9d5d-874fa2df71ca,WYE-2010,Wyre Forest District Council,False,Wyre Forest District Council,Dec-10,Jan-10,Apr-10,Oct-10,Dec-10
+a9608242-297d-4865-aa47-c0f44b51f93b,Local plan Review,Wyre Forest District Council,False,Wyre Forest District Council - Local plan Review,Nov-18,Nov-18,,,
+e678fd93-84a0-49f0-af8e-9bd339ea2d21,YOR-2018,City of York Council,False,City of York Council,Jun-18,Feb-18,May-18,,
+ea1e8cf6-0017-412a-bacf-3816a3f8df5d,OT547-2015,Yorkshire Dales National Park Authority,False,Yorkshire Dales National Park Authority,Jan-17,Jul-15,Jan-16,Dec-16,Dec-16

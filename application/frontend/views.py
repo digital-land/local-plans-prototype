@@ -711,6 +711,12 @@ def data_as_csv():
             d['is_joint_plan'] = plan.is_joint_plan()
             d['last_updated_by'] = plan.last_updated_by
 
+            if current_app.config['INCLUDE_PINS']:
+                d['published'] = plan.published_date.strftime('%b-%y') if plan.published_date else None
+                d['submitted'] = plan.submitted_date.strftime('%b-%y') if plan.submitted_date else None
+                d['found_sound'] = plan.sound_date.strftime('%b-%y') if plan.sound_date else None
+                d['adopted'] = plan.adopted_date.strftime('%b-%y') if plan.adopted_date else None
+
             data.append(d)
 
     fieldnames = ['planning_authority',
@@ -736,6 +742,9 @@ def data_as_csv():
                   'created_date',
                   'updated_date',
                   'last_updated_by']
+
+    if current_app.config['INCLUDE_PINS']:
+        fieldnames.extend(['published', 'submitted', 'found_sound', 'adopted'])
 
     with io.StringIO() as output:
         writer = csv.DictWriter(output, fieldnames=fieldnames, quoting=csv.QUOTE_ALL, lineterminator="\n")
@@ -834,3 +843,19 @@ def restore_plan(planning_authority, local_plan):
 def removed_plans():
     plans = LocalPlan.query.filter(LocalPlan.deleted == True).all()
     return render_template('removed.html', plans=plans)
+
+
+@frontend.route('/local-plans/<planning_authority>/<local_plan>/<state>', methods=['POST'])
+@requires_auth
+def add_pins_state(planning_authority, local_plan, state):
+    try:
+        d = f"{request.form['pins-state-month']}-{request.form['pins-state-year']}"
+        date = datetime.datetime.strptime(d, '%m-%Y')
+        plan = LocalPlan.query.get(local_plan)
+        field = f'{state}_date'
+        setattr(plan, field, date)
+        db.session.add(plan)
+        db.session.commit()
+    except Exception as e:
+        print('Could not update plan', e)
+    return redirect(url_for('frontend.local_plan', planning_authority=planning_authority))

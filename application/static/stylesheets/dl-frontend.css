@@ -6494,28 +6494,32 @@
   display: none;
 }
 
-.pims-stages {
+.pins-stages {
   margin-bottom: 30px;
   padding: 15px;
   color: #ffffff;
   background: #6f777b;
 }
 
-.pims-stages .govuk-details {
+.pins-stages .govuk-details {
   margin-bottom: 0;
 }
 
-.pims-stages .govuk-details__summary,
-.pims-stages .govuk-table {
+.pins-stages .govuk-details__summary,
+.pins-stages .govuk-table {
   color: #ffffff;
 }
 
-.pims-stages .govuk-details__text {
+.pins-stages .govuk-details__text {
   border: 0;
 }
 
-.adopted-plan .pims-stages {
+.adopted-plan .pins-stages {
   background: #005ea5;
+}
+
+.pins-stages label, .pins-stages legend, .pins-stages span {
+  color: #ffffff;
 }
 
 .current-stage {

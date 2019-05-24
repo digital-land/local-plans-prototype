@@ -141,6 +141,18 @@ class LocalPlan(db.Model):
             states.append(State(state='adopted', date=self.adopted_date))
         return states
 
+    def next_state(self):
+        if self.adopted_date is not None:
+            return None
+        if self.sound_date is not None:
+            return 'adopted'
+        if self.submitted_date is not None:
+            return 'sound'
+        if self.published_date is not None:
+            return 'submitted'
+        if self.published_date is None:
+            return 'published'
+
     def to_dict(self, authority_id):
         data = {
             'id': self.id,

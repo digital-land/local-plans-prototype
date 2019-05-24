@@ -1,7 +1,7 @@
 @import "components/table-view";
 
 
-.pims-stages {
+.pins-stages {
   margin-bottom: $govuk-gutter;
   padding: $govuk-gutter-half;
   color: govuk-colour("white");
@@ -22,6 +22,10 @@
 
   .adopted-plan & {
     background: govuk-colour("blue");
+  }
+
+  label, legend, span {
+    color: govuk-colour("white");
   }
 }
 

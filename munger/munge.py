@@ -25,7 +25,7 @@ def _get_org_mapping():
 
     return organisation_mapping
 
-organisation_mapping = _get_org_mapping()
+
 
 def _transform_date(date_str):
     try:
@@ -146,6 +146,8 @@ def _get_combined_ids(plan_name):
 
 
 if __name__ == '__main__':
+
+    organisation_mapping = _get_org_mapping()
 
     plans = {}
 

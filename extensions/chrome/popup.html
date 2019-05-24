@@ -89,7 +89,7 @@
 
     <div class="govuk-form-group">
        <label class="govuk-label" for="document-note-0">
-           Specify the type of fact
+           Select a category for this information
        </label>
         <select class="govuk-select fact-select-types" id="fact-type-0" name="fact-type-0">
           
@@ -112,6 +112,7 @@
              <option value="OTHER" data-type-class="other">Other</option>
           
       </select>
+      <p class="govuk-body fact-already-exists__msg">A fact of this type has already been set.</p>
     </div>
 
      <!-- TODO depending on type of fact chosen render input for fact
@@ -121,12 +122,12 @@
      -->
 
     <!-- for Plan Name -->
-    <div class="govuk-form-group plan-name-input">
-      <label class="govuk-label" for="plan-name-0">
-        Plan name
-      </label>
-      <input class="govuk-input govuk-input--width-20" id="plan-name-0" name="plan-name-0" type="text">
-    </div>
+
+
+
+
+
+
 
 	<!-- for Plan period -->
     <fieldset class="govuk-fieldset fieldset-range plan-period-fieldset">
@@ -276,7 +277,7 @@
 
     <div class="govuk-form-group">
       <label class="govuk-label" for="document-note-0">
-        Provide any additional information about the fact
+        Provide any additional information
       </label>
       <textarea class="govuk-textarea document-note-input" id="document-note-0" name="document-note-0" rows="5"></textarea>
     </div>
