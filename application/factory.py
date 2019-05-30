@@ -51,7 +51,7 @@ def register_errorhandlers(app):
         return render_template("error/{0}.html".format(error_code)), error_code
     for errcode in [400, 401, 404, 500]:
         app.errorhandler(errcode)(render_error)
-        return None
+
 
 
 def register_blueprints(app):
