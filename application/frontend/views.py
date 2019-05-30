@@ -14,11 +14,10 @@ from flask import (
     current_app,
     make_response,
     flash,
-    session,
-    abort)
+    abort
+)
 
 from markupsafe import Markup
-from sqlalchemy import or_, and_, String, cast
 from sqlalchemy.orm.attributes import flag_modified
 
 from application.auth.utils import requires_auth, get_current_user
@@ -291,6 +290,7 @@ def update_plan_data_flags(planning_authority, plan_id):
 
 
 @frontend.route('/local-plans/<planning_authority>/update-scheme-url', methods=['GET', 'POST'])
+@requires_auth
 def update_local_scheme_url(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
     form = LocalDevelopmentSchemeURLForm(url=pla.local_scheme_url)
@@ -305,6 +305,7 @@ def update_local_scheme_url(planning_authority):
 
 
 @frontend.route('/local-plans/<planning_authority>/<local_plan>/update-plan-url', methods=['GET', 'POST'])
+@requires_auth
 def update_local_plan_url(planning_authority, local_plan):
     pla = PlanningAuthority.query.get(planning_authority)
     plan = LocalPlan.query.get(local_plan)
@@ -327,6 +328,7 @@ def update_local_plan_url(planning_authority, local_plan):
 
 
 @frontend.route('/local-plans/<planning_authority>/<local_plan>/update', methods=['POST'])
+@requires_auth
 def update_plan(planning_authority, local_plan):
 
     plan_identifier = request.json['new_identifier'].strip()
@@ -342,23 +344,6 @@ def update_plan(planning_authority, local_plan):
         return jsonify({'error': 'Could not update plan',
                         'new_identifier': plan_identifier,
                         'original_identifier': original_identifier})
-
-
-@frontend.route('/local-plans/lucky-dip')
-def lucky_dip():
-    import random
-    query = db.session.query(LocalPlan).filter(or_(LocalPlan.plan_start_year.is_(None),
-                                                   LocalPlan.plan_end_year.is_(None),
-                                                   LocalPlan.housing_numbers.is_(None),
-                                                   LocalPlan.deleted.is_(False),
-                                                   and_(LocalPlan.housing_numbers.isnot(None),
-                                                        LocalPlan.housing_numbers['image_url'].is_(None)),
-                                                   and_(LocalPlan.housing_numbers.isnot(None),
-                                                        cast(LocalPlan.housing_numbers['source_document'], String) == '')))
-
-    row_count = int(query.count())
-    local_plan = query.offset(int(row_count * random.random())).first()
-    return render_template('lucky-dip.html', local_plan=local_plan, plan_id=str(local_plan.id))
 
 
 @frontend.route('/local-plans/data.csv')
