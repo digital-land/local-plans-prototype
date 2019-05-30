@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, validators, IntegerField, HiddenField, SelectMultipleField
+from wtforms import StringField, validators, IntegerField, HiddenField, SelectMultipleField, DateField
 
 
 class LocalDevelopmentSchemeURLForm(FlaskForm):

@@ -7,12 +7,15 @@ def format_year(date_time):
         return date_time.strftime('%Y')
     return ''
 
+
 def format_date(date_time):
-    return date_time.strftime('%d %b %Y')
+    if date_time is not None:
+        return date_time.strftime('%d %b %Y')
 
 
 def format_month_and_year(date_time):
-    return date_time.strftime('%b %Y')
+    if date_time is not None:
+        return date_time.strftime('%b %Y')
 
 
 def format_date_from_str(date_str):

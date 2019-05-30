@@ -500,8 +500,8 @@ def removed_plans():
 @requires_auth
 def add_pins_state(planning_authority, local_plan, state):
     try:
-        d = f"{request.form['pins-state-month']}-{request.form['pins-state-year']}"
-        date = datetime.datetime.strptime(d, '%m-%Y')
+        d = f"{request.form['pins-state-day']}-{request.form['pins-state-month']}-{request.form['pins-state-year']}"
+        date = datetime.datetime.strptime(d, '%d-%m-%Y')
         plan = LocalPlan.query.get(local_plan)
         field = f'{state}_date'
         setattr(plan, field, date)
