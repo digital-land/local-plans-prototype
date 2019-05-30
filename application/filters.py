@@ -11,11 +11,13 @@ def format_year(date_time):
 def format_date(date_time):
     if date_time is not None:
         return date_time.strftime('%d %b %Y')
+    return ''
 
 
 def format_month_and_year(date_time):
     if date_time is not None:
         return date_time.strftime('%b %Y')
+    return ''
 
 
 def format_date_from_str(date_str):
