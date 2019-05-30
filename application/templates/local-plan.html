@@ -57,7 +57,9 @@
                 </li>
             {% endfor %}
             <li class="govuk-tabs__list-item">
-                <a href="#new-plan-tab" class="govuk-tabs__tab govuk-tabs__tab--add-new">Add new plan</a>
+                {% if current_user %}
+                    <a href="#new-plan-tab" class="govuk-tabs__tab govuk-tabs__tab--add-new">Add new plan</a>
+                {% endif %}
             </li>
         </ul>
 
@@ -156,9 +158,11 @@
                         {% endfor %}
                     </ul>
                 {%  else %}
-                    <p class="govuk-body">If this should be a joint plan you can
-                        <a href="{{ url_for('frontend.make_joint_plan', planning_authority=planning_authority.id, local_plan=plan.id) }}">add other authorities here</a>
-                    </p>
+                    {% if current_user %}
+                        <p class="govuk-body">If this should be a joint plan you can
+                            <a href="{{ url_for('frontend.make_joint_plan', planning_authority=planning_authority.id, local_plan=plan.id) }}">add other authorities here</a>
+                        </p>
+                    {% endif %}
                 {% endif %}
 
                 <h3 class="govuk-heading-m">Planning policy url</h3>
@@ -167,19 +171,22 @@
                         <a id="policy-url" class="govuk-link policy-url" href="{{ plan.url }}"
                            target="_blank">{{ plan.url }}</a>
                     </p>
-                    <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a
-                            href="{{ url_for('frontend.update_local_plan_url', planning_authority=planning_authority.id, local_plan=plan.id) }}"
-                            class="govuk-link">Update the url</a>.</p>
-                    <div class="highlight-box highlight-box--flush highlight-box--minimal">
-                        {{ renderPolicyURLForm(plan, "Edit policy url", "edit" + loop.index | string, "govuk-form--contained", plan.url) }}
-                    </div>
+                    {% if current_user %}
+                        <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a
+                                href="{{ url_for('frontend.update_local_plan_url', planning_authority=planning_authority.id, local_plan=plan.id) }}"
+                                class="govuk-link">Update the url</a>.</p>
+                        <div class="highlight-box highlight-box--flush highlight-box--minimal">
+                            {{ renderPolicyURLForm(plan, "Edit policy url", "edit" + loop.index | string, "govuk-form--contained", plan.url) }}
+                        </div>
+                    {% endif %}
                 </div>
-                {% if not plan.url %}
+                {% if not plan.url and current_user %}
                     <div class="highlight-box highlight-box--gap highlight-box--flush missing-plan-url">
                         <h3 class="govuk-heading-s highlight-box__title">URL unavailable</h3>
                         <p class="govuk-body govuk-!-margin-bottom-0">We do not have a link to the local plan. Can you
                             add one?</p>
                         {{ renderPolicyURLForm(plan, "Add policy url", "add" + loop.index | string, "govuk-form--contained") }}
+
                     </div>
                 {% endif %}
 
@@ -188,13 +195,17 @@
                 <div class="edit-plan-period {% if not plan.has_plan_period() %}not-set{% endif %}">
                     <p class="plan-period"><span data-year-type="start">{{ plan.plan_start_year | format_year }}</span>-<span
                             data-year-type="end">{{ plan.plan_end_year | format_year }}</span></p>
-                    <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="#" class="govuk-link">Update
-                        plan period</a>.</p>
-                    <div class="highlight-box highlight-box--flush highlight-box--minimal">
-                        {{ renderPlanPeriodForm(plan, "Edit plan period", "edit" + loop.index | string, "govuk-form--contained") }}
-                    </div>
+
+                    {% if current_user %}
+                        <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="#" class="govuk-link">Update
+                            plan period</a>.</p>
+                        <div class="highlight-box highlight-box--flush highlight-box--minimal">
+                            {{ renderPlanPeriodForm(plan, "Edit plan period", "edit" + loop.index | string, "govuk-form--contained") }}
+                        </div>
+                    {% endif %}
+
                 </div>
-                {% if not plan.has_plan_period() %}
+                {% if not plan.has_plan_period() and current_user %}
                     <div class="highlight-box highlight-box--gap highlight-box--flush missing-plan-period">
                         <h3 class="govuk-heading-s highlight-box__title">Plan period unknown</h3>
                         <p class="govuk-body govuk-!-margin-bottom-0">We do not have the plan period for this plan. Can
@@ -275,18 +286,20 @@
                        <!-- colm not sure where this data attr is used? -->
                         <p class="housing-requirement" data-housing-requirement="{{ plan.housing_numbers.number }}"></p>
                     {% endif %}
+                {% if current_user %}
                     <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="#" class="govuk-link">Update
                         housing requirement numbers</a>.</p>
                     <div class="highlight-box highlight-box--flush highlight-box--minimal">
-                        {{ renderHousingRequirementForm(plan, planning_authority, fact_types, "Edit housing requirement", "edit" + loop.index | string, "govuk-form--contained add-housing-requirement-form") }}
+                        {{ renderHousingRequirementForm(plan, planning_authority, housing_number_types, "Edit housing requirement", "edit" + loop.index | string, "govuk-form--contained add-housing-requirement-form") }}
                     </div>
+                {%  endif %}
                 </div>
-                {% if not plan.has_housing_numbers() %}
+                {% if not plan.has_housing_numbers() and current_user %}
                     <div class="highlight-box highlight-box--gap highlight-box--flush missing-housing-requirement">
                         <h3 class="govuk-heading-s highlight-box__title">Housing requirement unknown</h3>
                         <p class="govuk-body govuk-!-margin-bottom-0">We do not have any housing requirement numbers for this plan.
                             Can you add some?</p>
-                        {{ renderHousingRequirementForm(plan, planning_authority, fact_types, "Add housing requirement numbers", "add" + loop.index | string, "govuk-form--contained add-housing-requirement-form") }}
+                        {{ renderHousingRequirementForm(plan, planning_authority, housing_number_types, "Add housing requirement numbers", "add" + loop.index | string, "govuk-form--contained add-housing-requirement-form") }}
                     </div>
 
                     <form action="{{ url_for('frontend.update_plan_data_flags', planning_authority=planning_authority.id, plan_id=plan.id) }}" class="govuk-form govuk-form--single-checkbox">
@@ -326,7 +339,7 @@
                                 {%- endfor %}
                                 </tbody>
                             </table>
-                            {% if plan.next_state() %}
+                            {% if plan.next_state() and current_user %}
                                 <form class="govuk-form govuk-form--contained"
                                       action="{{ url_for('frontend.add_pins_state',
                                                          planning_authority=planning_authority.id,
@@ -386,68 +399,75 @@
                     </details>
                 </div>
 
-            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+            {% if current_user %}
 
-            <a class="govuk-button dlf-warning-button govuk-!-margin-bottom-3" href="{{ url_for('frontend.remove_plan', planning_authority=planning_authority.id, local_plan=plan.id)}}">Remove this plan</a>
+                <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 
-            <div class="govuk-warning-text">
-              <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-              <strong class="govuk-warning-text__text">
-                <span class="govuk-warning-text__assistive">Warning</span>
-                Removing the plan means it will not in the exported csv. It can be restored if required.
-              </strong>
-            </div>
+                <a class="govuk-button dlf-warning-button govuk-!-margin-bottom-3" href="{{ url_for('frontend.remove_plan', planning_authority=planning_authority.id, local_plan=plan.id)}}">Remove this plan</a>
+
+                <div class="govuk-warning-text">
+                  <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                  <strong class="govuk-warning-text__text">
+                    <span class="govuk-warning-text__assistive">Warning</span>
+                    Removing the plan means it will not in the exported csv. It can be restored if required.
+                  </strong>
+                </div>
+
+            {% endif %}
 
             </section>
 
 
         {% endfor %}
-        <section id="new-plan-tab" class="govuk-tabs__panel">
-            <h3 class="govuk-heading-m">Add a local plan</h3>
-            <form class="govuk-form new-plan-form" method="post"
-                  action="{{ url_for('frontend.local_plan', planning_authority=planning_authority.id) }}">
+        {% if current_user %}
+            <section id="new-plan-tab" class="govuk-tabs__panel">
 
-                <div class="govuk-form-group">
-                    {{ form.title.label(class="govuk-label") }}
-                    {% if form.title.errors | length > 0 -%}
-                        <span class="govuk-error-message">
-              {% for error in form.title.errors %}
-                  <span>{{ error }}</span>
-              {% endfor %}
-              </span>
-                    {%- endif %}
-                    {{ form.title(class="govuk-input") }}
-                </div>
+                <h3 class="govuk-heading-m">Add a local plan</h3>
+                <form class="govuk-form new-plan-form" method="post"
+                      action="{{ url_for('frontend.local_plan', planning_authority=planning_authority.id) }}">
 
-                <div class="govuk-form-group">
-                    {{ form.start_year.label(class="govuk-label") }}
-                    {% if form.title.errors | length > 0 -%}
-                        <span class="govuk-error-message">
-              {% for error in form.title.errors %}
-                  <span>{{ error }}</span>
-              {% endfor %}
-              </span>
-                    {%- endif %}
-                    {{ form.start_year(class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4", pattern="[0-9]*") }}
-                </div>
-                <div class="govuk-form-group">
-                    {{ form.end_year.label(class="govuk-label") }}
-                    {% if form.title.errors | length > 0 -%}
-                        <span class="govuk-error-message">
-              {% for error in form.title.errors %}
-                  <span>{{ error }}</span>
-              {% endfor %}
-              </span>
-                    {%- endif %}
-                    {{ form.end_year(class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4", pattern="[0-9]*") }}
-                </div>
-                <div class="govuk-form-group">
-                    <button class="govuk-button dlf-secondary-button">Add plan</button>
-                </div>
+                    <div class="govuk-form-group">
+                        {{ form.title.label(class="govuk-label") }}
+                        {% if form.title.errors | length > 0 -%}
+                            <span class="govuk-error-message">
+                  {% for error in form.title.errors %}
+                      <span>{{ error }}</span>
+                  {% endfor %}
+                  </span>
+                        {%- endif %}
+                        {{ form.title(class="govuk-input") }}
+                    </div>
 
-                {{ form.csrf_token }}
-            </form>
-        </section>
+                    <div class="govuk-form-group">
+                        {{ form.start_year.label(class="govuk-label") }}
+                        {% if form.title.errors | length > 0 -%}
+                            <span class="govuk-error-message">
+                  {% for error in form.title.errors %}
+                      <span>{{ error }}</span>
+                  {% endfor %}
+                  </span>
+                        {%- endif %}
+                        {{ form.start_year(class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4", pattern="[0-9]*") }}
+                    </div>
+                    <div class="govuk-form-group">
+                        {{ form.end_year.label(class="govuk-label") }}
+                        {% if form.title.errors | length > 0 -%}
+                            <span class="govuk-error-message">
+                  {% for error in form.title.errors %}
+                      <span>{{ error }}</span>
+                  {% endfor %}
+                  </span>
+                        {%- endif %}
+                        {{ form.end_year(class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4", pattern="[0-9]*") }}
+                    </div>
+                    <div class="govuk-form-group">
+                        <button class="govuk-button dlf-secondary-button">Add plan</button>
+                    </div>
+
+                    {{ form.csrf_token }}
+                </form>
+            </section>
+     {% endif %}
 
     </div>
 {% endblock %}

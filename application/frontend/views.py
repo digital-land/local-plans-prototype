@@ -1,13 +1,8 @@
-import base64
 import csv
 import datetime
 import io
-import json
 import uuid
 import boto3
-
-from pathlib import Path
-from urllib.parse import urlparse
 
 from flask import (
     Blueprint,
@@ -16,7 +11,6 @@ from flask import (
     redirect,
     url_for,
     jsonify,
-    send_file,
     current_app,
     make_response,
     flash,
@@ -24,12 +18,12 @@ from flask import (
 )
 
 from markupsafe import Markup
-from sqlalchemy import func, or_, and_, String, cast
+from sqlalchemy import or_, and_, String, cast
 from sqlalchemy.orm.attributes import flag_modified
 
 from application.auth.utils import requires_auth, get_current_user
-from application.extensions import db, flask_optimize
-
+from application.extensions import db
+from application.filters import format_fact
 from application.frontend.forms import (
     LocalDevelopmentSchemeURLForm,
     LocalPlanURLForm,
@@ -40,14 +34,8 @@ from application.frontend.forms import (
 from application.models import (
     PlanningAuthority,
     LocalPlan,
-    FactType,
-    EmergingFactType,
-    PlanDocument,
-    OtherDocument,
-    Fact
+    HousingNumberType
 )
-
-from application.filters import format_fact
 
 frontend = Blueprint('frontend', __name__, template_folder='templates')
 
@@ -63,13 +51,6 @@ def planning_authority_list():
     if request.method == 'POST':
         return redirect(url_for('frontend.planning_authority', planning_authority=request.form['local-authority-select']))
     return render_template('planning-authority-list.html', planning_authorities=planning_authorities)
-
-
-@frontend.route('/planning-authority/<planning_authority>/old')
-def planning_authority_old(planning_authority):
-    pla = PlanningAuthority.query.get(planning_authority)
-    facts = pla.gather_facts()
-    return render_template('planning-authority-old.html', planning_authority=pla, facts=facts)
 
 
 @frontend.route('/planning-authority/<planning_authority>')
@@ -98,11 +79,12 @@ def list_all():
     planning_authorities = PlanningAuthority.query.order_by(PlanningAuthority.name).all()
     if request.method == 'POST':
         return redirect(url_for('frontend.local_plan', planning_authority=request.form['local-authority-select']))
-    return render_template('local-plans.html', planning_authorities=planning_authorities)
+    return render_template('local-plans.html',
+                           planning_authorities=planning_authorities,
+                           current_user=get_current_user())
 
 
 @frontend.route('/local-plans/<planning_authority>', methods=['GET', 'POST'])
-@requires_auth
 def local_plan(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
     form = AddPlanForm(planning_authority=pla.code())
@@ -130,9 +112,9 @@ def local_plan(planning_authority):
 
     return render_template('local-plan.html',
                            planning_authority=pla,
-                           fact_types=FactType,
-                           emerging_fact_types=EmergingFactType,
-                           form=form)
+                           housing_number_types=HousingNumberType,
+                           form=form,
+                           current_user=get_current_user())
 
 
 @frontend.route('/local-plans/<planning_authority>/<plan_id>/update-plan-period', methods=['POST'])
@@ -304,67 +286,6 @@ def update_plan_data_flags(planning_authority, plan_id):
     return jsonify(resp)
 
 
-@frontend.route('/start-collecting-data')
-def start_collecting_data():
-    return render_template('collecting-data-start-page.html')
-
-
-@frontend.route('/local-plans/<planning_authority>/document/<document>', methods=['POST'])
-def add_fact_to_document(planning_authority, document):
-
-    fact_json = request.json.get('fact')
-
-    if fact_json is not None :
-        document_type = fact_json.get('document_type')
-
-        if document_type == 'plan_document':
-            local_plan_id = request.args.get('local_plan')
-            document = PlanDocument.query.filter_by(id=document, local_plan_id=local_plan_id).one()
-        elif document_type == 'emerging_plan_document':
-            document = OtherDocument.query.filter_by(id=document, planning_authority_id=planning_authority).one()
-
-        fact = Fact(fact=fact_json.get('fact'), fact_type=fact_json.get('fact_type'), notes=fact_json.get('notes'))
-
-        if 'RANGE' in fact_json.get('fact_type') or 'PERIOD' in fact_json.get('fact_type'):
-            fact.from_, fact.to = fact_json.get('fact').split(',')
-
-        document.facts.append(fact)
-        db.session.add(document)
-        db.session.commit()
-        remove_url = url_for('frontend.remove_fact_from_document', document=str(document.id), fact=fact.id, document_type=document_type)
-        resp = {'OK': 200, 'fact': fact.to_dict(), 'remove_url': remove_url}
-
-        if fact_json.get('screenshot') is not None:
-            data = fact_json['screenshot'].replace('data:image/jpeg;base64,', '')
-            try:
-                body = base64.b64decode(data)
-                bucket = 'local-plans'
-                key = f'images/{fact.id}.jpg'
-                s3 = boto3.resource('s3')
-                object = s3.Object(bucket, key)
-                object.put(ACL='public-read', Body=body, ContentType='image/jpeg')
-                image_url = f'https://s3.eu-west-2.amazonaws.com/{bucket}/{key}'
-                fact.image_url = image_url
-                db.session.add(fact)
-                db.session.commit()
-            except Exception as e:
-                current_app.logger.error(e)
-                resp['error'] = 'Could not save image'
-    else:
-        resp = {'OK': 200}
-
-    return jsonify(resp)
-
-
-@frontend.route('/local-plans/<document>/fact/<fact>', methods=['GET', 'DELETE'])
-def remove_fact_from_document(document, fact):
-    fact = Fact.query.filter_by(id=fact, document_id=document).first()
-    if fact is not None:
-        db.session.delete(fact)
-        db.session.commit()
-    return jsonify({204: 'No Content'})
-
-
 @frontend.route('/local-plans/<planning_authority>/update-scheme-url', methods=['GET', 'POST'])
 def update_local_scheme_url(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
@@ -379,7 +300,6 @@ def update_local_scheme_url(planning_authority):
     return render_template('update-scheme-url.html', planning_authority=pla, form=form)
 
 
-# TODO this a form only submit don't allow json as well and make input required
 @frontend.route('/local-plans/<planning_authority>/<local_plan>/update-plan-url', methods=['GET', 'POST'])
 def update_local_plan_url(planning_authority, local_plan):
     pla = PlanningAuthority.query.get(planning_authority)
@@ -420,194 +340,6 @@ def update_plan(planning_authority, local_plan):
                         'original_identifier': original_identifier})
 
 
-@frontend.route('/local-plans/<local_plan>/document/<document>', methods=['DELETE'])
-def remove_document_from_plan(local_plan, document):
-    doc = PlanDocument.query.filter_by(local_plan_id=local_plan, id=document).first()
-    if doc is not None:
-        db.session.delete(doc)
-        db.session.commit()
-    return jsonify({204: 'No Content'})
-
-
-@frontend.route('/local-plans/planning-authority/<planning_authority>/document/<document>', methods=['DELETE'])
-def remove_document_from_planning_authority(planning_authority, document):
-    doc = OtherDocument.query.filter_by(planning_authority_id=planning_authority, id=document).first()
-    if doc is not None:
-        db.session.delete(doc)
-        db.session.commit()
-    return jsonify({204: 'No Content'})
-
-
-def _get_planning_authority_url(documents):
-    from urllib.parse import urlparse
-    if documents:
-        url = documents[0]
-        url = urlparse(url)
-        return f'{url.scheme}://{url.netloc}'
-    else:
-        return None
-
-
-# TODO can these two add_document_to_plan and add_document be merged?
-
-@frontend.route('/local-plans/<planning_authority>/document', methods=['POST'])
-def add_document_to_plan(planning_authority):
-
-    document_type = request.args.get('document_type')
-
-    if request.json.get('url') is not None:
-        url = request.json['url']
-
-        if document_type == 'plan_document':
-            local_plan = request.args.get('local_plan')
-            add_to = LocalPlan.query.get(local_plan)
-            document = PlanDocument.query.filter_by(url=url, local_plan=add_to).first()
-            if document is None:
-                document = PlanDocument(url=url, title=request.json['doc_title'])
-                add_to.plan_documents.append(document)
-                db.session.add(add_to)
-                db.session.commit()
-            remove_url = url_for('frontend.remove_document_from_plan',
-                                 document=str(document.id),
-                                 local_plan=add_to.id)
-            add_fact_url = url_for('frontend.add_fact_to_document',
-                                   planning_authority=planning_authority,
-                                   local_plan=add_to.id,
-                                   document=str(document.id))
-
-        elif document_type == 'emerging_plan_document':
-            # TODO - update this to other_document
-            add_to = PlanningAuthority.query.get(planning_authority)
-            document = OtherDocument.query.filter_by(url=url, planning_authority=add_to).first()
-            if document is None:
-                if request.json.get('doc_title') is not None:
-                    document = OtherDocument(url=url, title=request.json.get('doc_title'))
-                else:
-                    document = OtherDocument(url=url, title='Local Development Scheme')
-                add_to.other_documents.append(document)
-                db.session.add(add_to)
-                db.session.commit()
-
-            remove_url = url_for('frontend.remove_document_from_planning_authority',
-                                 document=str(document.id),
-                                 planning_authority=add_to.id)
-            add_fact_url = url_for('frontend.add_fact_to_document',
-                                   planning_authority=planning_authority,
-                                   document=str(document.id))
-
-        resp = {'OK': 200, 'url': url, 'document': document.to_dict(), 'remove_url': remove_url, 'add_fact_url': add_fact_url}
-    else:
-        resp = {'OK': 200}
-
-    return jsonify(resp)
-
-
-@frontend.route('/local-plans/add-document', methods=['POST'])
-def add_document():
-    documents = request.json['documents']
-    active_plan_id = request.json.get('active_plan')
-    website = (request.json.get('active_page_origin') if request.json.get('active_page_origin') is not None else _get_planning_authority_url(documents))
-
-    if active_plan_id == 'localDevelopmentScheme' and website is not None:
-
-        pla = PlanningAuthority.query.filter_by(website=website).one()
-        for doc in documents:
-            if OtherDocument.query.filter_by(url=doc).first() is None:
-                pla.other_documents.append(OtherDocument(url=doc, title='Local Development Scheme'))
-
-        db.session.add(pla)
-        db.session.commit()
-
-        # TODO get the actual contents and store in s3
-        resp = {'OK': 200, 'check_page': url_for('frontend.local_plan', planning_authority=pla.id, _external=True)}
-
-    elif active_plan_id is not None:
-
-        plan = LocalPlan.query.get(active_plan_id)
-        for doc in documents:
-            if PlanDocument.query.filter_by(url=doc).first() is None:
-                document = PlanDocument(url=doc)
-                plan.plan_documents.append(document)
-                db.session.add(plan)
-                db.session.commit()
-
-        # TODO get the actual contents and store in s3
-        resp = {'OK': 200, 'check_page': url_for('frontend.local_plan',
-                                                 planning_authority=request.json['pla_id'],
-                                                 _anchor=plan.local_plan,
-                                                 _external=True)}
-    else:
-        resp = {'OK': 404}
-
-    return jsonify(resp)
-
-
- # TODO is this only used from extension?
-@frontend.route('/local-plans/planning-authority', methods=['POST'])
-def planning_authority_from_document():
-
-    # Maybe best do this on origin only? the reason is that the plan policy urls
-    # are sort of unknown provenance. The LA website urls I got from LGA
-    website_origin = request.json.get('active_page_origin')
-    website_location = request.json.get('active_page_location')
-
-    # handle documents differently
-    if website_location.endswith(('.pdf')):
-        # first check for Emerging Plan document
-        if OtherDocument.query.filter_by(url=website_location).first() is not None:
-            document = OtherDocument.query.filter_by(url=website_location).first()
-            add_fact_url = url_for('frontend.add_fact_to_document',
-                                   planning_authority=document.planning_authority_id,
-                                   document=str(document.id),
-                                   _external=True)
-            resp = {'OK': 200, 'view-type': 'emerging-plan-document', 'document': document.to_dict(), 'add_fact_url': add_fact_url}
-        elif PlanDocument.query.filter_by(url=website_location).first() is not None:
-
-            document = PlanDocument.query.filter_by(url=website_location).first()
-            add_fact_url = url_for('frontend.add_fact_to_document',
-                                   planning_authority=document.local_plan.planning_authorities[0].id,
-                                   local_plan=document.local_plan_id,
-                                   document=str(document.id),
-                                   _external=True)
-            resp = {'OK': 200, 'view-type':
-                    'plan-document', 'document': document.to_dict(),
-                    'local_plan': document.local_plan.to_dict(document.local_plan.planning_authorities[0].id),
-                    'add_fact_url': add_fact_url}
-
-        else:
-            try:
-                pla = PlanningAuthority.query.filter_by(website=website_origin).one()
-
-                # TODO this is a new document, we could add item to response json to indicate to caller that
-                # this can be added to local planning_authority or plan?
-
-                resp = {'OK': 200, 'view-type': 'new-document', 'planning_authority': pla.to_dict(), 'document_url': website_location }
-            except Exception as e:
-                print(e)
-                resp = {'OK': 404}
-
-    elif website_origin is not None:
-
-        try:
-            origin = urlparse(website_origin)
-            pla = PlanningAuthority.query.filter(PlanningAuthority.website.like(f'%{origin.netloc}%')).one()
-            resp = {'OK': 200, 'view-type': 'urls', 'planning_authority': pla.to_dict()}
-        except Exception as e:
-            print(e)
-            resp = {'OK': 404}
-
-    elif website_location is not None:
-        try:
-            origin = urlparse(website_origin)
-            pla = PlanningAuthority.query.filter_by(PlanningAuthority.plan_policy_url.like(f'%{origin.netloc}%')).one()
-            resp = {'OK': 200, 'view-type': 'urls', 'planning_authority': pla.to_dict() }
-        except Exception as e:
-            print(e)
-            resp = {'OK': 404}
-
-    return jsonify(resp)
-
-
 @frontend.route('/local-plans/lucky-dip')
 def lucky_dip():
     import random
@@ -623,42 +355,6 @@ def lucky_dip():
     row_count = int(query.count())
     local_plan = query.offset(int(row_count * random.random())).first()
     return render_template('lucky-dip.html', local_plan=local_plan, plan_id=str(local_plan.id))
-
-
-@frontend.route('/local-plans/<planning_authority>/check-plan-documents')
-def check_documents(planning_authority):
-    pla = PlanningAuthority.query.get(planning_authority)
-    return render_template('check-plan-documents.html', planning_authority=pla)
-
-
-@frontend.route('/local-plans/chrome-extension')
-def get_extension():
-    import os
-    import shutil
-    path = Path(os.path.dirname(os.path.realpath(__file__)))
-    base_path = path.parent.parent
-    extension_dir = os.path.join(base_path, 'extensions', 'chrome')
-    zip_path = shutil.make_archive('local-plan-extension', 'zip', extension_dir)
-    return send_file(zip_path, attachment_filename='local-plan-extension.zip', as_attachment=True)
-
-
-@frontend.route('/local-plans/data')
-def data():
-    planning_authorities = PlanningAuthority.query.all()
-    data = []
-    for pla in planning_authorities:
-        for fact in pla.gather_facts(as_dict=True):
-            data.append(fact)
-    return render_template('data.html', data=data)
-
-
-@frontend.route('/local-plans/data.json')
-def data_as_json():
-    planning_authorities = PlanningAuthority.query.all()
-    data = []
-    for pla in planning_authorities:
-        data.append(pla.to_dict())
-    return jsonify(data=data)
 
 
 @frontend.route('/local-plans/data.csv')
@@ -758,42 +454,6 @@ def data_as_csv():
     return out
 
 
-@frontend.route('/local-plans/map-of-data')
-@flask_optimize.optimize()
-def map_of_data():
-    data = []
-    planning_authorities = db.session.query(PlanningAuthority,
-                                            func.ST_AsGeoJSON(
-                                                func.ST_SimplifyVW(PlanningAuthority.geometry, 0.00001)
-                                            ).label('geojson')).all()
-    for pla, geojson in planning_authorities:
-        authority = {'planning_authority': pla.id,
-                     'planning_authority_name': pla.name,
-                     'plans': [],
-                     'has_housing_numbers': False}
-        for p in pla.local_plans:
-            plan = {'plan_id': p.local_plan,
-                    'status': p.latest_state().to_dict(),
-                    'has_housing_numbers': p.has_housing_numbers()
-                    }
-            try:
-                if p.has_housing_numbers():
-                    authority['has_housing_numbers'] = True
-                    if 'range'in p.housing_numbers['housing_number_type'].lower():
-                        plan[f"{p.housing_numbers['housing_number_type']}_from".lower()] = p.housing_numbers['min']
-                        plan[f"{p.housing_numbers['housing_number_type']}_to".lower()] = p.housing_numbers['max']
-                    else:
-                        plan[p.housing_numbers['housing_number_type'].lower()] = p.housing_numbers['number']
-            except Exception as e:
-                print(e)
-
-            authority['plans'].append(plan)
-        if geojson is not None:
-            authority['geojson'] = json.loads(geojson)
-        data.append(authority)
-    return render_template('map-of-data.html', data=data)
-
-
 @frontend.route('/local-plans/<planning_authority>/<local_plan>/make-joint-plan', methods=['GET', 'POST'])
 @requires_auth
 def make_joint_plan(planning_authority, local_plan):
@@ -842,7 +502,9 @@ def restore_plan(planning_authority, local_plan):
 @frontend.route('/local-plans-removed')
 def removed_plans():
     plans = LocalPlan.query.filter(LocalPlan.deleted == True).all()
-    return render_template('removed.html', plans=plans)
+    return render_template('removed.html',
+                           plans=plans,
+                           current_user=get_current_user())
 
 
 @frontend.route('/local-plans/<planning_authority>/<local_plan>/<state>', methods=['POST'])

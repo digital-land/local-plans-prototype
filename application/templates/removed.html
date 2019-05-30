@@ -6,6 +6,20 @@
 <link rel="stylesheet" href="/static/stylesheets/vendor/govuk-accessible-autocomplete.min.css" />
 {% endblock %}
 
+{% block beforeContent %}
+  {{ super() }}
+
+   <div class="govuk-width-container">
+    <a href="{{ url_for('frontend.index') }}" class="govuk-back-link">Back to index</a>
+    {% if not current_user %}
+        <p style="float: right;">
+            <a href="/auth/login?redirect_url={{ url_for('frontend.removed_plans')}}">Login to restore plans</a>
+        </p>
+    {% endif %}
+</div>
+
+{% endblock %}
+
 {% block content %}
 
     <div class="govuk-grid-row">
@@ -15,10 +29,13 @@
                 <h1 class="govuk-heading-m">Removed plans</h1>
                 <ul class="govuk-list govuk-list--bullet">
                     {% for plan in plans %}
-                        <li>{{ plan.title }} - <a href="{{ url_for('frontend.restore_plan',
-                                                        planning_authority=plan.planning_authorities[0].id,
-                                                        local_plan=plan.id) }}">restore</a>
-                            {% if plan.last_updated_by %}- Removed by {{ plan.last_updated_by }}{% endif %}</li>
+                        <li>{{ plan.title }}
+                            {% if not config.AUTHENTICATION_ON or current_user %}
+                                 - <a href="{{ url_for('frontend.restore_plan',
+                                                     planning_authority=plan.planning_authorities[0].id,
+                                                     local_plan=plan.id) }}">restore</a>
+                            {% endif %}
+                            {% if plan.last_updated_by %} - Removed by {{ plan.last_updated_by }}{% endif %}</li>
                     {% endfor %}
                 </ul>
             {% else %}

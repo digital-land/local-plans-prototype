@@ -9,8 +9,8 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-xl">Local plan prototypes</h1>
-      <p class="govuk-body-l">Links to all the local plan prototypes and experiments. More information on the project can be found on the <a href="https://digital-land.github.io/project/local-plans/">local plans project page</a>.</p>
+      <h1 class="govuk-heading-xl">Housing numbers prototype</h1>
+      <p class="govuk-body-l">Experimental work on collection of housing numbers from local plans. More information on the project can be found on the <a href="https://digital-land.github.io/project/local-plans/">local plans project page</a>.</p>
     </div>
   </div>
 
@@ -18,13 +18,9 @@
     <div class="govuk-grid-column-full">
       <h2 class="govuk-heading-m">Viewing and collecting data</h2>
       <ul class="govuk-list govuk-list--bullet">
-        <li><a href="{{ url_for('frontend.list_all') }}">All local plans by planning authority</a></li>
-        <li><a href="{{ url_for('frontend.planning_authority_list') }}">View plain list of planning authorities</a></li>
-        <li><a href="{{ url_for('frontend.data_as_csv') }}">Data collected as csv</a></li>
-        <li><a href="{{ url_for('frontend.lucky_dip') }}">Data collection lucky dip</a></li>
-        {% if not config.AUTHENTICATION_ON or current_user %}
-         <li><a href="{{ url_for('frontend.removed_plans') }}">Removed plans</a></li>
-        {% endif %}
+        <li><a href="{{ url_for('frontend.list_all') }}">Enter housing number data for planning authorities</a></li>
+        <li><a href="{{ url_for('frontend.data_as_csv') }}">CSV export of data collected</a></li>
+        <li><a href="{{ url_for('frontend.removed_plans') }}">Removed plans</a></li>
       </ul>
     </div>
   </div>

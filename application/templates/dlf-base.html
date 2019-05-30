@@ -15,8 +15,13 @@
 }) }}
 
     <div class="govuk-width-container">
-        {% if session['profile'] %}
+        {% if current_user %}
             <p style="float: right;"><a href="/auth/logout">Logout</a></p>
+        {% elif not current_user and planning_authority %}
+            <p style="float: right;">
+                <a href="/auth/login?redirect_url={{ url_for('frontend.local_plan',
+                                                             planning_authority=planning_authority.id)}}">Login to edit this page</a>
+            </p>
         {% endif %}
     </div>
 

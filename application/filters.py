@@ -1,7 +1,5 @@
-from jinja2 import Undefined
 from datetime import datetime
-
-from application.models import FactType, EmergingFactType
+from application.models import HousingNumberType
 
 
 def format_year(date_time):
@@ -28,10 +26,8 @@ def last_state_date(plan):
 
 
 def format_fact(name):
-    if name in FactType.__members__:
-        return FactType[name].value
-    elif name in EmergingFactType.__members__:
-        return EmergingFactType[name].value
+    if name in HousingNumberType.__members__:
+        return HousingNumberType[name].value
     else:
         return name
 

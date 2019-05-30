@@ -1,7 +1,5 @@
 import csv
 import json
-from datetime import datetime
-from pathlib import Path
 from urllib.request import urlopen
 
 import boto3
@@ -14,14 +12,8 @@ from contextlib import closing
 
 from application.models import (
     PlanningAuthority,
-    LocalPlan,
-    PlanDocument,
-    OtherDocument,
-    Fact,
-    HousingDeliveryTest,
-    Document
+    LocalPlan
 )
-
 
 json_to_geo_query = "SELECT ST_SetSRID(ST_GeomFromGeoJSON('%s'), 4326);"
 
@@ -55,14 +47,6 @@ def create_other_data(pa, row):
 
     db.session.add(pa)
     db.session.commit()
-    print('loaded local plan', plan_id)
-
-    if row['status'].strip() == 'adopted' and row.get('plan-document-url') and row.get('plan-document-url') != '?':
-        pd = PlanDocument(url=row.get('plan-document-url'))
-        plan.plan_documents.append(pd)
-        db.session.add(pa)
-        db.session.commit()
-        print('loaded plan document for plan', plan, 'document', row.get('plan-document-url'))
 
 
 @click.command()
@@ -113,108 +97,6 @@ def set_ons_codes():
                 pa.ons_code = ons_code if ons_code else None
                 db.session.add(pa)
                 db.session.commit()
-
-
-@click.command()
-@with_appcontext
-def load_hdt():
-    import os
-
-    db.session.query(HousingDeliveryTest).delete()
-    db.session.commit()
-
-    local_authorities = 'https://raw.githubusercontent.com/digital-land/alpha-data/master/local-authorities.csv'
-    print('Loading', local_authorities)
-    with closing(requests.get(local_authorities, stream=True)) as r:
-        reader = csv.DictReader(r.iter_lines(decode_unicode=True), delimiter=',')
-        for row in reader:
-            pa = PlanningAuthority.query.get(row['local-authority'])
-            if pa is not None:
-                pa.ons_code = row['ons-code'].strip()
-                print('Set ons code for', pa.id)
-                db.session.add(pa)
-                db.session.commit()
-
-    current_path = Path(os.path.abspath(__file__))
-    hdt_file = os.path.join(current_path.parent.parent, 'housing-delivery-test.csv')
-    with open(hdt_file, 'r') as f:
-        reader = csv.DictReader(f, delimiter=',')
-        print(reader.fieldnames)
-        for row in reader:
-            pla = PlanningAuthority.query.filter_by(ons_code=row['ons-code']).first()
-            if pla is not None:
-                homes_required = row['required-2015-16']
-                homes_delivered = row['delivered-2015-16']
-                from_year = datetime.strptime('2015', '%Y').date()
-                to_year = datetime.strptime('2016', '%Y').date()
-
-                hdt = HousingDeliveryTest.query.filter_by(from_year=from_year,
-                                                          to_year=to_year,
-                                                          homes_required=homes_required,
-                                                          homes_delivered=homes_delivered,
-                                                          planning_authority=pla).first()
-
-                if hdt is None:
-                    hdt = HousingDeliveryTest(from_year=from_year,
-                                              to_year=to_year,
-                                              homes_required=homes_required,
-                                              homes_delivered=homes_delivered)
-
-                    pla.housing_delivery_tests.append(hdt)
-                    document = OtherDocument(url=HDT_URL, title='Housing Delivery Test: 2018 measurement')
-                    print('Added hdt for years', hdt.from_year, hdt.from_year, 'to LA', pla.id)
-
-                else:
-                    print('hdt for', pla.id, 'for years', hdt.from_year, hdt.from_year, 'already added')
-
-                homes_required = row['required-2016-17']
-                homes_delivered = row['delivered-2016-17']
-                from_year = datetime.strptime('2016', '%Y').date()
-                to_year = datetime.strptime('2017', '%Y').date()
-
-                hdt = HousingDeliveryTest.query.filter_by(from_year=from_year,
-                                                          to_year=to_year,
-                                                          homes_required=homes_required,
-                                                          homes_delivered=homes_delivered,
-                                                          planning_authority=pla).first()
-
-                if hdt is None:
-                    hdt = HousingDeliveryTest(from_year=from_year,
-                                              to_year=to_year,
-                                              homes_required=homes_required,
-                                              homes_delivered=homes_delivered)
-
-                    pla.housing_delivery_tests.append(hdt)
-                    print('Added hdt for years', hdt.from_year, hdt.from_year, 'to LA', pla.id)
-                else:
-                    print('hdt for', pla.id, 'for years', hdt.from_year, hdt.from_year, 'already added')
-
-                homes_required = row['required-2017-18']
-                homes_delivered = row['delivered-2017-18']
-                from_year = datetime.strptime('2017', '%Y').date()
-                to_year = datetime.strptime('2018', '%Y').date()
-
-                hdt = HousingDeliveryTest.query.filter_by(from_year=from_year,
-                                                          to_year=to_year,
-                                                          homes_required=homes_required,
-                                                          homes_delivered=homes_delivered,
-                                                          planning_authority=pla).first()
-
-                if hdt is None:
-                    hdt = HousingDeliveryTest(from_year=from_year,
-                                              to_year=to_year,
-                                              homes_required=homes_required,
-                                              homes_delivered=homes_delivered)
-
-                    pla.housing_delivery_tests.append(hdt)
-                    print('Added hdt for years', hdt.from_year, hdt.from_year, 'to LA', pla.id)
-                else:
-                    print('hdt for', pla.id, 'for years', hdt.from_year, hdt.from_year, 'already added')
-
-                pla.other_documents.append(document)
-                db.session.add(pla)
-                db.session.commit()
-
 
 @click.command()
 @with_appcontext
@@ -290,9 +172,6 @@ def load_features(features_url, org_feature_mappings):
 @with_appcontext
 def clear():
     db.session.execute('DELETE FROM planning_authority_plan');
-    db.session.query(HousingDeliveryTest).delete()
-    db.session.query(Fact).delete()
-    db.session.query(Document).delete()
     db.session.query(LocalPlan).delete()
     db.session.query(PlanningAuthority).delete()
     db.session.commit()
