@@ -14,8 +14,8 @@ from flask import (
     current_app,
     make_response,
     flash,
-    session
-)
+    session,
+    abort)
 
 from markupsafe import Markup
 from sqlalchemy import or_, and_, String, cast
@@ -87,6 +87,8 @@ def list_all():
 @frontend.route('/local-plans/<planning_authority>', methods=['GET', 'POST'])
 def local_plan(planning_authority):
     pla = PlanningAuthority.query.get(planning_authority)
+    if pla is None:
+        abort(404)
     form = AddPlanForm(planning_authority=pla.code())
     if form.validate_on_submit():
         start_year = datetime.datetime(year=form.start_year.data, month=1, day=1)
@@ -115,6 +117,8 @@ def local_plan(planning_authority):
                            housing_number_types=HousingNumberType,
                            form=form,
                            current_user=get_current_user())
+
+
 
 
 @frontend.route('/local-plans/<planning_authority>/<plan_id>/update-plan-period', methods=['POST'])
