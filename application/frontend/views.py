@@ -397,10 +397,10 @@ def data_as_csv():
             d['last_updated_by'] = plan.last_updated_by
 
             if current_app.config['INCLUDE_PINS']:
-                d['published'] = plan.published_date.strftime('%b-%y') if plan.published_date else None
-                d['submitted'] = plan.submitted_date.strftime('%b-%y') if plan.submitted_date else None
-                d['found_sound'] = plan.sound_date.strftime('%b-%y') if plan.sound_date else None
-                d['adopted'] = plan.adopted_date.strftime('%b-%y') if plan.adopted_date else None
+                d['published'] = plan.published_date
+                d['submitted'] = plan.submitted_date
+                d['found_sound'] = plan.sound_date
+                d['adopted'] = plan.adopted_date
 
             data.append(d)
 

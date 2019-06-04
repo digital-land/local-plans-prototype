@@ -1,180 +1,26 @@
 import csv
-import json
-from urllib.request import urlopen
-
+import os
+import datetime
 import boto3
 import click
-import ijson
-import requests
+import sqlalchemy
 
 from flask.cli import with_appcontext
-from contextlib import closing
+
+from application.extensions import db
 
 from application.models import (
     PlanningAuthority,
     LocalPlan
 )
 
-json_to_geo_query = "SELECT ST_SetSRID(ST_GeomFromGeoJSON('%s'), 4326);"
 
-def floaten(event):
-    if event[1] == 'number':
-        return (event[0], event[1], float(event[2]))
-    else:
-        return event
+date_fields = ['Published', 'Submitted', 'Found Sound', 'Adopted']
 
-HDT_URL = 'https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/779711/HDT_2018_measurement.xlsx'
-
-
-def create_other_data(pa, row):
-    plan_id = row['local-plan'].strip()
-    plan = LocalPlan.query.get(plan_id)
-    if plan is not None:
-        status = [row['status'].strip(), row['date'].strip()]
-        if status not in plan.states:
-            plan.states.append(status)
-            print('updated local plan', plan_id)
-        if pa not in plan.planning_authorities:
-            pa.local_plans.append(plan)
-    else:
-        plan = LocalPlan()
-        plan.local_plan = plan_id
-        plan.url = row['plan-policy-url'].strip()
-        plan.states = [[row['status'].strip(), row['date'].strip()]]
-        pa.local_plans.append(plan)
-        plan.title = row['title'].strip()
-        print('created local plan', plan_id)
-
-    db.session.add(pa)
-    db.session.commit()
-
-
-@click.command()
-@with_appcontext
-def load():
-    local_authorities = 'https://raw.githubusercontent.com/digital-land/alpha-data/master/local-authorities.csv'
-    mapping = {}
-    print('Loading', local_authorities)
-    with closing(requests.get(local_authorities, stream=True)) as r:
-        reader = csv.DictReader(r.iter_lines(decode_unicode=True), delimiter=',')
-        for row in reader:
-            mapping[row['local-authority'].strip()] = row['website'].strip()
-
-    register = 'https://raw.githubusercontent.com/digital-land/alpha-data/master/local-plans/local-plan-register.csv'
-    print('Loading', register)
-    with closing(requests.get(register, stream=True)) as r:
-        reader = csv.DictReader(r.iter_lines(decode_unicode=True), delimiter=',')
-        for row in reader:
-            id = row['organisation'].strip()
-            name = row['name'].strip()
-            if id != '':
-                pa = PlanningAuthority.query.get(id)
-                if pa is None:
-                    pa = PlanningAuthority(id=id, name=name)
-                    if mapping.get(id) is not None:
-                        pa.website = mapping.get(id)
-                    db.session.add(pa)
-                    db.session.commit()
-                    print(row['organisation'], row['name'])
-                else:
-                    print(id, 'already in db')
-
-                create_other_data(pa, row)
-
-
-@click.command()
-@with_appcontext
-def set_ons_codes():
-    local_authorities = 'https://raw.githubusercontent.com/communitiesuk/digital-land-data/master/data/organisation.tsv'
-    print('Loading', local_authorities)
-    with closing(requests.get(local_authorities, stream=True)) as r:
-        reader = csv.DictReader(r.iter_lines(decode_unicode=True), delimiter='\t')
-        for row in reader:
-            pa = PlanningAuthority.query.get(row['organisation'])
-            if pa is not None:
-                ons_code = row['area'].strip().split(':')[-1]
-                print(ons_code)
-                pa.ons_code = ons_code if ons_code else None
-                db.session.add(pa)
-                db.session.commit()
-
-@click.command()
-@with_appcontext
-def load_geojson():
-
-    from flask import current_app
-    from application.extensions import db
-
-    s3_region = current_app.config['S3_REGION']
-    s3_bucket = 'digital-land-output'
-    s3_bucket_url = 'http://%s.s3.amazonaws.com' % s3_bucket
-
-    s3 = boto3.resource('s3', region_name=s3_region)
-
-    planning_authority_feature_mappings = {}
-
-    item_url = '%s/organisation.tsv' % s3_bucket_url
-    print('Loading', item_url)
-    with closing(requests.get(item_url, stream=True)) as r:
-        reader = csv.DictReader(r.iter_lines(decode_unicode=True), delimiter='\t')
-        for row in reader:
-            org = row['organisation']
-            if 'local-authority' in org or 'national-park' in org:
-                planning_authority = db.session.query(PlanningAuthority).get(org)
-                if row.get('feature') is not None and planning_authority is not None:
-                        planning_authority_feature_mappings[row.get('feature')] = planning_authority.id
-
-    features_url = '%s/feature/local-authority-districts.geojson' % s3_bucket_url
-    load_features(features_url, planning_authority_feature_mappings)
-
-    features_url = '%s/feature/national-park-boundary.geojson' % s3_bucket_url
-    load_features(features_url, planning_authority_feature_mappings)
-
-
-def load_features(features_url, org_feature_mappings):
-
-    print('Loading', features_url)
-
-    try:
-        if features_url.startswith('http'):
-            f = urlopen(features_url)
-        else:
-            f = open(features_url, 'rb')
-        events = map(floaten, ijson.parse(f))
-        data = ijson.common.items(events, 'features.item')
-
-        for feature in data:
-            id = feature['properties'].get('feature')
-            item = 'item:%s' % feature['properties'].get('item')
-            feature_id = id if id is not None else item
-            try:
-                planning_authority = PlanningAuthority.query.get(org_feature_mappings[feature_id])
-                geojson = json.dumps(feature['geometry'])
-                planning_authority.geometry = db.session.execute(json_to_geo_query % geojson).fetchone()[0]
-                db.session.add(planning_authority)
-                db.session.commit()
-            except KeyError as e:
-                print('No organisation for feature', feature_id)
-            except Exception as e:
-                print(e)
-
-    except Exception as e:
-        print(e)
-        print('Error loading', features_url)
-    finally:
-        try:
-            f.close()
-        except:
-            pass
-
-
-@click.command()
-@with_appcontext
-def clear():
-    db.session.execute('DELETE FROM planning_authority_plan');
-    db.session.query(LocalPlan).delete()
-    db.session.query(PlanningAuthority).delete()
-    db.session.commit()
+date_keys = {'Published': 'published_date',
+             'Submitted': 'submitted_date',
+             'Found Sound': 'sound_date',
+             'Adopted': 'adopted_date'}
 
 
 @click.command()
@@ -209,6 +55,61 @@ def cache_docs_in_s3():
                         print(e)
                     finally:
                         os.remove(file.name)
+
+
+@click.command()
+@with_appcontext
+def pins_update():
+
+    from pathlib import Path
+    parent_dir = Path(os.path.dirname(__file__)).parent
+    pins_csv = f'{parent_dir}/data/pins-local-plans-may-2019.csv'
+
+    print(pins_csv)
+
+    with open(pins_csv, 'r') as f:
+        csv_reader = csv.DictReader(f)
+        for row in csv_reader:
+
+            try:
+                council = row['Local Council'].strip()
+                org = _normalise_name(_get_org(council))
+                ons_code = row['LPA ONS Code']
+                planning_auth = PlanningAuthority.query.filter_by(ons_code=ons_code).one()
+
+                for p in planning_auth.local_plans:
+                    dates = [year_and_month(d) for d in
+                             [p.published_date, p.submitted_date, p.sound_date, p.adopted_date] if d is not None]
+                    updated_dates = []
+                    for f in date_fields:
+                        if row.get(f):
+                            updated_dates.append(year_and_month(row.get(f)))
+
+                    if dates and dates == updated_dates[:len(dates)]:
+                        # if len(updated_dates) > len(dates):
+                        print('candidate for update', dates, '=>', updated_dates, p.title, p.id)
+                        updates_to = date_fields[len(dates):len(updated_dates)]
+                        print('to update', updates_to)
+
+                        for f in date_fields:
+                            update = row[f]
+                            date_field_name = date_keys[f]
+                            update_date = datetime.datetime.strptime(update, '%Y-%m-%d').date()
+                            print('Set', date_field_name, 'to', update_date)
+                            setattr(p, date_field_name, update_date)
+                            db.session.add(p)
+                            db.session.commit()
+                        else:
+                            print('no updated needed', dates, '==', updated_dates )
+                    else:
+                        print('no match on dates', dates, '!=', updated_dates, p.title, p.id)
+
+            except sqlalchemy.orm.exc.NoResultFound as e:
+                print('No planning authority found for ons code', ons_code, 'normalised name ->',  org)
+            except Exception as e:
+                print(e)
+
+    print('Done')
 
 
 def hash_md5(file):
@@ -264,3 +165,72 @@ def process_file(file, plan, url, s3, existing_checksum=None):
 
     except Exception as e:
         print(e)
+
+
+def _get_org(org):
+    org = org.replace(' - Local plan Review', '')
+    org = org.replace(' (inc South Downs NPA)', '')
+    org = org.replace(' - first review', '')
+    org = org.replace(' - Local Plan review', '')
+    org = org.replace(' - Local Plan', '')
+    org = org.replace(' (Review)', '')
+    org = org.replace(' - New Southwark Plan', '')
+    org = org.replace(' (Partial review)', '')
+    org = org.replace(' (Local Plan 2015-2030)', '')
+    org = org.replace(' (Revision)', '')
+    org = org.replace(' Local Plan part 1 Review', '')
+    org = org.replace(' - CS Review/Local Plan', '')
+    org = org.replace(' - Strategic Policies Partial Review', '')
+    org = org.replace(' - First review', '')
+    org = org.replace(' 2014-2032', '')
+    org = org.replace(' - Core Strategy Review', '')
+    org = org.replace(' - Core Strategy Single Issue Review', '')
+    org = org.replace(' 2033', '')
+    org = org.replace(', Alterations to Strategic Policies', '')
+    org = org.replace(' - Development Framework', '')
+    org = org.replace(' - Core Strategy & Policies', '')
+    org = org.replace(' - First review', '')
+    org = org.replace(', Local Plan 2015', '')
+    org = org.replace(' - Strategic Policies & Land Allocation', '')
+    org = org.replace(' Selective Review', '')
+    org = org.replace(' - Fast Track Single Policy Review', '')
+    org = org.replace(' (review)', '')
+    org = org.replace(' Focussed Review', '')
+    org = org.replace(' - Housing Local Plan', '')
+    org = org.replace(' Core Strategy Review', '')
+    org = org.replace(' (Local Plan Review)', '')
+    org = org.replace(' - Core Strategy re-opened', '')
+    org = org.replace(' (New Local Plan)', '')
+    org = org.replace(' - Consequential changes', '')
+    org = org.replace(' (Plan:MK)', '')
+    org = org.replace(' Review', '')
+
+    return org.strip()
+
+
+def _normalise_name(org):
+    org = org.replace('DC', 'District Council')
+    org = org.replace('BC', 'Borough Council')
+    org = org.replace('Upon', 'upon')
+    if ', City of' in org:
+        name = org.split(',')[0]
+        org = f'City of {name}'
+    if ', Royal Borough of' in org:
+        name = org.split(',')[0]
+        org = f'Royal Borough of {name}'
+    if ', London Borough of' in org:
+        name = org.split(',')[0]
+        org = f'London Borough of {name}'
+    if ', Borough of' in org:
+        name = org.split(',')[0]
+        org = f'Borough of {name}'
+
+    return org.strip()
+
+
+def year_and_month(date):
+    if date is not None:
+        if isinstance(date, str):
+            date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+        return date.replace(day=1)
+    return date

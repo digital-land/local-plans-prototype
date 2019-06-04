@@ -44,7 +44,8 @@ class LocalPlan(db.Model):
     planning_authorities = db.relationship('PlanningAuthority',
                                            secondary=planning_authority_plan,
                                            lazy=True,
-                                           back_populates='local_plans')
+                                           back_populates='local_plans',
+                                           order_by='PlanningAuthority.id')
 
     created_date = db.Column(db.DateTime(), default=datetime.utcnow)
     updated_date = db.Column(db.DateTime(), onupdate=datetime.utcnow)
@@ -68,7 +69,8 @@ class LocalPlan(db.Model):
             return True
 
     def __hash__(self):
-        return hash(str(self.plan_start_year))
+        id = f'{str(self.plan_start_year)}|{",".join(self.planning_authorities)}'
+        return hash(id)
 
     def latest_state(self):
        return self.ordered_states()[-1]

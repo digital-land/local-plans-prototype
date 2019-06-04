@@ -16,10 +16,8 @@ from application.filters import (
 )
 
 
-if os.environ.get('FLASK_ENV') == 'production':
-    dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
-    load_dotenv(dotenv_path)
 
+load_dotenv()
 
 def create_app(config_filename):
 
@@ -91,12 +89,9 @@ def register_extensions(app):
 
 
 def register_commands(app):
-    from application.commands import load, clear, set_ons_codes, load_geojson, cache_docs_in_s3
-    app.cli.add_command(load, name='load')
-    app.cli.add_command(clear, name='clear')
-    app.cli.add_command(set_ons_codes, name='set_ons')
-    app.cli.add_command(load_geojson, name='load_geojson')
+    from application.commands import cache_docs_in_s3, pins_update
     app.cli.add_command(cache_docs_in_s3, name='cache_docs_in_s3')
+    app.cli.add_command(pins_update, name='pins_update')
 
 
 def register_filters(app):
