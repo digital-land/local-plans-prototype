@@ -16,8 +16,8 @@ from application.filters import (
 )
 
 
-
 load_dotenv()
+
 
 def create_app(config_filename):
 

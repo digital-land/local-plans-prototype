@@ -3,7 +3,6 @@ import uuid
 from datetime import datetime
 from enum import Enum
 from functools import total_ordering
-from geoalchemy2 import Geometry
 from application.auth.utils import get_current_user
 from application.extensions import db
 from sqlalchemy.dialects.postgresql import UUID, JSONB
@@ -193,8 +192,6 @@ class PlanningAuthority(db.Model):
                                   secondary=planning_authority_plan,
                                   lazy='dynamic',
                                   back_populates='planning_authorities',)
-
-    geometry = db.Column(Geometry(srid=4326))
 
     def sorted_plans(self, reverse=False, deleted=False):
         plans = self.local_plans.filter(LocalPlan.deleted == deleted).all()
