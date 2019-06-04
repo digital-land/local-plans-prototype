@@ -114,7 +114,7 @@
         {% for plan in planning_authority.sorted_plans(reverse=True) %}
             <section class="govuk-tabs__panel local-plan {% if plan.is_adopted() %}adopted-plan{% endif %}"
                      id="plan_tab_{{ plan.id }}">
-                <h2 class="govuk-heading-l editable-plan-title"
+                <h2 class="govuk-heading-l {% if current_user %}editable-plan-title{% endif %}"
                     data-update-plan-url="{{ url_for('frontend.update_plan', planning_authority=planning_authority.id, local_plan=plan.id) }}">
                     {{ plan.title }}
                 </h2>

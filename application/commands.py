@@ -5,6 +5,7 @@ import boto3
 import click
 import sqlalchemy
 
+from pathlib import Path
 from flask.cli import with_appcontext
 
 from application.extensions import db
@@ -58,51 +59,46 @@ def cache_docs_in_s3():
 
 
 @click.command()
+@click.option('--pinscsv')
 @with_appcontext
-def pins_update():
-
-    from pathlib import Path
+def pins_update(pinscsv):
     parent_dir = Path(os.path.dirname(__file__)).parent
-    pins_csv = f'{parent_dir}/data/pins-local-plans-may-2019.csv'
-
+    pins_csv = f'{parent_dir}/data/{pinscsv}'
     print(pins_csv)
-
     with open(pins_csv, 'r') as f:
         csv_reader = csv.DictReader(f)
         for row in csv_reader:
-
             try:
                 council = row['Local Council'].strip()
                 org = _normalise_name(_get_org(council))
                 ons_code = row['LPA ONS Code']
                 planning_auth = PlanningAuthority.query.filter_by(ons_code=ons_code).one()
 
-                for p in planning_auth.local_plans:
-                    dates = [year_and_month(d) for d in
-                             [p.published_date, p.submitted_date, p.sound_date, p.adopted_date] if d is not None]
+                for p in planning_auth.local_plans.filter(LocalPlan.deleted == False).all():
+                    dates = [d for d in [p.published_date, p.submitted_date, p.sound_date, p.adopted_date] if d is not None]
                     updated_dates = []
                     for f in date_fields:
                         if row.get(f):
-                            updated_dates.append(year_and_month(row.get(f)))
+                            updated_dates.append(parse_date(row.get(f)))
 
                     if dates and dates == updated_dates[:len(dates)]:
-                        # if len(updated_dates) > len(dates):
-                        print('candidate for update', dates, '=>', updated_dates, p.title, p.id)
-                        updates_to = date_fields[len(dates):len(updated_dates)]
-                        print('to update', updates_to)
-
-                        for f in date_fields:
-                            update = row[f]
-                            date_field_name = date_keys[f]
-                            update_date = datetime.datetime.strptime(update, '%Y-%m-%d').date()
-                            print('Set', date_field_name, 'to', update_date)
-                            setattr(p, date_field_name, update_date)
-                            db.session.add(p)
-                            db.session.commit()
+                        if len(updated_dates) > len(dates):
+                            print('candidate for update', dates, '=>', updated_dates, p.title, p.id)
+                            updates_to = date_fields[len(dates):len(updated_dates)]
+                            print('to update', updates_to)
+                            for field in updates_to:
+                                update = row[field]
+                                date_field_name = date_keys[field]
+                                update_date = datetime.datetime.strptime(update, '%Y-%m-%d').date()
+                                print('Set', date_field_name, 'to', update_date)
+                                setattr(p, date_field_name, update_date)
+                                db.session.add(p)
+                                db.session.commit()
                         else:
                             print('no updated needed', dates, '==', updated_dates )
                     else:
                         print('no match on dates', dates, '!=', updated_dates, p.title, p.id)
+                        no_matches.add(f'{p.title},{p.id}')
 
             except sqlalchemy.orm.exc.NoResultFound as e:
                 print('No planning authority found for ons code', ons_code, 'normalised name ->',  org)
@@ -228,9 +224,7 @@ def _normalise_name(org):
     return org.strip()
 
 
-def year_and_month(date):
-    if date is not None:
-        if isinstance(date, str):
-            date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
-        return date.replace(day=1)
+def parse_date(date):
+    if date is not None and isinstance(date, str):
+        return datetime.datetime.strptime(date, '%Y-%m-%d').date()
     return date
