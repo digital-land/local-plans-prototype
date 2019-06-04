@@ -319,7 +319,7 @@
                     {% set latest_state = plan.latest_state() %}
                     <div class="current-stage">
                         <span class="stage-tag">{{ latest_state.state }}</span>
-                        <span class="stage-date">{{ latest_state.date | format_month_and_year }}</span>
+                        <span class="stage-date">{{ latest_state.date | format_date }}</span>
                     </div>
                     <details class="govuk-details">
                         <summary class="govuk-details__summary">
@@ -333,7 +333,7 @@
                                 {% for state in plan.ordered_states() -%}
                                     <tr class="govuk-table__row">
                                         <th class="govuk-table__cell" scope="row">{{ state.state }}</th>
-                                        <td class="govuk-table__cell">{{ state.date | format_month_and_year }}</td>
+                                        <td class="govuk-table__cell">{{ state.date | format_date }}</td>
                                     </tr>
 
                                 {%- endfor %}
