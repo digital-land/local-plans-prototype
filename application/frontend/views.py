@@ -346,6 +346,11 @@ def update_plan(planning_authority, local_plan):
                         'original_identifier': original_identifier})
 
 
+@frontend.route('/local-plans/data.csv')
+def data_as_csv_redirect():
+    return redirect(url_for('frontend.data_as_csv'))
+
+
 @frontend.route('/local-plans/local-plan-data.csv')
 def data_as_csv():
     planning_authorities = PlanningAuthority.query.all()
