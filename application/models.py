@@ -14,7 +14,6 @@ def _generate_uuid():
 
 planning_authority_plan = db.Table('planning_authority_plan',
     db.Column('planning_authority_id', db.String(64), db.ForeignKey('planning_authority.id', name='planning_authority_plan_planning_authority_id_fkey'), primary_key=True),
-    db.Column('local_plan_id_old', db.String),
     db.Column('local_plan_id', UUID(as_uuid=True), db.ForeignKey('local_plan.id', name='planning_authority_plan_local_plan_id_fkey'), primary_key=True)
 )
 
@@ -228,10 +227,6 @@ class PlanningAuthority(db.Model):
             'plans': [plan.to_dict(self.id) for plan in self.local_plans]
         }
         return data
-
-
-def _parse_date(datestr):
-    return datetime.strptime(datestr, '%Y-%m-%d')
 
 
 class HousingNumberType(Enum):

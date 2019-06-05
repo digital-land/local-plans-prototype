@@ -7,7 +7,7 @@ from application.filters import (
     format_date,
     format_month_and_year,
     format_date_from_str,
-    format_fact,
+    format_housing_number_type,
     format_percent,
     return_percent,
     format_year,
@@ -98,7 +98,7 @@ def register_filters(app):
     app.add_template_filter(format_date)
     app.add_template_filter(format_month_and_year)
     app.add_template_filter(format_date_from_str)
-    app.add_template_filter(format_fact)
+    app.add_template_filter(format_housing_number_type)
     app.add_template_filter(format_percent)
     app.add_template_filter(return_percent)
     app.add_template_filter(format_year)

@@ -258,7 +258,7 @@
  
                             {% endif -%}
                           </span>
-                          <span class="data-item bold-xsmall govuk-!-font-size-16 govuk-!-font-weight-bold">{{ plan.housing_numbers.housing_number_type | format_fact }}</span>
+                          <span class="data-item bold-xsmall govuk-!-font-size-16 govuk-!-font-weight-bold">{{ plan.housing_numbers.housing_number_type | format_housing_number_type }}</span>
                         </div>
                         <span class="data-source"><a href="{{ plan.housing_numbers.source_document }}" target="_blank">View source document</a></span>
                         {% if reference_note is defined %}
@@ -426,7 +426,7 @@
                   <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                   <strong class="govuk-warning-text__text">
                     <span class="govuk-warning-text__assistive">Warning</span>
-                    Removing the plan means it will not in the exported csv. It can be restored if required.
+                    Removing a plan means it will not be included in the csv export. It can be restored if required.
                   </strong>
                 </div>
 

@@ -22,7 +22,7 @@ from sqlalchemy.orm.attributes import flag_modified
 
 from application.auth.utils import requires_auth, get_current_user
 from application.extensions import db
-from application.filters import format_fact
+from application.filters import format_housing_number_type
 from application.frontend.forms import (
     LocalDevelopmentSchemeURLForm,
     LocalPlanURLForm,
@@ -171,7 +171,7 @@ def update_plan_housing_requirement(planning_authority, plan_id):
 
         data = {
             'housing_number_type': request.form['housing_number_type'],
-            'housing_number_type_display': format_fact(request.form['housing_number_type']),
+            'housing_number_type_display': format_housing_number_type(request.form['housing_number_type']),
             'source_document': request.form['source_document']
         }
 
@@ -346,7 +346,7 @@ def update_plan(planning_authority, local_plan):
                         'original_identifier': original_identifier})
 
 
-@frontend.route('/local-plans/data.csv')
+@frontend.route('/local-plans/local-plan-data.csv')
 def data_as_csv():
     planning_authorities = PlanningAuthority.query.all()
     data = []

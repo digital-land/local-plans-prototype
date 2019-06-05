@@ -30,7 +30,7 @@ def last_state_date(plan):
     return states[-1]
 
 
-def format_fact(name):
+def format_housing_number_type(name):
     if name in HousingNumberType.__members__:
         return HousingNumberType[name].value
     else:
