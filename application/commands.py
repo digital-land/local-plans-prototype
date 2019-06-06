@@ -64,7 +64,14 @@ def cache_docs_in_s3():
 def pins_update(pinscsv):
     parent_dir = Path(os.path.dirname(__file__)).parent
     pins_csv = f'{parent_dir}/data/{pinscsv}'
-    print(pins_csv)
+    print('Loading data from', pins_csv)
+
+    updates = []
+    no_matches = []
+    no_updates = []
+    not_found = []
+    errors = []
+
     with open(pins_csv, 'r') as f:
         csv_reader = csv.DictReader(f)
         for row in csv_reader:
@@ -73,8 +80,9 @@ def pins_update(pinscsv):
                 org = _normalise_name(_get_org(council))
                 ons_code = row['LPA ONS Code']
                 planning_auth = PlanningAuthority.query.filter_by(ons_code=ons_code).one()
+                row_matched = False
 
-                for p in planning_auth.local_plans.filter(LocalPlan.deleted == False).all():
+                for p in planning_auth.local_plans:
                     dates = [d for d in [p.published_date, p.submitted_date, p.sound_date, p.adopted_date] if d is not None]
                     updated_dates = []
                     for f in date_fields:
@@ -83,29 +91,61 @@ def pins_update(pinscsv):
 
                     if dates and dates == updated_dates[:len(dates)]:
                         if len(updated_dates) > len(dates):
-                            print('candidate for update', dates, '=>', updated_dates, p.title, p.id)
                             updates_to = date_fields[len(dates):len(updated_dates)]
-                            print('to update', updates_to)
                             for field in updates_to:
                                 update = row[field]
                                 date_field_name = date_keys[field]
                                 update_date = datetime.datetime.strptime(update, '%Y-%m-%d').date()
-                                print('Set', date_field_name, 'to', update_date)
                                 setattr(p, date_field_name, update_date)
                                 db.session.add(p)
                                 db.session.commit()
+                                updates.append(f"{p.id}, {p.title} set {date_field_name} to {update_date.strftime('%Y-%m-%d')}")
+                                row_matched = True
                         else:
-                            print('no updated needed', dates, '==', updated_dates )
-                    else:
-                        print('no match on dates', dates, '!=', updated_dates, p.title, p.id)
-                        no_matches.add(f'{p.title},{p.id}')
+                            formatted_dates = [d.strftime('%Y-%m-%d') for d in dates]
+                            formatted_updated_dates = [d.strftime('%Y-%m-%d') for d in updated_dates]
+                            no_updates.append(f'{p.id}, {p.title} {formatted_dates} matches {formatted_updated_dates}')
+                            row_matched = True
+
+                if not row_matched:
+                    formatted_updated_dates = [d.strftime('%Y-%m-%d') for d in updated_dates]
+                    no_matches.append(f'Could not find a plan for {org}:{ons_code} matching any of these dates {formatted_updated_dates}')
 
             except sqlalchemy.orm.exc.NoResultFound as e:
-                print('No planning authority found for ons code', ons_code, 'normalised name ->',  org)
+                not_found.append(f'No planning authority found for ons code {ons_code} normalised name -> {org}')
             except Exception as e:
-                print(e)
+                errors.append(f'Error loading {row} - {e}')
 
-    print('Done')
+    print(f'Report from loading {pinscsv}')
+    print('=' * 80)
+    if errors:
+        print('Errors loading the following rows')
+        print('='*80)
+        for item in errors:
+            print(item)
+    if not_found:
+        print('The following planning authorities were not found')
+        print('='*80)
+        for item in not_found:
+            print(item)
+    if no_matches:
+        print('=' * 80)
+        print('Rows in the pins csv that did not match any of our records')
+        print('=' * 80)
+        for item in no_matches:
+            print(item)
+    if no_updates:
+        print('=' * 80)
+        print('The following rows in pins csv matched our current records and did not need updating')
+        print('=' * 80)
+        for item in no_updates:
+            print(item)
+    if updates:
+        print('=' * 80)
+        print('The following rows in pins csv required updates of our records')
+        print('=' * 80)
+        for item in updates:
+            print(item)
 
 
 def hash_md5(file):

@@ -44,35 +44,6 @@ def index():
     return render_template('index.html', current_user=get_current_user())
 
 
-@frontend.route('/planning-authority', methods=['GET', 'POST'])
-def planning_authority_list():
-    planning_authorities = PlanningAuthority.query.order_by(PlanningAuthority.name).all()
-    if request.method == 'POST':
-        return redirect(url_for('frontend.planning_authority', planning_authority=request.form['local-authority-select']))
-    return render_template('planning-authority-list.html', planning_authorities=planning_authorities)
-
-
-@frontend.route('/planning-authority/<planning_authority>')
-def planning_authority(planning_authority):
-    planning_auth = PlanningAuthority.query.get(planning_authority)
-    sorted_plans = planning_auth.sorted_plans()
-
-    if sorted_plans:
-        start_year = planning_auth.get_earliest_plan_start_year()
-        end_year = planning_auth.get_latest_plan_end_year()
-
-        context = {
-            'planning_authority': planning_auth,
-            'first_start_year': round(start_year, -1) - 5,
-            'last_end_year': round(end_year, -1) + 5,
-            'sorted_plans': sorted_plans
-        }
-
-        return render_template('planning-authority.html', **context)
-    else:
-        return render_template('planning-authority.html', nodata=True, planning_authority=planning_auth)
-
-
 @frontend.route('/local-plans', methods=['GET', 'POST'])
 def list_all():
     planning_authorities = PlanningAuthority.query.order_by(PlanningAuthority.name).all()
@@ -116,8 +87,6 @@ def local_plan(planning_authority):
                            housing_number_types=HousingNumberType,
                            form=form,
                            current_user=get_current_user())
-
-
 
 
 @frontend.route('/local-plans/<planning_authority>/<plan_id>/update-plan-period', methods=['POST'])
@@ -287,21 +256,6 @@ def update_plan_data_flags(planning_authority, plan_id):
         resp = {'OK': 400, 'error': 'Plan not found'}
 
     return jsonify(resp)
-
-
-@frontend.route('/local-plans/<planning_authority>/update-scheme-url', methods=['GET', 'POST'])
-@requires_auth
-def update_local_scheme_url(planning_authority):
-    pla = PlanningAuthority.query.get(planning_authority)
-    form = LocalDevelopmentSchemeURLForm(url=pla.local_scheme_url)
-
-    if form.validate_on_submit():
-        pla.local_scheme_url = form.url.data
-        db.session.add(pla)
-        db.session.commit()
-        return redirect(url_for('frontend.local_plan', planning_authority=pla.id))
-
-    return render_template('update-scheme-url.html', planning_authority=pla, form=form)
 
 
 @frontend.route('/local-plans/<planning_authority>/<local_plan>/update-plan-url', methods=['GET', 'POST'])

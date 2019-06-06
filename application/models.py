@@ -186,7 +186,6 @@ class PlanningAuthority(db.Model):
     ons_code = db.Column(db.String(9))
     name = db.Column(db.String(256))
     website = db.Column(db.String())
-    local_scheme_url = db.Column(db.String())
     local_plans = db.relationship('LocalPlan',
                                   secondary=planning_authority_plan,
                                   lazy='dynamic',
