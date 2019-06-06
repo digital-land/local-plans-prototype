@@ -43,7 +43,6 @@ def upgrade():
     sa.Column('ons_code', sa.String(length=9), nullable=True),
     sa.Column('name', sa.String(length=256), nullable=True),
     sa.Column('website', sa.String(), nullable=True),
-    sa.Column('local_scheme_url', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('planning_authority_plan',
