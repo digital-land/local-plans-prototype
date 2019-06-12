@@ -67,7 +67,7 @@ class LocalPlan(db.Model):
             return True
 
     def __hash__(self):
-        id = f'{str(self.plan_start_year)}|{",".join(self.planning_authorities)}'
+        id = f'{str(self.plan_start_year)}|{",".join([pla.id for pla in self.planning_authorities])}'
         return hash(id)
 
     def latest_state(self):
