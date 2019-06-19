@@ -30,7 +30,6 @@ def cache_docs_in_s3():
 
     import tempfile
     import os
-    from sqlalchemy.orm.attributes import flag_modified
     from application.extensions import db
 
     print('Cache plan documents in s3')
@@ -46,7 +45,6 @@ def cache_docs_in_s3():
                     try:
                         file = tempfile.NamedTemporaryFile(delete=False)
                         plan = process_file(file, plan, url, s3, existing_checksum=plan.housing_numbers.get('source_document_checksum'))
-                        flag_modified(plan, 'housing_numbers')
                         db.session.add(plan)
                         db.session.commit()
                         print('Saved', plan.housing_numbers['cached_source_document'], 'with checksum',
@@ -197,7 +195,8 @@ def process_file(file, plan, url, s3, existing_checksum=None):
             s3_url = f'https://s3.eu-west-2.amazonaws.com/{bucket}/{key}'
             plan.housing_numbers['cached_source_document'] = s3_url
             plan.housing_numbers['source_document_checksum'] = checksum.hexdigest()
-            return plan
+
+        return plan
 
     except Exception as e:
         print(e)
