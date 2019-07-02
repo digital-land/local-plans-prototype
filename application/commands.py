@@ -36,9 +36,9 @@ def cache_docs_in_s3():
 
     s3 = boto3.client('s3')
 
-    for plan in db.session.query(LocalPlan).all():
+    for i, plan in enumerate(db.session.query(LocalPlan).filter(LocalPlan.deleted.is_(False)).all()):
         if plan.housing_numbers is not None:
-            if plan.housing_numbers.get('source_document') is not None:
+            if plan.housing_numbers.get('source_document') is not None and plan.housing_numbers.get('source_document_checksum') is None:
                 url = plan.housing_numbers.get('source_document')
                 if url not in  [
                     'https://www.blackpool.gov.uk/Residents/Planning-environment-and-community/Documents/J118003-107575-2016-updated-17-Feb-2016-High-Res.pdf','http://staffsmoorlands-consult.objective.co.uk/file/4884627']:
@@ -47,8 +47,7 @@ def cache_docs_in_s3():
                         plan = process_file(file, plan, url, s3, existing_checksum=plan.housing_numbers.get('source_document_checksum'))
                         db.session.add(plan)
                         db.session.commit()
-                        print('Saved', plan.housing_numbers['cached_source_document'], 'with checksum',
-                            plan.housing_numbers['source_document_checksum'])
+                        print('Saved', plan.housing_numbers['cached_source_document'], 'with checksum', plan.housing_numbers['source_document_checksum'])
                     except Exception as e:
                         print('error fetching', url)
                         print(e)

@@ -51,13 +51,13 @@ def register_errorhandlers(app):
         app.errorhandler(errcode)(render_error)
 
 
-
 def register_blueprints(app):
     from application.frontend.views import frontend
     app.register_blueprint(frontend)
 
     from application.auth.views import auth
     app.register_blueprint(auth)
+
 
 def register_extensions(app):
     from application.extensions import db
