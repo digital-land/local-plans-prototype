@@ -5,6 +5,7 @@ import boto3
 import click
 import sqlalchemy
 
+from sqlalchemy.orm.attributes import flag_modified
 from pathlib import Path
 from flask.cli import with_appcontext
 
@@ -38,21 +39,24 @@ def cache_docs_in_s3():
 
     for i, plan in enumerate(db.session.query(LocalPlan).filter(LocalPlan.deleted.is_(False)).all()):
         if plan.housing_numbers is not None:
-            if plan.housing_numbers.get('source_document') is not None and plan.housing_numbers.get('source_document_checksum') is None:
+            if plan.housing_numbers.get('source_document') is not None:
                 url = plan.housing_numbers.get('source_document')
                 if url not in  [
                     'https://www.blackpool.gov.uk/Residents/Planning-environment-and-community/Documents/J118003-107575-2016-updated-17-Feb-2016-High-Res.pdf','http://staffsmoorlands-consult.objective.co.uk/file/4884627']:
                     try:
                         file = tempfile.NamedTemporaryFile(delete=False)
                         plan = process_file(file, plan, url, s3, existing_checksum=plan.housing_numbers.get('source_document_checksum'))
-                        db.session.add(plan)
-                        db.session.commit()
-                        print('Saved', plan.housing_numbers['cached_source_document'], 'with checksum', plan.housing_numbers['source_document_checksum'])
+                        print(f'Processed {url}')
                     except Exception as e:
-                        print('error fetching', url)
+                        print(f'Error fetching {url}')
                         print(e)
                     finally:
+                        flag_modified(plan, 'housing_numbers')
+                        db.session.add(plan)
+                        db.session.commit()
                         os.remove(file.name)
+
+    print(f'Processed {i} plan documents')
 
 
 @click.command()
@@ -139,7 +143,7 @@ def pins_update(pinscsv):
             print(item)
     if updates:
         print('=' * 80)
-        print('The following rows in pins csv required updates of our records')
+        print('The following rows in pins csv were updated in the prototype db')
         print('=' * 80)
         for item in updates:
             print(item)
@@ -162,11 +166,13 @@ def process_file(file, plan, url, s3, existing_checksum=None):
 
     try:
         print('Fetching', url, 'to', file.name)
-        r = requests.get(url, stream=True)
+        # Add user agent header as it seems many of the sites block 'non browser' user agents
+        r = requests.get(url, stream=True, headers={'User-Agent': 'Mozilla/5.0'})
         r.raise_for_status()
         content_type = r.headers['content-type']
         if content_type not in ['application/pdf', 'binary/octet-stream']:
-            raise Exception('Probably not a pdf')
+            plan.housing_numbers['error_caching_source_document'] = f'Document at {url} might not be a pdf'
+            return plan
         shutil.copyfileobj(r.raw, file)
         file.flush()
         file.close()
@@ -199,6 +205,9 @@ def process_file(file, plan, url, s3, existing_checksum=None):
 
     except Exception as e:
         print(e)
+        plan.housing_numbers['error_caching_source_document'] = str(e)
+
+    return plan
 
 
 def _get_org(org):
