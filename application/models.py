@@ -49,6 +49,7 @@ class LocalPlan(db.Model):
     updated_date = db.Column(db.DateTime(), onupdate=datetime.utcnow)
     deleted = db.Column(db.Boolean, default=False)
     last_updated_by = db.Column(db.String(), onupdate=get_current_user)
+    local_development_framework_number = db.Column(db.Integer)
 
     def __eq__(self, other):
 

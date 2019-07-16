@@ -315,6 +315,11 @@
                 {% endif %}
 
                 <h3 class="govuk-heading-m">PINS data</h3>
+                {% if plan.local_development_framework_number %}
+                    <p class="govuk-!-font-weight-bold">
+                        Local development framework number: {{ plan.local_development_framework_number }}
+                    </p>
+                {% endif %}
                 <div class="pins-stages govuk-!-margin-bottom-8">
                     {% set latest_state = plan.latest_state() %}
                     <div class="current-stage">

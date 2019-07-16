@@ -210,6 +210,34 @@ def process_file(file, plan, url, s3, existing_checksum=None):
     return plan
 
 
+@click.command()
+@click.option('--csvfile')
+@with_appcontext
+def load_ldf_csv(csvfile):
+
+    parent_dir = Path(os.path.dirname(__file__)).parent
+    ldfcsv = f'{parent_dir}/data/{csvfile}'
+    print('Loading data from', ldfcsv)
+
+    with open(ldfcsv, 'r') as f:
+        csv_reader = csv.DictReader(f)
+        for row in csv_reader:
+            try:
+                plan_id = row['plan_id']
+                plan = LocalPlan.query.get(plan_id)
+                ldf_number = int(row['local_development_framework_number'])
+                if plan is not None:
+                    plan.local_development_framework_number = ldf_number
+                    db.session.add(plan)
+                    db.session.commit()
+                    print(f'Set ldf number {ldf_number} for plan {plan_id}')
+            except Exception as e:
+                print(e)
+                print(f'Could not set ldf number for plan id {plan_id}')
+
+    print('Done')
+
+
 def _get_org(org):
     org = org.replace(' - Local plan Review', '')
     org = org.replace(' (inc South Downs NPA)', '')
