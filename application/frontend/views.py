@@ -362,6 +362,8 @@ def data_as_csv():
                 d['found_sound'] = plan.sound_date
                 d['adopted'] = plan.adopted_date
 
+            d['local_development_framework_number'] = plan.local_development_framework_number
+
             data.append(d)
 
     fieldnames = ['planning_authority',
@@ -369,6 +371,7 @@ def data_as_csv():
                   'ons_code',
                   'plan_title',
                   'plan_id',
+                  'local_development_framework_number',
                   'start_year',
                   'end_year',
                   'plan_period_found',
