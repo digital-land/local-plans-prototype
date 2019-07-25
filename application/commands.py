@@ -91,6 +91,8 @@ def pins_update(pinscsv):
                             updated_dates.append(parse_date(row.get(f)))
 
                     if dates and dates == updated_dates[:len(dates)]:
+                        row_matched = True
+
                         if len(updated_dates) > len(dates):
                             updates_to = date_fields[len(dates):len(updated_dates)]
                             for field in updates_to:
@@ -101,12 +103,10 @@ def pins_update(pinscsv):
                                 db.session.add(p)
                                 db.session.commit()
                                 updates.append(f"{p.id}, {p.title} set {date_field_name} to {update_date.strftime('%Y-%m-%d')}")
-                                row_matched = True
                         else:
                             formatted_dates = [d.strftime('%Y-%m-%d') for d in dates]
                             formatted_updated_dates = [d.strftime('%Y-%m-%d') for d in updated_dates]
                             no_updates.append(f'{p.id}, {p.title} {formatted_dates} matches {formatted_updated_dates}')
-                            row_matched = True
 
                 if not row_matched:
                     formatted_updated_dates = [d.strftime('%Y-%m-%d') for d in updated_dates]
