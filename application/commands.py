@@ -41,21 +41,18 @@ def cache_docs_in_s3():
         if plan.housing_numbers is not None:
             if plan.housing_numbers.get('source_document') is not None:
                 url = plan.housing_numbers.get('source_document')
-                if url not in  [
-                    'https://www.blackpool.gov.uk/Residents/Planning-environment-and-community/Documents/J118003-107575-2016-updated-17-Feb-2016-High-Res.pdf','http://staffsmoorlands-consult.objective.co.uk/file/4884627']:
-                    try:
-                        file = tempfile.NamedTemporaryFile(delete=False)
-                        plan = process_file(file, plan, url, s3, existing_checksum=plan.housing_numbers.get('source_document_checksum'))
-                        print(f'Processed {url}')
-                    except Exception as e:
-                        print(f'Error fetching {url}')
-                        print(e)
-                    finally:
-                        flag_modified(plan, 'housing_numbers')
-                        db.session.add(plan)
-                        db.session.commit()
-                        os.remove(file.name)
-
+                try:
+                    file = tempfile.NamedTemporaryFile(delete=False)
+                    plan = process_file(file, plan, url, s3, existing_checksum=plan.housing_numbers.get('source_document_checksum'))
+                    print(f'Processed {url}')
+                except Exception as e:
+                    print(f'Error fetching {url}')
+                    print(e)
+                finally:
+                    flag_modified(plan, 'housing_numbers')
+                    db.session.add(plan)
+                    db.session.commit()
+                    os.remove(file.name)
     print(f'Processed {i} plan documents')
 
 

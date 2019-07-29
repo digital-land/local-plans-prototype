@@ -24,7 +24,6 @@ from application.auth.utils import requires_auth, get_current_user
 from application.extensions import db
 from application.filters import format_housing_number_type
 from application.frontend.forms import (
-    LocalDevelopmentSchemeURLForm,
     LocalPlanURLForm,
     AddPlanForm,
     MakeJointPlanForm
@@ -66,21 +65,10 @@ def local_plan(planning_authority):
         title = form.title.data
         plan = LocalPlan(title=title, plan_start_year=start_year, plan_end_year=end_year)
         plan.planning_authorities.append(pla)
+        plan.local_development_framework_number = form.local_development_framework_number.data
         db.session.add(pla)
         db.session.commit()
         return redirect(url_for('frontend.local_plan', planning_authority=pla.id))
-
-    elif request.method == 'POST':
-        req_data = request.get_json()
-        print(req_data)
-        if 'original_title' in req_data and 'new_title' in req_data:
-            #
-            # TODO save the change to the plan title
-            #
-            resp = {"OK": 200, "original_title": req_data['original_title'], "new_title": req_data['new_title']}
-        else:
-            resp = {"OK": 204}
-        return jsonify(resp)
 
     return render_template('local-plan.html',
                            planning_authority=pla,
@@ -299,6 +287,23 @@ def update_plan(planning_authority, local_plan):
                         'new_identifier': plan_identifier,
                         'original_identifier': original_identifier})
 
+    
+@frontend.route('/local-plans/<planning_authority>/<local_plan>/update-ldf-number', methods=['POST'])
+@requires_auth
+def update_local_development_framework_number(planning_authority, local_plan):
+    pla = PlanningAuthority.query.get(planning_authority)
+    plan = LocalPlan.query.get(local_plan)
+    try:
+        ldf_number = request.form.get('local-development-framework-number')
+        plan.local_development_framework_number = int(ldf_number) if ldf_number else None
+        db.session.add(pla)
+        db.session.commit()
+        flash('Updated local development framework number')
+    except Exception as e:
+        flash('Error updating local development framework number')
+
+    plan_tab = f"{url_for('frontend.local_plan', planning_authority=pla.id)}#plan_tab_{local_plan}"
+    return redirect(plan_tab)
 
 @frontend.route('/local-plans/data.csv')
 def data_as_csv_redirect():

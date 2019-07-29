@@ -315,11 +315,52 @@
                 {% endif %}
 
                 <h3 class="govuk-heading-m">PINS data</h3>
+
+
+                 {% macro renderLdfNumberForm(plan, heading, classes, value) %}
+                    <form action="{{ url_for('frontend.update_local_development_framework_number', planning_authority=planning_authority.id, local_plan=plan.id) }}"
+                          class="govuk-form{{- ' ' + classes if classes }}" method="POST">
+                        <h3 class="govuk-heading-s">{{ heading }}</h3>
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="local-development-framework-number">Local development framework number</label>
+                            <input class="govuk-input" id="local-development-framework-number" name="local-development-framework-number" type="text"
+                                   value="{% if plan.local_development_framework_number %}{{plan.local_development_framework_number}}{% endif %}">
+                        </div>
+
+                        <div class="govuk-form-group">
+                            <button class="govuk-button dlf-secondary-button" type="submit">Save</button>
+                            <button class="cancel-btn">Cancel</button>
+                        </div>
+                    </form>
+                {% endmacro %}
+
                 {% if plan.local_development_framework_number %}
                     <p class="govuk-!-font-weight-bold">
                         Local development framework number: {{ plan.local_development_framework_number }}
                     </p>
+                {% else %}
+                    <p class="govuk-!-font-weight-bold">
+                        Local development framework number not known
+                    </p>
                 {% endif %}
+                {% if current_user %}
+                    <div class="edit-local-development-framework-number">
+
+                        {% if plan.local_development_framework_number %}
+                            <p class="request-for-update govuk-!-margin-bottom-8">Not correct? <a href="#" class="govuk-link">Update
+                                local development framework number</a>.</p>
+                        {% else %}
+                            <p class="request-for-update govuk-!-margin-bottom-8">If you know the development framework number <a href="#" class="govuk-link">please add it</a>.</p>
+                        {% endif %}
+
+
+                        <div class="highlight-box highlight-box--flush highlight-box--minimal govuk-visually-hidden">
+                            {{ renderLdfNumberForm(plan, "Edit local developmment framework number", "govuk-form--contained") }}
+                        </div>
+                    </div>
+                {% endif %}
+
+
                 <div class="pins-stages govuk-!-margin-bottom-8">
                     {% set latest_state = plan.latest_state() %}
                     <div class="current-stage">
@@ -452,36 +493,50 @@
                         {{ form.title.label(class="govuk-label") }}
                         {% if form.title.errors | length > 0 -%}
                             <span class="govuk-error-message">
-                  {% for error in form.title.errors %}
-                      <span>{{ error }}</span>
-                  {% endfor %}
-                  </span>
+                              {% for error in form.title.errors %}
+                                  <span>{{ error }}</span>
+                              {% endfor %}
+                            </span>
                         {%- endif %}
                         {{ form.title(class="govuk-input") }}
                     </div>
 
                     <div class="govuk-form-group">
                         {{ form.start_year.label(class="govuk-label") }}
-                        {% if form.title.errors | length > 0 -%}
+                        {% if form.start_year.errors | length > 0 -%}
                             <span class="govuk-error-message">
-                  {% for error in form.title.errors %}
-                      <span>{{ error }}</span>
-                  {% endfor %}
-                  </span>
+                              {% for error in form.start_year.errors %}
+                                  <span>{{ error }}</span>
+                              {% endfor %}
+                            </span>
                         {%- endif %}
                         {{ form.start_year(class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4", pattern="[0-9]*") }}
                     </div>
+
                     <div class="govuk-form-group">
                         {{ form.end_year.label(class="govuk-label") }}
-                        {% if form.title.errors | length > 0 -%}
+                        {% if form.end_year.errors | length > 0 -%}
                             <span class="govuk-error-message">
-                  {% for error in form.title.errors %}
-                      <span>{{ error }}</span>
-                  {% endfor %}
-                  </span>
+                              {% for error in form.end_year.errors %}
+                                  <span>{{ error }}</span>
+                              {% endfor %}
+                            </span>
                         {%- endif %}
                         {{ form.end_year(class="govuk-input govuk-date-input__year govuk-date-input__input govuk-input--width-4", pattern="[0-9]*") }}
                     </div>
+
+                       <div class="govuk-form-group">
+                        {{ form.local_development_framework_number.label(class="govuk-label") }}
+                            {% if form.local_development_framework_number.errors | length > 0 -%}
+                                <span class="govuk-error-message">
+                                  {% for error in form.local_development_framework_number.errors %}
+                                      <span>{{ error }}</span>
+                                  {% endfor %}
+                                </span>
+                            {%- endif %}
+                        {{ form.local_development_framework_number(class="govuk-input govuk-input--width-6", pattern="[0-9]*") }}
+                    </div>
+
                     <div class="govuk-form-group">
                         <button class="govuk-button dlf-secondary-button">Add plan</button>
                     </div>
@@ -574,51 +629,10 @@
         const urlAddBtns = document.querySelectorAll(".url-add-btn");
         const urlEditBtns = document.querySelectorAll(".url-edit-btn");
         const urlRemoveBtns = document.querySelectorAll(".url-remove-btn");
-
         const addUrlForms = document.querySelectorAll(".add-url-form");
-
-        //const factSaveBtns = document.querySelectorAll(".fact-save-btn");
-        //const factCancelBtns = document.querySelectorAll(".add-fact-form .cancel-btn");
-        //const factTables = document.querySelectorAll(".document-facts__table");
-
         var source = document.getElementById("url-item-template").innerHTML;
         var urlTemplate = Handlebars.compile(source);
 
-        //var factTemplateSource = document.getElementById("fact-row-template").innerHTML;
-        //var factTemplate = Handlebars.compile(factTemplateSource);
-
-        // handle changes to form when user changes select
-        //const addFactForms = document.querySelectorAll(".add-fact-form");
-        //const addFactDetails = Array.prototype.slice.call(addFactForms).map((form) => form.closest("details"));
-        /*
-        addFactDetails.forEach((detail) => {
-            const summary = detail.querySelector("summary");
-            summary.addEventListener('click', (e) => {
-                const form = detail.querySelector("form");
-                const firstFormGroup = form.querySelectorAll(".govuk-form-group")[0];
-                if (!detail.open) {
-                    const option = firstFormGroup.querySelector('option:checked');
-                    indicateIfFactAlreadySet(option, form);
-                }
-            });
-        });
-        */
-
-        /*
-        const addFactSelects = Array.prototype.slice.call(addFactForms).map((form) => form.querySelector(".fact-select-types"));
-        addFactSelects.forEach((select) => {
-            select.addEventListener('change', (e) => {
-                const form = e.target.closest('form');
-                const option = e.target.querySelector('option:checked');
-
-                indicateIfFactAlreadySet(option, form);
-
-                // remove all these classes before adding selected class
-                removeAllClassesFromFactForm(form);
-                form.classList.add(option.dataset.typeClass);
-            });
-        });
-        */
 
 
         const addHousingNumberForms = document.querySelectorAll(".add-housing-requirement-form");
@@ -633,24 +647,6 @@
                 form.classList.add(option.dataset.typeClass);
             });
         });
-
-
-        /*
-        function checkIfFactIsSet(fact_type, form) {
-            const table = form.closest(".document-facts").querySelector(".document-facts__table");
-            const fact = table.querySelectorAll(`[data-fact-type=${fact_type}]`);
-            return (fact.length > 0) ? true : false;
-        }
-
-        function indicateIfFactAlreadySet(option, form) {
-            const formGroup = option.closest(".govuk-form-group");
-
-            formGroup.classList.remove('fact-already-set');
-            if (checkIfFactIsSet(option.value, form)) {
-                formGroup.classList.add('fact-already-set');
-            }
-        }
-        */
 
         const localPlanFactTypeClasses = ["housing-requirement-total", "housing-requirement-range", "housing-requirement-yearly-average", "housing-requirement-yearly-range"];
         const emergingPlanFactTypeClasses = ["publication-date", "proposed-reg-18-date", "proposed-publication-date", "proposed-submission-date", "proposed-main-modifications-date", "proposed-adoption-date"];
@@ -676,113 +672,6 @@
             var max = cleanNumber(fieldset.querySelector("[data-range-type='end']").value);
             return `${min},${max}`;
         }
-
-        /*
-        // save a fact
-        // ===========
-        factSaveBtns.forEach((btn) => {
-            btn.addEventListener('click', factSubmitHandler);
-        });
-
-        function factSubmitHandler(e) {
-            e.preventDefault();
-            const form = e.target.closest("form");
-            const url = form.getAttribute("action");
-
-            // set up data obj to post
-            // serialise all parts of form
-            var fact = {};
-            fact["fact_type"] = form.querySelector("select").value;
-            fact["notes"] = form.querySelector("textarea").value;
-            fact["document_type"] = form.querySelector("input[type='hidden']").value;
-
-            if (form.classList.contains('housing-requirement-total')) {
-                fact["fact"] = cleanNumber(form.querySelector(".plan-housing-req-total input").value);
-            } else if (form.classList.contains('housing-requirement-range')) {
-                fact["fact"] = extractRange(form.querySelector(".housing-req-range-fieldset"));
-            } else if (form.classList.contains('housing-requirement-yearly-average')) {
-                fact["fact"] = cleanNumber(form.querySelector(".housing-req-yearly-average-input input").value);
-            } else if (form.classList.contains('housing-requirement-yearly-range')) {
-                fact["fact"] = extractRange(form.querySelector(".housing-req-yearly-range-fieldset"));
-            } else if (form.classList.contains('publication-date')) {
-                fact["fact"] = extractDate(form.querySelector(".publication-date-input fieldset"));
-            } else if (form.classList.contains('proposed-reg-18-date')) {
-                fact["fact"] = extractDate(form.querySelector(".regulation-18-date-input fieldset"));
-            } else if (form.classList.contains('proposed-publication-date')) {
-                fact["fact"] = extractDate(form.querySelector(".proposed-publication-date-input fieldset"));
-            } else if (form.classList.contains('proposed-submission-date')) {
-                fact["fact"] = extractDate(form.querySelector(".proposed-submission-date-input fieldset"));
-            } else if (form.classList.contains('proposed-main-modifications-date')) {
-                fact["fact"] = extractDate(form.querySelector(".proposed-main-modifications-date-input fieldset"));
-            } else if (form.classList.contains('proposed-adoption-date')) {
-                fact["fact"] = extractDate(form.querySelector(".proposed-adoption-date-input fieldset"));
-            } else {
-                // situation where user has selected other
-                fact["fact"] = "";
-            }
-
-            console.log(fact);
-
-            // perform post
-            postJSONRequest(url, {'fact': fact}, (resp_data) => factAddedCallback(resp_data, form));
-        }
-
-        function factAddedCallback(resp_data, form) {
-            if (resp_data['OK'] === 200) {
-                const factsEl = form.closest(".document-facts");
-                const table = factsEl.querySelector(".document-facts__table tbody");
-
-                const row = createElementWithClasses("tr", "govuk-table__row");
-                row.dataset.factType = resp_data.fact["fact_type"];
-                row.innerHTML = factTemplate(resp_data);
-                table.appendChild(row);
-
-                resetFactForm(form);
-            }
-        }
-
-        // resets the form
-        // - deletes any added content
-        // - sets form to initial display config
-        function resetFactForm(form) {
-            form.reset();
-            const formType = form.querySelector("input[type='hidden']").value;
-
-            // remove all classes
-            removeAllClassesFromFactForm(form);
-            // add initial class relevant to type of fact
-            if (formType === "plan_document") {
-                form.classList.add('plan-name');
-            } else {
-                form.classList.add('publication-date');
-            }
-        }
-
-        // close fact form
-        // ===============
-        factCancelBtns.forEach((btn) => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const form = btn.closest('.govuk-form');
-                resetFactForm(form);
-                const details = btn.closest('.govuk-details');
-                //console.log(details);
-                details.open = false;
-            })
-        });
-
-        // remove fact
-        // ===========
-        factTables.forEach((table) => {
-            table.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (e.target.classList.contains("remove-fact")) {
-                    console.log("Delete button clicked");
-                    removeBtnClickHandler(e, '.govuk-table__row')
-                }
-            });
-        });
-        */
 
         function removeBtnClickHandler(e, selector) {
             e.preventDefault();
@@ -859,24 +748,6 @@
                 removeBtnClickHandler(e, '.url-item')
             });
         }
-
-        /*
-        function cloneAddFactForm(docType, add_fact_url) {
-            let template;
-            if (docType === "plan_document") {
-                template = document.querySelector(".local-plan-details-template");
-            } else {
-                template = document.querySelector(".emerging-plan-details-template");
-            }
-            const detailsElement = template.querySelector('details');
-            const clonedFormContainer = detailsElement.cloneNode(true);
-            // update the action attribute
-            const form = clonedFormContainer.querySelector('form');
-            form.action = add_fact_url;
-
-            return clonedFormContainer;
-        };
-        */
 
 
         // ------------
@@ -1402,6 +1273,24 @@
             editableSection.initialiseForm(extractData, onSuccessfulChange);
         });
 
+
+        // -------------------------
+        // make local development framework number editable
+        // -------------------------
+        const localDevelopmentFrameworkNumber = document.querySelectorAll(".edit-local-development-framework-number");
+        localDevelopmentFrameworkNumber.forEach((item) => {
+            item.querySelector('.request-for-update').addEventListener('click', (e) => {
+                e.preventDefault();
+                const elem = e.currentTarget.parentElement.querySelector('.highlight-box');
+                elem.classList.remove('govuk-visually-hidden');
+            });
+            item.querySelector('.cancel-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                debugger;
+                const elem = e.currentTarget.parentElement.closest('.highlight-box')
+                elem.classList.add('govuk-visually-hidden');
+            });
+        });
 
         // ---------------------------------------------
         // hacky way to refresh page and display message

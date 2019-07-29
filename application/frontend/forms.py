@@ -15,6 +15,7 @@ class AddPlanForm(FlaskForm):
 	start_year = IntegerField('Start year', [validators.DataRequired()])
 	end_year = IntegerField('End year', [validators.DataRequired()])
 	planning_authority = HiddenField()
+	local_development_framework_number = IntegerField('Local development framework number', [validators.DataRequired()])
 
 
 class MakeJointPlanForm(FlaskForm):
