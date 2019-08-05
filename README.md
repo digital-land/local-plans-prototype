@@ -69,3 +69,17 @@ There are tasks to do this.
 Get a list of the available tasks with:
 
     gulp --tasks
+    
+Load updates from PINS
+----------------------
+
+The local plans team will provide monthly updates from PINS as csv files. The
+files should be renamed pins-local-plans-[MON]-2019.csv, committed to the data directory 
+and once deployed the following command should be run on heroku:
+
+```
+flask pins_update --pinscsv pins-local-plans-[MON]-2019.csv
+```
+
+The output should be sent to Local Plans team
+
