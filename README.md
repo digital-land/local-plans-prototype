@@ -83,3 +83,14 @@ flask pins_update --pinscsv pins-local-plans-[MON]-2019.csv
 
 The output should be sent to Local Plans team
 
+Data backups
+------------
+
+[Download a .csv version of the data](https://local-plans-prototype.herokuapp.com/local-plans/local-plan-data.csv).
+
+Heroku backs up the database every night. You can download backups from the Heroku admin interface.
+
+You can also run and download a backup from the terminal:
+
+    heroku pg:backups:capture -a local-plans-prototype
+    heroku pg:backups:download -a local-plans-prototype
