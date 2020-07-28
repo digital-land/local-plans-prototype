@@ -321,11 +321,11 @@ def data_as_csv():
                  'ons_code': planning_authority.ons_code,
                  'name': planning_authority.name,
                  'housing_numbers_found': False,
-                 'plan_period_found': False
+                 'plan_period_found': False,
+                 'plan_title': plan.title
                  }
             if plan.housing_numbers is not None:
                 d['housing_numbers_found'] = True
-                d['plan_title'] = plan.title
                 d['housing_number_type'] = plan.housing_numbers['housing_number_type']
 
                 if plan.is_joint_plan():
