@@ -28,7 +28,7 @@ ijson==2.3
 itsdangerous==1.1.0
 jinja2==2.11.3
 jmespath==0.9.4
-mako==1.0.10
+mako==1.2.2
 markupsafe==1.1.1
 more-itertools==7.0.0 ; python_version > '2.7'
 pluggy==0.11.0
