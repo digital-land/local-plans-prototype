@@ -26,7 +26,7 @@ htmlmin==0.1.12
 idna==2.8
 ijson==2.3
 itsdangerous==1.1.0
-jinja2==2.10.1
+jinja2==2.11.3
 jmespath==0.9.4
 mako==1.0.10
 markupsafe==1.1.1
