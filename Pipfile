@@ -18,7 +18,7 @@ gunicorn = "*"
 pytest = "*"
 flask-wtf = "*"
 boto3 = "*"
-sentry-sdk = {extras = ["flask"],version = "==0.7.7"}
+sentry-sdk = {extras = ["flask"],version = "==1.14.0"}
 flask-sslify = "*"
 ijson = "*"
 geoalchemy2 = "*"
