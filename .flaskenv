@@ -1,4 +1,5 @@
 FLASK_ENV=development
+FLASK_DEBUG=True
 FLASK_CONFIG=config.DevelopmentConfig
 FLASK_APP=application.wsgi:app
 SECRET_KEY=replaceinprod
