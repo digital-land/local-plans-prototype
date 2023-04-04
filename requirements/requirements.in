@@ -1,0 +1,14 @@
+Flask
+Flask-WTF
+gunicorn
+python-dotenv
+Flask-SQLAlchemy
+Flask-Migrate
+psycopg2
+requests
+is-safe-url
+flask-talisman
+sentry-sdk[flask]
+flask-sslify
+authlib
+boto3

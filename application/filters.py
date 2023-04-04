@@ -4,24 +4,24 @@ from application.models import HousingNumberType
 
 def format_year(date_time):
     if date_time is not None:
-        return date_time.strftime('%Y')
-    return ''
+        return date_time.strftime("%Y")
+    return ""
 
 
 def format_date(date_time):
     if date_time is not None:
-        return date_time.strftime('%d %b %Y')
-    return ''
+        return date_time.strftime("%d %b %Y")
+    return ""
 
 
 def format_month_and_year(date_time):
     if date_time is not None:
-        return date_time.strftime('%b %Y')
-    return ''
+        return date_time.strftime("%b %Y")
+    return ""
 
 
 def format_date_from_str(date_str):
-    newdate = datetime.strptime(date_str, '%Y-%m-%d')
+    newdate = datetime.strptime(date_str, "%Y-%m-%d")
     return format_month_and_year(newdate)
 
 
@@ -38,7 +38,7 @@ def format_housing_number_type(name):
 
 
 def format_percent(value):
-    return f'{value}%'
+    return f"{value}%"
 
 
 def return_percent(val1, denominator, precision=1):
@@ -56,10 +56,10 @@ def big_number(value):
 
 def format_housing_number(number):
     if number is None:
-        return 'No number set for this planning authority'
+        return "No number set for this planning authority"
     if isinstance(number, int):
         return number
     elif isinstance(number, dict):
-        return number['number']
+        return number["number"]
     else:
-        return 'Could not find number for this planning authority'
+        return "Could not find number for this planning authority"

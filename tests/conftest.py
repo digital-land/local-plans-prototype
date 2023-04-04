@@ -6,11 +6,11 @@ from application.extensions import db as _db
 from application.models import LocalPlan, PlanningAuthority
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def app(request):
     """Session-wide test `Flask` application."""
 
-    app = create_app('config.TestConfig')
+    app = create_app("config.TestConfig")
 
     # Establish an application context before running the tests.
     ctx = app.app_context()
@@ -23,12 +23,12 @@ def app(request):
     return app
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def client(app):
     return app.test_client()
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def db(app, request):
     """Session-wide test database."""
 
@@ -42,7 +42,7 @@ def db(app, request):
     return _db
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def session(db, request):
     """Creates a new database session for a test."""
     connection = db.engine.connect()
