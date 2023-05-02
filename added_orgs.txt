@@ -1,0 +1,125 @@
+adding new organistions
+development-corporation:Q20648596 not found - adding now
+development-corporation:Q4916714 not found - adding now
+development-corporation:Q6670544 not found - adding now
+development-corporation:Q6670837 not found - adding now
+development-corporation:Q72456968 not found - adding now
+development-corporation:Q72463795 not found - adding now
+development-corporation:Q7799380 not found - adding now
+development-corporation:Q7860503 not found - adding now
+development-corporation:Q7986087 not found - adding now
+government-organisation:D1342 not found - adding now
+government-organisation:D303 not found - adding now
+government-organisation:D38 not found - adding now
+government-organisation:D4 not found - adding now
+government-organisation:D69 not found - adding now
+government-organisation:D7 not found - adding now
+government-organisation:EA39 not found - adding now
+government-organisation:EA87 not found - adding now
+government-organisation:PB1164 not found - adding now
+government-organisation:PB1204 not found - adding now
+government-organisation:PB1218 not found - adding now
+government-organisation:PB1232 not found - adding now
+government-organisation:PB160 not found - adding now
+government-organisation:PB202 not found - adding now
+government-organisation:PB207 not found - adding now
+government-organisation:PB372 not found - adding now
+government-organisation:PB373 not found - adding now
+government-organisation:PB375 not found - adding now
+government-organisation:PC163 not found - adding now
+local-authority-eng:BUC not found - adding now
+local-authority-eng:CAM not found - adding now
+local-authority-eng:CMA not found - adding now
+local-authority-eng:CPCA not found - adding now
+local-authority-eng:CUA not found - adding now
+local-authority-eng:DBY not found - adding now
+local-authority-eng:DEV not found - adding now
+local-authority-eng:DOR not found - adding now
+local-authority-eng:ESS not found - adding now
+local-authority-eng:ESX not found - adding now
+local-authority-eng:GLA not found - adding now
+local-authority-eng:GLS not found - adding now
+local-authority-eng:GMCA not found - adding now
+local-authority-eng:HAM not found - adding now
+local-authority-eng:HRT not found - adding now
+local-authority-eng:KEN not found - adding now
+local-authority-eng:LAN not found - adding now
+local-authority-eng:LCR not found - adding now
+local-authority-eng:LEC not found - adding now
+local-authority-eng:LIN not found - adding now
+local-authority-eng:NECA not found - adding now
+local-authority-eng:NFK not found - adding now
+local-authority-eng:NTCA not found - adding now
+local-authority-eng:NTH not found - adding now
+local-authority-eng:NTT not found - adding now
+local-authority-eng:NYK not found - adding now
+local-authority-eng:NYUA not found - adding now
+local-authority-eng:OXF not found - adding now
+local-authority-eng:SCR not found - adding now
+local-authority-eng:SFK not found - adding now
+local-authority-eng:SOM not found - adding now
+local-authority-eng:SRY not found - adding now
+local-authority-eng:STS not found - adding now
+local-authority-eng:SUA not found - adding now
+local-authority-eng:TVCA not found - adding now
+local-authority-eng:WAR not found - adding now
+local-authority-eng:WECA not found - adding now
+local-authority-eng:WFUA not found - adding now
+local-authority-eng:WMCA not found - adding now
+local-authority-eng:WOR not found - adding now
+local-authority-eng:WSX not found - adding now
+local-authority-eng:WYCA not found - adding now
+national-park-authority:Q20198711 not found - adding now
+national-park-authority:Q27159704 not found - adding now
+national-park-authority:Q27178932 not found - adding now
+national-park-authority:Q4972284 not found - adding now
+national-park-authority:Q5225646 not found - adding now
+national-park-authority:Q72617158 not found - adding now
+national-park-authority:Q72617669 not found - adding now
+national-park-authority:Q72617784 not found - adding now
+national-park-authority:Q72617890 not found - adding now
+national-park-authority:Q72617988 not found - adding now
+nonprofit:Q180 not found - adding now
+public-authority:Q5533909 not found - adding now
+regional-park-authority:Q6515400 not found - adding now
+transport-authority:Q25171369 not found - adding now
+transport-authority:Q6820591 not found - adding now
+transport-authority:Q682520 not found - adding now
+transport-authority:Q7569004 not found - adding now
+transport-authority:Q7834921 not found - adding now
+transport-authority:Q7860508 not found - adding now
+transport-authority:Q7985947 not found - adding now
+transport-authority:Q7987043 not found - adding now
+waste-authority:Q20711950 not found - adding now
+waste-authority:Q20713477 not found - adding now
+waste-authority:Q21921612 not found - adding now
+waste-authority:Q21935501 not found - adding now
+waste-authority:Q5600652 not found - adding now
+government-organisation:OT546 updating to national-park-authority:Q20198711
+moving plan <LocalPlan 6a2d40d5-1f4c-4d69-a634-2be64dc0bae9> to org <PlanningAuthority national-park-authority:Q20198711>
+government-organisation:OT220 updating to national-park-authority:Q27159704
+moving plan <LocalPlan fb4d0cb4-4018-47cb-8afa-c8b261516f24> to org <PlanningAuthority national-park-authority:Q27159704>
+moving plan <LocalPlan b1dc0df6-bbe8-4f4e-889c-1046e3b7d114> to org <PlanningAuthority national-park-authority:Q27159704>
+government-organisation:OT547 updating to national-park-authority:Q27178932
+moving plan <LocalPlan 39c75fee-757e-476f-ba12-a65335a27bf4> to org <PlanningAuthority national-park-authority:Q27178932>
+moving plan <LocalPlan ea1e8cf6-0017-412a-bacf-3816a3f8df5d> to org <PlanningAuthority national-park-authority:Q27178932>
+government-organisation:OT216 updating to national-park-authority:Q4972284
+moving plan <LocalPlan 86544a3c-9ad0-4ec6-8ce6-86b511ae169a> to org <PlanningAuthority national-park-authority:Q4972284>
+moving plan <LocalPlan 7dd9e611-a2f6-4904-9b54-ddf987d87945> to org <PlanningAuthority national-park-authority:Q4972284>
+government-organisation:OT217 updating to national-park-authority:Q5225646
+moving plan <LocalPlan a37f5aa7-26df-4435-9f54-b4b15ff03b9d> to org <PlanningAuthority national-park-authority:Q5225646>
+moving plan <LocalPlan 208f8df8-5784-4ea4-8521-a2d58603b234> to org <PlanningAuthority national-park-authority:Q5225646>
+government-organisation:OT222 updating to national-park-authority:Q72617158
+moving plan <LocalPlan bf23264b-3c0d-4ce3-9d6a-f821312cbbb1> to org <PlanningAuthority national-park-authority:Q72617158>
+moving plan <LocalPlan 9a026ec2-d842-4206-8366-5f2255ce11a6> to org <PlanningAuthority national-park-authority:Q72617158>
+government-organisation:OT223 updating to national-park-authority:Q72617669
+moving plan <LocalPlan 0f521478-8e31-4bd4-b667-7370f2e7a34d> to org <PlanningAuthority national-park-authority:Q72617669>
+moving plan <LocalPlan ec74225d-d0a7-49c3-bf6b-889beb430bef> to org <PlanningAuthority national-park-authority:Q72617669>
+government-organisation:OT219 updating to national-park-authority:Q72617784
+moving plan <LocalPlan fa593a9c-6a8a-401b-b688-cb7aafdd3182> to org <PlanningAuthority national-park-authority:Q72617784>
+government-organisation:OT543 updating to national-park-authority:Q72617890
+moving plan <LocalPlan 78180781-4d4a-46c6-a525-b55512385655> to org <PlanningAuthority national-park-authority:Q72617890>
+moving plan <LocalPlan df77835d-91df-4acc-a426-841dd31f22fd> to org <PlanningAuthority national-park-authority:Q72617890>
+government-organisation:OT545 updating to national-park-authority:Q72617988
+moving plan <LocalPlan 2ed5ae6b-8b7a-4a54-8d9f-89af587810fd> to org <PlanningAuthority national-park-authority:Q72617988>
+done

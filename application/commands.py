@@ -3,15 +3,17 @@ import os
 import datetime
 import boto3
 import click
+import requests
 import sqlalchemy
 
 from sqlalchemy.orm.attributes import flag_modified
+from sqlalchemy import update
 from pathlib import Path
 from flask.cli import with_appcontext
 
 from application.extensions import db
 
-from application.models import PlanningAuthority, LocalPlan
+from application.models import PlanningAuthority, LocalPlan, planning_authority_plan
 
 
 date_fields = ["Published", "Submitted", "Found Sound", "Adopted"]
@@ -344,3 +346,67 @@ def parse_date(date):
     if date is not None and isinstance(date, str):
         return datetime.datetime.strptime(date, "%Y-%m-%d").date()
     return date
+
+
+@click.command()
+@with_appcontext
+def add_orgs():
+    print("adding new organistions")
+    planning_authorties = PlanningAuthority.query.all()
+
+    base_url = "https://raw.githubusercontent.com/digital-land"
+    orgs_url = f"{base_url}/organisation-dataset/main/collection/organisation.csv"
+
+    orgs = {}
+    with requests.get(orgs_url, stream=True) as r:
+        lines = (line.decode("utf-8") for line in r.iter_lines())
+        for row in csv.DictReader(lines):
+            orgs[row["organisation"]] = row
+
+    for org, data in orgs.items():
+        pa = PlanningAuthority.query.get(org)
+        if pa is None:
+            print(f"{org} not found - adding now")
+            pa = PlanningAuthority(id=org)
+            ons_code = data.get("statistical-geography", None)
+            name = data.get("name", None)
+            if name is not None:
+                pa.name = name
+            if ons_code:
+                pa.ons_code = ons_code
+            website = data.get("website", None)
+            if website:
+                pa.website = website
+
+            govt_org = data.get("government-organisation")
+            if govt_org:
+                pa.government_organisation = data.get("government-organisation", None)
+
+            db.session.add(pa)
+            db.session.commit()
+
+    govt_orgs = PlanningAuthority.query.filter(
+        PlanningAuthority.government_organisation != None
+    ).all()
+
+    for g in govt_orgs:
+        same_org = PlanningAuthority.query.filter(
+            sqlalchemy.and_(
+                PlanningAuthority.id.like(f"%:{g.government_organisation}"),
+                PlanningAuthority.government_organisation.is_(None),
+            )
+        ).all()
+        for o in same_org:
+            print(f"{o.id} updating to {g.id}")
+            for p in o.local_plans:
+                print(f"moving plan {p} to org {g}")
+                stmt = (
+                    update(planning_authority_plan)
+                    .where(planning_authority_plan.c.planning_authority_id == o.id)
+                    .values(planning_authority_id=g.id)
+                )
+                db.session.execute(stmt)
+            db.session.delete(o)
+            db.session.commit()
+
+    print("done")

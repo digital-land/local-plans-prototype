@@ -74,7 +74,7 @@ markupsafe==2.1.2
     #   mako
     #   werkzeug
     #   wtforms
-psycopg2==2.9.5
+psycopg2-binary==2.9.6
     # via -r requirements/requirements.in
 pycparser==2.21
     # via cffi

@@ -56,7 +56,15 @@ def list_all():
 
 @frontend.route("/local-plans/<planning_authority>", methods=["GET", "POST"])
 def local_plan(planning_authority):
-    pla = PlanningAuthority.query.get(planning_authority)
+    if planning_authority.startswith("government-organisation:"):
+        govt_org = planning_authority.split(":")[1]
+        pla = PlanningAuthority.query.filter(
+            PlanningAuthority.government_organisation == govt_org
+        ).one_or_none()
+        if pla is not None and pla.id != planning_authority:
+            return redirect(url_for("frontend.local_plan", planning_authority=pla.id))
+    else:
+        pla = PlanningAuthority.query.get(planning_authority)
     if pla is None:
         abort(404)
     form = AddPlanForm(planning_authority=pla.code())

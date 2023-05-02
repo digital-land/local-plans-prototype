@@ -4,7 +4,7 @@ gunicorn
 python-dotenv
 Flask-SQLAlchemy
 Flask-Migrate
-psycopg2
+psycopg2-binary
 requests
 is-safe-url
 flask-talisman

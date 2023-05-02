@@ -93,11 +93,17 @@ def register_extensions(app):
 
 
 def register_commands(app):
-    from application.commands import cache_docs_in_s3, pins_update, load_ldf_csv
+    from application.commands import (
+        cache_docs_in_s3,
+        pins_update,
+        load_ldf_csv,
+        add_orgs,
+    )
 
     app.cli.add_command(cache_docs_in_s3, name="cache_docs_in_s3")
     app.cli.add_command(pins_update, name="pins_update")
     app.cli.add_command(load_ldf_csv, name="ldfcsv")
+    app.cli.add_command(add_orgs, name="add_orgs")
 
 
 def register_filters(app):
