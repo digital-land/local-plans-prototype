@@ -364,49 +364,56 @@ def add_orgs():
             orgs[row["organisation"]] = row
 
     for org, data in orgs.items():
-        pa = PlanningAuthority.query.get(org)
-        if pa is None:
-            print(f"{org} not found - adding now")
-            pa = PlanningAuthority(id=org)
-            ons_code = data.get("statistical-geography", None)
-            name = data.get("name", None)
-            if name is not None:
-                pa.name = name
-            if ons_code:
-                pa.ons_code = ons_code
-            website = data.get("website", None)
-            if website:
-                pa.website = website
+        prefix = org.split(":")[0]
+        if prefix in [
+            "local-authority-eng",
+            "national-park-authority",
+            "development-corporation",
+        ]:
+            pa = PlanningAuthority.query.get(org)
+            if pa is None:
+                print(f"{org} not found - adding now")
+                pa = PlanningAuthority(id=org)
+                ons_code = data.get("statistical-geography", None)
+                name = data.get("name", None)
+                if name is not None:
+                    pa.name = name
+                if ons_code:
+                    pa.ons_code = ons_code
+                website = data.get("website", None)
+                if website:
+                    pa.website = website
 
-            govt_org = data.get("government-organisation")
-            if govt_org:
-                pa.government_organisation = data.get("government-organisation", None)
+                govt_org = data.get("government-organisation")
+                if govt_org:
+                    pa.government_organisation = data.get(
+                        "government-organisation", None
+                    )
 
-            db.session.add(pa)
-            db.session.commit()
+                db.session.add(pa)
+                db.session.commit()
 
-    govt_orgs = PlanningAuthority.query.filter(
-        PlanningAuthority.government_organisation != None
-    ).all()
-
-    for g in govt_orgs:
-        same_org = PlanningAuthority.query.filter(
-            sqlalchemy.and_(
-                PlanningAuthority.id.like(f"%:{g.government_organisation}"),
-                PlanningAuthority.government_organisation.is_(None),
-            )
+        govt_orgs = PlanningAuthority.query.filter(
+            PlanningAuthority.government_organisation != None
         ).all()
-        for o in same_org:
-            print(f"{o.id} updating to {g.id}")
-            for p in o.local_plans:
-                print(f"moving plan {p} to org {g}")
-                stmt = (
-                    update(planning_authority_plan)
-                    .where(planning_authority_plan.c.planning_authority_id == o.id)
-                    .values(planning_authority_id=g.id)
-                )
-                db.session.execute(stmt)
-            db.session.delete(o)
-            db.session.commit()
 
+        for g in govt_orgs:
+            same_org = PlanningAuthority.query.filter(
+                sqlalchemy.and_(
+                    PlanningAuthority.id.like(f"%:{g.government_organisation}"),
+                    PlanningAuthority.government_organisation.is_(None),
+                )
+            ).all()
+            for o in same_org:
+                print(f"{o.id} updating to {g.id}")
+                for p in o.local_plans:
+                    print(f"moving plan {p} to org {g}")
+                    stmt = (
+                        update(planning_authority_plan)
+                        .where(planning_authority_plan.c.planning_authority_id == o.id)
+                        .values(planning_authority_id=g.id)
+                    )
+                    db.session.execute(stmt)
+                db.session.delete(o)
+                db.session.commit()
     print("done")
