@@ -52,7 +52,7 @@ greenlet==2.0.2
     # via sqlalchemy
 gunicorn==20.1.0
     # via -r requirements.in
-idna==3.4
+idna==3.7
     # via requests
 is-safe-url==1.0
     # via -r requirements.in
