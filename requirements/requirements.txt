@@ -50,7 +50,7 @@ flask-wtf==1.1.1
     # via -r requirements.in
 greenlet==2.0.2
     # via sqlalchemy
-gunicorn==20.1.0
+gunicorn==23.0.0
     # via -r requirements.in
 idna==3.4
     # via requests
@@ -74,6 +74,8 @@ markupsafe==2.1.2
     #   mako
     #   werkzeug
     #   wtforms
+packaging==24.2
+    # via gunicorn
 psycopg2-binary==2.9.6
     # via -r requirements.in
 pycparser==2.21
@@ -107,6 +109,3 @@ werkzeug==2.2.3
     # via flask
 wtforms==3.0.1
     # via flask-wtf
-
-# The following packages are considered to be unsafe in a requirements file:
-# setuptools
