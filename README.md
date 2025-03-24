@@ -69,6 +69,17 @@ There are tasks to do this.
 Get a list of the available tasks with:
 
     gulp --tasks
+
+
+
+User management and authenication
+----------------------
+
+Auth0 user for user managment and authenication
+
+If you have a Heroku account and are a member of the Digial Land Heroku organisation you can access the dashboard,
+click on Auth0 add-on and manager users [here](https://dashboard.heroku.com/apps/local-plans-prototype/resources)
+
     
 Load updates from PINS
 ----------------------
