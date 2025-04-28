@@ -16,7 +16,7 @@ botocore==1.29.105
     # via
     #   boto3
     #   s3transfer
-certifi==2022.12.7
+certifi==2024.7.4
     # via
     #   requests
     #   sentry-sdk
