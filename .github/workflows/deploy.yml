@@ -27,10 +27,11 @@ jobs:
             return environments.map(e => e.name)
 
   deploy:
+    needs: detect-environments
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        environment: [development, staging, production]
+        environment: ${{ fromJSON(needs.detect-environments.outputs.environments) }}
     environment: ${{ matrix.environment }}
     env:
       DOCKER_REPO: ${{ secrets.DEPLOY_DOCKER_REPOSITORY }}
@@ -51,14 +52,12 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.DEPLOY_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.DEPLOY_AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          aws-region: eu-west-2
 
-      - uses: aws-actions/amazon-ecr-login@v2
-        with:
-          registry-type: public
+      - uses: aws-actions/amazon-ecr-login@v2.1.5
 
       - run: docker pull $DOCKER_REPO:main || echo "no current latest image"
-      
+
       - run: docker build --build-arg DEPLOY_TIME="$(date +%Y-%m-%dT%H:%M:%S)" -t $DOCKER_REPO:${{ steps.vars.outputs.sha_short }} .
 
       - run: docker tag $DOCKER_REPO:${{ steps.vars.outputs.sha_short }} $DOCKER_REPO:main
