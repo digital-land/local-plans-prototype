@@ -10,12 +10,15 @@ ENV FLASK_RUN_PORT=5050
 ENV FLASK_DEBUG=1
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc g++ git libproj-dev proj-bin gdal-bin wget gnupg2  \
+    ca-certificates \
+    gcc g++ git libproj-dev proj-bin gdal-bin \
+    wget gnupg \
     && rm -rf /var/lib/apt/lists/*
 
 
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt bookworm-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
-    wget -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+RUN mkdir -p /etc/apt/keyrings && \
+    wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor > /etc/apt/keyrings/postgresql.gpg && \
+    echo "deb [signed-by=/etc/apt/keyrings/postgresql.gpg] http://apt.postgresql.org/pub/repos/apt bookworm-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 
 RUN apt-get update && \
     apt-get install -y postgresql-client-16 && \
