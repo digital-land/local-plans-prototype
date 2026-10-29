@@ -1,31 +1,26 @@
 # syntax=docker/dockerfile:1
-FROM python:3.10-slim
+FROM python:3.13-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    FLASK_APP=application.wsgi:app \
+    FLASK_CONFIG=config.Config \
+    PORT=5050
+
 WORKDIR /code
 
-ENV FLASK_CONFIG=application.config.DevelopmentConfig
-ENV FLASK_APP=application.wsgi:app
+# Install dependencies first so this layer is cached between code changes
+COPY requirements/requirements.txt requirements/requirements.txt
+RUN pip install -r requirements/requirements.txt \
+    && pip uninstall -y pip
 
-ENV FLASK_RUN_HOST=0.0.0.0
-ENV FLASK_RUN_PORT=5050
-ENV FLASK_DEBUG=1
+RUN useradd --system --uid 10001 --no-create-home app
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates \
-    gcc g++ git libproj-dev proj-bin gdal-bin \
-    wget gnupg \
-    && rm -rf /var/lib/apt/lists/*
+COPY --chown=root:root . .
 
-
-RUN mkdir -p /etc/apt/keyrings && \
-    wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor > /etc/apt/keyrings/postgresql.gpg && \
-    echo "deb [signed-by=/etc/apt/keyrings/postgresql.gpg] http://apt.postgresql.org/pub/repos/apt bookworm-pgdg main" > /etc/apt/sources.list.d/pgdg.list
-
-RUN apt-get update && \
-    apt-get install -y postgresql-client-16 && \
-    rm -rf /var/lib/apt/lists/*
-COPY . .
-RUN pip install -r requirements/requirements.txt
-RUN pip install -r requirements/dev-requirements.txt
+USER app
 EXPOSE 5050
 
 ENTRYPOINT ["./docker-entrypoint.sh"]

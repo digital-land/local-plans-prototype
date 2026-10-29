@@ -2,8 +2,8 @@
 
 Requirements
 
-- [Python 3](https://www.python.org/)
-- [Node](https://nodejs.org/en/) and [Npm](https://www.npmjs.com/)
+- [Python 3.13](https://www.python.org/)
+- [Node](https://nodejs.org/en/) LTS (version in `.nvmrc`) and [Npm](https://www.npmjs.com/)
 - Postgres
 
 Getting started
@@ -13,13 +13,13 @@ Install front end build tool (gulp)
 
     npm install
 
-Make a virtualenv for the project and install python dependencies
+Make a virtualenv for the project (the Python version is in `.python-version`) and install python dependencies
 
-    pip install -r requirements.txt
+    pip install -r requirements/requirements.txt -r requirements/dev-requirements.txt
 
 Generate CSS
 
-    gulp scss
+    npm run scss
 
 Run flask server
 
@@ -68,40 +68,74 @@ There are tasks to do this.
 
 Get a list of the available tasks with:
 
-    gulp --tasks
+    npx gulp --tasks
+
+Lint the JavaScript (ESLint) and SCSS (stylelint) sources with:
+
+    npm run lint
+
+Tests
+-----
+
+Acceptance tests for the main user journeys are in `tests/acceptance`, and the journeys
+they cover are described in [docs/user-journeys](docs/user-journeys/README.md). They drive
+a real browser with Playwright, against a Postgres test database:
+
+    createdb local_plans_test
+    playwright install chromium
+    make test-acceptance
+
+Set `TEST_DATABASE_URL` to use a database other than `postgresql://localhost/local_plans_test`.
+They run in GitHub Actions (`.github/workflows/test.yml`) on every push to a branch other
+than `master`.
+
+Docker
+------
+
+The image runs the app with gunicorn using `config.Config`, which holds the safe
+defaults for deployed environments (debug off, secure cookies). `DevelopmentConfig` and
+`TestConfig` override these for local development and CI.
+
+It needs `DATABASE_URL` and `SECRET_KEY` set, and serves on port 5050 (override with `PORT`).
+HTTPS is enforced by CloudFront, so the app does not redirect HTTP to HTTPS unless
+`HTTPS_REDIRECT=true` is set. This keeps load balancer health checks on `/` working.
+
+    docker build -t local-plans-prototype .
+    docker run -p 5050:5050 -e DATABASE_URL=... -e SECRET_KEY=... local-plans-prototype
 
 
 
-User management and authenication
-----------------------
+User management and authentication
+----------------------------------
 
-Auth0 user for user managment and authenication
+Users and logins are managed in [Auth0](https://auth0.com/). To add or remove users,
+use the Auth0 dashboard for the tenant set in `AUTH0_DOMAIN`. The app needs
+`AUTH0_CLIENT_ID`, `AUTH0_CLIENT_SECRET`, `AUTH0_DOMAIN` and `AUTH0_CALLBACK_URL` set,
+and only requires a login when `AUTHENTICATION_ON=true`.
 
-If you have a Heroku account and are a member of the Digial Land Heroku organisation you can access the dashboard,
-click on Auth0 add-on and manager users [here](https://dashboard.heroku.com/apps/local-plans-prototype/resources)
-
-    
 Load updates from PINS
 ----------------------
 
-The local plans team will provide monthly updates from PINS as csv files. The
-files should be renamed pins-local-plans-[MON]-2019.csv, committed to the data directory 
-and once deployed the following command should be run on heroku:
+PINS updates were provided as monthly csv files until October 2019. The command to
+load one is still available. Put the file in the `data` directory and run it locally
+with `DATABASE_URL` pointing at the database to update:
 
 ```
-flask pins_update --pinscsv pins-local-plans-[MON]-2019.csv
+flask pins_update --pinscsv pins-local-plans-[MON]-[YEAR].csv
 ```
 
-The output should be sent to Local Plans team
+Deployment
+----------
 
-Data backups
-------------
+The app is deployed to AWS ECS by the GitHub Actions workflow in `.github/workflows/deploy.yml`,
+which builds the Docker image and pushes it to ECR.
 
-[Download a .csv version of the data](https://local-plans-prototype.herokuapp.com/local-plans/local-plan-data.csv).
+Data
+----
 
-Heroku backs up the database every night. You can download backups from the Heroku admin interface.
+A csv of all the data can be downloaded from `/local-plans/local-plan-data.csv` on the live site.
 
-You can also run and download a backup from the terminal:
+`data/database_backup.dump` is the last backup taken from the previous Heroku hosting.
+Restore it into a local database with:
 
-    heroku pg:backups:capture -a local-plans-prototype
-    heroku pg:backups:download -a local-plans-prototype
+    pg_restore --no-owner --no-acl -d local_plans data/database_backup.dump

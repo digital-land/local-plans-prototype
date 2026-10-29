@@ -4,3 +4,5 @@ flake8
 pre-commit
 black
 isort
+pytest-playwright
+pytest-flask

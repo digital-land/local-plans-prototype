@@ -8,12 +8,22 @@ def _to_boolean(val):
     return False
 
 
+# Config holds the safe defaults for deployed environments.
+# DevelopmentConfig and TestConfig override them for local and CI use.
 class Config:
+    DEBUG = False
+    PREFERRED_URL_SCHEME = "https"
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = "Lax"
+    # Off by default as HTTPS is enforced by CloudFront, and the load balancer
+    # forwards plain HTTP, including health checks, which must not be redirected
+    HTTPS_REDIRECT = _to_boolean(os.environ.get("HTTPS_REDIRECT"))
     CONFIG_ROOT = os.path.abspath(os.path.dirname(__file__))
     PROJECT_ROOT = os.path.abspath(os.path.join(CONFIG_ROOT, os.pardir))
     SECRET_KEY = os.getenv("SECRET_KEY")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    DATABASE_URL = os.getenv("DATABASE_URL")
+    DATABASE_URL = os.getenv("DATABASE_URL", "")
     if DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://")
     SQLALCHEMY_DATABASE_URI = DATABASE_URL
@@ -34,9 +44,18 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    WTF_CSRF_ENABLED = True
+    # Local development runs over plain HTTP
+    PREFERRED_URL_SCHEME = "http"
+    SESSION_COOKIE_SECURE = False
 
 
 class TestConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = "postgresql://localhost/local_plans_test"
+    PREFERRED_URL_SCHEME = "http"
+    SESSION_COOKIE_SECURE = False
+    SECRET_KEY = os.getenv("SECRET_KEY", "test-secret-key")
+    SQLALCHEMY_DATABASE_URI = os.getenv(
+        "TEST_DATABASE_URL", "postgresql://localhost/local_plans_test"
+    )
+    # Acceptance tests check that editing requires signing in
+    AUTHENTICATION_ON = True

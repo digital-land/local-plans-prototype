@@ -4,10 +4,8 @@ gunicorn
 python-dotenv
 Flask-SQLAlchemy
 Flask-Migrate
-psycopg2-binary
+psycopg[binary]
 requests
-is-safe-url
-flask-talisman
 sentry-sdk[flask]
 flask-sslify
 authlib

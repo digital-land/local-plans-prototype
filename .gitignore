@@ -72,8 +72,6 @@ target/
 # Jupyter Notebook
 .ipynb_checkpoints
 
-# pyenv
-.python-version
 
 # celery beat schedule file
 celerybeat-schedule
@@ -112,3 +110,6 @@ node_modules/
 .vscode
 
 /backups
+
+# playwright traces from failed tests
+test-results/

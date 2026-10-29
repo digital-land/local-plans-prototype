@@ -32,6 +32,15 @@ def create_app(config_filename):
 
     app = Flask(__name__)
     app.config.from_object(config_filename)
+    if not app.config.get("SECRET_KEY"):
+        raise RuntimeError("SECRET_KEY must be set")
+
+    # Trust X-Forwarded-For/Proto from the load balancer in front of us
+    # so the client IP and scheme are detected correctly.
+    from werkzeug.middleware.proxy_fix import ProxyFix
+
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)
+
     register_errorhandlers(app)
     register_blueprints(app)
     register_extensions(app)
@@ -71,9 +80,11 @@ def register_extensions(app):
 
     migrate.init_app(app=app)
 
-    from flask_sslify import SSLify
+    # Off by default, see HTTPS_REDIRECT in config
+    if app.config.get("HTTPS_REDIRECT", False):
+        from flask_sslify import SSLify
 
-    sslify = SSLify(app)
+        SSLify(app)
 
     from application.extensions import OAuth
 

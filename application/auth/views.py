@@ -1,6 +1,6 @@
 import json
 
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse
 from application.auth.utils import requires_auth
 
 from flask import (
@@ -15,6 +15,14 @@ from flask import (
 
 
 auth = Blueprint("auth", __name__, template_folder="templates", url_prefix="/auth")
+
+
+def _is_safe_redirect(url):
+    # Only allow relative paths on this site, to prevent open redirects
+    if not url or not url.startswith("/") or url.startswith("//") or "\\" in url:
+        return False
+    parsed = urlparse(url)
+    return not parsed.scheme and not parsed.netloc
 
 
 @auth.route("/userinfo")
@@ -64,7 +72,7 @@ def callback():
             "nickname": userinfo["nickname"],
         }
         redirect_url = session.pop("redirect_url", None)
-        if redirect_url is not None:
+        if _is_safe_redirect(redirect_url):
             return redirect(redirect_url)
 
     except Exception as e:
