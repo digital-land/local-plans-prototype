@@ -37,3 +37,9 @@ upgrade-db:
 downgrade-db:
 	flask db downgrade
 
+
+test-acceptance:
+	@echo "Running Acceptance tests...."
+	python -m pytest tests/acceptance/ -v
+
+test:: test-acceptance

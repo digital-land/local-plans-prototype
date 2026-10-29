@@ -1,0 +1,88 @@
+// Ported from the old .eslintrc (ESLint 5). Formatting rules moved out of
+// ESLint core into @stylistic, so they are prefixed accordingly.
+import js from "@eslint/js";
+import stylistic from "@stylistic/eslint-plugin";
+import globals from "globals";
+
+export default [
+  js.configs.recommended,
+  {
+    files: ["src/js/**/*.js"],
+    ignores: ["src/js/vendor/**", "src/js/govuk-frontend/**"],
+    plugins: { "@stylistic": stylistic },
+    languageOptions: {
+      ecmaVersion: 2018,
+      sourceType: "script",
+      globals: { ...globals.browser, ...globals.node }
+    },
+    rules: {
+      camelcase: ["error", { properties: "never" }],
+      curly: ["error", "all"],
+      "new-cap": "error",
+      "no-array-constructor": "error",
+      "no-caller": "error",
+      "no-duplicate-imports": "error",
+      "no-eval": "error",
+      "no-extend-native": "warn",
+      "no-implied-eval": "error",
+      "no-iterator": "error",
+      "no-label-var": "error",
+      "no-labels": "error",
+      "no-lone-blocks": "error",
+      "no-multi-str": "error",
+      "no-nested-ternary": "error",
+      "no-new": "error",
+      "no-new-func": "error",
+      "no-object-constructor": "error",
+      "no-new-wrappers": "error",
+      "no-octal-escape": "error",
+      "no-proto": "error",
+      "no-return-assign": "error",
+      "no-self-compare": "error",
+      "no-sequences": "error",
+      "no-template-curly-in-string": "error",
+      "no-throw-literal": "error",
+      "no-undef-init": "error",
+      "no-unmodified-loop-condition": "error",
+      "no-useless-call": "error",
+      "no-useless-computed-key": "error",
+      "no-useless-constructor": "error",
+      "no-useless-rename": "error",
+      "no-use-before-define": ["error", { functions: true, classes: true, variables: true }],
+      strict: ["error", "never"],
+      yoda: ["error", "never"],
+
+      "@stylistic/block-spacing": ["error", "always"],
+      "@stylistic/brace-style": ["error", "1tbs", { allowSingleLine: true }],
+      "@stylistic/comma-dangle": ["error", { functions: "never" }],
+      "@stylistic/comma-spacing": ["error", { before: false, after: true }],
+      "@stylistic/comma-style": ["error", "last"],
+      "@stylistic/dot-location": ["error", "property"],
+      "@stylistic/eol-last": "error",
+      "@stylistic/function-call-spacing": ["error", "never"],
+      "@stylistic/indent": ["error", 2],
+      "@stylistic/key-spacing": ["error", { beforeColon: false, afterColon: true }],
+      "@stylistic/keyword-spacing": "error",
+      "@stylistic/operator-linebreak": "error",
+      "@stylistic/new-parens": "error",
+      "@stylistic/no-extra-parens": "error",
+      "@stylistic/no-extra-semi": "error",
+      "@stylistic/no-floating-decimal": "error",
+      "@stylistic/no-mixed-spaces-and-tabs": "error",
+      "@stylistic/no-multi-spaces": "error",
+      "@stylistic/no-tabs": "error",
+      "@stylistic/no-trailing-spaces": "error",
+      "@stylistic/no-whitespace-before-property": "error",
+      "@stylistic/object-property-newline": ["error", { allowAllPropertiesOnSameLine: true }],
+      "@stylistic/quotes": ["error", "double", { avoidEscape: true }],
+      "@stylistic/rest-spread-spacing": "error",
+      "@stylistic/semi-spacing": ["error", { before: false, after: true }],
+      "@stylistic/space-infix-ops": "error",
+      "@stylistic/space-in-parens": "error",
+      "@stylistic/space-unary-ops": ["error", { words: true, nonwords: false }],
+      "@stylistic/template-curly-spacing": ["error", "never"],
+      "@stylistic/wrap-iife": "error",
+      "@stylistic/yield-star-spacing": "error"
+    }
+  }
+];

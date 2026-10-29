@@ -64,9 +64,16 @@ def local_plan(planning_authority):
         if pla is not None and pla.id != planning_authority:
             return redirect(url_for("frontend.local_plan", planning_authority=pla.id))
     else:
-        pla = PlanningAuthority.query.get(planning_authority)
+        pla = db.session.get(PlanningAuthority, planning_authority)
     if pla is None:
         abort(404)
+    # adding a plan (POST) needs a signed in user, viewing (GET) does not
+    if (
+        request.method == "POST"
+        and current_app.config["AUTHENTICATION_ON"]
+        and get_current_user() is None
+    ):
+        return redirect(url_for("auth.login", redirect_url=request.path))
     form = AddPlanForm(planning_authority=pla.code())
     if form.validate_on_submit():
         start_year = datetime.datetime(year=form.start_year.data, month=1, day=1)
@@ -98,8 +105,8 @@ def local_plan(planning_authority):
 @requires_auth
 def update_plan_period(planning_authority, plan_id):
 
-    plan = LocalPlan.query.get(plan_id)
-    pla = PlanningAuthority.query.get(planning_authority)
+    plan = db.session.get(LocalPlan, plan_id)
+    pla = db.session.get(PlanningAuthority, planning_authority)
 
     if plan is not None:
         if request.json.get("start-year"):
@@ -152,7 +159,7 @@ def update_plan_period(planning_authority, plan_id):
 )
 @requires_auth
 def update_plan_housing_requirement(planning_authority, plan_id):
-    plan = LocalPlan.query.get(plan_id)
+    plan = db.session.get(LocalPlan, plan_id)
     if plan is not None:
         page_refresh = False
 
@@ -270,7 +277,7 @@ def update_plan_housing_requirement(planning_authority, plan_id):
 )
 @requires_auth
 def update_plan_data_flags(planning_authority, plan_id):
-    plan = LocalPlan.query.get(plan_id)
+    plan = db.session.get(LocalPlan, plan_id)
 
     # TODO plan has two fields, plan_period_found and housing_numbers_found which would at this stage
     # be null. You can set the appropriate flag to False and then save to db
@@ -302,8 +309,8 @@ def update_plan_data_flags(planning_authority, plan_id):
 )
 @requires_auth
 def update_local_plan_url(planning_authority, local_plan):
-    pla = PlanningAuthority.query.get(planning_authority)
-    plan = LocalPlan.query.get(local_plan)
+    pla = db.session.get(PlanningAuthority, planning_authority)
+    plan = db.session.get(LocalPlan, local_plan)
     policy_url = request.json.get("policy-url", "")
     if request.method == "POST" and policy_url:
         plan.url = request.json["policy-url"]
@@ -333,7 +340,7 @@ def update_plan(planning_authority, local_plan):
     plan_identifier = request.json["new_identifier"].strip()
     original_identifier = request.json["original_identifier"].strip()
     try:
-        plan = LocalPlan.query.get(local_plan)
+        plan = db.session.get(LocalPlan, local_plan)
         plan.title = plan_identifier
         db.session.add(plan)
         db.session.commit()
@@ -354,8 +361,8 @@ def update_plan(planning_authority, local_plan):
 )
 @requires_auth
 def update_local_development_framework_number(planning_authority, local_plan):
-    pla = PlanningAuthority.query.get(planning_authority)
-    plan = LocalPlan.query.get(local_plan)
+    pla = db.session.get(PlanningAuthority, planning_authority)
+    plan = db.session.get(LocalPlan, local_plan)
     try:
         ldf_number = request.form.get("local-development-framework-number")
         plan.local_development_framework_number = (
@@ -502,7 +509,7 @@ def data_as_csv():
 @requires_auth
 def make_joint_plan(planning_authority, local_plan):
 
-    planning_authority = PlanningAuthority.query.get(planning_authority)
+    planning_authority = db.session.get(PlanningAuthority, planning_authority)
     link_to_planning_authority = url_for(
         "frontend.local_plan",
         planning_authority=planning_authority.id,
@@ -513,13 +520,13 @@ def make_joint_plan(planning_authority, local_plan):
         .order_by(PlanningAuthority.name)
         .all()
     )
-    plan = LocalPlan.query.get(local_plan)
+    plan = db.session.get(LocalPlan, local_plan)
     form = MakeJointPlanForm()
     form.planning_authorities.choices = [(p.id, p.name) for p in planning_authorities]
 
     if form.validate_on_submit():
         for id in form.planning_authorities.data:
-            authority = PlanningAuthority.query.get(id)
+            authority = db.session.get(PlanningAuthority, id)
             if authority not in plan.planning_authorities:
                 plan.planning_authorities.append(authority)
 
@@ -541,7 +548,7 @@ def make_joint_plan(planning_authority, local_plan):
 @frontend.route("/local-plans/<planning_authority>/<local_plan>/remove")
 @requires_auth
 def remove_plan(planning_authority, local_plan):
-    plan = LocalPlan.query.get(local_plan)
+    plan = db.session.get(LocalPlan, local_plan)
     plan.deleted = True
     db.session.add(plan)
     db.session.commit()
@@ -558,7 +565,7 @@ def remove_plan(planning_authority, local_plan):
 @frontend.route("/local-plans/<planning_authority>/<local_plan>/restore")
 @requires_auth
 def restore_plan(planning_authority, local_plan):
-    plan = LocalPlan.query.get(local_plan)
+    plan = db.session.get(LocalPlan, local_plan)
     plan.deleted = False
     db.session.add(plan)
     db.session.commit()
@@ -581,7 +588,7 @@ def add_pins_state(planning_authority, local_plan, state):
     try:
         d = f"{request.form['pins-state-day']}-{request.form['pins-state-month']}-{request.form['pins-state-year']}"
         date = datetime.datetime.strptime(d, "%d-%m-%Y")
-        plan = LocalPlan.query.get(local_plan)
+        plan = db.session.get(LocalPlan, local_plan)
         field = f"{state}_date"
         setattr(plan, field, date)
         db.session.add(plan)

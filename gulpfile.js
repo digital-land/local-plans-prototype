@@ -1,14 +1,8 @@
 'use strict';
 
 const gulp = require("gulp"),
-      fs = require('fs'),
-      sass = require("gulp-sass"),
-      sassLint = require('gulp-sass-lint'),
-      clean = require('gulp-clean'),
-      rename = require("gulp-rename"),
-      data = require("gulp-data"),
-      nunjucks = require('gulp-nunjucks'),
-      eslint = require('gulp-eslint');
+      fs = require("fs/promises"),
+      sass = require("gulp-sass")(require("sass"));
 
 // set paths ...
 const config = {
@@ -16,7 +10,6 @@ const config = {
   jsDestPath: "application/static/javascripts",
   destPath: "application/static/stylesheets",
   govukAssetPath: "application/static/govuk-frontend/assets",
-  chromeExtDest: "extensions/chrome/",
   chromeExtStaticDest: "extensions/chrome/popup/static"
 }
 
@@ -24,53 +17,37 @@ const config = {
 // Tasks used to generate latest stylesheets
 // =========================================
 const cleanCSS = () =>
-  gulp
-    .src('application/static/stylesheets/**/*', {read: false})
-    .pipe(clean());
-cleanCSS.description = `Delete old stylesheets files`;
+  Promise.all([
+    fs.rm(`${config.destPath}/dl-frontend.css`, { force: true }),
+    fs.rm(`${config.destPath}/popup.css`, { force: true })
+  ]);
+cleanCSS.description = `Delete old compiled stylesheets`;
 
 // compile scss to CSS
 const compileStylesheets = () =>
   gulp
-    .src( config.scssPath + '/*.scss')
-	  .pipe(sass({outputStyle: 'expanded',
-		  includePaths: [ 'src/scss', 'src/govuk-frontend']}))
-      .on('error', sass.logError)
+    .src(config.scssPath + '/*.scss')
+    .pipe(sass({
+      style: 'expanded',
+      loadPaths: ['src/scss', 'src/govuk-frontend'],
+      // govuk-frontend 2.x predates the modern Sass module system
+      quietDeps: true,
+      silenceDeprecations: ['import', 'global-builtin', 'slash-div', 'color-functions']
+    }).on('error', sass.logError))
     .pipe(gulp.dest(config.destPath));
-
-// check .scss files against .sass-lint.yml config
-const lintSCSS = () =>
-  gulp
-    .src('src/scss/**/*.s+(a|c)ss')
-    .pipe(sassLint({
-      files: {ignore: 'src/scss/styleguide/_highlight-style.scss'},
-      configFile: '.sass-lint.yml'
-    }))
-    .pipe(sassLint.format())
-    .pipe(sassLint.failOnError());
-
-
-// JS related tasks
-// ======================================
-
-const lintJS = () => 
-  gulp.src(['src/js/*.js', 'src/js/dlf/*.js'])
-    .pipe(eslint())
-    .pipe(eslint.format())
-    .pipe(eslint.failAfterError());
-lintJS.description = `Lint JS files against rules set in .eshintrc`;
 
 
 // Tasks for copying assets to application
 // ======================================
+// encoding: false stops gulp 5 corrupting binary files (fonts, images)
 const copyVendorStylesheets = () =>
   gulp
-    .src('src/stylesheets/**/*')
+    .src('src/stylesheets/**/*', { encoding: false })
     .pipe(gulp.dest(config.destPath));
 
 const copyGovukAssets = () =>
   gulp
-    .src('src/govuk-frontend/assets/**/*')
+    .src('src/govuk-frontend/assets/**/*', { encoding: false })
     .pipe(gulp.dest(config.govukAssetPath));
 
 const copyJS = () =>
@@ -83,28 +60,6 @@ const copyCompiledCSS = () =>
     .src([`${config.destPath}/dl-frontend.css`, `${config.destPath}/popup.css`])
     .pipe(gulp.dest(`${config.chromeExtStaticDest}`));
 
-
-// Generate extension popup
-// ========================
-const generateExtensionPopup = () =>
-  gulp
-    .src("application/templates/browser-ext-popup.html")
-    .pipe(data(getDataForExtTemplate))
-    .pipe(nunjucks.compile('.', {}))
-    .pipe(rename("popup.html"))
-    .pipe(gulp.dest(`${config.chromeExtDest}`));
-
-function getDataForExtTemplate(file) {
-  var fact_type_json = 'data/fact-types.json';
-  var fact_types = null;
-  if(fs.existsSync(fact_type_json)) {
-    fact_types = JSON.parse(fs.readFileSync(fact_type_json, "utf8"));
-  }
-  //console.log(fact_types);
-  return {
-    fact_types: fact_types
-  }
-}
 
 // Tasks to expose to CLI
 // ======================
@@ -137,5 +92,3 @@ watch.description = `Watch all project .scss for changes, then rebuild styleshee
 exports.default = watch;
 exports.stylesheets = latestStylesheets;
 exports.copyAssets = copyAllAssets;
-exports.generatePopup = generateExtensionPopup;
-exports.lintjs = lintJS;

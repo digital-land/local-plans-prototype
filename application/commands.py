@@ -267,7 +267,7 @@ def load_ldf_csv(csvfile):
         for row in csv_reader:
             try:
                 plan_id = row["plan_id"]
-                plan = LocalPlan.query.get(plan_id)
+                plan = db.session.get(LocalPlan, plan_id)
                 ldf_number = int(row["local_development_framework_number"])
                 if plan is not None:
                     plan.local_development_framework_number = ldf_number
@@ -370,7 +370,7 @@ def add_orgs():
             "national-park-authority",
             "development-corporation",
         ]:
-            pa = PlanningAuthority.query.get(org)
+            pa = db.session.get(PlanningAuthority, org)
             if pa is None:
                 print(f"{org} not found - adding now")
                 pa = PlanningAuthority(id=org)
